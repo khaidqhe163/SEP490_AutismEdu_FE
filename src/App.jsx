@@ -15,6 +15,7 @@ function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     const accessToken = Cookies.get("access_token");
+    if (!accessToken) return;
     const decodedToken = jwtDecode(accessToken);
     const userId = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
     if (userId) {
