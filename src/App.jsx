@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import AdminLayout from "./layout/AdminLayout";
-import { adminRoutes, publicRoutes } from "./routes/Routes";
+import { adminRoutes, publicRoutes, tutorRoutes } from "./routes/Routes";
 import ClientLayout from "./layout/ClientLayout";
 import PAGES from "./utils/pages";
 import 'react-image-crop/dist/ReactCrop.css'
@@ -11,6 +11,7 @@ import { jwtDecode } from "jwt-decode";
 import { enqueueSnackbar } from "notistack";
 import { setUserInformation } from "./redux/features/userSlice";
 import { useDispatch } from "react-redux";
+import TutorLayout from "./layout/TutorLayout";
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -43,6 +44,15 @@ function App() {
           <Route path="/" element={<Navigate to={PAGES.ROOT + PAGES.HOME} />} />
           <Route path="/autismedu" element={<ClientLayout />}>
             {publicRoutes.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={<route.element />}
+              />
+            ))}
+          </Route>
+          <Route path="/autismtutor" element={<TutorLayout />}>
+            {tutorRoutes.map((route) => (
               <Route
                 key={route.path}
                 path={route.path}

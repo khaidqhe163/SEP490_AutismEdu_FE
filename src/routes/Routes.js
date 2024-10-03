@@ -15,6 +15,8 @@ import TutorProfile from '~/pages/Tutor/TutorProfile'
 import TutorProfileUpdate from '~/pages/Tutor/TutorProfileUpdate'
 import TutorRegistrationManagement from '~/pages/Admin/TutorRegistrationManagement'
 import TutorRegistration from '~/pages/Tutor/TutorRegistration'
+import MyStudent from '~/pages/Tutor/MyStudent'
+import StudentDetail from '~/pages/Tutor/MyStudent/StudentDetail.jsx'
 
 const publicRoutes = [
     {
@@ -67,6 +69,16 @@ const publicRoutes = [
     },
 ]
 
+
+const tutorRoutes = [
+    {
+        path: PAGES.MY_STUDENT,
+        element: MyStudent
+    }, {
+        path: PAGES.STUDENT_DETAIL,
+        element: StudentDetail
+    }
+]
 const adminRoutes = [
     {
         path: PAGES.DASHBOARD,
@@ -86,5 +98,5 @@ const adminRoutes = [
     }
 ]
 export {
-    adminRoutes, publicRoutes
+    adminRoutes, publicRoutes, tutorRoutes
 }

@@ -35,10 +35,10 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
 
         setSelectedProvince(provinceId + "|" + provinceName);
         setSelectedDistrict('');
-        setSelectedCommune('');  
-        setDistricts([]);       
-        setCommunes([]);         
-        setLoadingDistricts(true); 
+        setSelectedCommune('');
+        setDistricts([]);
+        setCommunes([]);
+        setLoadingDistricts(true);
 
         axios.get(`https://vietnam-administrative-division-json-server-swart.vercel.app/district?idProvince=${provinceId}`)
             .then(response => {
@@ -62,9 +62,9 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
         let [districtId, districtName] = arrDistrict;
 
         setSelectedDistrict(districtId + "|" + districtName);
-        setSelectedCommune(''); 
-        setCommunes([]);       
-        setLoadingCommunes(true); 
+        setSelectedCommune('');
+        setCommunes([]);
+        setLoadingCommunes(true);
 
         axios.get(`https://vietnam-administrative-division-json-server-swart.vercel.app/commune?idDistrict=${districtId}`)
             .then(response => {
@@ -78,7 +78,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
 
         setSearchCriteria(prev => ({
             ...prev,
-            address: `${districtName}|${selectedProvince.split("|")[1]}` 
+            address: `${districtName}|${selectedProvince.split("|")[1]}`
         }));
     };
 
@@ -97,7 +97,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
     function handleClick(event) {
         event.preventDefault();
         console.info('You clicked a breadcrumb.');
-    };
+    }
     const handleButtonClick = (button) => {
         setSelected(button);
     };
@@ -116,10 +116,10 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
     const breadcrumbs = [
         <Link underline="hover" key="1" color="inherit" href="/" onClick={handleClick}>
             Trang chủ
-        </Link>, ,
+        </Link>,
         <Typography key="3" sx={{ color: 'rgb(107, 115, 133)' }}>
             Danh sách gia sư
-        </Typography>,
+        </Typography>
     ];
     return (
         <Box
@@ -283,7 +283,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                             value={selectedDistrict}
                                             onChange={handleDistrictChange}
                                             label="Quận/Huyện"
-                                            disabled={!selectedProvince} 
+                                            disabled={!selectedProvince}
                                         >
                                             {loadingDistricts ? (
                                                 <MenuItem disabled>
@@ -306,7 +306,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                             value={selectedCommune}
                                             onChange={handleCommuneChange}
                                             label="Phường/Xã"
-                                            disabled={!selectedDistrict} 
+                                            disabled={!selectedDistrict}
                                         >
                                             {loadingCommunes ? (
                                                 <MenuItem disabled>
