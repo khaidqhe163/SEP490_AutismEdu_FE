@@ -17,7 +17,8 @@ const PAGES = {
   TUTORREGISTRATIONMANAGEMENT: '/admin/tutor-registration-management',
   TUTORREGISTRATION: '/tutor-registration',
   MY_STUDENT: '/autismtutor/my-student',
-  STUDENT_DETAIL: '/autismtutor/student-detail/:id'
+  STUDENT_DETAIL: '/autismtutor/student-detail/:id',
+  TUTOR_SETTING: '/autismtutor/tutor-setting'
 };
 
 export default PAGES;

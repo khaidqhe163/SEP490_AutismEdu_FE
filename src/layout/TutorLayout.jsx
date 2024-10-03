@@ -26,7 +26,7 @@ function TutorLayout() {
                     <MessageOutlinedIcon />
                 </IconButton>
             </Box>
-        </Box >
+        </Box>
     )
 }
 

@@ -17,6 +17,7 @@ import TutorRegistrationManagement from '~/pages/Admin/TutorRegistrationManageme
 import TutorRegistration from '~/pages/Tutor/TutorRegistration'
 import MyStudent from '~/pages/Tutor/MyStudent'
 import StudentDetail from '~/pages/Tutor/MyStudent/StudentDetail.jsx'
+import TutorSetting from '~/pages/Tutor/TutorSetting'
 
 const publicRoutes = [
     {
@@ -77,6 +78,9 @@ const tutorRoutes = [
     }, {
         path: PAGES.STUDENT_DETAIL,
         element: StudentDetail
+    }, {
+        path: PAGES.TUTOR_SETTING,
+        element: TutorSetting
     }
 ]
 const adminRoutes = [
