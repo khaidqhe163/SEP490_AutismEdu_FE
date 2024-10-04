@@ -10,10 +10,13 @@ import WorkInfo from './WorkInfo';
 import Identification from './Identification';
 import axios from 'axios';
 import TutorInformation from './TutorInformation';
+import AccountInformation from './AccountInformation';
+import TutorIntroduction from './TutorIntroduction';
 
-const steps = ['Thông tin gia sư', 'Bằng tốt nghiệp', 'Định danh'];
+const steps = ['Thông tin tài khoản', 'Thông tin cá nhân', 'Thông tin gia sư', 'Bằng cấp / chứng chỉ'];
 function TutorRegistration() {
-    const [activeStep, setActiveStep] = React.useState(0);
+    const [activeStep, setActiveStep] = React.useState(3);
+    const [accountInformation, setAccountInformation] = useState(null);
     const [tutorInformation, setTutorInformation] = useState(null);
     const [certificate, setCertificate] = useState([]);
     const [career, setCareer] = useState([]);
@@ -61,7 +64,6 @@ function TutorRegistration() {
         setActiveStep(0);
     };
 
-    console.log(tutorInformation);
     return (
         <Stack direction="row" sx={{ justifyContent: "center" }}>
             <Box sx={{
@@ -104,7 +106,15 @@ function TutorRegistration() {
                     ) : (
                         <React.Fragment>
                             {
-                                activeStep + 1 === 1 && <TutorInformation
+                                activeStep + 1 === 1 && <AccountInformation
+                                    activeStep={activeStep}
+                                    handleBack={handleBack}
+                                    handleNext={handleNext}
+                                    steps={steps}
+                                />
+                            }
+                            {
+                                activeStep + 1 === 2 && <TutorInformation
                                     activeStep={activeStep}
                                     handleBack={handleBack}
                                     handleNext={handleNext}
@@ -114,7 +124,15 @@ function TutorRegistration() {
                                 />
                             }
                             {
-                                activeStep + 1 === 2 && <WorkInfo
+                                activeStep + 1 === 3 && <TutorIntroduction
+                                    activeStep={activeStep}
+                                    handleBack={handleBack}
+                                    handleNext={handleNext}
+                                    steps={steps}
+                                />
+                            }
+                            {
+                                activeStep + 1 === 4 && <WorkInfo
                                     activeStep={activeStep}
                                     handleBack={handleBack}
                                     handleNext={handleNext}
@@ -123,19 +141,6 @@ function TutorRegistration() {
                                     career={career}
                                     setCareer={setCareer}
                                     setCertificate={setCertificate}
-                                />
-                            }
-                            {
-                                activeStep + 1 === 3 && <Identification
-                                    activeStep={activeStep}
-                                    handleBack={handleBack}
-                                    handleNext={handleNext}
-                                    steps={steps}
-                                    identifcation={identifcation}
-                                    setIdentification={setIdentification}
-                                    career={career}
-                                    certificate={certificate}
-                                    tutorInformation={tutorInformation}
                                 />
                             }
 

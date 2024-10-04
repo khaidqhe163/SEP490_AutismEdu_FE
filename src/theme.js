@@ -37,39 +37,73 @@ const theme = createTheme({
         fontSize: 14,
         button: {
             fontFamily: 'Euclid Circular',
-            textTransform: 'none', // Loại bỏ in hoa mặc định
+            textTransform: 'none',
+        },
+        h1: {
+            fontSize: "36px",
+            fontWeight: '700',
+            color: '#192335',
+            '@media (min-width:600px)': {
+                fontSize: "36px"
+            },
+            '@media (min-width:900px)': {
+                fontSize: "52px"
+            }
         },
         h2: {
-            fontSize: {
-                xs: "30px",
-                md: "44px"
-            },
-            fontWeight: '700'
-        },
-        h3: {
-            fontSize: {
-                xs: "26px",
-                md: "40px"
-            },
-            fontWeight: '700'
-        },
-        h4: {
             fontSize: "30px",
             fontWeight: '700',
-            color: '#192335'
+            color: '#192335',
+            '@media (min-width:600px)': {
+                fontSize: "28px"
+            },
+            '@media (min-width:900px)': {
+                fontSize: "44px"
+            }
+        },
+        h3: {
+            fontSize: "26px",
+            fontWeight: '700',
+            color: '#192335',
+            '@media (min-width:600px)': {
+                fontSize: "24px"
+            },
+            '@media (min-width:900px)': {
+                fontSize: "34px"
+            }
+        },
+        h4: {
+            fontSize: "24px",
+            fontWeight: '700',
+            color: '#192335',
+            '@media (min-width:600px)': {
+                fontSize: "20"
+            },
+            '@media (min-width:900px)': {
+                fontSize: "30px"
+            }
         },
         h5: {
-            fontWeight: '700',
-            color: '#192335'
-        },
-        h6: {
             fontSize: "20px",
             fontWeight: '700',
-            color: '#192335'
+            color: '#192335',
+            '@media (min-width:600px)': {
+                fontSize: "16px"
+            },
+            '@media (min-width:900px)': {
+                fontSize: "20px"
+            }
         },
-        'h1, h2, h3, h4, h5, h6': {
-            fontFamily: 'Euclid Circular',
-            color: '#192335'
+        h6: {
+            fontSize: "18px",
+            fontWeight: '700',
+            color: '#192335',
+            '@media (min-width:600px)': {
+                fontSize: "13px"
+            },
+            '@media (min-width:900px)': {
+                fontSize: "16px"
+            }
         },
     },
     components: {
