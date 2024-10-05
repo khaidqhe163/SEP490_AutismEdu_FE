@@ -13,45 +13,46 @@ import TutorInformation from './TutorInformation';
 import AccountInformation from './AccountInformation';
 import TutorIntroduction from './TutorIntroduction';
 
-const steps = ['Thông tin tài khoản', 'Thông tin cá nhân', 'Thông tin gia sư', 'Bằng cấp / chứng chỉ'];
+const steps = ['Thông tin cá nhân', 'Thông tin gia sư', 'Bằng cấp / chứng chỉ'];
 function TutorRegistration() {
-    const [activeStep, setActiveStep] = React.useState(3);
-    const [accountInformation, setAccountInformation] = useState(null);
+    const [activeStep, setActiveStep] = React.useState(0);
     const [tutorInformation, setTutorInformation] = useState(null);
     const [certificate, setCertificate] = useState([]);
+    const [curriculum, setCurriculum] = useState([]);
+    const [IdVerification, setIdVerification] = useState(null);
     const [career, setCareer] = useState([]);
-    const [identifcation, setIdentification] = useState(null);
+    const [tutorIntroduction, setTutorIntroduction] = useState(null);
     const [isSubmit, setIsSubmit] = useState(false);
 
     useEffect(() => {
-        const draftData = localStorage.getItem(`draftData-094949494`);
-        if (draftData) {
-            const convertData = JSON.parse(draftData);
-            setTutorInformation(convertData.tutorInformation);
-            setCertificate(convertData.certificate);
-            setCareer(convertData.career);
-            setIdentification(convertData.identifcation);
-        }
+        // const draftData = localStorage.getItem(`draftData-094949494`);
+        // if (draftData) {
+        //     const convertData = JSON.parse(draftData);
+        //     setTutorInformation(convertData.tutorInformation);
+        //     setCertificate(convertData.certificate);
+        //     setCareer(convertData.career);
+        //     setIdentification(convertData.identifcation);
+        // }
     }, [])
-    useEffect(() => {
-        const handleBeforeUnload = (event) => {
-            if (!isSubmit) {
-                const draftData = {
-                    id: "094949494",
-                    tutorInformation: tutorInformation,
-                    certificate: certificate,
-                    career: career,
-                    identifcation: identifcation
-                }
-                localStorage.setItem(`draftData-094949494`, JSON.stringify(draftData))
-            }
-        };
+    // useEffect(() => {
+    //     const handleBeforeUnload = (event) => {
+    //         if (!isSubmit) {
+    //             const draftData = {
+    //                 id: "094949494",
+    //                 tutorInformation: tutorInformation,
+    //                 certificate: certificate,
+    //                 career: career,
+    //                 identifcation: identifcation
+    //             }
+    //             localStorage.setItem(`draftData-094949494`, JSON.stringify(draftData))
+    //         }
+    //     };
 
-        window.addEventListener('beforeunload', handleBeforeUnload);
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-        };
-    }, [tutorInformation, certificate, career, identifcation])
+    //     window.addEventListener('beforeunload', handleBeforeUnload);
+    //     return () => {
+    //         window.removeEventListener('beforeunload', handleBeforeUnload);
+    //     };
+    // }, [tutorInformation, certificate, career, identifcation])
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
@@ -106,33 +107,29 @@ function TutorRegistration() {
                     ) : (
                         <React.Fragment>
                             {
-                                activeStep + 1 === 1 && <AccountInformation
-                                    activeStep={activeStep}
-                                    handleBack={handleBack}
-                                    handleNext={handleNext}
-                                    steps={steps}
-                                />
-                            }
-                            {
-                                activeStep + 1 === 2 && <TutorInformation
+                                activeStep + 1 === 1 && <TutorInformation
                                     activeStep={activeStep}
                                     handleBack={handleBack}
                                     handleNext={handleNext}
                                     steps={steps}
                                     tutorInformation={tutorInformation}
                                     setTutorInformation={setTutorInformation}
+                                    IdVerification={IdVerification}
+                                    setIdVerification={setIdVerification}
                                 />
                             }
                             {
-                                activeStep + 1 === 3 && <TutorIntroduction
+                                activeStep + 1 === 2 && <TutorIntroduction
                                     activeStep={activeStep}
                                     handleBack={handleBack}
                                     handleNext={handleNext}
                                     steps={steps}
+                                    tutorIntroduction={tutorIntroduction}
+                                    setTutorIntroduction={setTutorIntroduction}
                                 />
                             }
                             {
-                                activeStep + 1 === 4 && <WorkInfo
+                                activeStep + 1 === 3 && <WorkInfo
                                     activeStep={activeStep}
                                     handleBack={handleBack}
                                     handleNext={handleNext}
@@ -141,6 +138,9 @@ function TutorRegistration() {
                                     career={career}
                                     setCareer={setCareer}
                                     setCertificate={setCertificate}
+                                    tutorInformation={tutorInformation}
+                                    tutorIntroduction={tutorIntroduction}
+                                    IdVerification={IdVerification}
                                 />
                             }
 

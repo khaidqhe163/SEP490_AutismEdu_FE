@@ -9,23 +9,31 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { enqueueSnackbar } from 'notistack';
-function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInformation, setTutorInformation }) {
+function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInformation, setTutorInformation,
+    IdVerification,
+    setIdVerification }) {
     const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [communes, setCommunes] = useState([]);
     const [avatar, setAvatar] = useState();
     const [citizenIdentification, setCitizenIdentification] = useState(null);
-    const [handPhoto, setHandPhoto] = useState(null);
     const [currentImage, setCurrentImage] = useState(null);
     const [inputKey, setInputKey] = useState(0);
     const [openDialog, setOpenDialog] = useState(false);
     const cIInput = useRef();
     const validate = values => {
         const errors = {};
-        if (!values.formalName) {
-            errors.formalName = 'Bắt buộc';
-        } else if (values.formalName.length > 20) {
-            errors.formalName = 'Tên dưới 20 ký tự';
+
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!values.email) {
+            errors.email = "Bắt buộc"
+        } else if (!emailRegex.test(values.email)) {
+            errors.email = "Email của bạn không hợp lệ"
+        }
+        if (!values.fullName) {
+            errors.fullName = 'Bắt buộc';
+        } else if (values.fullName.length > 20) {
+            errors.fullName = 'Tên dưới 20 ký tự';
         }
         if (!values.phoneNumber) {
             errors.phoneNumber = 'Bắt buộc';
@@ -36,11 +44,6 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
         if (!values.province || !values.district || !values.commune || !values.homeNumber) {
             errors.address = 'Nhập đầy đủ địa chỉ';
         }
-        if (!values.startAge || !values.endAge) {
-            errors.rangeAge = 'Vui lòng nhập độ tuổi';
-        } else if (values.startAge > values.endAge) {
-            errors.rangeAge = 'Độ tuổi không hợp lệ';
-        }
         if (!avatar) {
             errors.avatar = "Bắt buộc"
         }
@@ -48,7 +51,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
     };
     const formik = useFormik({
         initialValues: {
-            formalName: '',
+            fullName: '',
+            email: '',
             phoneNumber: '',
             dateOfBirth: '',
             province: '',
@@ -61,12 +65,25 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
         },
         validate,
         onSubmit: async (values) => {
+            const dataTransfer = new DataTransfer();
+            citizenIdentification.forEach(file => {
+                dataTransfer.items.add(file);
+            });
+
+            setIdVerification({
+                certificateName: "Căn cước công dân",
+                issuingInstitution: values.issuingInstitution,
+                issuingDate: values.issuingDate,
+                identityCardNumber: values.identityCardNumber,
+                medias: dataTransfer.files
+            })
             const selectedCommune = communes.find(p => p.idCommune === values.commune);
             const selectedProvince = provinces.find(p => p.idProvince === values.province);
             const selectedDistrict = districts.find(p => p.idDistrict === values.district);
             setTutorInformation({
-                avatar: avatar,
-                formalName: values.formalName,
+                image: avatar,
+                fullName: values.fullName,
+                email: values.email,
                 phoneNumber: values.phoneNumber,
                 dateOfBirth: values.dateOfBirth,
                 province: selectedProvince || '',
@@ -82,7 +99,7 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
     useEffect(() => {
         getDataProvince();
         if (tutorInformation) {
-            formik.setFieldValue("formalName", tutorInformation?.formalName || "");
+            formik.setFieldValue("fullName", tutorInformation?.fullName || "");
             formik.setFieldValue("phoneNumber", tutorInformation?.phoneNumber || "");
             formik.setFieldValue("dateOfBirth", tutorInformation?.dateOfBirth || "");
             formik.setFieldValue("homeNumber", tutorInformation?.homeNumber || "");
@@ -170,12 +187,25 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                     <Grid item xs={3} textAlign="right">Họ và tên gia sư</Grid>
                     <Grid item xs={9}>
                         <TextField size='small' sx={{ width: "50%" }}
-                            value={formik.values.formalName}
-                            onChange={formik.handleChange} name='formalName' />
+                            value={formik.values.fullName}
+                            onChange={formik.handleChange} name='fullName' />
                         {
-                            formik.errors.formalName && (
+                            formik.errors.fullName && (
                                 <FormHelperText error>
-                                    {formik.errors.formalName}
+                                    {formik.errors.fullName}
+                                </FormHelperText>
+                            )
+                        }
+                    </Grid>
+                    <Grid item xs={3} textAlign="right">Email</Grid>
+                    <Grid item xs={9}>
+                        <TextField size='small' sx={{ width: "50%" }} onChange={formik.handleChange} name='email'
+                            value={formik.values.email}
+                        />
+                        {
+                            formik.errors.email && (
+                                <FormHelperText error>
+                                    {formik.errors.email}
                                 </FormHelperText>
                             )
                         }
