@@ -7,6 +7,7 @@ import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import DescriptionIcon from '@mui/icons-material/Description';
 import EditProfile from './EditProfile';
 import CurriculumManage from './CurriculumManagement';
+import AvailableTimeManagement from './AvailableTimeManagement';
 
 function TutorSetting() {
     const [value, setValue] = useState('1');
@@ -28,7 +29,7 @@ function TutorSetting() {
                     <EditProfile />
                 </TabPanel>
                 <TabPanel value="2"><CurriculumManage /></TabPanel>
-                <TabPanel value="3">Thiết lặp thời gian rảnh</TabPanel>
+                <TabPanel value="3"><AvailableTimeManagement /></TabPanel>
                 <TabPanel value="4">Chứng chỉ</TabPanel>
             </TabContext>
         </Box>
