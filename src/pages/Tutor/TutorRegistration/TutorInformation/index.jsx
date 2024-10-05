@@ -40,7 +40,9 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
         } else if (!/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$/.test(values.phoneNumber)) {
             errors.phoneNumber = 'Số điện thoại không hợp lệ';
         }
-
+        if (!values.dateOfBirth) {
+            errors.dateOfBirth = 'Bắt buộc'
+        }
         if (!values.province || !values.district || !values.commune || !values.homeNumber) {
             errors.address = 'Nhập đầy đủ địa chỉ';
         }
@@ -229,6 +231,13 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             value={formik.values.dateOfBirth}
                             onChange={formik.handleChange} name='dateOfBirth'
                         />
+                        {
+                            formik.errors.dateOfBirth && (
+                                <FormHelperText error>
+                                    {formik.errors.dateOfBirth}
+                                </FormHelperText>
+                            )
+                        }
                     </Grid>
                     <Grid item xs={3} textAlign="right">Địa chỉ</Grid>
                     <Grid item xs={9}>

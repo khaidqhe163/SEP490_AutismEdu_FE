@@ -25,8 +25,10 @@ const style = {
 export default function Career({ career, setCareer }) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-    const [currentImage, setCurrentImage] = React.useState(null);
+    const handleClose = () => {
+        setOpen(false);
+        formik.resetForm();
+    }
     const validate = values => {
         const errors = {};
         if (!values.companyName) {
@@ -40,6 +42,9 @@ export default function Career({ career, setCareer }) {
         }
         if (!values.endDate) {
             errors.endDate = "Bắt buộc"
+        }
+        if ((values.startDate > values.endDate) && values.endDate) {
+            errors.startDate = "Thời gian không hợp lệ"
         }
         return errors;
     };
@@ -103,6 +108,9 @@ export default function Career({ career, setCareer }) {
                                     <Typography>Từ</Typography>
                                     <TextField size='small' type='month' value={formik.values.startDate}
                                         name='startDate'
+                                        inputProps={{
+                                            max: new Date().toISOString().slice(0, 7)
+                                        }}
                                         onChange={formik.handleChange} />
                                     {
                                         formik.errors.startDate && (

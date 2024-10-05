@@ -15,10 +15,9 @@ import TutorIntroduction from './TutorIntroduction';
 
 const steps = ['Thông tin cá nhân', 'Thông tin gia sư', 'Bằng cấp / chứng chỉ'];
 function TutorRegistration() {
-    const [activeStep, setActiveStep] = React.useState(0);
+    const [activeStep, setActiveStep] = React.useState(1);
     const [tutorInformation, setTutorInformation] = useState(null);
     const [certificate, setCertificate] = useState([]);
-    const [curriculum, setCurriculum] = useState([]);
     const [IdVerification, setIdVerification] = useState(null);
     const [career, setCareer] = useState([]);
     const [tutorIntroduction, setTutorIntroduction] = useState(null);

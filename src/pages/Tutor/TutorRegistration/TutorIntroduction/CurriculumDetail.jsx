@@ -1,6 +1,6 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { FormHelperText, Grid, IconButton, Stack, TextField } from '@mui/material';
+import { FormHelperText, Grid, IconButton, ListItemButton, ListItemIcon, Stack, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
@@ -9,6 +9,8 @@ import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
 import * as React from 'react';
 import ReactQuill from 'react-quill';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import ConfirmDeleteCurriculum from './ConfirmDeleteCurrriculum';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -22,9 +24,14 @@ const style = {
     p: 4,
 };
 
-export default function Curriculum({ curriculum, setCurriculum, endAge, startAge }) {
+export default function CurriculumDetail({ curriculum, setCurriculum, endAge, startAge, index, currentCurriculum }) {
     const [open, setOpen] = React.useState(false);
-    const [editorContent, setEditorContent] = React.useState("");
+    const [editorContent, setEditorContent] = React.useState(currentCurriculum.description || "");
+    React.useEffect(() => {
+        formik.setFieldValue("startAge", currentCurriculum.ageFrom);
+        formik.setFieldValue("endAge", currentCurriculum.ageEnd);
+        setEditorContent(currentCurriculum.description)
+    }, [currentCurriculum])
     const handleOpen = () => {
         if (endAge === "" || startAge === "") {
             enqueueSnackbar("Vui lòng nhập độ tuổi dạy", { variant: "warning" })
@@ -32,8 +39,6 @@ export default function Curriculum({ curriculum, setCurriculum, endAge, startAge
             setOpen(true);
     }
     const handleClose = () => {
-        formik.resetForm();
-        setEditorContent("");
         setOpen(false);
     }
     const validate = values => {
@@ -64,23 +69,37 @@ export default function Curriculum({ curriculum, setCurriculum, endAge, startAge
     ];
     const formik = useFormik({
         initialValues: {
-            startAge: "",
-            endAge: ""
+            startAge: currentCurriculum.ageFrom || "",
+            endAge: currentCurriculum.ageEnd || ""
         },
         validate,
         onSubmit: (values) => {
+            const filterCur = curriculum.filter((c, i) => i !== index);
             if (editorContent) {
-                setCurriculum(pre => [...pre, { ageFrom: values.startAge, ageEnd: values.endAge, description: editorContent }])
+                setCurriculum([...filterCur,
+                {
+                    ageFrom: values.startAge,
+                    ageEnd: values.endAge,
+                    description: editorContent
+                }
+                ])
                 handleClose();
                 formik.resetForm();
                 setEditorContent("");
             }
         }
     });
-
     return (
-        <div>
-            <IconButton onClick={handleOpen}><AddCircleOutlineIcon /></IconButton>
+        <Box>
+            <ListItemButton>
+                <ListItemIcon onClick={handleOpen}>
+                    <MenuBookIcon />
+                </ListItemIcon>
+                <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", flexGrow: 1 }} gap={2} onClick={handleOpen}>
+                    <Typography>{currentCurriculum.ageFrom} - {currentCurriculum.ageEnd} tuổi</Typography>
+                    <ConfirmDeleteCurriculum curriculum={curriculum} setCurriculum={setCurriculum} index={index} />
+                </Stack>
+            </ListItemButton>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -149,13 +168,13 @@ export default function Curriculum({ curriculum, setCurriculum, endAge, startAge
 
                         </Grid>
                         <Box sx={{ display: "flex", justifyContent: "end", gap: 2 }}>
-                            <Button variant='contained' type='submit'>Thêm</Button>
+                            <Button variant='contained' type='submit'>Lưu</Button>
                             <Button onClick={handleClose}>Huỷ</Button>
                         </Box>
                     </form>
 
                 </Box>
             </Modal>
-        </div>
+        </Box>
     );
 }

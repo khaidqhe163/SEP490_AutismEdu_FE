@@ -58,7 +58,9 @@ export default function CertificateDetail({ certificate, setCertificate, index, 
         if (!images || images.length === 0) {
             errors.images = "Bắt buộc"
         }
-
+        if (values.degreeDate >= values.expriredDate) {
+            errors.expirationDate = "Ngày hết lớn hơn ngày cấp"
+        }
         const existCertificate = certificate.find((e) => {
             return e.certificateName === values.degreeName && e.certificateName !== currentItem.certificateName
         }
@@ -149,7 +151,10 @@ export default function CertificateDetail({ certificate, setCertificate, index, 
                             <Grid item xs={9}>
                                 <TextField size='small' type='date' value={formik.values.degreeDate}
                                     name='degreeDate'
-                                    onChange={formik.handleChange} />
+                                    onChange={formik.handleChange}
+                                    inputProps={{
+                                        max: new Date().toISOString().split('T')[0]
+                                    }} />
                                 {
                                     formik.errors.degreeDate && (
                                         <FormHelperText error>
@@ -162,7 +167,18 @@ export default function CertificateDetail({ certificate, setCertificate, index, 
                             <Grid item xs={9}>
                                 <TextField size='small' type='date' value={formik.values.expriredDate}
                                     name='expriredDate'
-                                    onChange={formik.handleChange} />
+                                    onChange={formik.handleChange}
+                                    inputProps={{
+                                        min: formik.values.degreeDate,
+                                        max: new Date().toISOString().split('T')[0]
+                                    }} />
+                                {
+                                    formik.errors.expirationDate && (
+                                        <FormHelperText error>
+                                            {formik.errors.expirationDate}
+                                        </FormHelperText>
+                                    )
+                                }
                             </Grid>
                             <Grid item xs={3} textAlign="right">Tải ảnh</Grid>
                             <Grid item xs={9}>

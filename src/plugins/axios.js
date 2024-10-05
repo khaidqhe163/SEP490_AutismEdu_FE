@@ -20,6 +20,7 @@ const axiosInstance = axios.create({
 let isRefreshing = false;
 
 axiosInstance.interceptors.request.use(request => {
+  console.log(axiosInstance.defaults);
   let newAccesstToken = Cookies.get('access_token');
   if (newAccesstToken !== undefined) {
     request.headers.Authorization = `Bearer ${newAccesstToken}`;
@@ -82,8 +83,6 @@ const setHeaders = function (headers) {
   axiosInstance.defaults.headers.common = { ...axiosInstance.defaults.headers.common, ...headers };
   axiosInstance.defaults.headers["Content-Type"] = headers["Content-Type"];
   axiosInstance.defaults.headers['Accept'] = "application/json, text/plain, multipart/form-data, */*";
-  console.log(axiosInstance.defaults);
-  console.log(axiosInstance.defaults.headers.common);
 }
 
 export default {

@@ -1,33 +1,26 @@
-import DeleteIcon from '@mui/icons-material/Delete';
-import SchoolIcon from '@mui/icons-material/School';
-import WorkIcon from '@mui/icons-material/Work';
-import { Box, Button, Dialog, DialogContent, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListSubheader, Stack, Typography } from '@mui/material';
-import { useFormik } from 'formik';
-import { useEffect, useRef, useState } from 'react';
-import Career from './Career';
-import CertificateAddition from './Certificate/CertificateAddition';
-import ConfirmDeleteDialog from './Certificate/ConfirmDeleteDialog';
-import CertificateDetail from './Certificate/CertificateDetail';
-import CareerDetail from './Career/CareerDetail';
+import { Box, Button, Dialog, DialogContent, List, ListItem, ListSubheader, Stack, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import services from '~/plugins/services';
+import { useRef, useState } from 'react';
 import axios from "~/plugins/axios";
+import services from '~/plugins/services';
+import Career from './Career';
+import CareerDetail from './Career/CareerDetail';
+import CertificateAddition from './Certificate/CertificateAddition';
+import CertificateDetail from './Certificate/CertificateDetail';
+import { useNavigate } from 'react-router-dom';
+import PAGES from '~/utils/pages';
 function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, career, setCareer,
     setCertificate, tutorInformation, tutorIntroduction,
     IdVerification }) {
     const image = useRef(null);
-    const validate = values => {
-        const errors = {};
-        return errors;
-    };
     const [open, setOpen] = useState(false);
     const handleClose = () => {
         setOpen(false);
     };
-
+    const nav = useNavigate();
     const handleSubmit = async () => {
         try {
-            if (certificate?.length !== 0) {
+            if (certificate?.length !== 0 && career?.lenght !== 0) {
                 const submitForm = new FormData();
                 submitForm.append("Email", tutorInformation.email);
                 submitForm.append("FullName", tutorInformation.fullName);
@@ -70,11 +63,13 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
                 await services.TutorManagementAPI.registerAsTutor(submitForm, (res) => {
                     console.log(res);
+                    nav(PAGES.ROOT + PAGES.LOGIN)
                 }, (err) => {
                     console.log(err);
+                    nav(PAGES.ROOT + PAGES.LOGIN)
                 })
             } else {
-                enqueueSnackbar("Bạn chưa có bằng cấp/ chứng chỉ", { variant: "error" })
+                enqueueSnackbar("Bạn chưa có bằng cấp hoặc kinh nghiệm làm việc", { variant: "error" })
             }
         } catch (error) {
             console.log(error);
