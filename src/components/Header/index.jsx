@@ -105,7 +105,7 @@ function Header() {
                                     lg: "block"
                                 }
                             }}>
-                                <Link to={PAGES.ROOT + PAGES.LOGIN}><ButtonComponent text="Đăng nhập" height="40px" /></Link>
+                                <Link to={PAGES.ROOT + PAGES.LOGIN_OPTION}><ButtonComponent text="Đăng nhập" height="40px" /></Link>
                             </Box>
                             <Link to={PAGES.ROOT + PAGES.REGISTER}><Button variant='outlined' sx={{
                                 display: {

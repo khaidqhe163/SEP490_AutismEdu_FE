@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import AdminLayout from "./layout/AdminLayout";
-import { adminRoutes, publicRoutes, tutorRoutes } from "./routes/Routes";
+import { adminRoutes, publicRoutes, tutorRoutes, UnLayoutRoutes } from "./routes/Routes";
 import ClientLayout from "./layout/ClientLayout";
 import PAGES from "./utils/pages";
 import 'react-image-crop/dist/ReactCrop.css'
@@ -42,6 +42,14 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to={PAGES.ROOT + PAGES.HOME} />} />
+
+          {UnLayoutRoutes.map((route) => (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={<route.element />}
+            />
+          ))}
           <Route path="/autismedu" element={<ClientLayout />}>
             {publicRoutes.map((route) => (
               <Route

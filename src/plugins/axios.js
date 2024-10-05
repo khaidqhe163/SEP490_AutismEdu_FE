@@ -12,7 +12,7 @@ if (token != undefined && token.length != 0) {
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
-  timeout: 80000, // replace project base url later
+  timeout: 10000, // replace project base url later
   headers
 });
 
@@ -80,6 +80,10 @@ async function refreshAccessToken() {
 }
 const setHeaders = function (headers) {
   axiosInstance.defaults.headers.common = { ...axiosInstance.defaults.headers.common, ...headers };
+  axiosInstance.defaults.headers["Content-Type"] = headers["Content-Type"];
+  axiosInstance.defaults.headers['Accept'] = "application/json, text/plain, multipart/form-data, */*";
+  console.log(axiosInstance.defaults);
+  console.log(axiosInstance.defaults.headers.common);
 }
 
 export default {

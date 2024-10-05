@@ -73,7 +73,7 @@ export default function CertificateAddition({ certificate, setCertificate }) {
                 certificateName: values.degreeName.trim(),
                 issuingInstitution: values.placeOfCertificate.trim(),
                 issuingDate: values.degreeDate.trim(),
-                expirationDate: values.expriredDate.trim(),
+                expirationDate: values.expriredDate.trim() === "" ? null : values.expriredDate.trim(),
                 medias: dataTransfer.files
             }])
             setOpen(false);

@@ -11,6 +11,7 @@ import CertificateDetail from './Certificate/CertificateDetail';
 import CareerDetail from './Career/CareerDetail';
 import { enqueueSnackbar } from 'notistack';
 import services from '~/plugins/services';
+import axios from "~/plugins/axios";
 function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, career, setCareer,
     setCertificate, tutorInformation, tutorIntroduction,
     IdVerification }) {
@@ -27,31 +28,47 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
     const handleSubmit = async () => {
         try {
             if (certificate?.length !== 0) {
-                // console.log(tutorInformation);
-                // console.log(tutorIntroduction);
-                // console.log(certificate);
-                // console.log(IdVerification);
-                // console.log(career);
-                const submitData = {
-                    email: tutorInformation.email,
-                    fullName: tutorInformation.fullName,
-                    phoneNumber: tutorInformation.phoneNumber,
-                    address: `${tutorInformation.province.name}|${tutorInformation.district.name}|${tutorInformation.commune.name}|${tutorInformation.homeNumber}`,
-                    image: tutorInformation.image,
-                    dateOfBirth: tutorInformation.dateOfBirth,
-                    startAge: tutorIntroduction.startAge,
-                    endAge: tutorIntroduction.endAge,
-                    price: tutorIntroduction.price,
-                    curriculums: tutorIntroduction.curriculum,
-                    description: tutorIntroduction.description,
-                    workExperiences: career,
-                    certificates: [
-                        ...certificate,
-                        IdVerification
-                    ]
-                }
-                console.log(submitData);
-                await services.TutorManagementAPI.registerAsTutor(submitData, (res) => {
+                const submitForm = new FormData();
+                submitForm.append("Email", tutorInformation.email);
+                submitForm.append("FullName", tutorInformation.fullName);
+                submitForm.append("PhoneNumber", tutorInformation.phoneNumber);
+                submitForm.append("Address", `${tutorInformation.province.name}|${tutorInformation.district.name}|${tutorInformation.commune.name}|${tutorInformation.homeNumber}`);
+                submitForm.append("Image", tutorInformation.image);
+                submitForm.append("DateOfBirth", tutorInformation.dateOfBirth);
+                submitForm.append("StartAge", tutorIntroduction.startAge);
+                submitForm.append("EndAge", tutorIntroduction.endAge);
+                submitForm.append("Price", tutorIntroduction.price);
+                submitForm.append("Description", tutorIntroduction.description);
+                tutorIntroduction.curriculum.forEach((curriculum, index) => {
+                    submitForm.append(`Curriculums[${index}].Name`, curriculum.name);
+                    submitForm.append(`Curriculums[${index}].Description`, curriculum.description);
+                });
+                career.forEach((experience, index) => {
+                    submitForm.append(`WorkExperiences[${index}].CompanyName`, experience.companyName);
+                    submitForm.append(`WorkExperiences[${index}].Position`, experience.position);
+                    submitForm.append(`WorkExperiences[${index}].StartDate`, experience.startDate);
+                    submitForm.append(`WorkExperiences[${index}].EndDate`, experience.endDate);
+                });
+                certificate.forEach((cert, index) => {
+                    submitForm.append(`Certificates[${index}].CertificateName`, cert.certificateName);
+                    submitForm.append(`Certificates[${index}].IssuingInstitution`, cert.issuingInstitution);
+                    submitForm.append(`Certificates[${index}].IssuingDate`, cert.issuingDate);
+                    submitForm.append(`Certificates[${index}].ExpirationDate`, cert.expirationDate);
+
+                    Array.from(cert.medias).forEach((file, fileIndex) => {
+                        submitForm.append(`Certificates[${index}].Medias`, file);
+                    });
+                });
+
+                submitForm.append(`Certificates[${certificate.length}].CertificateName`, IdVerification.certificateName);
+                submitForm.append(`Certificates[${certificate.length}].issuingInstitution`, IdVerification.issuingInstitution);
+                submitForm.append(`Certificates[${certificate.length}].issuingDate`, IdVerification.issuingDate);
+                submitForm.append(`Certificates[${certificate.length}].identityCardNumber`, IdVerification.identityCardNumber);
+                Array.from(IdVerification.medias).forEach((file, fileIndex) => {
+                    submitForm.append(`Certificates[${certificate.length}].Medias`, file);
+                });
+                axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
+                await services.TutorManagementAPI.registerAsTutor(submitForm, (res) => {
                     console.log(res);
                 }, (err) => {
                     console.log(err);
