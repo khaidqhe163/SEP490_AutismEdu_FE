@@ -7,7 +7,8 @@ import { Box, Button, CircularProgress, FormControl, Grid, IconButton, InputAdor
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Stack from '@mui/material/Stack';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Slider from '@mui/material/Slider';
 import CALL_API_ADDRESS from '~/utils/call_api_address';
 function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFilterClick, searchCriteria, setSearchCriteria }) {
     const [provinces, setProvinces] = useState([]);
@@ -19,6 +20,18 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
     const [selectedRating, setSelectedRating] = useState('');
     const [loadingDistricts, setLoadingDistricts] = useState(false);
     const [loadingCommunes, setLoadingCommunes] = useState(false);
+
+    const rangeSelector = (event, newValue) => {
+        
+        setSearchCriteria(prevState => ({
+            ...prevState,
+            ageRange: newValue
+        }));
+    };
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
     useEffect(() => {
         getDataProvince();
     }, []);
@@ -78,7 +91,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
 
         setSearchCriteria(prev => ({
             ...prev,
-            address: `${districtName}|${selectedProvince.split("|")[1]}`
+            address: `${selectedProvince.split("|")[1]}|${districtName}`
         }));
     };
 
@@ -91,7 +104,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
 
         setSearchCriteria(prev => ({
             ...prev,
-            address: `${communeName}|${selectedDistrict.split("|")[1]}|${selectedProvince.split("|")[1]}` // Thêm tỉnh, quận/huyện, và phường/xã
+            address: `${selectedProvince.split("|")[1]}|${selectedDistrict.split("|")[1]}|${communeName}` // Thêm tỉnh, quận/huyện, và phường/xã
         }));
     };
     function handleClick(event) {
@@ -346,7 +359,19 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                             </MenuItem>
                                         </Select>
                                     </FormControl>
-
+                                    <Stack direction={'column'} sx={{width:'900px'}}>
+                                    <Typography variant='subtitle1'>Độ tuổi</Typography>
+                                    <Slider
+                                        max={15}
+                                        min={0}
+                                        step={1}
+                                        getAriaLabel={() => 'Temperature range'}
+                                        value={searchCriteria?.ageRange}
+                                        onChange={rangeSelector}
+                                        valueLabelDisplay="auto"
+                                        getAriaValueText={()=>`${searchCriteria?.ageRange}`}
+                                    />
+                                    </Stack>
                                 </Box>
                             </Grid>
 

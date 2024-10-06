@@ -13,7 +13,7 @@ import StarIcon from '@mui/icons-material/Star';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { Box, Button, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, Stack, Typography, TextField } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { useState } from 'react';
@@ -28,15 +28,8 @@ function TutorProfile() {
     const [additionalContent, setAdditionalContent] = useState(
         "Nội dung bổ sung:\n* Phát triển khả năng giao tiếp hiệu quả trong môi trường xã hội.\n* Học cách xử lý thông tin và giải quyết vấn đề qua câu chuyện.\n* Luyện tập trí nhớ thông qua các hoạt động liên quan đến từ vựng.\n* Nâng cao khả năng hiểu biết về ngữ pháp và cấu trúc câu.\n* Cải thiện sự tự tin và khả năng diễn đạt thông qua thảo luận nhóm."
     );
-    const [schedule, setSchedule] = useState(format(today, 'yyyy-MM-dd'));
-
-    const [availableTimes, setAvailableTimes] = useState(['8:30 – 9:00',
-            '13:00 – 13:30',
-            '15:00 – 15:30',
-            '16:00 – 16:30',]);
     const [value, setValue] = useState('1');
     const [valueCurriculum, setValueCurriculum] = useState('1');
-
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -45,48 +38,66 @@ function TutorProfile() {
     };
 
 
+    const [schedule, setSchedule] = useState(1);
+
+    const [availability, setAvailability] = useState([
+        { date: 1, times: ['08:30 - 09:00', '13:00 - 13:30', '15:00 - 15:30', '16:00 - 16:30'] },
+        { date: 2, times: ['08:00 - 08:30', '12:00 - 12:30'] },
+        { date: 3, times: ['9:00 - 9:30', '14:00 - 14:30'] },
+        { date: 4, times: [] },
+        { date: 5, times: ['10:00 - 10:30'] },
+        { date: 6, times: [] },
+        { date: 7, times: [] },
+    ]);
+
+
     const handleDateChange = (date) => {
-        setSchedule(format(date, 'yyyy-MM-dd'));
-        const times = [
-            '8:30 – 9:00',
-            '13:00 – 13:30',
-            '15:00 – 15:30',
-            '16:00 – 16:30',
-        ];
-        setAvailableTimes(times);
+        setSchedule(date);
     };
 
-
     const renderWeekButtons = () => {
-        const today = new Date();
-        const startOfWeekDate = startOfWeek(today, { weekStartsOn: 1 }); // Week starts on Monday
-        const buttons = [];
+        const weekDays = [
+            { date: 1, label: 'Thứ 2' },
+            { date: 2, label: 'Thứ 3' },
+            { date: 3, label: 'Thứ 4' },
+            { date: 4, label: 'Thứ 5' },
+            { date: 5, label: 'Thứ 6' },
+            { date: 6, label: 'Thứ 7' },
+            { date: 7, label: 'Chủ Nhật' }
+        ];
 
-        for (let i = 0; i < 7; i++) {
-            const currentDay = addDays(startOfWeekDate, i);
-            const dayCurrent = currentDay.getDate();
-            const dayToday = today.getDate();
-            const isDisabled = dayCurrent < dayToday;
-
-            buttons.push(
-                <Button
-                    key={i}
-                    variant={schedule === format(currentDay, 'yyyy-MM-dd') ? 'contained' : 'outlined'}
-                    color={schedule === format(currentDay, 'yyyy-MM-dd') ? 'primary' : 'inherit'}
-                    onClick={() => handleDateChange(currentDay)}
-                    disabled={isDisabled}
-                    sx={{ mx: 1, my: 1 }}
-                >
-                    {format(currentDay, 'EEE')}
-                </Button>
-            );
-        }
-
-        return buttons;
+        return weekDays.map((day) => (
+            <Button
+                key={day.date}
+                variant={schedule === day.date ? 'contained' : 'outlined'}
+                color={schedule === day.date ? 'primary' : 'inherit'}
+                onClick={() => handleDateChange(day.date)}
+                sx={{ mx: 1, my: 1 }}
+            >
+                {day.label}
+            </Button>
+        ));
     };
 
     const renderTimeButtons = () => {
-        return availableTimes.map((time, index) => (
+        const selectedDay = availability.find(day => day.date === schedule) || { times: [] };
+
+        const getStartTime = (time) => {
+            const [startTime] = time.split(' - ');
+            return startTime;
+        };
+
+        const sortedTimes = [...selectedDay.times].sort((a, b) => {
+            const startA = getStartTime(a);
+            const startB = getStartTime(b);
+
+            const dateA = new Date(`1970-01-01T${startA}:00`);
+            const dateB = new Date(`1970-01-01T${startB}:00`);
+
+            return dateA - dateB;
+        });
+
+        return sortedTimes.map((time, index) => (
             <Grid item xs={12} sm={6} md={4} key={index} sx={{ mb: 1 }}>
                 <Box
                     sx={{
@@ -96,10 +107,13 @@ function TutorProfile() {
                         textAlign: 'center',
                         backgroundColor: '#f5f5f5',
                     }}
+                    display={"flex"}
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                    gap={1}
                 >
-                    <Typography variant="body1">
-                        {time}
-                    </Typography>
+                    <Typography variant="body1">{time}</Typography>
+
                 </Box>
             </Grid>
         ));
@@ -265,7 +279,7 @@ function TutorProfile() {
                                                 </Stack>
                                             </Box>
 
-                                            <Box pb={2} sx={{ borderBottom: "1px solid", borderColor: "lightgray" }}>
+                                            <Box pb={2}>
                                                 <Typography mb={2} variant='h5'>Khung chương trình học</Typography>
                                                 <TabContext value={valueCurriculum}>
                                                     <Box sx={{ maxWidth: { xs: 320, sm: 480 } }}>
@@ -284,60 +298,90 @@ function TutorProfile() {
                                                             <Tab value="6" icon={<ElevatorIcon />} iconPosition="start" label="Từ 7 - 9 tuổi" /> */}
                                                         </Tabs>
                                                     </Box>
-                                                    <TabPanel value="1"> {learnGoal.split('\n').map((line, index) => (
-                                                        <Typography variant='subtitle1' key={index}>
-                                                            {line}
-                                                        </Typography>
-                                                    ))}</TabPanel>
-                                                    <TabPanel value="2"> {additionalContent.split('\n').map((line, index) => (
-                                                        <Typography variant='subtitle1' key={index}>
-                                                            {line}
-                                                        </Typography>
-                                                    ))}</TabPanel>
-                                                    <TabPanel value="3"> {learnGoal.split('\n').map((line, index) => (
-                                                        <Typography variant='subtitle1' key={index}>
-                                                            {line}
-                                                        </Typography>
-                                                    ))}</TabPanel>
+                                                    <TabPanel value="1" sx={{ padding: '0' }}>
+                                                        <Stack direction={'row'} gap={2} bgcolor={'#fff8e3'} mt={2} p={3} borderRadius={'20px'}>
+                                                            <Box sx={{ width: "5%" }}>
+                                                                <CheckCircleIcon color='success' fontSize='large' />
+                                                            </Box>
+                                                            <Box sx={{ width: "85%" }}>
+                                                                {learnGoal.split('\n').map((line, index) => (
+                                                                    <Typography variant='subtitle1' key={index}>
+                                                                        {line}
+                                                                    </Typography>
+                                                                ))}
+                                                            </Box>
+                                                            <Box sx={{ width: "10%", display: "flex", alignItems: "end" }}>
+                                                                <img src='https://cdn-icons-png.freepik.com/256/4295/4295914.png?semt=ais_hybrid'
+                                                                    style={{ width: "100%", objectFit: "cover", objectPosition: "center" }}
+                                                                />
+                                                            </Box>
+                                                        </Stack>
+                                                    </TabPanel>
+                                                    <TabPanel value="2" sx={{ padding: '0' }}>
+                                                        <Stack direction={'row'} gap={2} bgcolor={'#fff8e3'} mt={2} p={3} borderRadius={'20px'}>
+                                                            <Box sx={{ width: "5%" }}>
+                                                                <CheckCircleIcon color='success' fontSize='large' />
+                                                            </Box>
+                                                            <Box sx={{ width: "85%" }}>
+                                                                {additionalContent.split('\n').map((line, index) => (
+                                                                    <Typography variant='subtitle1' key={index}>
+                                                                        {line}
+                                                                    </Typography>
+                                                                ))}
+                                                            </Box>
+                                                            <Box sx={{ width: "10%", display: "flex", alignItems: "end" }}>
+                                                                <img src='https://cdn-icons-png.freepik.com/256/4295/4295914.png?semt=ais_hybrid'
+                                                                    style={{ width: "100%", objectFit: "cover", objectPosition: "center" }}
+                                                                />
+                                                            </Box>
+                                                        </Stack></TabPanel>
+                                                    <TabPanel value="3" sx={{ padding: '0' }}>
+                                                        <Stack direction={'row'} gap={2} bgcolor={'#fff8e3'} mt={2} p={3} borderRadius={'20px'}>
+                                                            <Box sx={{ width: "5%" }}>
+                                                                <CheckCircleIcon color='success' fontSize='large' />
+                                                            </Box>
+                                                            <Box sx={{ width: "85%" }}>
+                                                                {learnGoal.split('\n').map((line, index) => (
+                                                                    <Typography variant='subtitle1' key={index}>
+                                                                        {line}
+                                                                    </Typography>
+                                                                ))}
+                                                            </Box>
+                                                            <Box sx={{ width: "10%", display: "flex", alignItems: "end" }}>
+                                                                <img src='https://cdn-icons-png.freepik.com/256/4295/4295914.png?semt=ais_hybrid'
+                                                                    style={{ width: "100%", objectFit: "cover", objectPosition: "center" }}
+                                                                />
+                                                            </Box>
+                                                        </Stack>
+                                                    </TabPanel>
                                                 </TabContext>
 
                                             </Box>
+                                            <Divider />
 
-                                            <Box bgcolor={'#fff8e3'} p={3} borderRadius={'20px'}>
-                                                <Typography my={2} variant='h5'>Mục tiêu học tập</Typography>
-                                                <Stack direction={'row'} gap={2}>
-                                                    <Box sx={{ width: "5%" }}>
-                                                        <CheckCircleIcon color='success' fontSize='large' />
-                                                    </Box>
-                                                    <Box sx={{ width: "85%" }}>
-                                                        {learnGoal.split('\n').map((line, index) => (
-                                                            <Typography variant='subtitle1' key={index}>
-                                                                {line}
-                                                                {/* <br /> */}
-                                                            </Typography>
-                                                        ))}
-                                                    </Box>
-                                                    <Box sx={{ width: "10%", display: "flex", alignItems: "end" }}>
-                                                        <img src='https://cdn-icons-png.freepik.com/256/4295/4295914.png?semt=ais_hybrid'
-                                                            style={{ width: "100%", objectFit: "cover", objectPosition: "center" }}
-                                                        />
-                                                    </Box>
-                                                </Stack>
-                                            </Box>
-                                            <Box sx={{ borderTop: "1px solid", borderColor: "lightgray" }}>
-                                                <Typography my={2} variant='h5'>Thời gian có sẵn</Typography>
-                                                <Stack direction={'column'} gap={1}>
-                                                    <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-                                                        {renderWeekButtons()}
-                                                    </Box>
-                                                    <Box sx={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap' }}>
-                                                        <Typography variant='h6'>{format(new Date(schedule), 'EEEE')}</Typography>
-                                                        <Grid container spacing={1} sx={{ mt: 1 }}>
-                                                            {renderTimeButtons()}
-                                                        </Grid>
-                                                    </Box>
-                                                </Stack>
-                                            </Box>
+
+                                            <Stack direction='column' sx={{
+                                                width: "100%",
+                                                margin: "auto",
+                                                mt: "20px",
+                                                gap: 2
+                                            }}>
+                                                <Typography variant='h2' my={2}>Thiết lập thời gian rảnh</Typography>
+                                                <Box>
+                                                    <Stack direction={'column'} gap={1}>
+                                                        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                                                            {renderWeekButtons()}
+                                                        </Box>
+
+                                                        <Box sx={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap' }}>
+                                                            <Typography variant='h6'>{`Thứ ${schedule}`}</Typography>
+                                                            <Grid container spacing={1} sx={{ mt: 1 }}>
+                                                                {renderTimeButtons()}
+                                                            </Grid>
+                                                        </Box>
+                                                    </Stack>
+                                                </Box>
+                                            </Stack>
                                             <TutorRating />
                                         </Box>
                                     </>
