@@ -24,6 +24,11 @@ const UnLayoutRoutes = [
     {
         path: PAGES.TUTOR_LOGIN,
         element: TutorLogin
+    },
+
+    {
+        path: PAGES.TUTORREGISTRATION,
+        element: TutorRegistration
     }
 ]
 
@@ -71,10 +76,6 @@ const publicRoutes = [
     {
         path: PAGES.ROOT + PAGES.TUTORPROFILEUPDATE,
         element: TutorProfileUpdate
-    },
-    {
-        path: PAGES.ROOT + PAGES.TUTORREGISTRATION,
-        element: TutorRegistration
     }, {
         path: PAGES.ROOT + PAGES.LOGIN_OPTION,
         element: LoginOption
@@ -89,7 +90,7 @@ const tutorRoutes = [
     }, {
         path: PAGES.STUDENT_DETAIL,
         element: StudentDetail
-    }
+    },
 ]
 const adminRoutes = [
     {

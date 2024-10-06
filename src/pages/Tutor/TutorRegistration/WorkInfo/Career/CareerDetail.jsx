@@ -147,7 +147,7 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
                             </Grid>
                         </Grid>
                         <Box sx={{ display: "flex", justifyContent: "end", gap: 2 }}>
-                            <Button variant='contained' type='submit'>Thêm</Button>
+                            <Button variant='contained' type='submit'>Lưu</Button>
                             <Button onClick={handleClose}>Huỷ</Button>
                         </Box>
                     </form>

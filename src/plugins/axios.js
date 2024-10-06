@@ -82,7 +82,7 @@ async function refreshAccessToken() {
 const setHeaders = function (headers) {
   axiosInstance.defaults.headers.common = { ...axiosInstance.defaults.headers.common, ...headers };
   axiosInstance.defaults.headers["Content-Type"] = headers["Content-Type"];
-  axiosInstance.defaults.headers['Accept'] = "application/json, text/plain, multipart/form-data, */*";
+  axiosInstance.defaults.headers['Accept'] = headers.Accept;
 }
 
 export default {

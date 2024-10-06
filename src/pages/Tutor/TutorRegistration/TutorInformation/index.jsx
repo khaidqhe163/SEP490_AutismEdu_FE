@@ -105,10 +105,19 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
             formik.setFieldValue("phoneNumber", tutorInformation?.phoneNumber || "");
             formik.setFieldValue("dateOfBirth", tutorInformation?.dateOfBirth || "");
             formik.setFieldValue("homeNumber", tutorInformation?.homeNumber || "");
-            formik.setFieldValue("startAge", tutorInformation?.startAge || "");
-            formik.setFieldValue("endAge", tutorInformation?.endAge || "");
+            formik.setFieldValue("email", tutorInformation?.email || "");
+            if (tutorInformation.image)
+                setAvatar(tutorInformation.image)
         }
-    }, [tutorInformation]);
+        if (IdVerification) {
+            formik.setFieldValue("issuingInstitution", IdVerification?.issuingInstitution || "");
+            formik.setFieldValue("issuingDate", IdVerification?.issuingDate || "");
+            formik.setFieldValue("identityCardNumber", IdVerification?.identityCardNumber || "");
+            if (IdVerification.medias) {
+                setCitizenIdentification(Array.from(IdVerification.medias))
+            }
+        }
+    }, [tutorInformation, IdVerification]);
     const getDataProvince = async () => {
         try {
             const data = await axios.get("https://vietnam-administrative-division-json-server-swart.vercel.app/province")
@@ -150,7 +159,6 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
     }
     const handleGetCommunes = async (id) => {
         try {
-            console.log(id);
             const data = await axios.get("https://vietnam-administrative-division-json-server-swart.vercel.app/commune?idDistrict=" + id);
             setCommunes(data.data);
             return data.data
@@ -165,11 +173,11 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
         const day = String(today.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
-
+    console.log(avatar);
     return (
         <>
             <form onSubmit={formik.handleSubmit}>
-                <Typography variant='h2' textAlign="center" mt={3}>Thông tin cá nhân</Typography>
+                <Typography variant='h3' textAlign="center" mt={3}>Thông tin cá nhân</Typography>
                 <Grid container px="100px" py="50px" columnSpacing={2} rowSpacing={3}>
                     <Grid item xs={3} textAlign="right">Ảnh chân dung</Grid>
                     <Grid item xs={9}>
@@ -279,7 +287,6 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             value={formik.values.district}
                             name='district'
                             onChange={(event) => {
-                                console.log(event.values);
                                 formik.handleChange(event); handleGetCommunes(event.target.value);
                                 formik.setFieldValue('commune', '')
                             }}

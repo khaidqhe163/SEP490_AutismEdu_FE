@@ -1,21 +1,19 @@
-import { Box, Breadcrumbs, Divider, Paper, Stack, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import PAGES from '~/utils/pages'
-import Stepper from '@mui/material/Stepper';
+import { Box, Breadcrumbs, Divider, Paper, Stack, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import Button from '@mui/material/Button';
-import WorkInfo from './WorkInfo';
-import Identification from './Identification';
-import axios from 'axios';
+import Stepper from '@mui/material/Stepper';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import PAGES from '~/utils/pages';
 import TutorInformation from './TutorInformation';
-import AccountInformation from './AccountInformation';
 import TutorIntroduction from './TutorIntroduction';
+import WorkInfo from './WorkInfo';
+import CompleteRegistration from './CompleteRegistration';
 
 const steps = ['Thông tin cá nhân', 'Thông tin gia sư', 'Bằng cấp / chứng chỉ'];
 function TutorRegistration() {
-    const [activeStep, setActiveStep] = React.useState(1);
+    const [activeStep, setActiveStep] = React.useState(0);
     const [tutorInformation, setTutorInformation] = useState(null);
     const [certificate, setCertificate] = useState([]);
     const [IdVerification, setIdVerification] = useState(null);
@@ -24,34 +22,32 @@ function TutorRegistration() {
     const [isSubmit, setIsSubmit] = useState(false);
 
     useEffect(() => {
-        // const draftData = localStorage.getItem(`draftData-094949494`);
-        // if (draftData) {
-        //     const convertData = JSON.parse(draftData);
-        //     setTutorInformation(convertData.tutorInformation);
-        //     setCertificate(convertData.certificate);
-        //     setCareer(convertData.career);
-        //     setIdentification(convertData.identifcation);
-        // }
+        const draftData = localStorage.getItem(`draftData`);
+        if (draftData) {
+            const convertData = JSON.parse(draftData);
+            setTutorInformation(convertData.tutorInformation);
+            setTutorIntroduction(convertData.tutorIntroduction);
+            setCareer(convertData.career);
+        }
     }, [])
-    // useEffect(() => {
-    //     const handleBeforeUnload = (event) => {
-    //         if (!isSubmit) {
-    //             const draftData = {
-    //                 id: "094949494",
-    //                 tutorInformation: tutorInformation,
-    //                 certificate: certificate,
-    //                 career: career,
-    //                 identifcation: identifcation
-    //             }
-    //             localStorage.setItem(`draftData-094949494`, JSON.stringify(draftData))
-    //         }
-    //     };
+    useEffect(() => {
+        const handleBeforeUnload = (event) => {
+            if (!isSubmit) {
+                const { image, ...draftInformation } = tutorInformation
+                const draftData = {
+                    tutorInformation: draftInformation,
+                    tutorIntroduction: tutorIntroduction,
+                    career: career
+                }
+                localStorage.setItem(`draftData`, JSON.stringify(draftData))
+            }
+        };
 
-    //     window.addEventListener('beforeunload', handleBeforeUnload);
-    //     return () => {
-    //         window.removeEventListener('beforeunload', handleBeforeUnload);
-    //     };
-    // }, [tutorInformation, certificate, career, identifcation])
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [tutorInformation, tutorIntroduction, career])
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
@@ -72,6 +68,7 @@ function TutorRegistration() {
                 },
                 mt: "50px"
             }}>
+                <Typography variant='h3' textAlign="center" mb={5}>ĐĂNG KÝ TRỞ THÀNH GIA SƯ</Typography>
                 <Breadcrumbs aria-label="breadcrumb">
                     <Link underline="hover" color="inherit" to={PAGES.ROOT + PAGES.HOME}>
                         Trang chủ
@@ -94,15 +91,7 @@ function TutorRegistration() {
                     </Box>
                     <Divider sx={{ mt: "30px" }} />
                     {activeStep === steps.length ? (
-                        <React.Fragment>
-                            <Typography sx={{ mt: 2, mb: 1 }}>
-                                All steps completed - you&apos;re finished
-                            </Typography>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                                <Box sx={{ flex: '1 1 auto' }} />
-                                <Button onClick={handleReset}>Reset</Button>
-                            </Box>
-                        </React.Fragment>
+                        <CompleteRegistration />
                     ) : (
                         <React.Fragment>
                             {

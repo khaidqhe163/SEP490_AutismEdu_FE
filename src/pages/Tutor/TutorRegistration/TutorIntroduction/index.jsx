@@ -53,7 +53,10 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
             formik.setFieldValue("price", tutorIntroduction.price);
             formik.setFieldError("rangeAge", "")
             setCurriculum(tutorIntroduction.curriculum);
-            setEditorContent(tutorIntroduction.description)
+            setEditorContent(tutorIntroduction.description);
+            if (tutorIntroduction.price) {
+                setValue(formatNumber(tutorIntroduction.price));
+            }
         }
     }, [tutorIntroduction])
     const toolbarOptions = [
@@ -94,7 +97,7 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
     };
     return (
         <>
-            <Typography variant='h4' textAlign="center" mt={3}>Thông tin gia sư</Typography>
+            <Typography variant='h3' textAlign="center" mt={3}>Thông tin gia sư</Typography>
             <form onSubmit={formik.handleSubmit}>
                 <Stack direction='row' gap={3}>
                     <Box mt={2} sx={{ height: "400px", width: "60%" }}>

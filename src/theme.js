@@ -36,7 +36,6 @@ const theme = createTheme({
         fontFamily: 'Euclid Circular, Arial, sans-serif',
         fontSize: 14,
         button: {
-            fontFamily: 'Euclid Circular',
             textTransform: 'none',
         },
         h1: {

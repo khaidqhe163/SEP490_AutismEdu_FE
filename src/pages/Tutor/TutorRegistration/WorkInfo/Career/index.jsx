@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import { useFormik } from 'formik';
+import { enqueueSnackbar } from 'notistack';
 import * as React from 'react';
 const style = {
     position: 'absolute',
@@ -57,9 +58,17 @@ export default function Career({ career, setCareer }) {
         },
         validate,
         onSubmit: async (values) => {
-            setCareer(pre => [...pre, values])
-            setOpen(false);
-            formik.resetForm();
+            const existWE = career.find((c) => {
+                return c.companyName === values.companyName && c.position === values.position
+            })
+            console.log(existWE);
+            if (existWE) {
+                enqueueSnackbar("Bạn đã có kinh nghiệm này rồi", { variant: "error" })
+            } else {
+                setCareer(pre => [...pre, values])
+                setOpen(false);
+                formik.resetForm();
+            }
         }
     });
     return (

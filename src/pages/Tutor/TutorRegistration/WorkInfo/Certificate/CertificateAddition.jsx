@@ -52,8 +52,8 @@ export default function CertificateAddition({ certificate, setCertificate }) {
         if (!images || images.length === 0) {
             errors.images = "Bắt buộc"
         }
-        if (values.degreeDate >= values.expriredDate) {
-            errors.expirationDate = "Ngày hết lớn hơn ngày cấp"
+        if (values.expriredDate && values.degreeDate >= values.expriredDate) {
+            errors.expriredDate = "Ngày hết lớn hơn ngày cấp"
         }
         const existCertificate = certificate.find((e) => e.certificateName === values.degreeName);
         if (existCertificate) {
@@ -86,7 +86,7 @@ export default function CertificateAddition({ certificate, setCertificate }) {
             setImages([])
         }
     });
-
+    console.log(formik.values);
     return (
         <div>
             <IconButton onClick={handleOpen}><AddCircleOutlineIcon /></IconButton>
@@ -155,9 +155,9 @@ export default function CertificateAddition({ certificate, setCertificate }) {
                                     }}
                                     onChange={formik.handleChange} />
                                 {
-                                    formik.errors.expirationDate && (
+                                    formik.errors.expriredDate && (
                                         <FormHelperText error>
-                                            {formik.errors.expirationDate}
+                                            {formik.errors.expriredDate}
                                         </FormHelperText>
                                     )
                                 }

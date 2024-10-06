@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogContent, List, ListItem, ListSubheader, Stack, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, ListSubheader, Stack, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { useRef, useState } from 'react';
 import axios from "~/plugins/axios";
@@ -9,18 +9,24 @@ import CertificateAddition from './Certificate/CertificateAddition';
 import CertificateDetail from './Certificate/CertificateDetail';
 import { useNavigate } from 'react-router-dom';
 import PAGES from '~/utils/pages';
+import { LoadingButton } from '@mui/lab';
+import LoadingComponent from '~/components/LoadingComponent';
 function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, career, setCareer,
     setCertificate, tutorInformation, tutorIntroduction,
     IdVerification }) {
     const image = useRef(null);
     const [open, setOpen] = useState(false);
+    const [openConfirm, setOpenConfirm] = useState(false);
     const handleClose = () => {
         setOpen(false);
     };
+    const [loading, setLoading] = useState(false);
     const nav = useNavigate();
     const handleSubmit = async () => {
         try {
+            setOpenConfirm(false);
             if (certificate?.length !== 0 && career?.lenght !== 0) {
+                setLoading(true);
                 const submitForm = new FormData();
                 submitForm.append("Email", tutorInformation.email);
                 submitForm.append("FullName", tutorInformation.fullName);
@@ -46,8 +52,11 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                     submitForm.append(`Certificates[${index}].CertificateName`, cert.certificateName);
                     submitForm.append(`Certificates[${index}].IssuingInstitution`, cert.issuingInstitution);
                     submitForm.append(`Certificates[${index}].IssuingDate`, cert.issuingDate);
-                    submitForm.append(`Certificates[${index}].ExpirationDate`, cert.expirationDate);
-
+                    if (cert.expirationDate) {
+                        submitForm.append(`Certificates[${index}].ExpirationDate`, cert.expirationDate);
+                    } else {
+                        submitForm.append(`Certificates[${index}].ExpirationDate`, "");
+                    }
                     Array.from(cert.medias).forEach((file, fileIndex) => {
                         submitForm.append(`Certificates[${index}].Medias`, file);
                     });
@@ -63,11 +72,12 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
                 await services.TutorManagementAPI.registerAsTutor(submitForm, (res) => {
                     console.log(res);
-                    nav(PAGES.ROOT + PAGES.LOGIN)
+                    handleNext();
                 }, (err) => {
                     console.log(err);
-                    nav(PAGES.ROOT + PAGES.LOGIN)
                 })
+                setLoading(false);
+                axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
             } else {
                 enqueueSnackbar("Bạn chưa có bằng cấp hoặc kinh nghiệm làm việc", { variant: "error" })
             }
@@ -146,7 +156,7 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                     Back
                 </Button>
                 <Box sx={{ flex: '1 1 auto' }} />
-                <Button onClick={handleSubmit}>
+                <Button onClick={() => setOpenConfirm(true)}>
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                 </Button>
             </Box>
@@ -159,6 +169,22 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                     </Dialog>
                 )
             }
+            <Dialog
+                open={openConfirm}
+                onClose={() => setOpenConfirm(false)}
+            >
+                <DialogTitle id="alert-dialog-title">
+                    <Typography variant='h6'>Kiểm tra lại toàn bộ thông khi gửi!</Typography>
+                    <Typography>Bạn có muốn nộp đơn này không?</Typography>
+                </DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleSubmit}>Nộp</Button>
+                    <Button onClick={() => { setOpenConfirm(false) }} autoFocus>
+                        Huỷ bỏ
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <LoadingComponent open={loading} setOpen={setLoading} />
         </>
     )
 }
