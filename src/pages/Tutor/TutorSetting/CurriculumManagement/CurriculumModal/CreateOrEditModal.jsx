@@ -70,7 +70,7 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
                         <ReactQuill theme="snow" value={programContent} onChange={setProgramContent} />
                     </Grid>
                 </Grid>
-                <Grid container spacing={2} justifyContent="center" mt={3}>
+                <Grid container spacing={2} justifyContent="center" mt={3} sx={{display:'flex', justifyContent:'flex-end'}}>
                     <Grid item>
                         <Button variant="outlined" onClick={handleClose}>Hủy</Button>
                     </Grid>

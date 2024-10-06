@@ -20,6 +20,7 @@ import StudentDetail from '~/pages/Tutor/MyStudent/StudentDetail.jsx'
 import TutorSetting from '~/pages/Tutor/TutorSetting'
 import LoginOption from '~/pages/Auth/Login/LoginOption'
 import TutorLogin from '~/pages/Auth/Login/LoginForm/TutorLogin'
+import TutorRequest from '~/pages/Tutor/TutorRequest'
 
 const UnLayoutRoutes = [
     {
@@ -94,6 +95,10 @@ const tutorRoutes = [
     }, {
         path: PAGES.TUTOR_SETTING,
         element: TutorSetting
+    },
+    {
+        path: PAGES.TUTOR_REQUEST,
+        element: TutorRequest
     }
 ]
 const adminRoutes = [

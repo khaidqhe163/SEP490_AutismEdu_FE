@@ -25,8 +25,12 @@ function SearchTutor() {
     const [searchCriteria, setSearchCriteria] = useState({
         searchValue: "",
         address: "",
-        selectedRating: ""
+        selectedRating: "",
+        ageRange: [0, 15]
     });
+    
+    console.log(searchCriteria.address);
+    
     const [selected, setSelected] = useState('grid');
     const [searchValue, setSearchValue] = useState('');
     const arrCenter = [1, 2, 3, 4, 5, 6, 7, 8, 9];

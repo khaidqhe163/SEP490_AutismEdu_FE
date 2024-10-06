@@ -21,12 +21,12 @@ function DeleteConfirmationModal({ open, handleClose, handleDelete }) {
                     Xác nhận xoá
                 </Typography>
                 <Divider />
-                <Typography textAlign={'center'} mt={2} mb={4}>
+                <Typography mt={2} mb={4}>
                     Bạn có chắc chắn muốn xoá chương trình học này không?
                 </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
                     <Button variant="outlined" onClick={handleClose}>Huỷ</Button>
-                    <Button variant="contained" color="secondary" onClick={handleDelete}>Xoá</Button>
+                    <Button variant="contained" color="primary" onClick={handleDelete}>Xoá</Button>
                 </Box>
             </Box>
         </Modal>
