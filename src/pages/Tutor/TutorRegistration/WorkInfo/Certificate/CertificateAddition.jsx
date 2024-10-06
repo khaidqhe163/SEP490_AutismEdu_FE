@@ -31,7 +31,11 @@ export default function CertificateAddition({ certificate, setCertificate }) {
     const [openDialog, setOpenDialog] = React.useState(false);
     const [images, setImages] = React.useState([]);
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        formik.resetForm();
+        setImages([])
+    }
     const [currentImage, setCurrentImage] = React.useState(null);
     const cIInput = React.useRef();
     const validate = values => {
@@ -48,7 +52,9 @@ export default function CertificateAddition({ certificate, setCertificate }) {
         if (!images || images.length === 0) {
             errors.images = "Bắt buộc"
         }
-
+        if (values.expriredDate && values.degreeDate >= values.expriredDate) {
+            errors.expriredDate = "Ngày hết lớn hơn ngày cấp"
+        }
         const existCertificate = certificate.find((e) => e.certificateName === values.degreeName);
         if (existCertificate) {
             errors.degreeName = "Bạn đã thêm chứng chỉ này rồi"
@@ -64,16 +70,15 @@ export default function CertificateAddition({ certificate, setCertificate }) {
         },
         validate,
         onSubmit: async (values) => {
-            const dataTransfer = new DataTransfer(); // Tạo một DataTransfer mới
-
+            const dataTransfer = new DataTransfer();
             images.forEach(file => {
-                dataTransfer.items.add(file); // Thêm từng file vào DataTransfer
+                dataTransfer.items.add(file);
             });
             setCertificate(pre => [...pre, {
                 certificateName: values.degreeName.trim(),
                 issuingInstitution: values.placeOfCertificate.trim(),
                 issuingDate: values.degreeDate.trim(),
-                expirationDate: values.expriredDate.trim(),
+                expirationDate: values.expriredDate.trim() === "" ? null : values.expriredDate.trim(),
                 medias: dataTransfer.files
             }])
             setOpen(false);
@@ -81,7 +86,7 @@ export default function CertificateAddition({ certificate, setCertificate }) {
             setImages([])
         }
     });
-
+    console.log(formik.values);
     return (
         <div>
             <IconButton onClick={handleOpen}><AddCircleOutlineIcon /></IconButton>
@@ -127,7 +132,10 @@ export default function CertificateAddition({ certificate, setCertificate }) {
                             <Grid item xs={9}>
                                 <TextField size='small' type='date' value={formik.values.degreeDate}
                                     name='degreeDate'
-                                    onChange={formik.handleChange} />
+                                    onChange={formik.handleChange}
+                                    inputProps={{
+                                        max: new Date().toISOString().split('T')[0]
+                                    }} />
                                 {
                                     formik.errors.degreeDate && (
                                         <FormHelperText error>
@@ -140,7 +148,19 @@ export default function CertificateAddition({ certificate, setCertificate }) {
                             <Grid item xs={9}>
                                 <TextField size='small' type='date' value={formik.values.expriredDate}
                                     name='expriredDate'
+                                    disabled={!formik.values.degreeDate}
+                                    inputProps={{
+                                        min: formik.values.degreeDate,
+                                        max: new Date().toISOString().split('T')[0]
+                                    }}
                                     onChange={formik.handleChange} />
+                                {
+                                    formik.errors.expriredDate && (
+                                        <FormHelperText error>
+                                            {formik.errors.expriredDate}
+                                        </FormHelperText>
+                                    )
+                                }
                             </Grid>
                             <Grid item xs={3} textAlign="right">Tải ảnh</Grid>
                             <Grid item xs={9}>

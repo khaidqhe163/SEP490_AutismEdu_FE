@@ -25,7 +25,7 @@ const logError = (e, error) => {
         window.location.href = '/login';
         return;
       }
-
+      console.log(e);
       error({
         code: e.response.data.statusCode,
         error: e.response.data.errorMessages,

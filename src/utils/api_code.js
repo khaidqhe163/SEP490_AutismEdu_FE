@@ -30,7 +30,7 @@ const API_CODE = {
   API_GET_ROLE: '/v1/Role',
 
   //Tutor management
-  API_TUTOR_REGISTER: '/v1/Tutor'
+  API_TUTOR_REGISTER: '/v1/TutorRegistrationRequest'
 };
 
 export default API_CODE;

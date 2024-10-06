@@ -1,35 +1,50 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Box, Button, FormHelperText, Grid, MenuItem, Modal, Select, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, FormHelperText, Grid, IconButton, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ModalUploadAvatar from './ModalUploadAvatar';
-function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInformation, setTutorInformation }) {
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { enqueueSnackbar } from 'notistack';
+function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInformation, setTutorInformation,
+    IdVerification,
+    setIdVerification }) {
     const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [communes, setCommunes] = useState([]);
     const [avatar, setAvatar] = useState();
+    const [citizenIdentification, setCitizenIdentification] = useState(null);
+    const [currentImage, setCurrentImage] = useState(null);
+    const [inputKey, setInputKey] = useState(0);
+    const [openDialog, setOpenDialog] = useState(false);
+    const cIInput = useRef();
     const validate = values => {
         const errors = {};
-        if (!values.formalName) {
-            errors.formalName = 'Bắt buộc';
-        } else if (values.formalName.length > 20) {
-            errors.formalName = 'Tên dưới 20 ký tự';
+
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!values.email) {
+            errors.email = "Bắt buộc"
+        } else if (!emailRegex.test(values.email)) {
+            errors.email = "Email của bạn không hợp lệ"
+        }
+        if (!values.fullName) {
+            errors.fullName = 'Bắt buộc';
+        } else if (values.fullName.length > 20) {
+            errors.fullName = 'Tên dưới 20 ký tự';
         }
         if (!values.phoneNumber) {
             errors.phoneNumber = 'Bắt buộc';
         } else if (!/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$/.test(values.phoneNumber)) {
             errors.phoneNumber = 'Số điện thoại không hợp lệ';
         }
-
+        if (!values.dateOfBirth) {
+            errors.dateOfBirth = 'Bắt buộc'
+        }
         if (!values.province || !values.district || !values.commune || !values.homeNumber) {
             errors.address = 'Nhập đầy đủ địa chỉ';
-        }
-        if (!values.startAge || !values.endAge) {
-            errors.rangeAge = 'Vui lòng nhập độ tuổi';
-        } else if (values.startAge > values.endAge) {
-            errors.rangeAge = 'Độ tuổi không hợp lệ';
         }
         if (!avatar) {
             errors.avatar = "Bắt buộc"
@@ -38,24 +53,39 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
     };
     const formik = useFormik({
         initialValues: {
-            formalName: '',
+            fullName: '',
+            email: '',
             phoneNumber: '',
             dateOfBirth: '',
             province: '',
             district: '',
             commune: '',
             homeNumber: '',
-            startAge: '',
-            endAge: ''
+            issuingInstitution: '',
+            issuingDate: '',
+            identityCardNumber: ''
         },
         validate,
         onSubmit: async (values) => {
+            const dataTransfer = new DataTransfer();
+            citizenIdentification.forEach(file => {
+                dataTransfer.items.add(file);
+            });
+
+            setIdVerification({
+                certificateName: "Căn cước công dân",
+                issuingInstitution: values.issuingInstitution,
+                issuingDate: values.issuingDate,
+                identityCardNumber: values.identityCardNumber,
+                medias: dataTransfer.files
+            })
             const selectedCommune = communes.find(p => p.idCommune === values.commune);
             const selectedProvince = provinces.find(p => p.idProvince === values.province);
             const selectedDistrict = districts.find(p => p.idDistrict === values.district);
             setTutorInformation({
-                avatar: avatar,
-                formalName: values.formalName,
+                image: avatar,
+                fullName: values.fullName,
+                email: values.email,
                 phoneNumber: values.phoneNumber,
                 dateOfBirth: values.dateOfBirth,
                 province: selectedProvince || '',
@@ -71,14 +101,23 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
     useEffect(() => {
         getDataProvince();
         if (tutorInformation) {
-            formik.setFieldValue("formalName", tutorInformation?.formalName || "");
+            formik.setFieldValue("fullName", tutorInformation?.fullName || "");
             formik.setFieldValue("phoneNumber", tutorInformation?.phoneNumber || "");
             formik.setFieldValue("dateOfBirth", tutorInformation?.dateOfBirth || "");
             formik.setFieldValue("homeNumber", tutorInformation?.homeNumber || "");
-            formik.setFieldValue("startAge", tutorInformation?.startAge || "");
-            formik.setFieldValue("endAge", tutorInformation?.endAge || "");
+            formik.setFieldValue("email", tutorInformation?.email || "");
+            if (tutorInformation.image)
+                setAvatar(tutorInformation.image)
         }
-    }, [tutorInformation]);
+        if (IdVerification) {
+            formik.setFieldValue("issuingInstitution", IdVerification?.issuingInstitution || "");
+            formik.setFieldValue("issuingDate", IdVerification?.issuingDate || "");
+            formik.setFieldValue("identityCardNumber", IdVerification?.identityCardNumber || "");
+            if (IdVerification.medias) {
+                setCitizenIdentification(Array.from(IdVerification.medias))
+            }
+        }
+    }, [tutorInformation, IdVerification]);
     const getDataProvince = async () => {
         try {
             const data = await axios.get("https://vietnam-administrative-division-json-server-swart.vercel.app/province")
@@ -120,7 +159,6 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
     }
     const handleGetCommunes = async (id) => {
         try {
-            console.log(id);
             const data = await axios.get("https://vietnam-administrative-division-json-server-swart.vercel.app/commune?idDistrict=" + id);
             setCommunes(data.data);
             return data.data
@@ -135,13 +173,14 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
         const day = String(today.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
-
+    console.log(avatar);
     return (
         <>
             <form onSubmit={formik.handleSubmit}>
+                <Typography variant='h3' textAlign="center" mt={3}>Thông tin cá nhân</Typography>
                 <Grid container px="100px" py="50px" columnSpacing={2} rowSpacing={3}>
-                    <Grid item xs={2} textAlign="right">Ảnh chân dung</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Ảnh chân dung</Grid>
+                    <Grid item xs={9}>
                         <ModalUploadAvatar setAvatar={setAvatar} />
                         {
                             !avatar && <FormHelperText error>
@@ -155,25 +194,34 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             }
                         </Box>
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Họ và tên gia sư</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Họ và tên gia sư</Grid>
+                    <Grid item xs={9}>
                         <TextField size='small' sx={{ width: "50%" }}
-                            value={formik.values.formalName}
-                            onChange={formik.handleChange} name='formalName' />
+                            value={formik.values.fullName}
+                            onChange={formik.handleChange} name='fullName' />
                         {
-                            formik.errors.formalName && (
+                            formik.errors.fullName && (
                                 <FormHelperText error>
-                                    {formik.errors.formalName}
+                                    {formik.errors.fullName}
                                 </FormHelperText>
                             )
                         }
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Email</Grid>
-                    <Grid item xs={10}>
-                        <Typography>daoquangkhai200@gmail.com</Typography>
+                    <Grid item xs={3} textAlign="right">Email</Grid>
+                    <Grid item xs={9}>
+                        <TextField size='small' sx={{ width: "50%" }} onChange={formik.handleChange} name='email'
+                            value={formik.values.email}
+                        />
+                        {
+                            formik.errors.email && (
+                                <FormHelperText error>
+                                    {formik.errors.email}
+                                </FormHelperText>
+                            )
+                        }
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Số điện thoại</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Số điện thoại</Grid>
+                    <Grid item xs={9}>
                         <TextField size='small' sx={{ width: "50%" }} onChange={formik.handleChange} name='phoneNumber'
                             value={formik.values.phoneNumber}
                         />
@@ -185,15 +233,22 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Ngày sinh</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Ngày sinh</Grid>
+                    <Grid item xs={9}>
                         <TextField size='small' sx={{ width: "50%" }} type='date' inputProps={{ max: getMaxDate() }}
                             value={formik.values.dateOfBirth}
                             onChange={formik.handleChange} name='dateOfBirth'
                         />
+                        {
+                            formik.errors.dateOfBirth && (
+                                <FormHelperText error>
+                                    {formik.errors.dateOfBirth}
+                                </FormHelperText>
+                            )
+                        }
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Địa chỉ</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Địa chỉ</Grid>
+                    <Grid item xs={9}>
                         <Select
                             value={formik.values.province}
                             name='province'
@@ -232,7 +287,6 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             value={formik.values.district}
                             name='district'
                             onChange={(event) => {
-                                console.log(event.values);
                                 formik.handleChange(event); handleGetCommunes(event.target.value);
                                 formik.setFieldValue('commune', '')
                             }}
@@ -291,7 +345,7 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                         <Box mt="20px">
                             <TextField label="Số nhà, Thôn" size='small' name='homeNumber' onChange={formik.handleChange}
                                 value={formik.values.homeNumber}
-                                fullWidth />
+                                sx={{ width: "70%" }} />
                             {
                                 formik.errors.address && (
                                     <FormHelperText error>
@@ -301,36 +355,153 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             }
                         </Box>
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Độ tuổi dạy</Grid>
-                    <Grid item xs={10}>
-                        <TextField size='small' label="Từ" sx={{ mr: "20px" }} type='number' inputProps={{ min: 0, max: 15 }}
-                            name='startAge'
-                            value={formik.values.startAge}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                if (Number.isInteger(Number(value)) || value === '') {
-                                    formik.setFieldValue('startAge', value);
-                                }
-                            }}
-                        />
-                        <TextField size='small' label="Đến" type='number' inputProps={{ min: 0, max: 15 }}
-                            name='endAge'
-                            value={formik.values.endAge}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                if (Number.isInteger(Number(value)) || value === '') {
-                                    formik.setFieldValue('endAge', value);
-                                }
-                            }} />
+                </Grid>
+                <Divider>Căn cước công dân</Divider>
+                <Grid container px="100px" py="50px" columnSpacing={2} rowSpacing={3}>
+                    <Grid item xs={3} textAlign="right">Số căn cước công dân</Grid>
+                    <Grid item xs={9}>
+                        <TextField size='small' sx={{ width: "70%" }} fullWidth value={formik.values.identityCardNumber}
+                            name='identityCardNumber'
+                            onChange={formik.handleChange} />
                         {
-                            formik.errors.rangeAge && (
+                            formik.errors.identityCardNumber && (
                                 <FormHelperText error>
-                                    {formik.errors.rangeAge}
+                                    {formik.errors.identityCardNumber}
                                 </FormHelperText>
                             )
                         }
                     </Grid>
+                    <Grid item xs={3} textAlign="right">Nơi cấp</Grid>
+                    <Grid item xs={9}>
+                        <TextField size='small' sx={{ width: "70%" }} fullWidth value={formik.values.issuingInstitution}
+                            name='issuingInstitution'
+                            onChange={formik.handleChange} />
+                        {
+                            formik.errors.issuingInstitution && (
+                                <FormHelperText error>
+                                    {formik.errors.issuingInstitution}
+                                </FormHelperText>
+                            )
+                        }
+                    </Grid>
+                    <Grid item xs={3} textAlign="right">Ngày cấp</Grid>
+                    <Grid item xs={9}>
+                        <TextField size='small' sx={{ width: "70%" }} fullWidth value={formik.values.issuingDate}
+                            name='issuingDate'
+                            onChange={formik.handleChange}
+                            type='date' />
+                        {
+                            formik.errors.issuingDate && (
+                                <FormHelperText error>
+                                    {formik.errors.issuingDate}
+                                </FormHelperText>
+                            )
+                        }
+                    </Grid>
+                    <Grid item xs={3} textAlign="right">Hình ảnh chụp của thẻ CCCD <Typography>(mặt trước và mặt sau)</Typography> </Grid>
+                    <Grid item xs={9}>
+                        <TextField size='small' type='file' sx={{ width: "70%" }}
+                            onChange={(e) => {
+                                if (e.target.files.length > 2) {
+                                    enqueueSnackbar("Chỉ chọn 2 ảnh", { variant: "error" });
+                                    e.target.value = "";
+                                } else {
+                                    setCitizenIdentification(Array.from(e.target.files))
+                                    setInputKey(preKey => preKey + 1)
+                                }
+                            }}
+                            inputProps={{
+                                multiple: true,
+                                accept: "image/png, image/jpeg"
+                            }}
+                            key={inputKey}
+                            ref={cIInput}
+                        />
+                        {
+                            citizenIdentification?.length === 0 && (
+                                <FormHelperText error>
+                                    Bắt buộc
+                                </FormHelperText>
+                            )
+                        }
+                        <Stack direction="row" gap={2} flexWrap="wrap">
+                            {
+                                citizenIdentification && citizenIdentification.map((image, index) => {
+                                    return (
+                                        <Box mt={2} sx={{
+                                            width: '100px', height: "100px", position: "relative",
+                                            overflow: "hidden",
+                                            ":hover": {
+                                                ".overlay-image": {
+                                                    width: "100%",
+                                                    height: "100%",
+                                                    position: 'absolute',
+                                                    top: "0",
+                                                    left: "0",
+                                                    bgcolor: "#676b7b5e",
+                                                    display: "flex",
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center'
+                                                }
+                                            }
+                                        }} key={index}>
+                                            <img src={URL.createObjectURL(image)} alt="Preview" style={{ width: '100%', height: "100%" }} />
+                                            <Box sx={{ display: "none" }} className="overlay-image">
+                                                <RemoveRedEyeIcon sx={{ color: "white", cursor: "pointer" }}
+                                                    onClick={() => { setOpenDialog(true), setCurrentImage(index) }} />
+                                                <DeleteIcon sx={{ color: "white", cursor: "pointer" }} onClick={() => {
+                                                    const fArray = citizenIdentification.filter((img, i) => {
+                                                        return i !== index;
+                                                    })
+                                                    setCitizenIdentification(fArray)
+                                                }} />
+                                            </Box>
+                                        </Box>
+                                    )
+                                })
+                            }
+                        </Stack>
+                    </Grid>
                 </Grid>
+                {
+                    currentImage !== null && (
+                        <Modal open={openDialog} onClose={() => setOpenDialog(false)}>
+                            <Box
+                                display="flex"
+                                justifyContent="center"
+                                alignItems="center"
+                                height="100vh"
+                                bgcolor="rgba(0, 0, 0, 0.8)"
+                                position="relative"
+                            >
+                                <img
+                                    src={URL.createObjectURL(citizenIdentification[currentImage])}
+                                    alt="large"
+                                    style={{ maxWidth: '90%', maxHeight: '90%' }}
+                                />
+
+                                <IconButton
+                                    onClick={() => setOpenDialog(false)}
+                                    style={{ position: 'absolute', top: 20, right: 20, color: 'white' }}
+                                >
+                                    <HighlightOffIcon />
+                                </IconButton>
+                                <IconButton
+                                    style={{ position: 'absolute', left: 20, color: 'white' }}
+                                    onClick={() => setCurrentImage(currentImage === 0 ? 0 : currentImage - 1)}
+                                >
+                                    <ArrowBackIosIcon />
+                                </IconButton>
+                                <IconButton
+                                    style={{ position: 'absolute', right: 20, color: 'white' }}
+                                    onClick={() => setCurrentImage(currentImage === citizenIdentification.length - 1 ? currentImage : currentImage + 1)}
+                                >
+                                    <ArrowForwardIosIcon />
+                                </IconButton>
+                            </Box>
+                        </Modal>
+                    )
+                }
                 <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                     <Button
                         color="inherit"

@@ -18,6 +18,20 @@ import TutorRegistration from '~/pages/Tutor/TutorRegistration'
 import MyStudent from '~/pages/Tutor/MyStudent'
 import StudentDetail from '~/pages/Tutor/MyStudent/StudentDetail.jsx'
 import TutorSetting from '~/pages/Tutor/TutorSetting'
+import LoginOption from '~/pages/Auth/Login/LoginOption'
+import TutorLogin from '~/pages/Auth/Login/LoginForm/TutorLogin'
+
+const UnLayoutRoutes = [
+    {
+        path: PAGES.TUTOR_LOGIN,
+        element: TutorLogin
+    },
+
+    {
+        path: PAGES.TUTORREGISTRATION,
+        element: TutorRegistration
+    }
+]
 
 const publicRoutes = [
     {
@@ -63,11 +77,10 @@ const publicRoutes = [
     {
         path: PAGES.ROOT + PAGES.TUTORPROFILEUPDATE,
         element: TutorProfileUpdate
-    },
-    {
-        path: PAGES.ROOT + PAGES.TUTORREGISTRATION,
-        element: TutorRegistration
-    },
+    }, {
+        path: PAGES.ROOT + PAGES.LOGIN_OPTION,
+        element: LoginOption
+    }
 ]
 
 
@@ -102,5 +115,5 @@ const adminRoutes = [
     }
 ]
 export {
-    adminRoutes, publicRoutes, tutorRoutes
+    adminRoutes, publicRoutes, tutorRoutes, UnLayoutRoutes
 }

@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import { useFormik } from 'formik';
+import { enqueueSnackbar } from 'notistack';
 import * as React from 'react';
 const style = {
     position: 'absolute',
@@ -25,8 +26,10 @@ const style = {
 export default function Career({ career, setCareer }) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-    const [currentImage, setCurrentImage] = React.useState(null);
+    const handleClose = () => {
+        setOpen(false);
+        formik.resetForm();
+    }
     const validate = values => {
         const errors = {};
         if (!values.companyName) {
@@ -41,6 +44,9 @@ export default function Career({ career, setCareer }) {
         if (!values.endDate) {
             errors.endDate = "Bắt buộc"
         }
+        if ((values.startDate > values.endDate) && values.endDate) {
+            errors.startDate = "Thời gian không hợp lệ"
+        }
         return errors;
     };
     const formik = useFormik({
@@ -52,9 +58,17 @@ export default function Career({ career, setCareer }) {
         },
         validate,
         onSubmit: async (values) => {
-            setCareer(pre => [...pre, values])
-            setOpen(false);
-            formik.resetForm();
+            const existWE = career.find((c) => {
+                return c.companyName === values.companyName && c.position === values.position
+            })
+            console.log(existWE);
+            if (existWE) {
+                enqueueSnackbar("Bạn đã có kinh nghiệm này rồi", { variant: "error" })
+            } else {
+                setCareer(pre => [...pre, values])
+                setOpen(false);
+                formik.resetForm();
+            }
         }
     });
     return (
@@ -103,6 +117,9 @@ export default function Career({ career, setCareer }) {
                                     <Typography>Từ</Typography>
                                     <TextField size='small' type='month' value={formik.values.startDate}
                                         name='startDate'
+                                        inputProps={{
+                                            max: new Date().toISOString().slice(0, 7)
+                                        }}
                                         onChange={formik.handleChange} />
                                     {
                                         formik.errors.startDate && (

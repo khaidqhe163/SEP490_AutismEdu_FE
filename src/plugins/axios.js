@@ -12,7 +12,7 @@ if (token != undefined && token.length != 0) {
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
-  timeout: 80000, // replace project base url later
+  timeout: 10000, // replace project base url later
   headers
 });
 
@@ -20,6 +20,7 @@ const axiosInstance = axios.create({
 let isRefreshing = false;
 
 axiosInstance.interceptors.request.use(request => {
+  console.log(axiosInstance.defaults);
   let newAccesstToken = Cookies.get('access_token');
   if (newAccesstToken !== undefined) {
     request.headers.Authorization = `Bearer ${newAccesstToken}`;
@@ -80,6 +81,8 @@ async function refreshAccessToken() {
 }
 const setHeaders = function (headers) {
   axiosInstance.defaults.headers.common = { ...axiosInstance.defaults.headers.common, ...headers };
+  axiosInstance.defaults.headers["Content-Type"] = headers["Content-Type"];
+  axiosInstance.defaults.headers['Accept'] = headers.Accept;
 }
 
 export default {

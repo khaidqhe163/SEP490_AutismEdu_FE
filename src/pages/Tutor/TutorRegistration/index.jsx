@@ -1,46 +1,45 @@
-import { Box, Breadcrumbs, Divider, Paper, Stack, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import PAGES from '~/utils/pages'
-import Stepper from '@mui/material/Stepper';
+import { Box, Breadcrumbs, Divider, Paper, Stack, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import Button from '@mui/material/Button';
-import WorkInfo from './WorkInfo';
-import Identification from './Identification';
-import axios from 'axios';
+import Stepper from '@mui/material/Stepper';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import PAGES from '~/utils/pages';
 import TutorInformation from './TutorInformation';
+import TutorIntroduction from './TutorIntroduction';
+import WorkInfo from './WorkInfo';
+import CompleteRegistration from './CompleteRegistration';
 
-const steps = ['Thông tin gia sư', 'Bằng tốt nghiệp', 'Định danh'];
+const steps = ['Thông tin cá nhân', 'Thông tin gia sư', 'Bằng cấp / chứng chỉ'];
 function TutorRegistration() {
     const [activeStep, setActiveStep] = React.useState(0);
     const [tutorInformation, setTutorInformation] = useState(null);
     const [certificate, setCertificate] = useState([]);
+    const [IdVerification, setIdVerification] = useState(null);
     const [career, setCareer] = useState([]);
-    const [identifcation, setIdentification] = useState(null);
+    const [tutorIntroduction, setTutorIntroduction] = useState(null);
     const [isSubmit, setIsSubmit] = useState(false);
 
     useEffect(() => {
-        const draftData = localStorage.getItem(`draftData-094949494`);
+        const draftData = localStorage.getItem(`draftData`);
         if (draftData) {
             const convertData = JSON.parse(draftData);
             setTutorInformation(convertData.tutorInformation);
-            setCertificate(convertData.certificate);
+            setTutorIntroduction(convertData.tutorIntroduction);
             setCareer(convertData.career);
-            setIdentification(convertData.identifcation);
         }
     }, [])
     useEffect(() => {
         const handleBeforeUnload = (event) => {
             if (!isSubmit) {
+                const { image, ...draftInformation } = tutorInformation
                 const draftData = {
-                    id: "094949494",
-                    tutorInformation: tutorInformation,
-                    certificate: certificate,
-                    career: career,
-                    identifcation: identifcation
+                    tutorInformation: draftInformation,
+                    tutorIntroduction: tutorIntroduction,
+                    career: career
                 }
-                localStorage.setItem(`draftData-094949494`, JSON.stringify(draftData))
+                localStorage.setItem(`draftData`, JSON.stringify(draftData))
             }
         };
 
@@ -48,7 +47,7 @@ function TutorRegistration() {
         return () => {
             window.removeEventListener('beforeunload', handleBeforeUnload);
         };
-    }, [tutorInformation, certificate, career, identifcation])
+    }, [tutorInformation, tutorIntroduction, career])
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
@@ -61,7 +60,6 @@ function TutorRegistration() {
         setActiveStep(0);
     };
 
-    console.log(tutorInformation);
     return (
         <Stack direction="row" sx={{ justifyContent: "center" }}>
             <Box sx={{
@@ -70,6 +68,7 @@ function TutorRegistration() {
                 },
                 mt: "50px"
             }}>
+                <Typography variant='h3' textAlign="center" mb={5}>ĐĂNG KÝ TRỞ THÀNH GIA SƯ</Typography>
                 <Breadcrumbs aria-label="breadcrumb">
                     <Link underline="hover" color="inherit" to={PAGES.ROOT + PAGES.HOME}>
                         Trang chủ
@@ -92,15 +91,7 @@ function TutorRegistration() {
                     </Box>
                     <Divider sx={{ mt: "30px" }} />
                     {activeStep === steps.length ? (
-                        <React.Fragment>
-                            <Typography sx={{ mt: 2, mb: 1 }}>
-                                All steps completed - you&apos;re finished
-                            </Typography>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                                <Box sx={{ flex: '1 1 auto' }} />
-                                <Button onClick={handleReset}>Reset</Button>
-                            </Box>
-                        </React.Fragment>
+                        <CompleteRegistration />
                     ) : (
                         <React.Fragment>
                             {
@@ -111,10 +102,22 @@ function TutorRegistration() {
                                     steps={steps}
                                     tutorInformation={tutorInformation}
                                     setTutorInformation={setTutorInformation}
+                                    IdVerification={IdVerification}
+                                    setIdVerification={setIdVerification}
                                 />
                             }
                             {
-                                activeStep + 1 === 2 && <WorkInfo
+                                activeStep + 1 === 2 && <TutorIntroduction
+                                    activeStep={activeStep}
+                                    handleBack={handleBack}
+                                    handleNext={handleNext}
+                                    steps={steps}
+                                    tutorIntroduction={tutorIntroduction}
+                                    setTutorIntroduction={setTutorIntroduction}
+                                />
+                            }
+                            {
+                                activeStep + 1 === 3 && <WorkInfo
                                     activeStep={activeStep}
                                     handleBack={handleBack}
                                     handleNext={handleNext}
@@ -123,19 +126,9 @@ function TutorRegistration() {
                                     career={career}
                                     setCareer={setCareer}
                                     setCertificate={setCertificate}
-                                />
-                            }
-                            {
-                                activeStep + 1 === 3 && <Identification
-                                    activeStep={activeStep}
-                                    handleBack={handleBack}
-                                    handleNext={handleNext}
-                                    steps={steps}
-                                    identifcation={identifcation}
-                                    setIdentification={setIdentification}
-                                    career={career}
-                                    certificate={certificate}
                                     tutorInformation={tutorInformation}
+                                    tutorIntroduction={tutorIntroduction}
+                                    IdVerification={IdVerification}
                                 />
                             }
 
