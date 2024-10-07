@@ -7,10 +7,19 @@ import TutorWorkExperience from './TutorWorkExperience';
 import { useEffect, useState } from 'react';
 import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
+import TutorCurriculum from './TutorCurriculum';
+import CareerInformation from './CareerInformation';
 function TutorRegistrationTable() {
     const [loading, setLoading] = useState(false);
     const [listTutor, setListTutor] = useState([]);
     const [pagination, setPagination] = useState(null);
+    const formatDate = (date) => {
+        const dateObj = new Date(date);
+        const formattedDate = dateObj.getDate().toString().padStart(2, '0') + '/' +
+            (dateObj.getMonth() + 1).toString().padStart(2, '0') + '/' +
+            dateObj.getFullYear();
+        return formattedDate;
+    }
     useEffect(() => {
         handleGetTutor();
     }, []);
@@ -37,11 +46,12 @@ function TutorRegistrationTable() {
                         <TableCell>STT</TableCell>
                         <TableCell>Người đăng ký</TableCell>
                         <TableCell align='center'>Chi tiết</TableCell>
-                        <TableCell align='center'>Bằng cấp</TableCell>
-                        <TableCell align='center'>Kinh nghiệm</TableCell>
-                        <TableCell align='center'>Khung chương trình</TableCell>
+                        <TableCell align='center'>
+                            Thông tin nghề nghiệp
+                        </TableCell>
                         <TableCell align='center'>Ngày tạo</TableCell>
                         <TableCell align='center'>Người xử lý</TableCell>
+                        <TableCell align='center'>Trạng thái đơn</TableCell>
                         <TableCell>Hành động</TableCell>
                     </TableRow>
                 </TableHead>
@@ -63,22 +73,21 @@ function TutorRegistrationTable() {
                                         <BasicInformation information={tutor} />
                                     </TableCell>
                                     <TableCell align='center'>
-                                        <TutorCertificate />
+                                        <CareerInformation curriculums={tutor.curriculums}
+                                            workExperiences={tutor.workExperiences}
+                                            certificates={tutor.certificates} />
                                     </TableCell>
                                     <TableCell align='center'>
-                                        <TutorWorkExperience />
+                                        {formatDate(tutor.createdDate)}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        <TutorWorkExperience />
+                                        {tutor.approvedBy ? tutor.approvedBy : "Chưa có"}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        <TutorWorkExperience />
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <TutorWorkExperience />
+                                        {formatDate(tutor.createdDate)}
                                     </TableCell>
                                     <TableCell>
-                                        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                             <Button color='success' variant='contained'>Chấp nhận</Button>
                                             <Button color='error' variant='contained'>Từ chối</Button>
                                         </Box>

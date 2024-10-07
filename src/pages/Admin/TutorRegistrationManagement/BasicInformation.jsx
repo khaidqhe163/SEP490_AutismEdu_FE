@@ -65,7 +65,7 @@ function BasicInformation({ information }) {
                         borderRight: "2px solid gray",
                         pr: 3
                     }}>
-                        <Avatar src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjPtBPtOIj16drcpc4Ht93MyJgtRH89ikp_Q&s'
+                        <Avatar src={information.imageUrl}
                             sx={{
                                 width: "100px",
                                 height: '100px',
