@@ -67,10 +67,10 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="subtitle1" mb={1}>Nội dung chương trình học</Typography>
-                        <ReactQuill theme="snow" value={programContent} onChange={setProgramContent} />
+                        <ReactQuill theme="snow" value={programContent} onChange={setProgramContent} style={{ height: '200px' }}/>
                     </Grid>
                 </Grid>
-                <Grid container spacing={2} justifyContent="center" mt={3} sx={{display:'flex', justifyContent:'flex-end'}}>
+                <Grid container spacing={2} justifyContent="center" mt={5} sx={{display:'flex', justifyContent:'flex-end'}}>
                     <Grid item>
                         <Button variant="outlined" onClick={handleClose}>Hủy</Button>
                     </Grid>
