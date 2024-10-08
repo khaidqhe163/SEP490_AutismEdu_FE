@@ -40,6 +40,8 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 submitForm.append("Description", tutorIntroduction.description);
                 tutorIntroduction.curriculum.forEach((curriculum, index) => {
                     submitForm.append(`Curriculums[${index}].Name`, curriculum.name);
+                    submitForm.append(`Curriculums[${index}].ageFrom`, curriculum.ageFrom);
+                    submitForm.append(`Curriculums[${index}].ageEnd`, curriculum.ageEnd);
                     submitForm.append(`Curriculums[${index}].Description`, curriculum.description);
                 });
                 career.forEach((experience, index) => {
@@ -66,6 +68,8 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 submitForm.append(`Certificates[${certificate.length}].issuingInstitution`, IdVerification.issuingInstitution);
                 submitForm.append(`Certificates[${certificate.length}].issuingDate`, IdVerification.issuingDate);
                 submitForm.append(`Certificates[${certificate.length}].identityCardNumber`, IdVerification.identityCardNumber);
+
+                console.log(tutorIntroduction.curriculum);
                 Array.from(IdVerification.medias).forEach((file, fileIndex) => {
                     submitForm.append(`Certificates[${certificate.length}].Medias`, file);
                 });

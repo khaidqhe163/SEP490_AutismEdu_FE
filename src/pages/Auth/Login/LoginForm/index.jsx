@@ -74,7 +74,8 @@ function LoginForm({ setVerify, setEmailVerify }) {
             } else {
                 await service.AuthenticationAPI.login({
                     email,
-                    password
+                    password,
+                    authenticationRole: "Parent"
                 }, (res) => {
                     Cookies.set('access_token', res.result.accessToken, { expires: 30 })
                     Cookies.set('refresh_token', res.result.refreshToken, { expires: 365 })
