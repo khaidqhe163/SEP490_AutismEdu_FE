@@ -1,14 +1,11 @@
-import { Avatar, Box, Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import DoneIcon from '@mui/icons-material/Done';
-import BasicInformation from './BasicInformation';
-import TutorCertificate from './TutorCertificate';
-import TutorWorkExperience from './TutorWorkExperience';
+import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
-import TutorCurriculum from './TutorCurriculum';
+import services from '~/plugins/services';
+import BasicInformation from './BasicInformation';
 import CareerInformation from './CareerInformation';
+import AcceptDialog from './handleDialog/acceptDialog';
 function TutorRegistrationTable() {
     const [loading, setLoading] = useState(false);
     const [listTutor, setListTutor] = useState([]);
@@ -57,7 +54,7 @@ function TutorRegistrationTable() {
                 </TableHead>
                 <TableBody>
                     {
-                        listTutor.length !== 0 && listTutor.map((tutor, index) => {
+                        listTutor.length !== 0 && listTutor?.map((tutor, index) => {
                             return (
                                 <TableRow key={tutor.id}>
                                     <TableCell>{index}</TableCell>
@@ -81,16 +78,30 @@ function TutorRegistrationTable() {
                                         {formatDate(tutor.createdDate)}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        {tutor.approvedBy ? tutor.approvedBy : "Chưa có"}
+                                        {tutor.approvedBy ? tutor.approvedBy.fullName : "Chưa có"}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        {formatDate(tutor.createdDate)}
+                                        {
+                                            tutor.requestStatus === 0 && <Typography color="red">Từ chối</Typography>
+                                        }
+                                        {
+                                            tutor.requestStatus === 1 && <Typography color="green">Đã chấp nhận</Typography>
+                                        }
+                                        {
+                                            tutor.requestStatus === 2 && <Typography color="blue">Đang chờ</Typography>
+                                        }
                                     </TableCell>
                                     <TableCell>
-                                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                            <Button color='success' variant='contained'>Chấp nhận</Button>
-                                            <Button color='error' variant='contained'>Từ chối</Button>
-                                        </Box>
+                                        {
+                                            tutor.requestStatus === 2 && (
+                                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                    <AcceptDialog id={tutor.id} status={1} setListTutor={setListTutor}
+                                                        listTutor={listTutor} />
+                                                    <AcceptDialog id={tutor.id} status={0} setListTutor={setListTutor}
+                                                        listTutor={listTutor} />
+                                                </Box>
+                                            )
+                                        }
                                     </TableCell>
                                 </TableRow>
                             )

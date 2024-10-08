@@ -10,8 +10,9 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import { enqueueSnackbar } from "notistack";
 import { setUserInformation } from "./redux/features/userSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TutorLayout from "./layout/TutorLayout";
+import { setTutorInformation, tutorInfor } from "./redux/features/tutorSlice";
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -20,15 +21,18 @@ function App() {
     const decodedToken = jwtDecode(accessToken);
     const userId = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
     if (userId) {
-      getUserInformation(userId);
+      getUserInformation(userId, decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']);
     }
-    // services.UserManagementAPI.get
   }, [])
 
-  const getUserInformation = async (userId) => {
+  const getUserInformation = async (userId, roles) => {
     try {
       services.UserManagementAPI.getUserById(userId, (res) => {
-        dispatch(setUserInformation(res.result))
+        if (roles.includes("Parent")) {
+          dispatch(setUserInformation(res.result))
+        } else if (roles.includes("Tutor")) {
+          dispatch(setTutorInformation(res.result))
+        }
       }, (error) => {
         console.log(error);
       }
@@ -37,6 +41,7 @@ function App() {
       console.log(error);
     }
   }
+  console.log(useSelector(tutorInfor));
   return (
     <>
       <BrowserRouter>

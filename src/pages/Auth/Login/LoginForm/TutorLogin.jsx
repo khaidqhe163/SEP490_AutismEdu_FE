@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUserInformation } from '~/redux/features/userSlice';
 import { jwtDecode } from 'jwt-decode';
 import services from '~/plugins/services';
+import { setTutorInformation } from '~/redux/features/tutorSlice';
 function TutorLogin({ setVerify, setEmailVerify }) {
     const [showPassword, setShowPassword] = useState(false);
     const [emailError, setEmailError] = useState(null);
@@ -40,59 +41,56 @@ function TutorLogin({ setVerify, setEmailVerify }) {
         event.preventDefault();
     };
     const handleClickShowPassword = () => setShowPassword((show) => !show);
-    useEffect(() => {
-        if (loading) {
-            handleSubmit();
-        }
-    }, [loading])
-    console.log(userId);
 
     useEffect(() => {
         if (userId) {
-            console.log("zoday");
             services.UserManagementAPI.getUserById(userId, (res) => {
-                dispatch(setUserInformation(res.result))
+                dispatch(setTutorInformation(res.result))
                 enqueueSnackbar("Đăng nhập thành công!", { variant: "success" });
-                nav(`${PAGES.ROOT}`)
+                nav(`${PAGES.MY_STUDENT}`)
             }, (error) => {
                 enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
-                console.log(error);
+                setLoading(false);
             })
             setLoading(false)
         }
     }, [userId])
     const handleSubmit = async () => {
-        if (passwordError !== null || emailError !== null) {
-            setLoading(false);
-            return;
-        } else {
-            const checkEmail = checkValid(email, 1, setEmailError);
-            const checkPw = checkValid(password, 2, setPasswordError);
-            if (!checkEmail || !checkPw) {
+        try {
+            setLoading(true);
+            if (passwordError !== null || emailError !== null) {
                 setLoading(false);
                 return;
             } else {
-                await service.AuthenticationAPI.login({
-                    email,
-                    password
-                }, (res) => {
-                    Cookies.set('access_token', res.result.accessToken, { expires: 30 })
-                    Cookies.set('refresh_token', res.result.refreshToken, { expires: 365 })
-                    const decodedToken = jwtDecode(res.result.accessToken);
-                    console.log(decodedToken);
-                    setUserId(decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
-                }, (err) => {
-                    if (err.code === 500) {
-                        enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
-                    } else if (err.code === 406) {
-                        enqueueSnackbar("Tài khoản này chưa được kích hoạt!", { variant: "warning" });
-                        setVerify(true);
-                        setEmailVerify(email);
-                    }
-                    else enqueueSnackbar("Tài khoản hoặc mật khẩu không đúng!", { variant: "error" });
+                const checkEmail = checkValid(email, 1, setEmailError);
+                const checkPw = checkValid(password, 2, setPasswordError);
+                if (!checkEmail || !checkPw) {
+                    setLoading(false);
+                    return;
+                } else {
+                    await service.AuthenticationAPI.login({
+                        email,
+                        password,
+                        authenticationRole: "Tutor"
+                    }, (res) => {
+                        Cookies.set('access_token', res.result.accessToken, { expires: 30 })
+                        Cookies.set('refresh_token', res.result.refreshToken, { expires: 365 })
+                        const decodedToken = jwtDecode(res.result.accessToken);
+                        setUserId(decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
+                    }, (err) => {
+                        if (err.code === 500) {
+                            enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
+                        } else if (err.code === 406) {
+                            enqueueSnackbar("Tài khoản này chưa được kích hoạt!", { variant: "warning" });
+                            setEmailVerify(email);
+                        }
+                        else enqueueSnackbar("Tài khoản hoặc mật khẩu không đúng!", { variant: "error" });
+                    })
                     setLoading(false)
-                })
+                }
             }
+        } catch (error) {
+            setLoading(false)
         }
     }
     return (
@@ -175,7 +173,7 @@ function TutorLogin({ setVerify, setEmailVerify }) {
                     <Box sx={{ width: "100%", textAlign: "end", marginTop: "15px" }}>
                         <Link to={PAGES.ROOT + PAGES.FORGOTPASSWORD} style={{ color: "#666cff" }}>Quên mật khẩu?</Link>
                     </Box>
-                    <LoadingButton variant='contained' sx={{ width: "100%", marginTop: "20px" }} onClick={() => setLoading(true)}
+                    <LoadingButton variant='contained' sx={{ width: "100%", marginTop: "20px" }} onClick={handleSubmit}
                         loading={loading} loadingIndicator="Sending..."
                     >
                         Đăng nhập
