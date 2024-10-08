@@ -3,20 +3,27 @@ import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 
 function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEditing }) {
-    const [ageFrom, setAgeFrom] = useState('');
-    const [ageTo, setAgeTo] = useState('');
-    const [programContent, setProgramContent] = useState('');
+    // Consolidating into a single formData object
+    const [formData, setFormData] = useState({
+        ageFrom: '',
+        ageTo: '',
+        description: ''
+    });
 
-    // Cập nhật dữ liệu khi mở modal chỉnh sửa
+    // Update formData when modal is opened for editing
     useEffect(() => {
         if (isEditing && initialData) {
-            setAgeFrom(initialData.ageFrom);
-            setAgeTo(initialData.ageTo);
-            setProgramContent(initialData.contentCurriculum);
+            setFormData({
+                ageFrom: initialData.ageFrom,
+                ageTo: initialData.ageTo,
+                description: initialData.contentCurriculum, 
+            });
         } else {
-            setAgeFrom('');
-            setAgeTo('');
-            setProgramContent('');
+            setFormData({
+                ageFrom: '',
+                ageTo: '',
+                description: ''
+            });
         }
     }, [isEditing, initialData]);
 
@@ -32,8 +39,25 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
         borderRadius: '10px'
     };
 
+    // Handle form input changes
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
+
+    // Handle ReactQuill input changes for description
+    const handleDescriptionChange = (content) => {
+        setFormData({
+            ...formData,
+            description: content
+        });
+    };
+
     const handleFormSubmit = () => {
-        handleSubmit(ageFrom, ageTo, programContent);
+        handleSubmit(formData);
     };
 
     return (
@@ -52,8 +76,9 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
                             label="Từ"
                             type="number"
                             fullWidth
-                            value={ageFrom}
-                            onChange={(e) => setAgeFrom(e.target.value)}
+                            name="ageFrom"
+                            value={formData.ageFrom}
+                            onChange={handleInputChange}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -61,16 +86,17 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
                             label="Đến"
                             type="number"
                             fullWidth
-                            value={ageTo}
-                            onChange={(e) => setAgeTo(e.target.value)}
+                            name="ageTo"
+                            value={formData.ageTo}
+                            onChange={handleInputChange}
                         />
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="subtitle1" mb={1}>Nội dung chương trình học</Typography>
-                        <ReactQuill theme="snow" value={programContent} onChange={setProgramContent} />
+                        <ReactQuill theme="snow" value={formData.description} onChange={handleDescriptionChange} style={{height:'200px'}}/>
                     </Grid>
                 </Grid>
-                <Grid container spacing={2} justifyContent="center" mt={3} sx={{display:'flex', justifyContent:'flex-end'}}>
+                <Grid container spacing={2} justifyContent="center" mt={5} sx={{display:'flex', justifyContent:'flex-end'}}>
                     <Grid item>
                         <Button variant="outlined" onClick={handleClose}>Hủy</Button>
                     </Grid>

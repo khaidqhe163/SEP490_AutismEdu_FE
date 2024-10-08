@@ -10,6 +10,8 @@ import CurriculumEditedTable from './EditedTable/CurriculumEditedTable'; // Impo
 import CreateOrEditModal from './CurriculumModal/CreateOrEditModal';
 import DeleteConfirmationModal from './CurriculumModal/DeleteConfirmationModal';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import services from '~/plugins/services';
+import { enqueueSnackbar } from 'notistack';
 
 function CurriculumManagement() {
     const [valueCurriculum, setValueCurriculum] = useState('1');
@@ -52,14 +54,20 @@ function CurriculumManagement() {
         setOpenCreateEdit(true);
     };
 
-    const handleSubmitCreate = (newAgeFrom, newAgeTo, newProgramContent) => {
-        const newCurriculum = {
-            ageFrom: newAgeFrom,
-            ageTo: newAgeTo,
-            contentCurriculum: newProgramContent
-        };
-        setCurriculums([...curriculums, newCurriculum]);
-        setOpenCreateEdit(false);
+    const handleSubmitCreate = async (formData) => {
+        try {
+            await services.CurriculumManagementAPI.createCurriculum(formData, (res) => {
+                console.log(formData);
+                enqueueSnackbar("Create curriculum success!", { variant: "success" });
+                setCurriculums([...curriculums, formData]);
+                setOpenCreateEdit(false);
+            }, (error) => {
+                console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+
     };
 
     const handleSubmitEdit = (updatedAgeFrom, updatedAgeTo, updatedProgramContent) => {
@@ -98,7 +106,7 @@ function CurriculumManagement() {
 
     return (
         <Box sx={{ width: "90%", margin: "auto", mt: "20px", gap: 2 }}>
-            <Typography mb={2} variant='h5'>{showTable ? "Danh sách đã sửa" : "Khung chương trình học"}</Typography>
+            <Typography mb={2} variant='h4'>{showTable ? "Danh sách đã sửa" : "Khung chương trình học"}</Typography>
 
 
             {showTable ? (

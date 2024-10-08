@@ -129,7 +129,7 @@ function AvailableTimeManagement() {
             mt: "20px",
             gap: 2
         }}>
-            <Typography variant='h2' my={2}>Thiết lập thời gian rảnh</Typography>
+            <Typography variant='h4' my={2}>Thiết lập thời gian rảnh</Typography>
             <Box>
                 <Stack direction={'column'} gap={1}>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>

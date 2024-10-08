@@ -49,7 +49,7 @@ function EditProfile() {
             mt: "20px",
             gap: 2
         }}>
-            <Typography variant='h2' my={2}>Chỉnh sửa hồ sơ</Typography>
+            <Typography variant='h4' my={2}>Chỉnh sửa hồ sơ</Typography>
             <Grid container spacing={3} component="form" onSubmit={(e) => e.preventDefault()}>
                 <Grid item xs={12} md={6}>
                     <TextField
