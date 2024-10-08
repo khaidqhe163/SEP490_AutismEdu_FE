@@ -40,12 +40,12 @@ function LoginForm({ setVerify, setEmailVerify }) {
         event.preventDefault();
     };
     const handleClickShowPassword = () => setShowPassword((show) => !show);
-    useEffect(() => {
-        if (loading) {
-            handleSubmit();
-        }
-    }, [loading])
-    console.log(userId);
+    // useEffect(() => {
+    //     if (loading) {
+    //         handleSubmit();
+    //     }
+    // }, [loading])
+    // console.log(userId);
 
     useEffect(() => {
         if (userId) {
@@ -62,6 +62,7 @@ function LoginForm({ setVerify, setEmailVerify }) {
         }
     }, [userId])
     const handleSubmit = async () => {
+        setLoading(true);
         if (passwordError !== null || emailError !== null) {
             setLoading(false);
             return;
@@ -90,8 +91,8 @@ function LoginForm({ setVerify, setEmailVerify }) {
                         setEmailVerify(email);
                     }
                     else enqueueSnackbar("Tài khoản hoặc mật khẩu không đúng!", { variant: "error" });
-                    setLoading(false)
                 })
+                setLoading(false)
             }
         }
     }
@@ -173,7 +174,7 @@ function LoginForm({ setVerify, setEmailVerify }) {
                     <Box sx={{ width: "100%", textAlign: "end", marginTop: "15px" }}>
                         <Link to={PAGES.ROOT + PAGES.FORGOTPASSWORD} style={{ color: "#666cff" }}>Quên mật khẩu?</Link>
                     </Box>
-                    <LoadingButton variant='contained' sx={{ width: "100%", marginTop: "20px" }} onClick={() => setLoading(true)}
+                    <LoadingButton variant='contained' sx={{ width: "100%", marginTop: "20px" }} onClick={handleSubmit}
                         loading={loading} loadingIndicator="Sending..."
                     >
                         Đăng nhập

@@ -35,7 +35,10 @@ const API_CODE = {
   API_TUTOR_STATUS: '/v1/TutorRegistrationRequest/changeStatus/',
 
   //Certificate management
-  API_CERTIFICATE_STATUS: '/v1/Curriculum/changeStatus/'
+  API_CERTIFICATE_STATUS: '/v1/Curriculum/changeStatus/',
+
+  //Children management
+  API_CHILDREN_LIST: '/v1/ChildInformation'
 };
 
 export default API_CODE;

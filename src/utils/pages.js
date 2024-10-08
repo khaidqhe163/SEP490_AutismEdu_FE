@@ -20,7 +20,9 @@ const PAGES = {
   STUDENT_DETAIL: '/autismtutor/student-detail/:id',
   TUTOR_SETTING: '/autismtutor/tutor-setting',
   LOGIN_OPTION: '/login-option',
-  TUTOR_LOGIN: '/autismtutor/tutor-login'
+  TUTOR_LOGIN: '/autismtutor/tutor-login',
+  REGISTER_OPTION: '/register-option',
+  MY_CHILDREN: '/my-childlren'
 };
 
 export default PAGES;
