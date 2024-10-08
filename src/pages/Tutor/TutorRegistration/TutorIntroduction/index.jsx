@@ -13,9 +13,8 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
     const validate = (values) => {
         const errors = {};
         if (!values.startAge || !values.endAge) {
-            console.log("zoday");
             errors.rangeAge = 'Vui lòng nhập độ tuổi';
-        } else if (values.startAge > values.endAge) {
+        } else if (Number(values.startAge) > Number(values.endAge)) {
             errors.rangeAge = 'Độ tuổi không hợp lệ';
         }
         return errors
@@ -34,7 +33,9 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                     validCurriculum = false;
                 }
             })
+            console.log(validCurriculum);
             if (validCurriculum) {
+                console.log(values);
                 setTutorIntroduction({
                     description: editorContent,
                     price: values.price,
