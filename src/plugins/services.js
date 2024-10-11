@@ -6,6 +6,7 @@ import { ClaimManagementAPI } from "~/services/ClaimManagementAPI";
 import { RoleManagementAPI } from "~/services/RoleManagementAPI";
 import { TutorManagementAPI } from "~/services/TutorManagementAPI";
 import { CurriculumManagementAPI } from "~/services/CurriculumManagement";
+import { AvailableTimeManagementAPI } from "~/services/AvailableTimeManagementAPI";
 
 // Initialize the BaseService with the axios instance and API prefix
 (function () {
@@ -18,7 +19,8 @@ const services = {
   ClaimManagementAPI,
   RoleManagementAPI,
   TutorManagementAPI,
-  CurriculumManagementAPI
+  CurriculumManagementAPI,
+  AvailableTimeManagementAPI,
 };
 
 export default services;

@@ -1,27 +1,28 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Accordion, AccordionSummary, Box, Grid, IconButton, Modal, Typography } from '@mui/material';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+import { Accordion, AccordionSummary, Box, Grid, IconButton, Modal } from '@mui/material';
 import AccordionActions from '@mui/material/AccordionActions';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Button from '@mui/material/Button';
 import { useEffect, useRef, useState } from 'react';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
-import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-const image = [
-    "https://thiepmung.com/uploads/worigin/2022/04/16/lam-giay-chung-nhan-thanh-tich-dep-nhat_9c193.jpg",
-    "https://marketplace.canva.com/EAFlVDzb7sA/1/0/1600w/canva-white-gold-elegant-modern-certificate-of-participation-bK_WEelNCjo.jpg"
-]
-function TutorCertificate() {
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+
+function TutorCertificate({ certificates }) {
     const [openViewImage, setOpenViewImage] = useState(false);
     const [currentImage, setCurrentImage] = useState('');
     const [scale, setScale] = useState(1);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const imageRef = useRef(null);
-
+    const [displayList, setDisplayList] = useState([]);
+    useEffect(() => {
+        if (certificates) {
+            const list = certificates.filter((c) => {
+                return c.certificateName !== "Căn cước công dân"
+            })
+            setDisplayList(list);
+        }
+    }, [certificates])
     useEffect(() => {
         if (!openViewImage) {
             setScale(1);
@@ -83,95 +84,60 @@ function TutorCertificate() {
             })
         }
     };
+
     return (
         <>
-            <IconButton onClick={handleOpen}>
-                <RemoveRedEyeIcon />
-            </IconButton>
-            <Modal
-                open={open}
-                onClose={handleClose}
-            >
-                <Box sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 600,
-                    maxHeight: "90vh",
-                    overflowY: "auto",
-                    bgcolor: 'background.paper',
-                    boxShadow: 24,
-                    p: 4
-                }}>
-                    <Typography variant='h3' textAlign="center">Bằng cấp / Chứng chỉ</Typography>
-                    <Box mt={3}>
-                        <Accordion defaultExpanded>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1-content"
-                                id="panel1-header"
-                            >
-                                Bằng tốt nghiệp đại học FPT
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Grid container columnSpacing={2} rowSpacing={3}>
-                                    <Grid item xs={3}>Nơi cấp:</Grid>
-                                    <Grid item xs={9}>Nguyễn Văn A</Grid>
-                                    <Grid item xs={3}>Ngày cấp:</Grid>
-                                    <Grid item xs={9}>09-20-2002</Grid>
-                                    <Grid item xs={3}>Ngày hết hạn:</Grid>
-                                    <Grid item xs={9}>09-03-0303</Grid>
-                                </Grid>
-                                <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-                                    <img style={{ width: "70px", height: "70px", cursor: "pointer" }}
-                                        onClick={() => { setCurrentImage(image[0]); setOpenViewImage(true) }}
-                                        src={image[0]} />
-                                    <img style={{ width: "70px", height: "70px", cursor: "pointer" }}
-                                        onClick={() => { setCurrentImage(image[1]); setOpenViewImage(true) }}
-                                        src={image[1]} />
-                                </Box>
-                                <AccordionActions>
-                                    <Button>Từ chối</Button>
-                                </AccordionActions>
-                            </AccordionDetails>
-                        </Accordion>
-                        <Accordion>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel2-content"
-                                id="panel2-header"
-                            >
-                                Accordion 2
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                malesuada lacus ex, sit amet blandit leo lobortis eget.
-                            </AccordionDetails>
-                        </Accordion>
-                        <Accordion >
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel3-content"
-                                id="panel3-header"
-                            >
-                                Accordion Actions
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                malesuada lacus ex, sit amet blandit leo lobortis eget.
-                            </AccordionDetails>
-                            <AccordionActions>
-                                <Button>Cancel</Button>
-                                <Button>Agree</Button>
-                            </AccordionActions>
-                        </Accordion>
-                    </Box>
-                </Box>
-            </Modal>
+            <Box mt={3}>
+                {
+                    displayList?.map((c, index) => {
+                        return (
+                            <Accordion defaultExpanded={index === 0} key={c.id}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1-content"
+                                    id="panel1-header"
+                                >
+                                    {c.certificateName}
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Grid container columnSpacing={2} rowSpacing={3}>
+                                        <Grid item xs={3}>Nơi cấp:</Grid>
+                                        <Grid item xs={9}>{c.issuingInstitution}</Grid>
+                                        <Grid item xs={3}>Ngày cấp:</Grid>
+                                        <Grid item xs={9}>{c.issuingDate}</Grid>
+                                        {
+                                            c.expirationDate && (
+                                                <>
+                                                    <Grid item xs={3}>Ngày hết hạn:</Grid>
+                                                    <Grid item xs={9}>{c.expirationDate}</Grid>
+                                                </>
+                                            )
+                                        }
+                                    </Grid>
+                                    <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+                                        {
+                                            c.certificateMedias.map((image) => {
+                                                return (
+                                                    <img style={{ width: "70px", height: "70px", cursor: "pointer" }}
+                                                        onClick={() => { setCurrentImage(image.urlPath); setOpenViewImage(true) }}
+                                                        src={image.urlPath}
+                                                        key={image.id} />
+                                                )
+                                            })
+                                        }
+                                    </Box>
+                                    <AccordionActions>
+                                        <Button>Từ chối</Button>
+                                    </AccordionActions>
+                                </AccordionDetails>
+                            </Accordion>
+                        )
+                    })
+                }
+            </Box>
 
             {
-                currentImage && (
+                currentImage && certificates && (
                     <Modal open={openViewImage} onClose={() => setOpenViewImage(false)}>
                         <Box
                             display="flex"

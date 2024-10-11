@@ -31,9 +31,19 @@ const API_CODE = {
 
   //Tutor management
   API_TUTOR_REGISTER: '/v1/TutorRegistrationRequest',
+  API_TUTOR_LIST: '/v1/TutorRegistrationRequest',
+  API_TUTOR_STATUS: '/v1/TutorRegistrationRequest/changeStatus/',
 
   //Curriculum management
-  API_CREATE_CURRICULUM: '/v1/Curriculum'
+  API_CREATE_CURRICULUM: '/v1/Curriculum',
+
+  //Certificate management
+  API_CERTIFICATE_STATUS: '/v1/Curriculum/changeStatus/',
+
+  //Available time management
+  API_CREATE_AVAILABLE_TIME: '/v1/AvailableTime',
+  API_GET_AVAILABLE_TIME: '/v1/AvailableTime',
+  API_REMOVE_AVAILABLE_TIME: '/v1/AvailableTime'
 };
 
 export default API_CODE;

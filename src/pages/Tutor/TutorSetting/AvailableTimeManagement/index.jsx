@@ -1,58 +1,77 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Grid, IconButton, Stack, TextField, Typography } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
+import services from '~/plugins/services';
+import { enqueueSnackbar } from 'notistack';
 
 function AvailableTimeManagement() {
-    //from 1 to 7, representing Monday to Sunday
-    const [schedule, setSchedule] = useState(1);
+    const [timeData, setTimeData] = useState({
+        weekday: 1,
+        timeSlot: {
+            from: '',
+            to: ''
+        }
+    });
 
-    const [availability, setAvailability] = useState([
-        { date: 1, times: ['08:30 - 09:00', '13:00 - 13:30', '15:00 - 15:30', '16:00 - 16:30'] },
-        { date: 2, times: ['08:00 - 08:30', '12:00 - 12:30'] },
-        { date: 3, times: ['9:00 - 9:30', '14:00 - 14:30'] },
-        { date: 4, times: [] },
-        { date: 5, times: ['10:00 - 10:30'] },
-        { date: 6, times: [] },
-        { date: 7, times: [] },
-    ]);
+    const [availability, setAvailability] = useState([]);
 
-    const [startTime, setStartTime] = useState('');
-    const [endTime, setEndTime] = useState('');
+    useEffect(() => {
+        handleGetAllAvailableTime(1);  // Get default weekday (1 - Monday)
+    }, []);
 
-    const handleSave = () => {
-        if (!startTime || !endTime) return;
-
-        const newTime = `${startTime} - ${endTime}`;
-
-        const updatedAvailability = availability.map((day) => {
-            if (day.date === schedule) {
-                if (!day.times.includes(newTime)) {
-                    return { ...day, times: [...day.times, newTime] };
-                } else {
-                    alert('Khoảng thời gian đã tồn tại!');
+    const handleGetAllAvailableTime = async (weekday) => {
+        try {
+            await services.AvailableTimeManagementAPI.getAvailableTime((res) => {
+                setAvailability(res.result || []);  // Set availability to empty array if no data
+            }, (error) => {
+                console.log(error);
+            }, { weekday });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    console.log(availability);
+    
+    const handleSave = async () => {
+        try {
+            await services.AvailableTimeManagementAPI.createAvailableTime(timeData, (res) => {
+                enqueueSnackbar("Create available time success!", { variant: "success" });
+                handleGetAllAvailableTime(timeData.weekday);  // Refresh the available time after saving
+            }, (error) => {
+                if (error.code === 400) {
+                    enqueueSnackbar(error.error[0], { variant: "error" });
                 }
-            }
-            return day;
-        });
-
-        setAvailability(updatedAvailability);
-        setStartTime('');
-        setEndTime('');
+                console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        setTimeData((prev) => ({
+            ...prev,
+            timeSlot: { from: '', to: '' }
+        }));
     };
 
-
-    const handleDeleteTime = (timeToDelete) => {
-        const updatedAvailability = availability.map((day) => {
-            if (day.date === schedule) {
-                return { ...day, times: day.times.filter(time => time !== timeToDelete) };
-            }
-            return day;
-        });
-        setAvailability(updatedAvailability);
+    const handleDeleteTime = async (weekday, timeSlotId) => {
+        try {
+            await services.AvailableTimeManagementAPI.removeAvailableTime({ weekday, timeSlotId }, (res) => {
+                setAvailability(availability.filter((avai) => (avai.timeSlotId !== timeSlotId)));
+                enqueueSnackbar("Remove available time success!", { variant: "success" });
+            }, (error) => {
+                console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
-    const handleDateChange = (date) => {
-        setSchedule(date);
+    // Handle weekday change
+    const handleDateChange = async (weekday) => {
+        setTimeData((prev) => ({
+            ...prev,
+            weekday
+        }));
+        await handleGetAllAvailableTime(weekday);  // Update availability when weekday changes
     };
 
     const renderWeekButtons = () => {
@@ -69,8 +88,8 @@ function AvailableTimeManagement() {
         return weekDays.map((day) => (
             <Button
                 key={day.date}
-                variant={schedule === day.date ? 'contained' : 'outlined'}
-                color={schedule === day.date ? 'primary' : 'inherit'}
+                variant={timeData.weekday === day.date ? 'contained' : 'outlined'}
+                color={timeData.weekday === day.date ? 'primary' : 'inherit'}
                 onClick={() => handleDateChange(day.date)}
                 sx={{ mx: 1, my: 1 }}
             >
@@ -80,24 +99,7 @@ function AvailableTimeManagement() {
     };
 
     const renderTimeButtons = () => {
-        const selectedDay = availability.find(day => day.date === schedule) || { times: [] };
-
-        const getStartTime = (time) => {
-            const [startTime] = time.split(' - '); 
-            return startTime;
-        };
-
-        const sortedTimes = [...selectedDay.times].sort((a, b) => {
-            const startA = getStartTime(a);
-            const startB = getStartTime(b);
-
-            const dateA = new Date(`1970-01-01T${startA}:00`);
-            const dateB = new Date(`1970-01-01T${startB}:00`);
-
-            return dateA - dateB;
-        });
-
-        return sortedTimes.map((time, index) => (
+        return availability.map((time, index) => (
             <Grid item xs={12} sm={6} md={4} key={index} sx={{ mb: 1 }}>
                 <Box
                     sx={{
@@ -112,15 +114,14 @@ function AvailableTimeManagement() {
                     justifyContent={'center'}
                     gap={1}
                 >
-                    <Typography variant="body1">{time}</Typography>
-                    <IconButton onClick={() => handleDeleteTime(time)}>
+                    <Typography variant="body1">{time.timeSlot}</Typography>
+                    <IconButton onClick={() => handleDeleteTime(timeData?.weekday, time.timeSlotId)}>
                         <CancelIcon color='error' />
                     </IconButton>
                 </Box>
             </Grid>
         ));
     };
-
 
     return (
         <Stack direction='column' sx={{
@@ -142,8 +143,13 @@ function AvailableTimeManagement() {
                                 id="outlined-basic1"
                                 variant="outlined"
                                 type="time"
-                                value={startTime}
-                                onChange={(e) => setStartTime(e.target.value)}
+                                value={timeData.timeSlot.from}
+                                onChange={(e) =>
+                                    setTimeData((prev) => ({
+                                        ...prev,
+                                        timeSlot: { ...prev.timeSlot, from: e.target.value }
+                                    }))
+                                }
                             />
                         </Box>
                         <Box>
@@ -152,8 +158,13 @@ function AvailableTimeManagement() {
                                 id="outlined-basic2"
                                 variant="outlined"
                                 type="time"
-                                value={endTime}
-                                onChange={(e) => setEndTime(e.target.value)}
+                                value={timeData.timeSlot.to}
+                                onChange={(e) =>
+                                    setTimeData((prev) => ({
+                                        ...prev,
+                                        timeSlot: { ...prev.timeSlot, to: e.target.value }
+                                    }))
+                                }
                             />
                         </Box>
                     </Stack>
@@ -163,9 +174,9 @@ function AvailableTimeManagement() {
                         </Button>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap' }}>
-                        <Typography variant='h6'>{`Thứ ${schedule}`}</Typography>
+                        <Typography variant='h6'>{`Thứ ${timeData.weekday}`}</Typography>
                         <Grid container spacing={1} sx={{ mt: 1 }}>
-                            {renderTimeButtons()}
+                            {availability?.length ? renderTimeButtons() : <Typography>Không có thời gian rảnh</Typography>}
                         </Grid>
                     </Box>
                 </Stack>

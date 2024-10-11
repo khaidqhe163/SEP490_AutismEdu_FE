@@ -1,13 +1,47 @@
+import { Logout } from '@mui/icons-material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import { Avatar, Badge, Box, Divider, IconButton, Stack } from '@mui/material';
+import { Avatar, Badge, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
+import Cookies from "js-cookie";
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { setTutorInformation, tutorInfor } from '~/redux/features/tutorSlice';
+import PAGES from '~/utils/pages';
 import Logo from '../Logo';
 function TutorHeader({ openMenu, setOpenMenu }) {
+    const nav = useNavigate();
+    const tutorInfo = useSelector(tutorInfor);
+    const [accountMenu, setAccountMenu] = useState();
+    const dispatch = useDispatch();
+    const openAccountMenu = Boolean(accountMenu);
+    useEffect(() => {
+        const refreshToken = Cookies.get("refresh_token");
+        const accessToken = Cookies.get("access_Token");
+        if (!refreshToken && !accessToken) {
+            nav(PAGES.TUTOR_LOGIN)
+        }
+    }, [tutorInfo])
+    const handleOpenAccountMenu = (event) => {
+        setAccountMenu(event.currentTarget);
+    };
+    const handleCloseAccountMenu = () => {
+        setAccountMenu(null);
+    };
     const handleOpenMenu = () => {
         setOpenMenu(!openMenu)
     }
+
+    const handleLogout = () => {
+        Cookies.remove("access_token");
+        Cookies.remove("refresh_token");
+        dispatch(setTutorInformation(null));
+        nav(PAGES.TUTOR_LOGIN)
+    }
+
+    console.log(tutorInfo);
     return (
         <Box sx={{
             position: "fixed",
@@ -35,10 +69,56 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                             <NotificationsActiveIcon />
                         </Badge>
                     </IconButton>
-                    <Avatar alt='Khai Dao' src='/' sx={{
+                    <Avatar alt='Khai Dao' src={tutorInfo?.imageUrl ? tutorInfo.imageUrl : '/'} sx={{
                         bgcolor: deepPurple[500], width: "30px",
-                        height: "30px"
-                    }} />
+                        height: "30px",
+                        cursor: "pointer"
+                    }} onClick={handleOpenAccountMenu} />
+
+                    <Menu
+                        anchorEl={accountMenu}
+                        id="account-menu"
+                        open={openAccountMenu}
+                        onClose={handleCloseAccountMenu}
+                        onClick={handleCloseAccountMenu}
+                        slotProps={{
+                            paper: {
+                                elevation: 0,
+                                sx: {
+                                    overflow: 'visible',
+                                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                    mt: 1.5,
+                                    '& .MuiAvatar-root': {
+                                        width: 32,
+                                        height: 32,
+                                        ml: -0.5,
+                                        mr: 1,
+                                    },
+                                    '&::before': {
+                                        content: '""',
+                                        display: 'block',
+                                        position: 'absolute',
+                                        top: 0,
+                                        right: 14,
+                                        width: 10,
+                                        height: 10,
+                                        bgcolor: 'background.paper',
+                                        transform: 'translateY(-50%) rotate(45deg)',
+                                        zIndex: 0,
+                                    },
+                                },
+                            },
+                        }}
+                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                    >
+                        <MenuItem onClick={handleLogout}>
+                            <ListItemIcon>
+                                <Logout fontSize="small" />
+                            </ListItemIcon>
+                            Logout
+                        </MenuItem>
+                    </Menu>
                 </Box>
             </Stack>
             <Divider />

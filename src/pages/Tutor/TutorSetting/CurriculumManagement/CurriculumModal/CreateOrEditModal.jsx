@@ -6,7 +6,7 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
     // Consolidating into a single formData object
     const [formData, setFormData] = useState({
         ageFrom: '',
-        ageTo: '',
+        ageEnd: '',
         description: ''
     });
 
@@ -15,13 +15,13 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
         if (isEditing && initialData) {
             setFormData({
                 ageFrom: initialData.ageFrom,
-                ageTo: initialData.ageTo,
+                ageEnd: initialData.ageEnd,
                 description: initialData.contentCurriculum, 
             });
         } else {
             setFormData({
                 ageFrom: '',
-                ageTo: '',
+                ageEnd: '',
                 description: ''
             });
         }
@@ -86,8 +86,8 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
                             label="Đến"
                             type="number"
                             fullWidth
-                            name="ageTo"
-                            value={formData.ageTo}
+                            name="ageEnd"
+                            value={formData.ageEnd}
                             onChange={handleInputChange}
                         />
                     </Grid>
