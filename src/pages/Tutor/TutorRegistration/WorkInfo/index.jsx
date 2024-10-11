@@ -21,7 +21,6 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
         setOpen(false);
     };
     const [loading, setLoading] = useState(false);
-    const nav = useNavigate();
     const handleSubmit = async () => {
         try {
             setOpenConfirm(false);
@@ -77,6 +76,7 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                     console.log(res);
                     handleNext();
                 }, (err) => {
+                    enqueueSnackbar(err.error[0], { variant: "error" })
                     console.log(err);
                 })
                 setLoading(false);

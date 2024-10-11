@@ -97,7 +97,15 @@ function TutorCertificate({ certificates }) {
                                     aria-controls="panel1-content"
                                     id="panel1-header"
                                 >
-                                    {c.certificateName}
+                                    {c.certificateName} {
+                                        c.requestStatus === 0 && <span style={{ color: "red", marginLeft: "20px" }}>(Đã từ chối)</span>
+                                    }
+                                    {
+                                        c.requestStatus === 1 && <span style={{ color: "green", marginLeft: "20px" }}>(Đã chấp nhận)</span>
+                                    }
+                                    {
+                                        c.requestStatus === 2 && <span style={{ color: "blue", marginLeft: "20px" }}>(Đang chờ)</span>
+                                    }
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <Grid container columnSpacing={2} rowSpacing={3}>
@@ -126,9 +134,11 @@ function TutorCertificate({ certificates }) {
                                             })
                                         }
                                     </Box>
-                                    <AccordionActions>
-                                        <Button>Từ chối</Button>
-                                    </AccordionActions>
+                                    {
+                                        c.requestStatus === 2 && (<AccordionActions>
+                                            <Button>Từ chối</Button>
+                                        </AccordionActions>)
+                                    }
                                 </AccordionDetails>
                             </Accordion>
                         )

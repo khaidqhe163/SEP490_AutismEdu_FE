@@ -1,6 +1,5 @@
 import RemoveIcon from '@mui/icons-material/Remove';
-import SchoolIcon from '@mui/icons-material/School';
-import { Box, Button, FormHelperText, List, ListItem, ListItemButton, ListItemIcon, ListSubheader, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, FormHelperText, List, ListItem, ListSubheader, Stack, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
@@ -17,6 +16,9 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
         } else if (Number(values.startAge) > Number(values.endAge)) {
             errors.rangeAge = 'Độ tuổi không hợp lệ';
         }
+        if (values.price.length > 0 && values.price.length < 5) {
+            errors.price = "Số tiền quá nhỏ"
+        }
         return errors
     }
     const formik = useFormik({
@@ -29,13 +31,11 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
         onSubmit: async (values) => {
             let validCurriculum = true;
             curriculum.forEach((c) => {
-                if (c.ageFrom < values.startAge || c.ageEnd > values.endAge) {
+                if (Number(c.ageFrom) < Number(values.startAge) || Number(c.ageEnd) > Number(values.endAge)) {
                     validCurriculum = false;
                 }
             })
-            console.log(validCurriculum);
             if (validCurriculum) {
-                console.log(values);
                 setTutorIntroduction({
                     description: editorContent,
                     price: values.price,
@@ -83,6 +83,20 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
     const [value, setValue] = useState();
     const handleInputChange = (e) => {
         let inputValue = e.target.value;
+        if (inputValue.length === 1 && inputValue[0] === "0") {
+            inputValue = ""
+        }
+        if (inputValue.length > 1 && (inputValue[0] === "0" || inputValue[0] === ".")) {
+            let sliceString = inputValue;
+            for (let i = 0; i < inputValue.length; i++) {
+                if (inputValue[i] === "0" || inputValue[i] === ".") {
+                    sliceString = inputValue.slice(i + 1);
+                } else {
+                    break;
+                }
+            }
+            inputValue = sliceString;
+        }
         let rawValue = inputValue.replace(/\./g, '');
         if (!/^\d*$/.test(rawValue)) {
             return;
@@ -150,6 +164,13 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                             value={value}
                             onChange={handleInputChange}
                         />
+                        {
+                            formik.errors.price && (
+                                <FormHelperText error>
+                                    {formik.errors.price}
+                                </FormHelperText>
+                            )
+                        }
                         <List
                             sx={{
                                 maxWidth: 450, bgcolor: 'background.paper', mt: 3,
@@ -185,7 +206,7 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                                                     endAge={formik.values.endAge}
                                                 />
                                                 {
-                                                    (c.ageFrom < formik.values.startAge || c.ageEnd > formik.values.endAge) && (
+                                                    (Number(c.ageFrom) < Number(formik.values.startAge) || Number(c.ageEnd) > Number(formik.values.endAge)) && (
                                                         <FormHelperText error sx={{ mb: 2 }}>
                                                             Khung chương trình nằm ngoài độ tuổi dạy
                                                         </FormHelperText>

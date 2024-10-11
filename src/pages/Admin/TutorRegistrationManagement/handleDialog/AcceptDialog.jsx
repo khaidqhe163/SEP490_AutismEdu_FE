@@ -1,18 +1,19 @@
-import { useEffect, useState } from 'react';
+import { Box, Modal, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import services from '~/plugins/services';
+import TextField from '@mui/material/TextField';
 import { enqueueSnackbar } from 'notistack';
-import { Box, Modal, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
+import LoadingComponent from '~/components/LoadingComponent';
+import services from '~/plugins/services';
 
 function AcceptDialog({ id, status, setListTutor, listTutor }) {
     const [open, setOpen] = useState(false);
     const [rejectReason, setRejectReason] = useState("");
+    const [loading, setLoading] = useState(false);
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -21,29 +22,36 @@ function AcceptDialog({ id, status, setListTutor, listTutor }) {
         setOpen(false);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         try {
-            services.TutorManagementAPI.handleRegistrationForm(id,
+            setLoading(true);
+            if (status === 0 && rejectReason === "") {
+                setLoading(false);
+                enqueueSnackbar("Bạn chưa nhập lý do", { variant: "error" })
+                return;
+            }
+            await services.TutorManagementAPI.handleRegistrationForm(id,
                 {
                     id: id,
                     statusChange: status,
                     rejectionReason: ""
                 },
                 (res) => {
-                    const tutor = listTutor.find((l) => {
-                        return l.id === id;
-                    })
-                    tutor.status === status;
-                    setListTutor(pre => setListTutor(pre));
+                    setListTutor((pre) =>
+                        pre.map((tutor) =>
+                            tutor.id === res.result.id ? res.result : tutor
+                        )
+                    );
                     enqueueSnackbar("Cập nhật thành công!", { variant: "success" })
-                    tutor.requestStatus = status;
                 }, (err) => {
                     enqueueSnackbar("Lỗi hệ thống!", { variant: "error" })
                 }, {
                 id: id
-            })
+            });
+            setLoading(false);
+            handleClose();
         } catch (error) {
-            console.log(error);
+            setLoading(false);
         }
     }
     return (
@@ -67,6 +75,7 @@ function AcceptDialog({ id, status, setListTutor, listTutor }) {
                             <Button onClick={handleClose}>Huỷ bỏ</Button>
                             <Button onClick={handleSubmit}>Chấp nhận</Button>
                         </DialogActions>
+                        <LoadingComponent open={loading} setLoading={setLoading} />
                     </Dialog>
                 )
             }
@@ -94,13 +103,15 @@ function AcceptDialog({ id, status, setListTutor, listTutor }) {
                             <TextField
                                 multiline
                                 rows={8}
-                                maxRows={10}
                                 fullWidth
+                                value={rejectReason}
+                                onChange={(e) => { setRejectReason(e.target.value) }}
                             />
                             <Box textAlign="right" mt={2}>
-                                <Button>Huỷ bỏ</Button>
-                                <Button>Từ chối</Button>
+                                <Button onClick={handleClose}>Huỷ bỏ</Button>
+                                <Button onClick={handleSubmit}>Từ chối</Button>
                             </Box>
+                            <LoadingComponent open={loading} setLoading={setLoading} />
                         </Box>
                     </Modal>
                 )

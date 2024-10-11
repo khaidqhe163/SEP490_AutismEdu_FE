@@ -60,7 +60,7 @@ function AdminLeftBar() {
                             <ListItemIcon>
                                 <PeopleIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Quản lý người dùng" />
+                            <ListItemText primary="Tài Khoản" />
                         </ListItemButton>
                     </Link>
                     <Link to="/admin/role-claim-management">
@@ -80,7 +80,7 @@ function AdminLeftBar() {
                             <ListItemIcon>
                                 <PeopleIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Quản lý đơn đăng ký" />
+                            <ListItemText primary="Đơn Đăng Ký" />
                         </ListItemButton>
                     </Link>
                     <ListItemButton onClick={handleClick}>

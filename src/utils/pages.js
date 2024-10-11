@@ -22,7 +22,8 @@ const PAGES = {
   LOGIN_OPTION: '/login-option',
   TUTOR_LOGIN: '/autismtutor/tutor-login',
   REGISTER_OPTION: '/register-option',
-  MY_CHILDREN: '/my-childlren'
+  MY_CHILDREN: '/my-childlren',
+  CALENDAR: '/autismtutor/calendar'
 };
 
 export default PAGES;

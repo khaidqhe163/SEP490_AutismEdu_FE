@@ -22,6 +22,7 @@ import LoginOption from '~/pages/Auth/Login/LoginOption'
 import TutorLogin from '~/pages/Auth/Login/LoginForm/TutorLogin'
 import RegisterOptions from '~/pages/Auth/Register/RegisterOptions'
 import MyChildren from '~/pages/MyChildren'
+import Calendar from '~/pages/Tutor/Calendar'
 
 const UnLayoutRoutes = [
     {
@@ -102,6 +103,10 @@ const tutorRoutes = [
     }, {
         path: PAGES.TUTOR_SETTING,
         element: TutorSetting
+    },
+    {
+        path: PAGES.CALENDAR,
+        element: Calendar
     }
 ]
 const adminRoutes = [

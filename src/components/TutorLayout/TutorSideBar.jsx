@@ -14,6 +14,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import * as React from 'react';
 import ContactPageOutlinedIcon from '@mui/icons-material/ContactPageOutlined';
+import { Link } from 'react-router-dom';
+import PAGES from '~/utils/pages';
 
 export default function TutorSideBar({ openMenu }) {
     const [openStudent, setOpenStudent] = React.useState(true);
@@ -73,15 +75,17 @@ export default function TutorSideBar({ openMenu }) {
                         sx={textStyle}
                     />
                 </ListItemButton>
-                <ListItemButton>
-                    <ListItemIcon sx={listIconStyle}>
-                        <CalendarMonthOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                        primary="Lịch dạy"
-                        sx={textStyle}
-                    />
-                </ListItemButton>
+                <Link to={PAGES.CALENDAR}>
+                    <ListItemButton>
+                        <ListItemIcon sx={listIconStyle}>
+                            <CalendarMonthOutlinedIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                            primary="Lịch dạy"
+                            sx={textStyle}
+                        />
+                    </ListItemButton>
+                </Link>
                 <ListItemButton>
                     <ListItemIcon sx={listIconStyle}>
                         <ContactPageOutlinedIcon />
