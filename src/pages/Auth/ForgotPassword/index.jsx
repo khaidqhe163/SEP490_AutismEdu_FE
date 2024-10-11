@@ -57,7 +57,7 @@ function ForgotPassword() {
             }}>
                 <CardContent>
                     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1 }}>
-                    <EscalatorWarningIcon sx={{ color: "#394ef4", fontSize: "40px" }} />
+                        <EscalatorWarningIcon sx={{ color: "#394ef4", fontSize: "40px" }} />
                         <Typography sx={{ fontSize: 20, fontWeight: "bold", color: "text.secondary" }}>
                             AutismEdu
                         </Typography>
@@ -117,7 +117,7 @@ function ForgotPassword() {
                         )
                     }
                     <Typography textAlign={'center'} mt="20px">
-                        <Link to={PAGES.LOGIN} style={{ color: "#666cff" }}>
+                        <Link to={PAGES.ROOT + PAGES.LOGIN_OPTION} style={{ color: "#666cff" }}>
                             <ArrowBackIosNewIcon sx={{ fontSize: "12px" }} /> Trở lại đăng nhập
                         </Link>
                     </Typography>

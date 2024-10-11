@@ -76,6 +76,7 @@ function TutorLogin({ setVerify, setEmailVerify }) {
                         Cookies.set('access_token', res.result.accessToken, { expires: 30 })
                         Cookies.set('refresh_token', res.result.refreshToken, { expires: 365 })
                         const decodedToken = jwtDecode(res.result.accessToken);
+                        console.log(decodedToken);
                         setUserId(decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
                     }, (err) => {
                         if (err.code === 500) {

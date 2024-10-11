@@ -169,8 +169,7 @@ export default function CertificateDetail({ certificate, setCertificate, index, 
                                     name='expriredDate'
                                     onChange={formik.handleChange}
                                     inputProps={{
-                                        min: formik.values.degreeDate,
-                                        max: new Date().toISOString().split('T')[0]
+                                        min: formik.values.degreeDate
                                     }} />
                                 {
                                     formik.errors.expirationDate && (

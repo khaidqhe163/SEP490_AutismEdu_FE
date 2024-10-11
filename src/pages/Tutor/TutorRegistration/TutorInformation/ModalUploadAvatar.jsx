@@ -4,7 +4,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import PermMediaIcon from '@mui/icons-material/PermMedia';
 import ReactCrop, { centerCrop, convertToPixelCrop, makeAspectCrop } from 'react-image-crop';
 
-const ASPECT_RATIO = 1;
+const ASPECT_RATIO = 3 / 4;
 const MIN_DIMENSION = 150;
 function ModalUploadAvatar({ setAvatar }) {
     const [open, setOpen] = useState(false);

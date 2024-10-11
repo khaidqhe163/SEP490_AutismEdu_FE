@@ -150,8 +150,7 @@ export default function CertificateAddition({ certificate, setCertificate }) {
                                     name='expriredDate'
                                     disabled={!formik.values.degreeDate}
                                     inputProps={{
-                                        min: formik.values.degreeDate,
-                                        max: new Date().toISOString().split('T')[0]
+                                        min: formik.values.degreeDate
                                     }}
                                     onChange={formik.handleChange} />
                                 {

@@ -8,6 +8,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import PAGES from '~/utils/pages';
 function AdminLeftBar() {
     const [open, setOpen] = useState(false);
     const location = useLocation();
@@ -59,7 +60,7 @@ function AdminLeftBar() {
                             <ListItemIcon>
                                 <PeopleIcon />
                             </ListItemIcon>
-                            <ListItemText primary="User Management" />
+                            <ListItemText primary="Tài Khoản" />
                         </ListItemButton>
                     </Link>
                     <Link to="/admin/role-claim-management">
@@ -70,6 +71,16 @@ function AdminLeftBar() {
                                 <PeopleIcon />
                             </ListItemIcon>
                             <ListItemText primary="Claims & Roles" />
+                        </ListItemButton>
+                    </Link>
+                    <Link to={PAGES.TUTORREGISTRATIONMANAGEMENT}>
+                        <ListItemButton
+                            selected={selectedIndex === 3}
+                            onClick={(event) => handleListItemClick(event, 3)}>
+                            <ListItemIcon>
+                                <PeopleIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Đơn Đăng Ký" />
                         </ListItemButton>
                     </Link>
                     <ListItemButton onClick={handleClick}>

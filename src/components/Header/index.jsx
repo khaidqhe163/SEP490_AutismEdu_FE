@@ -7,7 +7,7 @@ import Settings from '@mui/icons-material/Settings';
 import { Avatar, Badge, Box, Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { setUserInformation, userInfor } from '~/redux/features/userSlice';
 import PAGES from '~/utils/pages';
 import ButtonComponent from '../ButtonComponent';
@@ -18,7 +18,7 @@ function Header() {
     const [tab, setTab] = useState("1");
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [accountMenu, setAccountMenu] = React.useState(null);
-    const [selectedIndex, setSelectedIndex] = React.useState(1);
+    const nav = useNavigate();
     const userInfo = useSelector(userInfor);
     const openAccountMenu = Boolean(accountMenu);
     const dispatch = useDispatch();
@@ -34,8 +34,8 @@ function Header() {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleMenuItemClick = (event, index) => {
-        setSelectedIndex(index);
+    const handleMenuItemClick = (event, link) => {
+        nav(link)
         setAnchorEl(null);
     };
 
@@ -65,10 +65,10 @@ function Header() {
                     xs: "none"
                 }
             }}>
-                <Tab sx={{fontSize:"18px"}} value={"1"} label="Trang chủ" />
-                <Tab sx={{fontSize:"18px"}} value={"3"} label="Gia sư" icon={<ExpandMoreIcon />} iconPosition="end" onClick={handleClickListItem} />
-                <Tab sx={{fontSize:"18px"}} value={"4"} label="Lớp học" />
-                <Tab sx={{fontSize:"18px"}} value={"5"} label="Blog" />
+                <Tab sx={{ fontSize: "18px" }} value={"1"} label="Trang chủ" onClick={() => { nav(PAGES.ROOT) }} />
+                <Tab sx={{ fontSize: "18px" }} value={"3"} label="Gia sư" icon={<ExpandMoreIcon />} iconPosition="end" onClick={handleClickListItem} />
+                <Tab sx={{ fontSize: "18px" }} value={"4"} label="Thông tin trẻ" onClick={() => { nav(PAGES.ROOT + PAGES.MY_CHILDREN) }} />
+                <Tab sx={{ fontSize: "18px" }} value={"5"} label="Blog" />
             </Tabs>
             <Menu
                 id="lock-menu"
@@ -80,10 +80,13 @@ function Header() {
                     role: 'listbox',
                 }}
             >
+                <MenuItem>
+                    Gia sư của tôi
+                </MenuItem>
                 <MenuItem
-                    onClick={(event) => handleMenuItemClick(event)}
+                    onClick={(event) => handleMenuItemClick(event, PAGES.ROOT + PAGES.LISTTUTOR)}
                 >
-                    Danh sách trung tâm
+                    Danh sách gia sư
                 </MenuItem>
             </Menu>
             <Stack direction="row" sx={{ alignItems: "center" }} spacing={2}>
@@ -107,7 +110,7 @@ function Header() {
                             }}>
                                 <Link to={PAGES.ROOT + PAGES.LOGIN_OPTION}><ButtonComponent text="Đăng nhập" height="40px" /></Link>
                             </Box>
-                            <Link to={PAGES.ROOT + PAGES.REGISTER}><Button variant='outlined' sx={{
+                            <Link to={PAGES.ROOT + PAGES.REGISTER_OPTION}><Button variant='outlined' sx={{
                                 display: {
                                     xs: "none",
                                     lg: "block"

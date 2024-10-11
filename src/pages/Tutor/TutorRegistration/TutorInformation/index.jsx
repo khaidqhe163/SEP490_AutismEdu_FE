@@ -16,7 +16,7 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
     const [districts, setDistricts] = useState([]);
     const [communes, setCommunes] = useState([]);
     const [avatar, setAvatar] = useState();
-    const [citizenIdentification, setCitizenIdentification] = useState(null);
+    const [citizenIdentification, setCitizenIdentification] = useState([]);
     const [currentImage, setCurrentImage] = useState(null);
     const [inputKey, setInputKey] = useState(0);
     const [openDialog, setOpenDialog] = useState(false);
@@ -45,6 +45,18 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
         }
         if (!values.province || !values.district || !values.commune || !values.homeNumber) {
             errors.address = 'Nhập đầy đủ địa chỉ';
+        }
+        if (!values.identityCardNumber) {
+            errors.identityCardNumber = "Bắt buộc"
+        } else if (!/^\d{12}$/.test(values.identityCardNumber)) {
+            errors.identityCardNumber = "Số CCCD không hợp lệ"
+        }
+        if (!values.issuingInstitution) {
+            errors.issuingInstitution = "Bắt buộc"
+        }
+
+        if (!values.issuingDate) {
+            errors.issuingDate = "Bắt buộc"
         }
         if (!avatar) {
             errors.avatar = "Bắt buộc"
@@ -173,7 +185,6 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
         const day = String(today.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
-    console.log(avatar);
     return (
         <>
             <form onSubmit={formik.handleSubmit}>
@@ -389,7 +400,9 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                         <TextField size='small' sx={{ width: "70%" }} fullWidth value={formik.values.issuingDate}
                             name='issuingDate'
                             onChange={formik.handleChange}
-                            type='date' />
+                            type='date'
+                            inputProps={{ max: new Date().toISOString().split('T')[0] }}
+                        />
                         {
                             formik.errors.issuingDate && (
                                 <FormHelperText error>
@@ -406,7 +419,7 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                                     enqueueSnackbar("Chỉ chọn 2 ảnh", { variant: "error" });
                                     e.target.value = "";
                                 } else {
-                                    setCitizenIdentification(Array.from(e.target.files))
+                                    setCitizenIdentification([...citizenIdentification, ...Array.from(e.target.files)])
                                     setInputKey(preKey => preKey + 1)
                                 }
                             }}
@@ -416,11 +429,19 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             }}
                             key={inputKey}
                             ref={cIInput}
+                            disabled={citizenIdentification.length === 2}
                         />
                         {
                             citizenIdentification?.length === 0 && (
                                 <FormHelperText error>
                                     Bắt buộc
+                                </FormHelperText>
+                            )
+                        }
+                        {
+                            citizenIdentification?.length === 1 && (
+                                <FormHelperText error>
+                                    Chụp đủ 2 mặt
                                 </FormHelperText>
                             )
                         }

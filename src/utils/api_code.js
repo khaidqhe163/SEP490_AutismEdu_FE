@@ -43,7 +43,10 @@ const API_CODE = {
   //Available time management
   API_CREATE_AVAILABLE_TIME: '/v1/AvailableTime',
   API_GET_AVAILABLE_TIME: '/v1/AvailableTime',
-  API_REMOVE_AVAILABLE_TIME: '/v1/AvailableTime'
+  API_REMOVE_AVAILABLE_TIME: '/v1/AvailableTime',
+  
+  //Children management
+  API_CHILDREN_LIST: '/v1/ChildInformation'
 };
 
 export default API_CODE;

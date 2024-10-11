@@ -30,7 +30,7 @@ function Tutor() {
                     <Box sx={{ width: "60%" }} pt={1}>
                         <Card sx={{ display: 'flex', p: "30px", width: "100%", boxSizing: "border-box", alignItems: "center" }}>
                             <Box sx={{ flexBasis: "40%" }}>
-                                <img src='https://rainbowthemes.net/themes/histudy/wp-content/uploads/2024/03/team-04.webp'
+                                <img src='https://sep490g50v1.blob.core.windows.net/logos-public/21ba5f2c-1f01-42c5-927b-2f66b885e34b.jpg'
                                     style={{ objectFit: "cover", width: "100%", height: "auto" }}
                                     alt='Live from space album cover'
                                 />
@@ -102,7 +102,7 @@ function Tutor() {
                                     <CardMedia
                                         component="img"
                                         height="100%"
-                                        image="https://rainbowthemes.net/themes/histudy/wp-content/uploads/2024/03/team-04.webp"
+                                        image="https://sep490g50v1.blob.core.windows.net/logos-public/8bd8350e-c12d-4636-8bf6-058dcb1c79a6.jpg"
                                         alt="green iguana"
                                     />
                                     <Box

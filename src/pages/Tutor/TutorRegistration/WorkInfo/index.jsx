@@ -21,11 +21,11 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
         setOpen(false);
     };
     const [loading, setLoading] = useState(false);
-    const nav = useNavigate();
     const handleSubmit = async () => {
         try {
             setOpenConfirm(false);
-            if (certificate?.length !== 0 && career?.lenght !== 0) {
+            console.log("Hello");
+            if (certificate?.length !== 0 && career?.length !== 0) {
                 setLoading(true);
                 const submitForm = new FormData();
                 submitForm.append("Email", tutorInformation.email);
@@ -68,8 +68,6 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 submitForm.append(`Certificates[${certificate.length}].issuingInstitution`, IdVerification.issuingInstitution);
                 submitForm.append(`Certificates[${certificate.length}].issuingDate`, IdVerification.issuingDate);
                 submitForm.append(`Certificates[${certificate.length}].identityCardNumber`, IdVerification.identityCardNumber);
-
-                console.log(tutorIntroduction.curriculum);
                 Array.from(IdVerification.medias).forEach((file, fileIndex) => {
                     submitForm.append(`Certificates[${certificate.length}].Medias`, file);
                 });
@@ -78,6 +76,7 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                     console.log(res);
                     handleNext();
                 }, (err) => {
+                    enqueueSnackbar(err.error[0], { variant: "error" })
                     console.log(err);
                 })
                 setLoading(false);

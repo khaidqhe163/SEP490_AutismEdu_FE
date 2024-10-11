@@ -1,24 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Grid, Box, TextField, InputAdornment, Card, CardContent, CardMedia, Typography, Rating, Button, Link, IconButton, CardActions, Container, Select, MenuItem, InputLabel, FormControl, CircularProgress } from '@mui/material';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Stack from '@mui/material/Stack';
-import GridViewIcon from '@mui/icons-material/GridView';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import SearchIcon from '@mui/icons-material/Search';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import ClassOutlinedIcon from '@mui/icons-material/ClassOutlined';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import Person3OutlinedIcon from '@mui/icons-material/Person3Outlined';
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import ButtonComponent from '~/Components/ButtonComponent';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import StarIcon from '@mui/icons-material/Star';
-import CALL_API_ADDRESS from '~/utils/call_api_address';
-import axios from 'axios';
+import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Grid, IconButton, Link, Rating, Typography } from '@mui/material';
+import { useState } from 'react';
+import ButtonComponent from '~/Components/ButtonComponent';
 import FormSearch from './FormSearch/FormSearch';
 
 function SearchTutor() {
@@ -36,7 +23,7 @@ function SearchTutor() {
     const arrCenter = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     const [visibleCards, setVisibleCards] = useState(6);
     const [showFilters, setShowFilters] = useState(false);
-    
+
     const handleFilterClick = () => {
         setShowFilters(!showFilters);
     };
@@ -63,13 +50,13 @@ function SearchTutor() {
 
     // Khi người dùng chọn đánh giá
     const handleRatingChange = (event) => {
-        setSelectedRating(event.target.value);
+        // setSelectedRating(event.target.value);
     };
 
     const breadcrumbs = [
         <Link underline="hover" key="1" color="inherit" href="/" onClick={handleClick}>
             Trang chủ
-        </Link>, ,
+        </Link>,
         <Typography key="3" sx={{ color: 'rgb(107, 115, 133)' }}>
             Danh sách trung tâm
         </Typography>,
@@ -96,7 +83,7 @@ function SearchTutor() {
                             <Grid container spacing={5}>
                                 {selected === "list" ?
                                     arrCenter.slice(0, visibleCards).map((c, index) =>
-                                    (<Grid item xs={4}>
+                                    (<Grid item xs={4} key={index}>
                                         <Card sx={{
                                             padding: "20px", minHeight: "auto",
                                             transition: "transform 0.3s ease, box-shadow 0.3s ease",
@@ -108,7 +95,7 @@ function SearchTutor() {
                                         }}>
                                             <CardMedia
                                                 sx={{ height: 240, objectPosition: "top", objectFit: "cover" }}
-                                                image="https://www.workitdaily.com/media-library/a-happy-young-teacher-grades-an-assignment-from-one-of-her-students.jpg?id=22146397&width=1200&height=800&quality=85&coordinates=0%2C0%2C0%2C1"
+                                                image="https://sep490g50v1.blob.core.windows.net/logos-public/8bd8350e-c12d-4636-8bf6-058dcb1c79a6.jpg"
                                                 title="apeople"
                                             />
                                             <CardContent>
@@ -184,7 +171,7 @@ function SearchTutor() {
                                             </CardActions>
                                         </Card>
                                     </Grid>)
-                                    ) : arrCenter.slice(0, visibleCards).map((c, index) => (<Grid item xs={12}>
+                                    ) : arrCenter.slice(0, visibleCards).map((c, index) => (<Grid item xs={12} key={index}>
                                         <Card sx={{
                                             display: 'flex',
                                             padding: "20px",
@@ -199,7 +186,7 @@ function SearchTutor() {
 
                                             <CardMedia
                                                 sx={{ width: '40%', height: 'auto', borderRadius: '8px' }}
-                                                image="https://www.workitdaily.com/media-library/a-happy-young-teacher-grades-an-assignment-from-one-of-her-students.jpg?id=22146397&width=1200&height=800&quality=85&coordinates=0%2C0%2C0%2C1"
+                                                image="https://sep490g50v1.blob.core.windows.net/logos-public/21ba5f2c-1f01-42c5-927b-2f66b885e34b.jpg"
                                                 title="Hanoi"
                                             />
 

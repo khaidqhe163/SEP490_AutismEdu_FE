@@ -1,5 +1,5 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Accordion, AccordionSummary, Box, Grid } from '@mui/material';
+import { Accordion, AccordionActions, AccordionSummary, Box, Button, Grid } from '@mui/material';
 import AccordionDetails from '@mui/material/AccordionDetails';
 function TutorWorkExperience({ workExperiences }) {
     const formatDate = (date) => {
@@ -20,7 +20,15 @@ function TutorWorkExperience({ workExperiences }) {
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                 >
-                                    {w.companyName}
+                                    {w.companyName} {w.certificateName} {
+                                        w.requestStatus === 0 && <span style={{ color: "red", marginLeft: "20px" }}>(Đã từ chối)</span>
+                                    }
+                                    {
+                                        w.requestStatus === 1 && <span style={{ color: "green", marginLeft: "20px" }}>(Đã chấp nhận)</span>
+                                    }
+                                    {
+                                        w.requestStatus === 2 && <span style={{ color: "blue", marginLeft: "20px" }}>(Đang chờ)</span>
+                                    }
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <Grid container columnSpacing={2} rowSpacing={3}>
@@ -30,6 +38,11 @@ function TutorWorkExperience({ workExperiences }) {
                                         <Grid item xs={8}>{formatDate(w.startDate)} - {formatDate(w.endDate)}</Grid>
                                     </Grid>
                                 </AccordionDetails>
+                                {
+                                    w.requestStatus === 2 && (<AccordionActions>
+                                        <Button>Từ chối</Button>
+                                    </AccordionActions>)
+                                }
                             </Accordion>
                         )
                     })
