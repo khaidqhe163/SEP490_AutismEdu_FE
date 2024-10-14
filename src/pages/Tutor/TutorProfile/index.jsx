@@ -16,14 +16,19 @@ import TabPanel from '@mui/lab/TabPanel';
 import { Box, Button, Divider, Grid, Stack, Typography, TextField } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import { useState } from 'react';
-
+import { useEffect, useState } from 'react';
 import { addDays, format, startOfWeek } from 'date-fns';
 import TutorRating from './TutorRating';
 import TutorRequestModal from './TutorProfileModal/TutorRequestModal';
+import services from '~/plugins/services';
+import { useParams } from 'react-router-dom';
+import LoadingComponent from '~/components/LoadingComponent';
+import CelebrationIcon from '@mui/icons-material/Celebration';
 
 function TutorProfile() {
     const today = new Date();
+    const { id } = useParams();
+
     const [learnGoal, setLearnGoal] = useState("Con bạn sẽ:\n* Học nhiều chiến lược đọc và cách áp dụng chúng.\n* Hiểu câu chuyện qua các câu hỏi hiểu bài.\n* Luyện tập từ vựng nhìn thấy\n* Luyện tập độ trôi chảy, từ vựng và nhận thức âm thanh.\n* Luyện tập lượt chơi, kỹ năng lắng nghe, kiên nhẫn và nhận thức xã hội.\n* Luyện tập cấu trúc câu qua viết mô phỏng.");
     const [additionalContent, setAdditionalContent] = useState(
         "Nội dung bổ sung:\n* Phát triển khả năng giao tiếp hiệu quả trong môi trường xã hội.\n* Học cách xử lý thông tin và giải quyết vấn đề qua câu chuyện.\n* Luyện tập trí nhớ thông qua các hoạt động liên quan đến từ vựng.\n* Nâng cao khả năng hiểu biết về ngữ pháp và cấu trúc câu.\n* Cải thiện sự tự tin và khả năng diễn đạt thông qua thảo luận nhóm."
@@ -51,8 +56,55 @@ function TutorProfile() {
     ]);
 
 
+    const [tutor, setTutor] = useState({});
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        handleGetProfile(id);
+    }, [id]);
+
+    const handleGetProfile = async (id) => {
+        setLoading(true);
+        try {
+            await services.TutorManagementAPI.handleGetTutor(id, (res) => {
+                setTutor(res.result);
+            }, (error) => {
+                console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    console.log(tutor);
+
+
     const handleDateChange = (date) => {
         setSchedule(date);
+    };
+
+    const formatDate = (dateString) => {
+        return format(new Date(dateString), 'dd/MM/yyyy');
+    };
+
+    const getCity = (address) => {
+        const city = address.split('|')[0];
+        return city;
+    };
+
+    const calculateAge = (birthDate) => {
+
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        return age;
     };
 
     const renderWeekButtons = () => {
@@ -128,27 +180,27 @@ function TutorProfile() {
                         <Box sx={{ display: "flex", alignItems: 'center', mb: 5 }}>
                             <Box sx={{ borderRadius: "50%", overflow: 'hidden', maxWidth: "18%", height: "auto" }} border={1}>
                                 <img
-                                    src="https://fiverr-res.cloudinary.com/image/upload/f_auto,q_auto,t_profile_original/v1/attachments/profile/photo/a5a33e6482d09778e33981e496056e19-1666593838077/71e44813-00fe-4e67-9e7c-b9123754e95a.jpg"
+                                    src={tutor?.imageUrl}
                                     alt='avatartutor'
                                     style={{ width: '100%', height: '100%', objectFit: "cover", objectPosition: "center" }}
                                 />
                             </Box>
                             <Box ml={3}>
-                                <Typography ml={0.5} variant='h4'>Nguyễn Văn Phú</Typography>
-                                <Stack direction={"row"} alignItems={"center"}><StarIcon sx={{ color: 'gold', mr: 0.5 }} /> <Typography variant='subtitle1' fontWeight={"bold"}>4.8</Typography><Typography variant='body1' ml={1}>(385 lượt đánh giá)</Typography></Stack>
-                                <Typography variant='body1' ml={0.5}>Đã tham gia: 12-06-2024</Typography>
+                                <Typography ml={0.5} variant='h4'>{tutor?.fullName}</Typography>
+                                <Stack direction={"row"} alignItems={"center"}><StarIcon sx={{ color: 'gold', mr: 0.5 }} /> <Typography variant='subtitle1' fontWeight={"bold"}>{tutor?.reviewScore}</Typography><Typography variant='body1' ml={1}>({tutor?.totalReview} lượt đánh giá)</Typography></Stack>
+                                <Typography variant='body1' ml={0.5}>Đã tham gia: {tutor?.createdDate && formatDate(tutor?.createdDate)}</Typography>
                                 <Stack direction={"row"} alignItems={"center"} gap={2}>
                                     <Box sx={{ display: 'flex' }}>
                                         <LocationOnOutlinedIcon color='error' sx={{ mr: 0.5 }} />
-                                        <Typography variant='subtitle1'>Hồ Chí Minh</Typography>
+                                        <Typography variant='subtitle1'>{tutor?.address ? getCity(tutor?.address) : 'Hồ Chí Minh'}</Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex' }}>
-                                        <RecordVoiceOverOutlinedIcon color='primary' sx={{ mr: 0.5 }} />
-                                        <Typography variant='subtitle1'>Tiếng Việt, Tiếng Anh</Typography>
+                                        <CelebrationIcon color='info' sx={{ mr: 0.5 }}/>
+                                        <Typography variant='subtitle1'>{tutor?.dateOfBirth && calculateAge(new Date(tutor?.dateOfBirth))} tuổi</Typography>
                                     </Box>
                                 </Stack>
                             </Box>
-                            <Box ml={30}>
+                            <Box ml={50}>
                                 <TutorRequestModal />
                             </Box>
                         </Box>
@@ -394,6 +446,7 @@ function TutorProfile() {
                     </Grid>
 
                 </Grid>
+                <LoadingComponent open={loading} setOpen={setLoading} />
             </Grid>
             <Grid item xs={2} />
         </Grid>

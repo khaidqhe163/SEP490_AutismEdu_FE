@@ -7,8 +7,8 @@ const createAvailableTime = async (params, success, error) => {
 const getAvailableTime = async (success, error, params) => {
     await get(API_CODE.API_GET_AVAILABLE_TIME, success, error, params);
 };
-const removeAvailableTime = async (data, success, error) => {
-    await del(API_CODE.API_REMOVE_AVAILABLE_TIME, data, success, error);
+const removeAvailableTime = async (endpoint, success, error) => {
+    await del(API_CODE.API_REMOVE_AVAILABLE_TIME + endpoint, success, error);
 };
 
 export const AvailableTimeManagementAPI = {

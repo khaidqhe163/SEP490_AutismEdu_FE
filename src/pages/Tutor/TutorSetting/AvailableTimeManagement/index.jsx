@@ -3,8 +3,12 @@ import { Box, Button, Grid, IconButton, Stack, TextField, Typography } from '@mu
 import CancelIcon from '@mui/icons-material/Cancel';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
+import { useDispatch, useSelector } from 'react-redux';
+import { tutorInfor } from '~/redux/features/tutorSlice';
 
 function AvailableTimeManagement() {
+    const tutorInfo = useSelector(tutorInfor);
+
     const [timeData, setTimeData] = useState({
         weekday: 1,
         timeSlot: {
@@ -16,27 +20,27 @@ function AvailableTimeManagement() {
     const [availability, setAvailability] = useState([]);
 
     useEffect(() => {
-        handleGetAllAvailableTime(1);  // Get default weekday (1 - Monday)
+        handleGetAllAvailableTime(1);
     }, []);
 
     const handleGetAllAvailableTime = async (weekday) => {
         try {
             await services.AvailableTimeManagementAPI.getAvailableTime((res) => {
-                setAvailability(res.result || []);  // Set availability to empty array if no data
+                setAvailability(res.result || []);
             }, (error) => {
                 console.log(error);
-            }, { weekday });
+            }, { userId ,weekday });
         } catch (error) {
             console.log(error);
         }
     };
     console.log(availability);
-    
+
     const handleSave = async () => {
         try {
             await services.AvailableTimeManagementAPI.createAvailableTime(timeData, (res) => {
                 enqueueSnackbar("Create available time success!", { variant: "success" });
-                handleGetAllAvailableTime(timeData.weekday);  // Refresh the available time after saving
+                handleGetAllAvailableTime(timeData.weekday);
             }, (error) => {
                 if (error.code === 400) {
                     enqueueSnackbar(error.error[0], { variant: "error" });
@@ -52,9 +56,9 @@ function AvailableTimeManagement() {
         }));
     };
 
-    const handleDeleteTime = async (weekday, timeSlotId) => {
+    const handleDeleteTime = async (timeSlotId) => {
         try {
-            await services.AvailableTimeManagementAPI.removeAvailableTime({ weekday, timeSlotId }, (res) => {
+            await services.AvailableTimeManagementAPI.removeAvailableTime(timeSlotId, (res) => {
                 setAvailability(availability.filter((avai) => (avai.timeSlotId !== timeSlotId)));
                 enqueueSnackbar("Remove available time success!", { variant: "success" });
             }, (error) => {
@@ -71,7 +75,7 @@ function AvailableTimeManagement() {
             ...prev,
             weekday
         }));
-        await handleGetAllAvailableTime(weekday);  // Update availability when weekday changes
+        await handleGetAllAvailableTime(weekday);
     };
 
     const renderWeekButtons = () => {
@@ -115,7 +119,7 @@ function AvailableTimeManagement() {
                     gap={1}
                 >
                     <Typography variant="body1">{time.timeSlot}</Typography>
-                    <IconButton onClick={() => handleDeleteTime(timeData?.weekday, time.timeSlotId)}>
+                    <IconButton onClick={() => handleDeleteTime(time.timeSlotId)}>
                         <CancelIcon color='error' />
                     </IconButton>
                 </Box>
@@ -174,9 +178,12 @@ function AvailableTimeManagement() {
                         </Button>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap' }}>
-                        <Typography variant='h6'>{`Thứ ${timeData.weekday}`}</Typography>
+                        <Typography variant='h6'>{`Thứ ${timeData.weekday + 1}`}</Typography>
                         <Grid container spacing={1} sx={{ mt: 1 }}>
-                            {availability?.length ? renderTimeButtons() : <Typography>Không có thời gian rảnh</Typography>}
+                            {availability?.length ? renderTimeButtons() :
+                                <Grid item xs={12} sm={6} md={4} sx={{ mb: 1 }}>
+                                    <Typography>Không có thời gian rảnh</Typography>
+                                </Grid>}
                         </Grid>
                     </Box>
                 </Stack>
