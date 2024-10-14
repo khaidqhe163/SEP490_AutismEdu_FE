@@ -9,14 +9,15 @@ import { userInfor } from '~/redux/features/userSlice';
 function ClientLayout() {
     const userInfo = useSelector(userInfor);
     useEffect(() => {
-        if (userInfor) {
+        if (userInfo) {
             handleGetChildren();
         }
     }, [userInfo])
 
     const handleGetChildren = async () => {
         try {
-            await services.ChildrenManagementAPI.listChildren((res) => {
+            console.log(userInfo);
+            await services.ChildrenManagementAPI.listChildren(userInfo.id, (res) => {
                 console.log("data child ==> ", res);
             }, (err) => {
                 console.log("data child ==> ", err);
