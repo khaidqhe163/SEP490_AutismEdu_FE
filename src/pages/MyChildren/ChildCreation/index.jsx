@@ -2,6 +2,9 @@ import { Box, Button, FormHelperText, Grid, MenuItem, Modal, Select, TextField, 
 import { useFormik } from 'formik';
 import React, { useState } from 'react'
 import AddIcon from '@mui/icons-material/Add';
+import services from '~/plugins/services';
+import { enqueueSnackbar } from 'notistack';
+import LoadingComponent from '~/components/LoadingComponent';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -14,32 +17,56 @@ const style = {
     overflowY: "auto",
     p: 4,
 };
-function ChildCreation() {
+function ChildCreation({ setChildren }) {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
+    const [loading, setLoading] = useState(false);
     const validate = values => {
         const errors = {};
+        if (!values.fullName) {
+            errors.fullName = "Bắt buộc"
+        } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.fullName)) {
+            errors.fullName = "Tên không hợp lệ!"
+        }
+        if (!values.gender) {
+            errors.gender = "Bắt buộc"
+        }
+        if (!values.dateOfBirth) {
+            errors.dateOfBirth = "Bắt buộc"
+        }
         return errors;
     };
-
-    const handleClick = () => {
-
-    }
     const formik = useFormik({
         initialValues: {
             fullName: '',
             dateOfBirth: '',
-            gender: 'Nam',
-
+            gender: 'True',
         },
         validate,
         onSubmit: async (values) => {
-
+            try {
+                setLoading(true);
+                await services.ChildrenManagementAPI.createChild({
+                    name: values.fullName,
+                    birthDate: values.dateOfBirth,
+                    isMale: values.gender === "True" ? true : false
+                }, (res) => {
+                    console.log(res);
+                    setChildren((pre) => [...pre, res.result])
+                    enqueueSnackbar("Tạo thành công!", { variant: "success" });
+                    handleClose();
+                }, (err) => {
+                    console.log(err);
+                    enqueueSnackbar("Tạo thất bại!", { variant: "error" })
+                })
+                setLoading(false)
+            } catch (error) {
+                setLoading(false);
+                enqueueSnackbar("Tạo thất bại!", { variant: "error" })
+            }
         }
     });
-    console.log(formik.values);
     return (
         <>
             <Button variant='contained' startIcon={<AddIcon />} onClick={handleOpen}>Thêm thông tin trẻ</Button>
@@ -77,8 +104,8 @@ function ChildCreation() {
                                     onChange={formik.handleChange}
                                     fullWidth
                                 >
-                                    <MenuItem value={"Nam"}>Nam</MenuItem>
-                                    <MenuItem value={"Nữ"}>Nữ</MenuItem>
+                                    <MenuItem value={"True"}>Nam</MenuItem>
+                                    <MenuItem value={"False"}>Nữ</MenuItem>
                                 </Select>
                                 {
                                     formik.errors.gender && (
@@ -110,7 +137,7 @@ function ChildCreation() {
                             <Button onClick={handleClose}>Huỷ</Button>
                         </Box>
                     </form>
-
+                    <LoadingComponent open={loading} setOpen={setLoading} />
                 </Box>
             </Modal>
         </>

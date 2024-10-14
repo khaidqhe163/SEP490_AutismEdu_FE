@@ -70,9 +70,10 @@ axiosInstance.interceptors.response.use(function (response) {
 
 async function refreshAccessToken() {
   try {
-    const response = await axiosInstance.post('/api/v1/Auth/refresh', { refreshToken: Cookies.get("refresh_token"), accessToken: Cookies.get("access_token") });
+    const response = await axios.post(import.meta.env.VITE_BASE_URL + 'api/v1/Auth/refresh', { refreshToken: Cookies.get("refresh_token"), accessToken: Cookies.get("access_token") });
     Cookies.set("access_token", response.data.result.accessToken)
     Cookies.set("refresh_token", response.data.result.refreshToken)
+    console.log(response.data);
     return response.data.result.accessToken;
   } catch (error) {
     console.error('Failed to refresh access token:', error);

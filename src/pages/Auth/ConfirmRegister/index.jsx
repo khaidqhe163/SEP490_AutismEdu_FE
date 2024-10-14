@@ -1,5 +1,5 @@
 import { enqueueSnackbar } from 'notistack';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import service from '~/plugins/services'
 import PAGES from '~/utils/pages';
@@ -10,12 +10,19 @@ function ConfirmRegister() {
     const code = urlParams.get('code').replaceAll(" ", "+");
     const security = urlParams.get('security').replaceAll(" ", "+");
     const nav = useNavigate();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     useEffect(() => {
-        handleSubmit();
+        setIsSubmitting(true);
     }, [])
+    useEffect(() => {
+        if (isSubmitting) {
+            handleSubmit();
+        }
+    }, [isSubmitting]);
     const handleSubmit = async () => {
         try {
-            console.log(userId, code, security);
+            console.log("zoday");
             await service.AuthenticationAPI.confirmEmail({
                 code,
                 security,
@@ -33,10 +40,10 @@ function ConfirmRegister() {
                 nav(PAGES.ROOT + PAGES.LOGIN)
             })
         } catch (error) {
-            enqueueSnackbar("Xác thực tài khoản thất bại!", { variant: "error" });
             nav(PAGES.ROOT + PAGES.LOGIN)
         }
     }
+    console.log(isSubmitting);
     return (
         <></>
     )
