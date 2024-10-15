@@ -169,13 +169,13 @@ function Header() {
                                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                             >
-                                <MenuItem onClick={handleCloseAccountMenu}>
+                                <MenuItem onClick={() => {handleCloseAccountMenu; nav(PAGES.ROOT + PAGES.PARENT_PROFILE)}}>
                                     <Avatar /> Thông tin cá nhân
                                 </MenuItem>
                                 <Divider />
                                 {
                                     userInfo.userType === "ApplicationUser" && (
-                                        <MenuItem onClick={handleCloseAccountMenu}>
+                                        <MenuItem onClick={() => {handleCloseAccountMenu; nav(PAGES.ROOT + PAGES.CHANGE_PASSWORD)}}>
                                             <ListItemIcon>
                                                 <Settings fontSize="small" />
                                             </ListItemIcon>

@@ -1,32 +1,27 @@
+import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
 import GoogleIcon from '@mui/icons-material/Google';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { LoadingButton } from '@mui/lab';
-import { Box, Divider, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, SvgIcon } from '@mui/material';
+import { Box, Button, Divider, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import axios from 'axios';
+import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import TrelloIcon from '~/assets/trello.svg?react';
 import HtmlTooltip from '~/components/HtmlTooltip';
-import service from '~/plugins/services';
-import checkValid from '~/utils/auth_form_verify';
+import services from '~/plugins/services';
 import PAGES from '~/utils/pages';
-import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
-import { useFormik } from 'formik';
 function RegisterForm({ setVerify, setEmailVerify }) {
     const [showPassword, setShowPassword] = useState(false);
-    const [emailError, setEmailError] = useState(null);
-    const [passwordConfirmError, setPasswordConfirmError] = useState(null);
-    const [passwordError, setPasswordError] = useState(null);
-    const [fullName, setFullName] = useState("");
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState("");
-    const [cfPassword, setCfPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [provinces, setProvinces] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [communes, setCommunes] = useState([]);
     const INPUT_CSS = {
         width: "100%",
         borderRadius: "15px",
@@ -41,13 +36,49 @@ function RegisterForm({ setVerify, setEmailVerify }) {
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     useEffect(() => {
-        if (loading) {
-            handleSubmit();
-        }
-    }, [loading])
+        handleGetProvince();
+    }, [])
 
     const validate = values => {
         const errors = {};
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!values.email) {
+            errors.email = "Bắt buộc"
+        } else if (!emailRegex.test(values.email)) {
+            errors.email = "Email của bạn không hợp lệ"
+        }
+        if (!values.fullName) {
+            errors.fullName = 'Bắt buộc';
+        } else if (values.fullName.length > 20) {
+            errors.fullName = 'Tên dưới 20 ký tự';
+        }
+        if (!values.phoneNumber) {
+            errors.phoneNumber = 'Bắt buộc';
+        } else if (!/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$/.test(values.phoneNumber)) {
+            errors.phoneNumber = 'Số điện thoại không hợp lệ';
+        }
+        if (!values.province) {
+            errors.province = 'Bắt buộc';
+        }
+        if (!values.district) {
+            errors.district = 'Bắt buộc';
+        }
+        if (!values.commune) {
+            errors.commune = 'Bắt buộc';
+        }
+        if (!values.homeNumber) {
+            errors.homeNumber = 'Bắt buộc';
+        }
+        if (!values.password) {
+            errors.password = 'Bắt buộc';
+        } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$?_-]).+$/.test(values.password)) {
+            errors.password = 'Mật khẩu không hợp lệ'
+        }
+        if (!values.cfPassword) {
+            errors.cfPassword = 'Bắt buộc';
+        } else if (values.password !== values.cfPassword) {
+            errors.cfPassword = 'Không giống mật khẩu';
+        }
         return errors;
     };
     const formik = useFormik({
@@ -59,44 +90,65 @@ function RegisterForm({ setVerify, setEmailVerify }) {
             commune: '',
             homeNumber: '',
             phoneNumber: '',
-            password: ''
+            password: '',
+            cfPassword: ''
         },
         validate,
         onSubmit: async (values) => {
-            handleSubmit
+            const selectedCommune = communes.find(p => p.idCommune === values.commune);
+            const selectedProvince = provinces.find(p => p.idProvince === values.province);
+            const selectedDistrict = districts.find(p => p.idDistrict === values.district);
+            const submitData = {
+                email: values.email,
+                fullName: values.fullName,
+                password: values.password,
+                address: `${selectedProvince}|${selectedDistrict}|${selectedCommune}|${values.homeNumber}`,
+                phoneNumber: values.phoneNumber
+            }
+            setLoading(true);
+            await services.AuthenticationAPI.register(submitData, (res) => {
+                enqueueSnackbar("Đăng ký thành công!", { variant: "success" });
+                setVerify(true);
+                setEmailVerify(values.email);
+            }, (err) => {
+                if (err.code === 500) {
+                    enqueueSnackbar("Đăng ký thật bại!", { variant: "error" });
+                }
+                else enqueueSnackbar(err.error[0], { variant: "error" });
+            })
+            setLoading(false)
         }
     });
-    const handleSubmit = async () => {
-        if (emailError !== null || passwordError !== null || passwordConfirmError !== null) {
-            setLoading(false);
-            return;
-        } else {
-            const checkPw = checkValid(password, 2, setPasswordError);
-            const checkCfPw = checkValid(cfPassword, 3, setPasswordConfirmError, password);
-            const checkEmail = checkValid(email, 1, setEmailError);
-            if (!checkPw || !checkCfPw || !checkEmail || fullName === "") {
-                setLoading(false);
-                return;
-            } else {
-                await service.AuthenticationAPI.register({
-                    fullName,
-                    email,
-                    password,
-                    role: "user"
-                }, (res) => {
-                    enqueueSnackbar("Đăng ký thành công!", { variant: "success" });
-                    setVerify(true);
-                    setEmailVerify(email);
-                }, (err) => {
-                    if (err.code === 500) {
-                        enqueueSnackbar("Đăng ký thật bại!", { variant: "error" });
-                    }
-                    else enqueueSnackbar(err.error[0], { variant: "error" });
-                })
-                setLoading(false)
-            }
+    const handleGetProvince = async () => {
+        try {
+            const data = await axios.get("https://vietnam-administrative-division-json-server-swart.vercel.app/province")
+            setProvinces(data.data)
+        } catch (error) {
+            console.log(error);
         }
     }
+
+    const handleGetDistrict = async (id) => {
+        try {
+            if (id?.length !== 0) {
+                const data = await axios.get("https://vietnam-administrative-division-json-server-swart.vercel.app/district?idProvince=" + id);
+                setDistricts(data.data);
+                return data.data
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const handleGetCommunes = async (id) => {
+        try {
+            const data = await axios.get("https://vietnam-administrative-division-json-server-swart.vercel.app/commune?idDistrict=" + id);
+            setCommunes(data.data);
+            return data.data
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <Box sx={{ bgcolor: "#f7f7f9", display: "flex", alignItems: "center", justifyContent: "center", py: "50px" }}>
             <Card sx={{
@@ -168,11 +220,33 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                                     labelId="province"
                                     value={formik.values.province}
                                     label="Tỉnh / Thành phố"
-                                    onChange={formik.handleChange}
+                                    onChange={(event) => {
+                                        const selectedProvince = event.target.value;
+                                        if (selectedProvince && formik.values.province !== selectedProvince) {
+                                            formik.handleChange(event);
+                                            handleGetDistrict(event.target.value);
+                                            setCommunes([]);
+                                            formik.setFieldValue('district', '')
+                                            formik.setFieldValue('commune', '')
+                                        }
+                                    }}
+                                    error={!!formik.errors.province}
+                                    name='province'
+                                    renderValue={(selected) => {
+                                        if (!selected || selected === "") {
+                                            return <em>Tỉnh / TP</em>;
+                                        }
+                                        const selectedProvince = provinces.find(p => p.idProvince === selected);
+                                        return selectedProvince ? selectedProvince.name : "";
+                                    }}
                                 >
-                                    <MenuItem value={10}>Ten</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
+                                    {
+                                        provinces.length !== 0 && provinces?.map((province) => {
+                                            return (
+                                                <MenuItem value={province?.idProvince} key={province?.idProvince}>{province.name}</MenuItem>
+                                            )
+                                        })
+                                    }
                                 </Select>
                             </FormControl>
                             <FormControl sx={{ ...INPUT_CSS, mt: "20px" }}>
@@ -181,11 +255,28 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                                     labelId="district"
                                     value={formik.values.district}
                                     label="Huyện / Quận"
-                                    onChange={formik.handleChange}
+                                    name='district'
+                                    onChange={(event) => {
+                                        formik.handleChange(event); handleGetCommunes(event.target.value);
+                                        formik.setFieldValue('commune', '')
+                                    }}
+                                    renderValue={(selected) => {
+                                        if (!selected || selected === "") {
+                                            return <em>Quận / Huyện</em>;
+                                        }
+                                        const selectedDistrict = districts.find(p => p.idDistrict === selected);
+                                        return selectedDistrict ? selectedDistrict.name : <em>Quận / Huyện</em>;
+                                    }}
+                                    error={!!formik.errors.district}
+                                    disabled={districts.length === 0}
                                 >
-                                    <MenuItem value={10}>Ten</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
+                                    {
+                                        districts.length !== 0 && districts?.map((district) => {
+                                            return (
+                                                <MenuItem value={district?.idDistrict} key={district?.idDistrict}>{district.name}</MenuItem>
+                                            )
+                                        })
+                                    }
                                 </Select>
                             </FormControl>
                             <FormControl sx={{ ...INPUT_CSS, mt: "20px" }}>
@@ -194,13 +285,33 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                                     labelId="commune"
                                     value={formik.values.commune}
                                     label="Xã / Phường"
+                                    name='commune'
                                     onChange={formik.handleChange}
-                                    error={!!formik.errors.homeNumber}
+                                    renderValue={(selected) => {
+                                        if (!selected || selected === "") {
+                                            return <em>Xã / Phường</em>;
+                                        }
+                                        const selectedCommune = communes.find(p => p.idCommune === selected);
+                                        return selectedCommune ? selectedCommune.name : <em>Xã / Phường</em>;
+                                    }}
+                                    error={!!formik.errors.commune}
+                                    disabled={communes.length === 0}
                                 >
-                                    <MenuItem value={10}>Ten</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
+                                    {
+                                        communes.length !== 0 && communes?.map((commune) => {
+                                            return (
+                                                <MenuItem value={commune?.idCommune} key={commune?.idCommune}>{commune.name}</MenuItem>
+                                            )
+                                        })
+                                    }
                                 </Select>
+                                {
+                                    formik.errors.commune && (
+                                        <FormHelperText error>
+                                            {formik.errors.commune}
+                                        </FormHelperText>
+                                    )
+                                }
                             </FormControl>
                             <FormControl sx={{ ...INPUT_CSS, mt: "20px" }}>
                                 <InputLabel htmlFor="homeNumber">Số nhà</InputLabel>
@@ -220,10 +331,12 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                             <FormControl sx={{ ...INPUT_CSS, mt: "20px" }} variant="outlined">
                                 <InputLabel htmlFor="password">Mật khẩu</InputLabel>
                                 <OutlinedInput
-                                    error={!!passwordError}
+                                    error={!!formik.errors.password}
                                     id="password"
+                                    name='password'
+                                    value={formik.values.password}
                                     type={showPassword ? 'text' : 'password'}
-                                    onChange={(e) => { checkValid(e.target.value, 2, setPasswordError); setPassword(e.target.value) }}
+                                    onChange={formik.handleChange}
                                     endAdornment={
                                         <InputAdornment position="end">
                                             <IconButton
@@ -239,14 +352,14 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                                     label="Mật khẩu"
                                 />
                                 {
-                                    passwordError && (
+                                    formik.errors.password && (
                                         <FormHelperText error id="password-error">
                                             <Box sx={{
                                                 display: "flex",
                                                 alignItems: "center",
                                                 justifyContent: "space-between"
                                             }}>
-                                                <p>{passwordError}</p>
+                                                <p>{formik.errors.password}</p>
                                                 <HtmlTooltip
                                                     title={
                                                         <React.Fragment>
@@ -254,7 +367,7 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                                                                 <li>Password length from 8 to 15 characters</li>
                                                                 <li>Contains at least 1 number</li>
                                                                 <li>Contains lowercase and uppercase letters</li>
-                                                                <li>Contains at least one of the following special characters (. ! & %)</li>
+                                                                <li>Contains at least one of the following special characters (! @ $ ? _ -)</li>
                                                             </ul>
                                                         </React.Fragment>
                                                     }
@@ -269,16 +382,12 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                             <FormControl sx={{ ...INPUT_CSS, mt: "20px" }} variant="outlined">
                                 <InputLabel htmlFor="confirm-password">Nhập lại mật khẩu</InputLabel>
                                 <OutlinedInput
-                                    error={!!passwordConfirmError}
-                                    value={cfPassword}
+                                    error={!!formik.errors.cfPassword}
+                                    value={formik.values.cfPassword}
                                     id="confirm-password"
+                                    name='cfPassword'
                                     type={showPassword ? 'text' : 'password'}
-                                    onChange={(e) => {
-                                        if (!e.target.value.includes(" ")) {
-                                            setCfPassword(e.target.value);
-                                            checkValid(e.target.value, 3, setPasswordConfirmError, password);
-                                        }
-                                    }}
+                                    onChange={formik.handleChange}
                                     endAdornment={
                                         <InputAdornment position="end">
                                             <IconButton
@@ -294,19 +403,17 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                                     label="Nhập lại mật khẩu"
                                 />
                                 {
-                                    passwordConfirmError && (
-                                        <FormHelperText error id="cf-password-id">
-                                            {passwordConfirmError}
+                                    formik.errors.cfPassword && (
+                                        <FormHelperText error>
+                                            {formik.errors.cfPassword}
                                         </FormHelperText>
                                     )
                                 }
                             </FormControl>
                         </Box>
                         <LoadingButton variant='contained' sx={{ width: "100%", marginTop: "20px" }}
-                            loading={loading} loadingIndicator="Sending..."
-                            onClick={() => {
-                                setLoading(true);
-                            }}>
+                            loading={loading} loadingIndicator="Đang gửi..."
+                            type='submit'>
                             Đăng ký
                         </LoadingButton>
                     </form>

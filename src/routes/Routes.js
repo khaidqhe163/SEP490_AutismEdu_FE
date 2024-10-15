@@ -24,6 +24,8 @@ import TutorRequest from '~/pages/Tutor/TutorRequest'
 import RegisterOptions from '~/pages/Auth/Register/RegisterOptions'
 import MyChildren from '~/pages/MyChildren'
 import Calendar from '~/pages/Tutor/Calendar'
+import ParentProfile from '~/pages/Parent/ParentProfile'
+import ChangePassword from '~/pages/Parent/ChangePassword'
 
 const UnLayoutRoutes = [
     {
@@ -81,15 +83,26 @@ const publicRoutes = [
     {
         path: PAGES.ROOT + PAGES.TUTORPROFILEUPDATE,
         element: TutorProfileUpdate
-    }, {
+    },
+    {
         path: PAGES.ROOT + PAGES.LOGIN_OPTION,
         element: LoginOption
-    }, {
+    },
+    {
         path: PAGES.ROOT + PAGES.REGISTER_OPTION,
         element: RegisterOptions
-    }, {
+    },
+    {
         path: PAGES.ROOT + PAGES.MY_CHILDREN,
         element: MyChildren
+    },
+    {
+        path: PAGES.ROOT + PAGES.PARENT_PROFILE,
+        element: ParentProfile
+    },
+    {
+        path: PAGES.ROOT + PAGES.CHANGE_PASSWORD,
+        element: ChangePassword
     }
 ]
 
