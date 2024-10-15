@@ -22,6 +22,7 @@ const API_CODE = {
   API_REMOVE_USER_ROLES: '/v1/User/role/',
   API_CREATE_USER: '/v1/User',
   API_GET_USER_ID: '/v1/User/',
+  API_UPDATE_USER: '/v1/User/',
   //Claim management
   API_GET_CLAIM: '/v1/Claim',
   API_ADD_CLAIM: '/v1/Claim',

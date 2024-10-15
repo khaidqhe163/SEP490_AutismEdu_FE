@@ -102,7 +102,7 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                 email: values.email,
                 fullName: values.fullName,
                 password: values.password,
-                address: `${selectedProvince}|${selectedDistrict}|${selectedCommune}|${values.homeNumber}`,
+                address: `${selectedProvince.name}|${selectedDistrict.name}|${selectedCommune.name}|${values.homeNumber}`,
                 phoneNumber: values.phoneNumber
             }
             setLoading(true);

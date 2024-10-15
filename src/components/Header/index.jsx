@@ -130,7 +130,7 @@ function Header() {
                         </>
                     ) : (
                         <>
-                            <Avatar alt="Remy Sharp" src={userInfo.imageLocalUrl}
+                            <Avatar alt="Remy Sharp" src={userInfo.image}
                                 onClick={handleOpenAccountMenu} sx={{ cursor: "pointer" }} />
                             <Menu
                                 anchorEl={accountMenu}

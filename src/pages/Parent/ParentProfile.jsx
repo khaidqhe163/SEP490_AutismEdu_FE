@@ -1,10 +1,12 @@
-import { Avatar, Box, FormHelperText, Grid, MenuItem, Select, Stack, TextField } from '@mui/material'
+import { Avatar, Box, Button, FormHelperText, Grid, MenuItem, Select, Stack, TextField } from '@mui/material'
 import axios from 'axios';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { userInfor } from '~/redux/features/userSlice';
 import ModalUploadAvatar from '../Tutor/TutorRegistration/TutorInformation/ModalUploadAvatar';
+import services from '~/plugins/services';
+import { enqueueSnackbar } from 'notistack';
 
 function ParentProfile() {
     const [provinces, setProvinces] = useState([]);
@@ -12,14 +14,9 @@ function ParentProfile() {
     const [communes, setCommunes] = useState([]);
     const [avatar, setAvatar] = useState();
     const userInformation = useSelector(userInfor);
+    const [change, setChange] = useState(true);
     const validate = (values) => {
         const errors = {};
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        if (!values.email) {
-            errors.email = "Bắt buộc"
-        } else if (!emailRegex.test(values.email)) {
-            errors.email = "Email của bạn không hợp lệ"
-        }
         if (!values.fullName) {
             errors.fullName = 'Bắt buộc';
         } else if (values.fullName.length > 20) {
@@ -31,22 +28,21 @@ function ParentProfile() {
             errors.phoneNumber = 'Số điện thoại không hợp lệ';
         }
         if (!values.province) {
-            errors.province = 'Bắt buộc';
+            errors.address = 'Bắt buộc';
         }
         if (!values.district) {
-            errors.district = 'Bắt buộc';
+            errors.address = 'Bắt buộc';
         }
         if (!values.commune) {
-            errors.commune = 'Bắt buộc';
+            errors.address = 'Bắt buộc';
         }
         if (!values.homeNumber) {
-            errors.homeNumber = 'Bắt buộc';
+            errors.address = 'Bắt buộc';
         }
         return errors;
     }
     const formik = useFormik({
         initialValues: {
-            email: '',
             fullName: '',
             province: '',
             district: '',
@@ -56,7 +52,23 @@ function ParentProfile() {
         },
         validate,
         onSubmit: async (values) => {
-
+            const selectedCommune = communes.find(p => p.idCommune === values.commune);
+            const selectedProvince = provinces.find(p => p.idProvince === values.province);
+            const selectedDistrict = districts.find(p => p.idDistrict === values.district);
+            const formData = new FormData();
+            formData.append("FullName", values.fullName)
+            formData.append("PhoneNumber", values.phoneNumber)
+            formData.append("Address", `${selectedProvince.name}|${selectedDistrict.name}|${selectedCommune.name}|${values.homeNumber}`)
+            if (avatar) {
+                formData.append("Image", avatar)
+            }
+            await services.UserManagementAPI.updateUser(userInformation.id, formData, (res) => {
+                console.log(res);
+                enqueueSnackbar("Cập nhật thành công", { variant: "success" })
+            }, (err) => {
+                console.log(err);
+                enqueueSnackbar("Cập nhật thất bại!", { variant: "error" });
+            })
         }
     });
 
@@ -66,8 +78,6 @@ function ParentProfile() {
             formik.setFieldValue("fullName", userInformation?.fullName || "");
             formik.setFieldValue("phoneNumber", userInformation?.phoneNumber || "");
             formik.setFieldValue("dateOfBirth", userInformation?.dateOfBirth || "");
-            formik.setFieldValue("homeNumber", userInformation?.homeNumber || "");
-            formik.setFieldValue("email", userInformation?.email || "");
             if (userInformation.image)
                 setAvatar(userInformation.image)
         }
@@ -84,13 +94,14 @@ function ParentProfile() {
                     formik.setFieldValue("province", province.idProvince);
                     handleGetDistrict(districts);
                     const dataD = await handleGetDistrict(province.idProvince);
-                    const district = dataD.find((d) => { return d.idDistrict === userInformation.district.idDistrict });
+                    const district = dataD.find((d) => { return d.name === address[1] });
                     if (district) {
                         formik.setFieldValue("district", district.idDistrict);
                         const dataC = await handleGetCommunes(district.idDistrict);
-                        const commune = dataC.find((c) => { return c.idCommune === userInformation.commune.idCommune });
+                        const commune = dataC.find((c) => { return c.name === address[2] });
                         if (commune) {
                             formik.setFieldValue("commune", commune.idCommune);
+                            formik.setFieldValue("homeNumber", address[3])
                         }
                     }
                 }
@@ -122,6 +133,50 @@ function ParentProfile() {
         }
     }
 
+    useEffect(() => {
+        if (userInformation && provinces.length !== 0 && districts.length !== 0 && communes.length !== 0) {
+            const address = userInformation.address.split("|");
+            const fullName = formik.values.fullName.trim();
+            if (avatar) {
+                setChange(false);
+                return;
+            }
+            if (fullName !== userInformation.fullName) {
+                setChange(false);
+                return;
+            }
+            if (formik.values.phoneNumber.trim() !== userInformation.phoneNumber) {
+                setChange(false);
+                return;
+            }
+            const selectedProvince = provinces.find((p) => {
+                return p.idProvince === formik.values.province;
+            })
+            if (selectedProvince.name !== address[0]) {
+                setChange(false);
+                return;
+            }
+            const selectedDistrict = districts.find((d) => {
+                return d.idDistrict === formik.values.district;
+            })
+            if (selectedDistrict && (selectedDistrict.name !== address[1])) {
+                setChange(false);
+                return;
+            }
+            const selectedCommune = communes.find((c) => {
+                return c.idCommune === formik.values.commune;
+            })
+            if (selectedCommune && (selectedCommune.name !== address[2])) {
+                setChange(false);
+                return;
+            }
+            if (formik.values.homeNumber.trim() !== address[3]) {
+                setChange(false);
+                return;
+            }
+            setChange(true);
+        }
+    }, [formik])
     return (
         <Box sx={{ bgcolor: "#efefef", width: "100%", py: "20px" }}>
             <Box sx={{
@@ -136,155 +191,145 @@ function ParentProfile() {
                     }
                     <ModalUploadAvatar setAvatar={setAvatar} />
                 </Box>
-                <Grid container px="100px" py="50px" columnSpacing={2} rowSpacing={3}>
-                    <Grid item xs={4} textAlign="right">Họ và tên</Grid>
-                    <Grid item xs={8}>
-                        <TextField size='small' sx={{ width: "50%" }}
-                            value={formik.values.fullName}
-                            onChange={formik.handleChange} name='fullName' />
-                        {
-                            formik.errors.fullName && (
-                                <FormHelperText error>
-                                    {formik.errors.fullName}
-                                </FormHelperText>
-                            )
-                        }
-                    </Grid>
-                    <Grid item xs={4} textAlign="right">Email</Grid>
-                    <Grid item xs={8}>
-                        <TextField size='small' sx={{ width: "50%" }} onChange={formik.handleChange} name='email'
-                            value={formik.values.email}
-                        />
-                        {
-                            formik.errors.email && (
-                                <FormHelperText error>
-                                    {formik.errors.email}
-                                </FormHelperText>
-                            )
-                        }
-                    </Grid>
-                    <Grid item xs={4} textAlign="right">Số điện thoại</Grid>
-                    <Grid item xs={8}>
-                        <TextField size='small' sx={{ width: "50%" }} onChange={formik.handleChange} name='phoneNumber'
-                            value={formik.values.phoneNumber}
-                        />
-                        {
-                            formik.errors.phoneNumber && (
-                                <FormHelperText error>
-                                    {formik.errors.phoneNumber}
-                                </FormHelperText>
-                            )
-                        }
-                    </Grid>
-                    <Grid item xs={4} textAlign="right">Địa chỉ</Grid>
-                    <Grid item xs={8}>
-                        <Select
-                            value={formik.values.province}
-                            name='province'
-                            onChange={(event) => {
-                                const selectedProvince = event.target.value;
-                                if (selectedProvince && formik.values.province !== selectedProvince) {
-                                    formik.handleChange(event);
-                                    handleGetDistrict(event.target.value);
-                                    setCommunes([]);
-                                    formik.setFieldValue('district', '')
-                                    formik.setFieldValue('commune', '')
-                                }
-                            }}
-                            renderValue={(selected) => {
-                                if (!selected || selected === "") {
-                                    return <em>Tỉnh / TP</em>;
-                                }
-                                const selectedProvince = provinces.find(p => p.idProvince === selected);
-                                return selectedProvince ? selectedProvince.name : "";
-                            }}
-                            displayEmpty={true}
-                            size='small'
-                        >
-                            <MenuItem disabled value="">
-                                <em>Tỉnh / TP</em>
-                            </MenuItem>
+                <form onSubmit={formik.handleSubmit}>
+                    <Grid container px="100px" py="50px" columnSpacing={2} rowSpacing={3}>
+                        <Grid item xs={4} textAlign="right">Họ và tên</Grid>
+                        <Grid item xs={8}>
+                            <TextField size='small' sx={{ width: "50%" }}
+                                value={formik.values.fullName}
+                                onChange={formik.handleChange} name='fullName' />
                             {
-                                provinces.length !== 0 && provinces?.map((province) => {
-                                    return (
-                                        <MenuItem value={province?.idProvince} key={province?.idProvince}>{province.name}</MenuItem>
-                                    )
-                                })
-                            }
-                        </Select>
-                        <Select
-                            value={formik.values.district}
-                            name='district'
-                            onChange={(event) => {
-                                formik.handleChange(event); handleGetCommunes(event.target.value);
-                                formik.setFieldValue('commune', '')
-                            }}
-                            renderValue={(selected) => {
-                                if (!selected || selected === "") {
-                                    return <em>Quận / Huyện</em>;
-                                }
-                                const selectedDistrict = districts.find(p => p.idDistrict === selected);
-                                return selectedDistrict ? selectedDistrict.name : <em>Quận / Huyện</em>;
-                            }}
-                            displayEmpty={true}
-                            disabled={districts.length === 0}
-                            size='small'
-                            sx={{ ml: "20px" }}
-                        >
-                            <MenuItem disabled value="">
-                                <em>Quận / Huyện</em>
-                            </MenuItem>
-                            {
-                                districts.length !== 0 && districts?.map((district) => {
-                                    return (
-                                        <MenuItem value={district?.idDistrict} key={district?.idDistrict}>{district.name}</MenuItem>
-                                    )
-                                })
-                            }
-                        </Select>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={formik.values.commune}
-                            name='commune'
-                            onChange={formik.handleChange}
-                            renderValue={(selected) => {
-                                if (!selected || selected === "") {
-                                    return <em>Xã / Phường</em>;
-                                }
-                                const selectedCommune = communes.find(p => p.idCommune === selected);
-                                return selectedCommune ? selectedCommune.name : <em>Xã / Phường</em>;
-                            }}
-                            displayEmpty={true}
-                            disabled={communes.length === 0}
-                            size='small'
-                            sx={{ ml: "20px" }}
-                        >
-                            <MenuItem disabled value="">
-                                <em>Xã / Phường</em>
-                            </MenuItem>
-                            {
-                                communes.length !== 0 && communes?.map((commune) => {
-                                    return (
-                                        <MenuItem value={commune?.idCommune} key={commune?.idCommune}>{commune.name}</MenuItem>
-                                    )
-                                })
-                            }
-                        </Select>
-                        <Box mt="20px">
-                            <TextField label="Số nhà, Thôn" size='small' name='homeNumber' onChange={formik.handleChange}
-                                value={formik.values.homeNumber}
-                                sx={{ width: "60%" }} />
-                            {
-                                formik.errors.address && (
+                                formik.errors.fullName && (
                                     <FormHelperText error>
-                                        {formik.errors.address}
+                                        {formik.errors.fullName}
                                     </FormHelperText>
                                 )
                             }
-                        </Box>
+                        </Grid>
+                        <Grid item xs={4} textAlign="right">Số điện thoại</Grid>
+                        <Grid item xs={8}>
+                            <TextField size='small' sx={{ width: "50%" }} onChange={formik.handleChange} name='phoneNumber'
+                                value={formik.values.phoneNumber}
+                            />
+                            {
+                                formik.errors.phoneNumber && (
+                                    <FormHelperText error>
+                                        {formik.errors.phoneNumber}
+                                    </FormHelperText>
+                                )
+                            }
+                        </Grid>
+                        <Grid item xs={4} textAlign="right">Địa chỉ</Grid>
+                        <Grid item xs={8}>
+                            <Select
+                                value={formik.values.province}
+                                name='province'
+                                onChange={(event) => {
+                                    const selectedProvince = event.target.value;
+                                    if (selectedProvince && formik.values.province !== selectedProvince) {
+                                        formik.handleChange(event);
+                                        handleGetDistrict(event.target.value);
+                                        setCommunes([]);
+                                        formik.setFieldValue('district', '')
+                                        formik.setFieldValue('commune', '')
+                                    }
+                                }}
+                                renderValue={(selected) => {
+                                    if (!selected || selected === "") {
+                                        return <em>Tỉnh / TP</em>;
+                                    }
+                                    const selectedProvince = provinces.find(p => p.idProvince === selected);
+                                    return selectedProvince ? selectedProvince.name : "";
+                                }}
+                                displayEmpty={true}
+                                size='small'
+                            >
+                                <MenuItem disabled value="">
+                                    <em>Tỉnh / TP</em>
+                                </MenuItem>
+                                {
+                                    provinces.length !== 0 && provinces?.map((province) => {
+                                        return (
+                                            <MenuItem value={province?.idProvince} key={province?.idProvince}>{province.name}</MenuItem>
+                                        )
+                                    })
+                                }
+                            </Select>
+                            <Select
+                                value={formik.values.district}
+                                name='district'
+                                onChange={(event) => {
+                                    formik.handleChange(event); handleGetCommunes(event.target.value);
+                                    formik.setFieldValue('commune', '')
+                                }}
+                                renderValue={(selected) => {
+                                    if (!selected || selected === "") {
+                                        return <em>Quận / Huyện</em>;
+                                    }
+                                    const selectedDistrict = districts.find(p => p.idDistrict === selected);
+                                    return selectedDistrict ? selectedDistrict.name : <em>Quận / Huyện</em>;
+                                }}
+                                displayEmpty={true}
+                                disabled={districts.length === 0}
+                                size='small'
+                                sx={{ ml: "20px" }}
+                            >
+                                <MenuItem disabled value="">
+                                    <em>Quận / Huyện</em>
+                                </MenuItem>
+                                {
+                                    districts.length !== 0 && districts?.map((district) => {
+                                        return (
+                                            <MenuItem value={district?.idDistrict} key={district?.idDistrict}>{district.name}</MenuItem>
+                                        )
+                                    })
+                                }
+                            </Select>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={formik.values.commune}
+                                name='commune'
+                                onChange={formik.handleChange}
+                                renderValue={(selected) => {
+                                    if (!selected || selected === "") {
+                                        return <em>Xã / Phường</em>;
+                                    }
+                                    const selectedCommune = communes.find(p => p.idCommune === selected);
+                                    return selectedCommune ? selectedCommune.name : <em>Xã / Phường</em>;
+                                }}
+                                displayEmpty={true}
+                                disabled={communes.length === 0}
+                                size='small'
+                                sx={{ ml: "20px" }}
+                            >
+                                <MenuItem disabled value="">
+                                    <em>Xã / Phường</em>
+                                </MenuItem>
+                                {
+                                    communes.length !== 0 && communes?.map((commune) => {
+                                        return (
+                                            <MenuItem value={commune?.idCommune} key={commune?.idCommune}>{commune.name}</MenuItem>
+                                        )
+                                    })
+                                }
+                            </Select>
+                            <Box mt="20px">
+                                <TextField label="Số nhà, Thôn" size='small' name='homeNumber' onChange={formik.handleChange}
+                                    value={formik.values.homeNumber}
+                                    sx={{ width: "60%" }} />
+                                {
+                                    formik.errors.address && (
+                                        <FormHelperText error>
+                                            {formik.errors.address}
+                                        </FormHelperText>
+                                    )
+                                }
+                            </Box>
+                            <Button variant='contained' sx={{ mt: 3 }} disabled={change} type='submit'>Lưu</Button>
+                        </Grid>
                     </Grid>
-                </Grid>
+                </form>
             </Box>
         </Box>
     )

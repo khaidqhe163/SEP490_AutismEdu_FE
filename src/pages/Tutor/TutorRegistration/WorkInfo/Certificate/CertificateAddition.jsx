@@ -86,7 +86,6 @@ export default function CertificateAddition({ certificate, setCertificate }) {
             setImages([])
         }
     });
-    console.log(formik.values);
     return (
         <div>
             <IconButton onClick={handleOpen}><AddCircleOutlineIcon /></IconButton>
