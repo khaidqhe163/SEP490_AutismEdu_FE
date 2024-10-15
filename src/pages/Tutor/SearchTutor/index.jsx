@@ -3,14 +3,13 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Grid, IconButton, Link, Rating, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Grid, IconButton, Link, Rating, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import ButtonComponent from '~/Components/ButtonComponent';
-import FormSearch from './FormSearch/FormSearch';
-import services from '~/plugins/services';
-import { enqueueSnackbar } from 'notistack';
-import LoadingComponent from '~/components/LoadingComponent';
 import { useNavigate } from 'react-router-dom';
+import ButtonComponent from '~/Components/ButtonComponent';
+import LoadingComponent from '~/components/LoadingComponent';
+import services from '~/plugins/services';
+import FormSearch from './FormSearch/FormSearch';
 
 function SearchTutor() {
     const [searchCriteria, setSearchCriteria] = useState({
@@ -78,7 +77,7 @@ function SearchTutor() {
     function handleClick(event) {
         event.preventDefault();
         console.info('You clicked a breadcrumb.');
-    };
+    }
     const handleShowMore = () => {
         setPagination(prev => ({ ...prev, pageNumber: (prev.pageNumber + 1) }));
         handleGetTutor(true);

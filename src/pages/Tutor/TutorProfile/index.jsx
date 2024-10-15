@@ -24,7 +24,6 @@ import TutorRequestModal from './TutorProfileModal/TutorRequestModal';
 import TutorRating from './TutorRating';
 
 function TutorProfile() {
-    const today = new Date();
     const { id } = useParams();
     const [timeData, setTimeData] = useState(1);
     const [availability, setAvailability] = useState([]);
@@ -80,9 +79,6 @@ function TutorProfile() {
             setLoading(false);
         }
     };
-
-    console.log(tutor);
-
 
     const formatDate = (dateString) => {
         return format(new Date(dateString), 'dd/MM/yyyy');
@@ -147,7 +143,7 @@ function TutorProfile() {
     };
 
     const renderTimeButtons = () => {
-        if(availability.length === 0) return <Grid item xs={12} sm={6} md={4} sx={{ mb: 1 }}><Typography variant='inherit'>Hiện chưa có khung thời gian</Typography></Grid>
+        if (availability.length === 0) return <Grid item xs={12} sm={6} md={4} sx={{ mb: 1 }}><Typography variant='inherit'>Hiện chưa có khung thời gian</Typography></Grid>
         return availability.map((time, index) => (
             <Grid item xs={12} sm={6} md={4} key={index} sx={{ mb: 1 }}>
                 <Box
@@ -270,7 +266,7 @@ function TutorProfile() {
                                                 <Typography my={2} variant='h5' mb={3}>Học Vấn</Typography>
                                                 <Stack direction={'column'} gap={2}>
                                                     {tutor?.certificates?.length === 0 ? <Typography variant='inherit'>Chưa có dữ liệu chứng chỉ</Typography> : tutor?.certificates?.map((cer, index) => (
-                                                        <Box sx={{ width: "100%", display: 'flex', direction: 'row', gap: 2 }}>
+                                                        <Box sx={{ width: "100%", display: 'flex', direction: 'row', gap: 2 }} key={cer.id}>
                                                             <Box sx={{ maxWidth: "10%", height: "auto", borderRadius: "10px" }}>
                                                                 <SchoolOutlinedIcon fontSize='large' />
                                                             </Box>
@@ -326,7 +322,7 @@ function TutorProfile() {
                                                                 aria-label="icon position tabs example"
                                                             >
                                                                 {tutor?.curriculums?.map((cur, index) => (
-                                                                    <Tab value={`${index + 1}`} icon={<ElevatorIcon />} iconPosition="start" label={`Từ ${cur.ageFrom} - ${cur.ageEnd} tuổi`} />
+                                                                    <Tab value={`${index + 1}`} icon={<ElevatorIcon />} iconPosition="start" label={`Từ ${cur.ageFrom} - ${cur.ageEnd} tuổi`} key={cur.id} />
                                                                 ))}
 
                                                                 {/* <Tab value="4" icon={<ElevatorIcon />} iconPosition="start" label="Từ 7 - 9 tuổi" />
@@ -335,7 +331,7 @@ function TutorProfile() {
                                                             </Tabs>
                                                         </Box>
                                                         {tutor?.curriculums?.map((cur, index) => (
-                                                            <TabPanel value={`${index + 1}`} sx={{ padding: '0' }}>
+                                                            <TabPanel value={`${index + 1}`} sx={{ padding: '0' }} key={cur.id}>
                                                                 <Stack direction={'row'} gap={2} bgcolor={'#fff8e3'} mt={2} p={3} borderRadius={'20px'}>
                                                                     <Box sx={{ width: "5%" }}>
                                                                         <CheckCircleIcon color='success' fontSize='large' />
@@ -371,7 +367,7 @@ function TutorProfile() {
                                                         </Box>
 
                                                         <Box sx={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap' }}>
-                                                            <Typography variant='h6'>{`Thứ ${timeData+1}`}</Typography>
+                                                            <Typography variant='h6'>{`Thứ ${timeData + 1}`}</Typography>
                                                             <Grid container spacing={1} sx={{ mt: 1 }}>
                                                                 {renderTimeButtons()}
                                                             </Grid>
@@ -379,7 +375,7 @@ function TutorProfile() {
                                                     </Stack>
                                                 </Box>
                                             </Stack>
-                                            <Divider/>
+                                            <Divider />
                                             <TutorRating />
                                         </Box>
                                     </>
