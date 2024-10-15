@@ -63,8 +63,6 @@ function SearchTutor() {
         }
     };
 
-    console.log(tutors);
-
 
     const handleFilterClick = () => {
         setShowFilters(!showFilters);
@@ -86,13 +84,14 @@ function SearchTutor() {
         handleGetTutor(true);
     };
 
-    // Khi người dùng chọn đánh giá
-    const handleRatingChange = (event) => {
-        // setSelectedRating(event.target.value);
-    };
 
     const handleClickToProfile = (id) => {
         navigate(`/autismedu/tutor-profile/${id}`);
+    };
+
+    const getCity = (address) => {
+        const city = address.split('|')[0];
+        return city;
     };
 
     const breadcrumbs = [
@@ -111,6 +110,9 @@ function SearchTutor() {
         maximumFractionDigits: 0,
     });
 
+    console.log(tutors);
+
+
     return (
         <Box sx={{ height: 'auto' }}>
             <FormSearch selected={selected} setSelected={setSelected}
@@ -123,7 +125,7 @@ function SearchTutor() {
                     <Grid container sx={{ height: 'auto' }}>
                         <Grid item>
                             <Grid container spacing={5}>
-                                {selected === "list" ?
+                                {selected !== "list" ?
                                     tutors.map((t, index) =>
                                     (<Grid item xs={4} key={index}>
                                         <Card sx={{
@@ -153,33 +155,33 @@ function SearchTutor() {
                                                 <Typography gutterBottom variant="h4" component="div" sx={{ fontSize: "26px" }}>
                                                     {t.fullName}
                                                 </Typography>
-                                                <Stack spacing={2} direction={'row'}>
-                                                    <Box sx={{ display: "flex", alignItems: "center", gap: "5px", mt: 2 }}>
-                                                        <LocationOnOutlinedIcon />
-                                                        <Typography>{t.address || 'Hồ Chí Minh'}</Typography>
-                                                    </Box>
-                                                    <Box sx={{
-                                                        display: "flex", alignItems: "center", gap: "5px", mt: 2,
+                                                <Box sx={{ display: "flex", alignItems: "center", gap: "5px", mt: 2 }}>
+                                                    <LocationOnOutlinedIcon />
+                                                    <Typography>{t?.address ? getCity(t.address) : 'Hồ Chí Minh'}</Typography>
+                                                </Box>
+                                                <Box sx={{
+                                                    display: "flex", alignItems: "center", gap: "5px", mt: 2,
+                                                    '&:hover': {
+                                                        color: "blue"
+                                                    }
+                                                }}>
+                                                    <LocalPhoneOutlinedIcon />
+                                                    <a href={`tel:${t.phoneNumber}`}><Typography sx={{
                                                         '&:hover': {
                                                             color: "blue"
                                                         }
-                                                    }}>
-                                                        <LocalPhoneOutlinedIcon />
-                                                        <a href={`tel:${t.phoneNumber}`}><Typography sx={{
-                                                            '&:hover': {
-                                                                color: "blue"
-                                                            }
-                                                        }}>{t.phoneNumber}</Typography></a>
-                                                    </Box>
-                                                </Stack>
-                                                <Typography mt={2} sx={{
+                                                    }}>{t.phoneNumber}</Typography></a>
+                                                </Box>
+                                                <Typography mt={3} sx={{
                                                     display: '-webkit-box',
                                                     WebkitLineClamp: 3,
                                                     WebkitBoxOrient: 'vertical',
                                                     overflow: 'hidden',
                                                     textOverflow: 'ellipsis',
+                                                    height: '70px',
+                                                    width: '100%'
                                                 }}>
-                                                    {t.aboutMe}
+                                                    {t.aboutMe} he Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and cruelty-free
                                                 </Typography>
 
                                                 <Box sx={{ display: "flex", gap: "15px", flexDirection: 'column' }}>
@@ -209,7 +211,7 @@ function SearchTutor() {
                                                     </Box>
 
                                                 </Box>
-                                                <Typography mt={4} variant='h5'>{formatter.format(t.price)} / buổi</Typography>
+                                                <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t.price)}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi</Typography></Typography>
                                             </CardContent>
                                             <CardActions>
                                                 <Button sx={{ fontSize: "20px" }} onClick={() => handleClickToProfile(t.userId)}>Tìm hiểu thêm <ArrowForwardIcon /></Button>
@@ -253,7 +255,7 @@ function SearchTutor() {
                                                     </Typography>
                                                     <Box sx={{ display: "flex", alignItems: "center", gap: "5px", mt: 2 }}>
                                                         <LocationOnOutlinedIcon />
-                                                        <Typography>{t.address || 'Hồ Chí Minh'}</Typography>
+                                                        <Typography>{t?.address ? getCity(t.address) : 'Hồ Chí Minh'}</Typography>
                                                     </Box>
                                                     <Typography mt={2} sx={{
                                                         display: '-webkit-box',
@@ -261,8 +263,9 @@ function SearchTutor() {
                                                         WebkitBoxOrient: 'vertical',
                                                         overflow: 'hidden',
                                                         textOverflow: 'ellipsis',
+                                                        height: '75px'
                                                     }}>
-                                                        {t.aboutMe}
+                                                        {t.aboutMe} he Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and  cruelty-free
                                                     </Typography>
 
                                                     <Box sx={{ display: "flex", gap: "15px" }}>
@@ -304,7 +307,9 @@ function SearchTutor() {
                                                         </Box>
 
                                                     </Box>
-                                                    <Typography mt={4} variant='h5'>{formatter.format(t.price)} / buổi</Typography>
+                                                    <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t.price)}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi</Typography></Typography>
+
+
                                                 </CardContent>
                                                 <CardActions>
                                                     <Button sx={{ fontSize: "20px" }} onClick={() => handleClickToProfile(t.userId)}>Tìm hiểu thêm <ArrowForwardIcon /></Button>

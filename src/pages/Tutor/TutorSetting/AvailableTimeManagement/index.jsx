@@ -11,10 +11,8 @@ function AvailableTimeManagement() {
 
     const [timeData, setTimeData] = useState({
         weekday: 1,
-        timeSlot: {
-            from: '',
-            to: ''
-        }
+        from: '',
+        to: ''
     });
 
     const [availability, setAvailability] = useState([]);
@@ -29,7 +27,7 @@ function AvailableTimeManagement() {
                 setAvailability(res.result || []);
             }, (error) => {
                 console.log(error);
-            }, { userId ,weekday });
+            }, { tutorId: tutorInfo?.id, weekday });
         } catch (error) {
             console.log(error);
         }
@@ -52,14 +50,19 @@ function AvailableTimeManagement() {
         }
         setTimeData((prev) => ({
             ...prev,
-            timeSlot: { from: '', to: '' }
+            from: '',
+            to: ''
         }));
     };
+    console.log(timeData);
 
-    const handleDeleteTime = async (timeSlotId) => {
+
+    const handleDeleteTime = async (timeSlotId, indexDelete) => {
         try {
-            await services.AvailableTimeManagementAPI.removeAvailableTime(timeSlotId, (res) => {
-                setAvailability(availability.filter((avai) => (avai.timeSlotId !== timeSlotId)));
+            await services.AvailableTimeManagementAPI.removeAvailableTime(timeSlotId, {}, (res) => {
+                setAvailability((prevAvailability) =>
+                    prevAvailability.filter((_, index) => index !== indexDelete)
+                );
                 enqueueSnackbar("Remove available time success!", { variant: "success" });
             }, (error) => {
                 console.log(error);
@@ -69,6 +72,7 @@ function AvailableTimeManagement() {
         }
     };
 
+    console.log(availability);
     // Handle weekday change
     const handleDateChange = async (weekday) => {
         setTimeData((prev) => ({
@@ -102,6 +106,8 @@ function AvailableTimeManagement() {
         ));
     };
 
+
+
     const renderTimeButtons = () => {
         return availability.map((time, index) => (
             <Grid item xs={12} sm={6} md={4} key={index} sx={{ mb: 1 }}>
@@ -119,7 +125,7 @@ function AvailableTimeManagement() {
                     gap={1}
                 >
                     <Typography variant="body1">{time.timeSlot}</Typography>
-                    <IconButton onClick={() => handleDeleteTime(time.timeSlotId)}>
+                    <IconButton onClick={() => handleDeleteTime(time.timeSlotId, index)}>
                         <CancelIcon color='error' />
                     </IconButton>
                 </Box>
@@ -147,11 +153,11 @@ function AvailableTimeManagement() {
                                 id="outlined-basic1"
                                 variant="outlined"
                                 type="time"
-                                value={timeData.timeSlot.from}
+                                value={timeData.from}
                                 onChange={(e) =>
                                     setTimeData((prev) => ({
                                         ...prev,
-                                        timeSlot: { ...prev.timeSlot, from: e.target.value }
+                                        from: e.target.value
                                     }))
                                 }
                             />
@@ -162,11 +168,11 @@ function AvailableTimeManagement() {
                                 id="outlined-basic2"
                                 variant="outlined"
                                 type="time"
-                                value={timeData.timeSlot.to}
+                                value={timeData.to}
                                 onChange={(e) =>
                                     setTimeData((prev) => ({
                                         ...prev,
-                                        timeSlot: { ...prev.timeSlot, to: e.target.value }
+                                        to: e.target.value
                                     }))
                                 }
                             />
