@@ -6,10 +6,12 @@ import services from '~/plugins/services';
 import BasicInformation from './BasicInformation';
 import CareerInformation from './CareerInformation';
 import AcceptDialog from './handleDialog/acceptDialog';
-function TutorRegistrationTable() {
+import TablePagging from '~/components/TablePagging';
+function TutorRegistrationTable({ status }) {
     const [loading, setLoading] = useState(false);
     const [listTutor, setListTutor] = useState([]);
     const [pagination, setPagination] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
     const formatDate = (date) => {
         const dateObj = new Date(date);
         const formattedDate = dateObj.getDate().toString().padStart(2, '0') + '/' +
@@ -18,23 +20,35 @@ function TutorRegistrationTable() {
         return formattedDate;
     }
     useEffect(() => {
-        handleGetTutor();
+        handleGetTutor(1, "Pending");
     }, []);
-    const handleGetTutor = async () => {
+
+    useEffect(() => {
+        if (status === 10)
+            handleGetTutor(currentPage, "Pending")
+        if (status === 20)
+            handleGetTutor(currentPage, "Approve")
+        if (status === 30)
+            handleGetTutor(currentPage, "Reject")
+    }, [currentPage, status])
+    const handleGetTutor = async (page, status) => {
         try {
             setLoading(true);
             await services.TutorManagementAPI.listTutor((res) => {
+                res.pagination.currentSize = res.result.length
                 setListTutor(res.result);
                 setPagination(res.pagination)
             }, (err) => {
                 console.log(err);
+            }, {
+                pageNumber: page,
+                status: status
             })
             setLoading(false)
         } catch (error) {
             console.log(error);
         }
     }
-    console.log(listTutor);
     return (
         <TableContainer component={Paper} sx={{ mt: "20px" }}>
             <Table>
@@ -57,7 +71,7 @@ function TutorRegistrationTable() {
                         listTutor.length !== 0 && listTutor?.map((tutor, index) => {
                             return (
                                 <TableRow key={tutor.id}>
-                                    <TableCell>{index}</TableCell>
+                                    <TableCell>{index + 1 + (currentPage - 1) * 10}</TableCell>
                                     <TableCell>
                                         <Box sx={{ display: "flex", gap: 1 }}>
                                             <Box>
@@ -82,13 +96,13 @@ function TutorRegistrationTable() {
                                     </TableCell>
                                     <TableCell align='center'>
                                         {
-                                            tutor.requestStatus === 0 && <Typography color="red">Từ chối</Typography>
+                                            tutor.requestStatus === 0 && <Typography color="red" sx={{ fontSize: "12px" }}>Từ chối</Typography>
                                         }
                                         {
-                                            tutor.requestStatus === 1 && <Typography color="green">Đã chấp nhận</Typography>
+                                            tutor.requestStatus === 1 && <Typography color="green" sx={{ fontSize: "12px" }}>Đã chấp nhận</Typography>
                                         }
                                         {
-                                            tutor.requestStatus === 2 && <Typography color="blue">Đang chờ</Typography>
+                                            tutor.requestStatus === 2 && <Typography color="blue" sx={{ fontSize: "12px" }}>Đang chờ</Typography>
                                         }
                                     </TableCell>
                                     <TableCell>
@@ -110,6 +124,7 @@ function TutorRegistrationTable() {
                 </TableBody>
             </Table>
             <LoadingComponent open={loading} setOpen={setLoading} />
+            <TablePagging setCurrentPage={setCurrentPage} setPagination={setPagination} pagination={pagination} />
         </TableContainer >
     )
 }

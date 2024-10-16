@@ -9,6 +9,7 @@ import { ChildrenManagementAPI } from "~/services/ChildrenManagementAPI";
 import { CurriculumManagementAPI } from "~/services/CurriculumManagement";
 import { AvailableTimeManagementAPI } from "~/services/AvailableTimeManagementAPI";
 import { TutorRequestAPI } from "~/services/TutorRequestAPI";
+import { AssessmentManagementAPI } from "~/services/AssessmentManagmentAPI";
 // Initialize the BaseService with the axios instance and API prefix
 (function () {
   initializeService(axios, "/api");
@@ -24,6 +25,7 @@ const services = {
   CurriculumManagementAPI,
   AvailableTimeManagementAPI,
   TutorRequestAPI,
+  AssessmentManagementAPI
 };
 
 export default services;

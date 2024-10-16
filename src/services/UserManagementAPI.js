@@ -1,5 +1,4 @@
-import { CallMerge } from '@mui/icons-material';
-import { del, post, get } from '~/services/BaseService';
+import { del, get, post, put } from '~/services/BaseService';
 import API_CODE from '~/utils/api_code';
 
 const getUsers = async (success, error, params) => {
@@ -30,8 +29,11 @@ const removeUserRoles = async (endpoint, data, success, error) => {
     await del(API_CODE.API_REMOVE_USER_ROLES + endpoint, data, success, error);
 };
 const createUser = async (params, success, error) => {
-    console.log(params);
     await post(API_CODE.API_CREATE_USER, params, success, error)
+}
+
+const updateUser = async (endpoint, params, success, error) => {
+    await put(API_CODE.API_UPDATE_USER + endpoint, params, success, error)
 }
 export const UserManagementAPI = {
     getUsers,
@@ -42,6 +44,7 @@ export const UserManagementAPI = {
     removeUserClaims,
     getUserRoles,
     removeUserRoles,
-	getUserById,
-	createUser
+    getUserById,
+    createUser,
+    updateUser
 }

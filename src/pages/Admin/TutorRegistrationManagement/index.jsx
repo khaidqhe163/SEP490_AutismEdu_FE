@@ -1,6 +1,8 @@
 import { Box, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import TutorRegistrationTable from './TutorRegistrationTable';
+import { useState } from 'react';
 function TutorRegistrationManagement() {
+    const [status, setStatus] = useState(10);
     return (
         <Box sx={{
             height: (theme) => `calc(100vh - ${theme.myapp.adminHeaderHeight})`,
@@ -31,6 +33,8 @@ function TutorRegistrationManagement() {
                             id="status"
                             label="Trạng thái"
                             size='small'
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
                         >
                             <MenuItem value={10}>Đang chờ</MenuItem>
                             <MenuItem value={20}>Đã phê duyệt</MenuItem>
@@ -44,7 +48,7 @@ function TutorRegistrationManagement() {
                         }} size='small' />
                 </Box>
                 <Box>
-                    <TutorRegistrationTable />
+                    <TutorRegistrationTable status={status} />
                 </Box>
             </Box>
         </Box>

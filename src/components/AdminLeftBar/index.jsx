@@ -8,7 +8,11 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import PAGES from '~/utils/pages';
+import FeedIcon from '@mui/icons-material/Feed';
+import TocIcon from '@mui/icons-material/Toc';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 function AdminLeftBar() {
     const [open, setOpen] = useState(false);
     const location = useLocation();
@@ -78,29 +82,43 @@ function AdminLeftBar() {
                             selected={selectedIndex === 3}
                             onClick={(event) => handleListItemClick(event, 3)}>
                             <ListItemIcon>
-                                <PeopleIcon />
+                                <FeedIcon />
                             </ListItemIcon>
                             <ListItemText primary="Đơn Đăng Ký" />
                         </ListItemButton>
                     </Link>
                     <ListItemButton onClick={handleClick}>
                         <ListItemIcon>
-                            <InboxIcon />
+                            <AssessmentIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Inbox" />
+                        <ListItemText primary="Đánh giá" />
                         {open ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
                     <Collapse in={open} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
-                            <ListItemButton sx={{ pl: 4 }}
-                                selected={selectedIndex === 2}
-                                onClick={(event) => handleListItemClick(event, 2)}>
-                                <ListItemIcon>
-                                    <StarBorder />
-                                </ListItemIcon>
-                                <ListItemText primary="Starred" />
-                            </ListItemButton>
-                        </List>
+                        <Link to={PAGES.ASSESSMENT_MANAGEMENT}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 4}
+                                    onClick={(event) => handleListItemClick(event, 4)}>
+                                    <ListItemIcon>
+                                        <TocIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Danh sách" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                        <Link to={PAGES.ASSESSMENT_CREATION}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 5}
+                                    onClick={(event) => handleListItemClick(event, 5)}>
+                                    <ListItemIcon>
+                                        <PlaylistAddIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Thêm đánh giá" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
                     </Collapse>
                 </List>
             </Box>

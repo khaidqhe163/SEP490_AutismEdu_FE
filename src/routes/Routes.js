@@ -24,6 +24,10 @@ import TutorRequest from '~/pages/Tutor/TutorRequest'
 import RegisterOptions from '~/pages/Auth/Register/RegisterOptions'
 import MyChildren from '~/pages/MyChildren'
 import Calendar from '~/pages/Tutor/Calendar'
+import ParentProfile from '~/pages/Parent/ParentProfile'
+import ChangePassword from '~/pages/Parent/ChangePassword'
+import AssessmentManagement from '~/pages/Admin/AssessmentManagement'
+import AssessmentCreation from '~/pages/Admin/AssessmentManagement/AssessmentCreation'
 
 const UnLayoutRoutes = [
     {
@@ -81,15 +85,26 @@ const publicRoutes = [
     {
         path: PAGES.ROOT + PAGES.TUTORPROFILEUPDATE,
         element: TutorProfileUpdate
-    }, {
+    },
+    {
         path: PAGES.ROOT + PAGES.LOGIN_OPTION,
         element: LoginOption
-    }, {
+    },
+    {
         path: PAGES.ROOT + PAGES.REGISTER_OPTION,
         element: RegisterOptions
-    }, {
+    },
+    {
         path: PAGES.ROOT + PAGES.MY_CHILDREN,
         element: MyChildren
+    },
+    {
+        path: PAGES.ROOT + PAGES.PARENT_PROFILE,
+        element: ParentProfile
+    },
+    {
+        path: PAGES.ROOT + PAGES.CHANGE_PASSWORD,
+        element: ChangePassword
     }
 ]
 
@@ -129,7 +144,16 @@ const adminRoutes = [
     {
         path: PAGES.TUTORREGISTRATIONMANAGEMENT,
         element: TutorRegistrationManagement
-    }
+    },
+    {
+        path: PAGES.ASSESSMENT_MANAGEMENT,
+        element: AssessmentManagement
+    },
+    {
+        path: PAGES.ASSESSMENT_CREATION,
+        element: AssessmentCreation
+    },
+
 ]
 export {
     adminRoutes, publicRoutes, tutorRoutes, UnLayoutRoutes

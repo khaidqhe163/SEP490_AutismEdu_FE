@@ -5,9 +5,9 @@ import PersonAdd from '@mui/icons-material/PersonAdd';
 import SearchIcon from '@mui/icons-material/Search';
 import Settings from '@mui/icons-material/Settings';
 import { Avatar, Badge, Box, Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Tab, Tabs } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { setUserInformation, userInfor } from '~/redux/features/userSlice';
 import PAGES from '~/utils/pages';
 import ButtonComponent from '../ButtonComponent';
@@ -22,6 +22,14 @@ function Header() {
     const userInfo = useSelector(userInfor);
     const openAccountMenu = Boolean(accountMenu);
     const dispatch = useDispatch();
+    const location = useLocation();
+    useEffect(() => {
+        if (location.pathname === "/autismedu") {
+            setTab("1");
+        } else if (location.pathname.includes("/my-childlren")) {
+            setTab("3");
+        }
+    }, [location])
     const handleOpenAccountMenu = (event) => {
         setAccountMenu(event.currentTarget);
     };
@@ -47,7 +55,9 @@ function Header() {
         Cookies.remove("access_token");
         Cookies.remove("refresh_token");
         dispatch(setUserInformation(null))
+        nav(PAGES.ROOT)
     }
+    console.log(userInfo);
     return (
         <Stack
             direction="row"
@@ -66,9 +76,9 @@ function Header() {
                 }
             }}>
                 <Tab sx={{ fontSize: "18px" }} value={"1"} label="Trang chủ" onClick={() => { nav(PAGES.ROOT) }} />
-                <Tab sx={{ fontSize: "18px" }} value={"3"} label="Gia sư" icon={<ExpandMoreIcon />} iconPosition="end" onClick={handleClickListItem} />
-                <Tab sx={{ fontSize: "18px" }} value={"4"} label="Thông tin trẻ" onClick={() => { nav(PAGES.ROOT + PAGES.MY_CHILDREN) }} />
-                <Tab sx={{ fontSize: "18px" }} value={"5"} label="Blog" />
+                <Tab sx={{ fontSize: "18px" }} value={"2"} label="Gia sư" icon={<ExpandMoreIcon />} iconPosition="end" onClick={handleClickListItem} />
+                <Tab sx={{ fontSize: "18px" }} value={"3"} label="Thông tin trẻ" onClick={() => { nav(PAGES.ROOT + PAGES.MY_CHILDREN) }} />
+                <Tab sx={{ fontSize: "18px" }} value={"4"} label="Blog" />
             </Tabs>
             <Menu
                 id="lock-menu"
@@ -120,8 +130,8 @@ function Header() {
                         </>
                     ) : (
                         <>
-                            <Avatar alt="Remy Sharp" src={userInfo.imageLocalUrl}
-                                onClick={handleOpenAccountMenu} />
+                            <Avatar alt="Remy Sharp" src={userInfo.imageUrl}
+                                onClick={handleOpenAccountMenu} sx={{ cursor: "pointer" }} />
                             <Menu
                                 anchorEl={accountMenu}
                                 id="account-menu"
@@ -159,30 +169,25 @@ function Header() {
                                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                             >
-                                <MenuItem onClick={handleCloseAccountMenu}>
-                                    <Avatar /> Profile
-                                </MenuItem>
-                                <MenuItem onClick={handleCloseAccountMenu}>
-                                    <Avatar /> My account
+                                <MenuItem onClick={() => { handleCloseAccountMenu; nav(PAGES.ROOT + PAGES.PARENT_PROFILE) }}>
+                                    <Avatar src={userInfo.imageUrl} alt={userInfo.fullName} /> Thông tin cá nhân
                                 </MenuItem>
                                 <Divider />
-                                <MenuItem onClick={handleCloseAccountMenu}>
-                                    <ListItemIcon>
-                                        <PersonAdd fontSize="small" />
-                                    </ListItemIcon>
-                                    Add another account
-                                </MenuItem>
-                                <MenuItem onClick={handleCloseAccountMenu}>
-                                    <ListItemIcon>
-                                        <Settings fontSize="small" />
-                                    </ListItemIcon>
-                                    Settings
-                                </MenuItem>
+                                {
+                                    userInfo.userType === "ApplicationUser" && (
+                                        <MenuItem onClick={() => { handleCloseAccountMenu; nav(PAGES.ROOT + PAGES.CHANGE_PASSWORD) }}>
+                                            <ListItemIcon>
+                                                <Settings fontSize="small" />
+                                            </ListItemIcon>
+                                            Đổi mật khẩu
+                                        </MenuItem>
+                                    )
+                                }
                                 <MenuItem onClick={handleLogout}>
                                     <ListItemIcon>
                                         <Logout fontSize="small" />
                                     </ListItemIcon>
-                                    Logout
+                                    Đăng xuất
                                 </MenuItem>
                             </Menu>
                         </>
