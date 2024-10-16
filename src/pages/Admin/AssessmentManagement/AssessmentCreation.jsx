@@ -1,9 +1,24 @@
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
-
+import { Box, Button, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material'
+import React, { useRef, useState } from 'react'
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 function AssessmentCreation() {
     const [point, setPoint] = useState(1);
     const [listAss, setListAss] = useState([]);
+    const assessmentName = useRef();
+    const assessmentDetail = useRef();
+    const handleAddPoint = () => {
+        console.log(assessmentDetail.current.value);
+        const newAss = {
+            point: point,
+            optionText: assessmentDetail.current.value
+        }
+        setListAss([newAss, ...listAss])
+    }
+
+    const handleDelete = () => {
+        
+    }
     return (
         <Box sx={{
             height: (theme) => `calc(100vh - ${theme.myapp.adminHeaderHeight})`,
@@ -18,6 +33,7 @@ function AssessmentCreation() {
                     <TextField
                         size='small'
                         sx={{ width: "70%" }}
+                        ref={assessmentName}
                     />
                 </Grid>
                 <Grid item xs={2}><Typography variant='h6'>Chi tiết đánh giá</Typography></Grid>
@@ -47,11 +63,30 @@ function AssessmentCreation() {
                         multiline
                         rows={4}
                         sx={{ width: "70%" }}
+                        inputRef={assessmentDetail}
                     />
                     <Box mt={3}>
-                        <Button variant='contained'>Thêm</Button>
+                        <Button variant='contained' onClick={handleAddPoint}>Thêm</Button>
                     </Box>
                 </Grid>
+                {
+                    listAss.length !== 0 && listAss.map((l, index) => {
+                        return (
+                            <React.Fragment key={index}>
+                                <Grid item xs={2}>
+                                    <Typography>{l.point} điểm</Typography>
+                                </Grid>
+                                <Grid item xs={10}>
+                                    <Stack direction='row' alignItems="center">
+                                        <Typography sx={{ width: "60%" }}>{l.optionText}</Typography>
+                                        <IconButton onClick={handleDelete}><DeleteIcon /></IconButton>
+                                        <IconButton><EditIcon /></IconButton>
+                                    </Stack>
+                                </Grid>
+                            </React.Fragment>
+                        )
+                    })
+                }
             </Grid>
         </Box>
     )
