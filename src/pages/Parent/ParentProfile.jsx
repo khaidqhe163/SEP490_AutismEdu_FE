@@ -2,12 +2,12 @@ import { Avatar, Box, Button, FormHelperText, Grid, MenuItem, Select, Stack, Tex
 import axios from 'axios';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
-import { userInfor } from '~/redux/features/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserInformation, userInfor } from '~/redux/features/userSlice';
 import ModalUploadAvatar from '../Tutor/TutorRegistration/TutorInformation/ModalUploadAvatar';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
-
+import axiosInstance from "~/plugins/axios";
 function ParentProfile() {
     const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
@@ -15,6 +15,7 @@ function ParentProfile() {
     const [avatar, setAvatar] = useState();
     const userInformation = useSelector(userInfor);
     const [change, setChange] = useState(true);
+    const dispatch = useDispatch();
     const validate = (values) => {
         const errors = {};
         if (!values.fullName) {
@@ -62,13 +63,17 @@ function ParentProfile() {
             if (avatar) {
                 formData.append("Image", avatar)
             }
+            console.log(formData.get("Image"));
+            axiosInstance.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
             await services.UserManagementAPI.updateUser(userInformation.id, formData, (res) => {
                 console.log(res);
-                enqueueSnackbar("Cập nhật thành công", { variant: "success" })
+                enqueueSnackbar("Cập nhật thành công", { variant: "success" });
+                dispatch(setUserInformation(res.result))
             }, (err) => {
                 console.log(err);
                 enqueueSnackbar("Cập nhật thất bại!", { variant: "error" });
             })
+            axiosInstance.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
         }
     });
 
@@ -187,7 +192,7 @@ function ParentProfile() {
                 <Box sx={{ m: "auto", textAlign: "center" }}>
                     {
                         avatar ? (<Avatar src={URL.createObjectURL(avatar)} alt="Remy Sharp" sx={{ m: "auto", width: "100px", height: "100px", mb: "20px" }} />)
-                            : (<Avatar src='/' alt="Remy Sharp" sx={{ m: "auto", width: "100px", height: "100px", mb: "20px" }} />)
+                            : (<Avatar src={userInformation?.imageUrl} alt="Remy Sharp" sx={{ m: "auto", width: "100px", height: "100px", mb: "20px" }} />)
                     }
                     <ModalUploadAvatar setAvatar={setAvatar} />
                 </Box>

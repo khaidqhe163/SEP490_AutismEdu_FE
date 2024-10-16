@@ -26,6 +26,8 @@ import MyChildren from '~/pages/MyChildren'
 import Calendar from '~/pages/Tutor/Calendar'
 import ParentProfile from '~/pages/Parent/ParentProfile'
 import ChangePassword from '~/pages/Parent/ChangePassword'
+import AssessmentManagement from '~/pages/Admin/AssessmentManagement'
+import AssessmentCreation from '~/pages/Admin/AssessmentManagement/AssessmentCreation'
 
 const UnLayoutRoutes = [
     {
@@ -142,7 +144,16 @@ const adminRoutes = [
     {
         path: PAGES.TUTORREGISTRATIONMANAGEMENT,
         element: TutorRegistrationManagement
-    }
+    },
+    {
+        path: PAGES.ASSESSMENT_MANAGEMENT,
+        element: AssessmentManagement
+    },
+    {
+        path: PAGES.ASSESSMENT_CREATION,
+        element: AssessmentCreation
+    },
+
 ]
 export {
     adminRoutes, publicRoutes, tutorRoutes, UnLayoutRoutes

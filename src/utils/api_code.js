@@ -49,7 +49,11 @@ const API_CODE = {
   //Children management
   API_CHILDREN_LIST: '/v1/ChildInformation/',
   API_CREATE_CHILD: '/v1/ChildInformation',
-  API_UPDATE_CHILD: '/v1/ChildInformation'
+  API_UPDATE_CHILD: '/v1/ChildInformation',
+
+  //Assessment management
+  API_GET_ASSESSMENT: '/v1/Assessment',
+  API_CREATE_ASSESSMENT: '/v1/Assessment'
 };
 
 export default API_CODE;

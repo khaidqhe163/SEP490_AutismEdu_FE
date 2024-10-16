@@ -26,7 +26,9 @@ const PAGES = {
   MY_CHILDREN: '/my-childlren',
   CALENDAR: '/autismtutor/calendar',
   PARENT_PROFILE: '/my-profile',
-  CHANGE_PASSWORD: '/change-password'
+  CHANGE_PASSWORD: '/change-password',
+  ASSESSMENT_MANAGEMENT: '/admin/assessment-management',
+  ASSESSMENT_CREATION: '/admin/assessment-creation'
 };
 
 export default PAGES;
