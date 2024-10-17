@@ -7,7 +7,7 @@ import BasicInformation from './BasicInformation';
 import CareerInformation from './CareerInformation';
 import AcceptDialog from './handleDialog/acceptDialog';
 import TablePagging from '~/components/TablePagging';
-function TutorRegistrationTable({ status }) {
+function TutorRegistrationTable({ status, searchValue, submit, startDate, endDate }) {
     const [loading, setLoading] = useState(false);
     const [listTutor, setListTutor] = useState([]);
     const [pagination, setPagination] = useState(null);
@@ -24,16 +24,27 @@ function TutorRegistrationTable({ status }) {
     }, []);
 
     useEffect(() => {
-        if (status === 10)
-            handleGetTutor(currentPage, "Pending")
-        if (status === 20)
-            handleGetTutor(currentPage, "Approve")
-        if (status === 30)
-            handleGetTutor(currentPage, "Reject")
-    }, [currentPage, status])
-    const handleGetTutor = async (page, status) => {
+        handleGetTutor(currentPage, status, searchValue, startDate, endDate)
+    }, [currentPage, submit])
+
+    // useEffect(() => {
+    //     const handler = setTimeout(() => {
+    //         handleGetTutor(currentPage, status, searchValue)
+    //     }, 2000)
+    //     return () => {
+    //         clearTimeout(handler)
+    //     }
+    // }, [searchValue])
+    const handleGetTutor = async (page, status, searchValue, startDate, endDate) => {
         try {
             setLoading(true);
+            let submitStatus = ""
+            if (status === 10)
+                submitStatus = "Pending";
+            if (status === 20)
+                submitStatus = "Approve"
+            if (status === 30)
+                submitStatus = "Reject"
             await services.TutorManagementAPI.listTutor((res) => {
                 res.pagination.currentSize = res.result.length
                 setListTutor(res.result);
@@ -42,9 +53,12 @@ function TutorRegistrationTable({ status }) {
                 console.log(err);
             }, {
                 pageNumber: page,
-                status: status
+                status: submitStatus,
+                search: searchValue,
+                startDate: startDate,
+                endDate: endDate
             })
-            setLoading(false)
+            setLoading(false);
         } catch (error) {
             console.log(error);
         }

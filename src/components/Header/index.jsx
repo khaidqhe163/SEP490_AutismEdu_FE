@@ -4,7 +4,7 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import SearchIcon from '@mui/icons-material/Search';
 import Settings from '@mui/icons-material/Settings';
-import { Avatar, Badge, Box, Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Tab, Tabs } from '@mui/material';
+import { Avatar, Badge, Box, Button, Divider, IconButton, InputBase, ListItemIcon, Menu, MenuItem, Stack, Tab, Tabs, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -57,7 +57,6 @@ function Header() {
         dispatch(setUserInformation(null))
         nav(PAGES.ROOT)
     }
-    console.log(userInfo);
     return (
         <Stack
             direction="row"
@@ -100,15 +99,24 @@ function Header() {
                 </MenuItem>
             </Menu>
             <Stack direction="row" sx={{ alignItems: "center" }} spacing={2}>
-                <IconButton>
+                <InputBase
+                    sx={{ ml: 1, flex: 1 }}
+                    placeholder="Tìm kiếm gia sư"
+                    inputProps={{ 'aria-label': 'search google maps' }}
+                />
+                <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
                     <SearchIcon />
                 </IconButton>
 
-                <IconButton>
-                    <Badge badgeContent={4} color="primary">
-                        <NotificationsActiveIcon />
-                    </Badge>
-                </IconButton>
+                {
+                    userInfo && (
+                        <IconButton>
+                            <Badge badgeContent={4} color="primary">
+                                <NotificationsActiveIcon />
+                            </Badge>
+                        </IconButton>
+                    )
+                }
                 {
                     !userInfo ? (
                         <>

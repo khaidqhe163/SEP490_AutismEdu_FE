@@ -1,8 +1,14 @@
-import { Box, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import TutorRegistrationTable from './TutorRegistrationTable';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import MinimizeIcon from '@mui/icons-material/Minimize';
+import SearchIcon from '@mui/icons-material/Search';
 function TutorRegistrationManagement() {
     const [status, setStatus] = useState(10);
+    const [searchValue, setSearchValue] = useState("");
+    const [submit, setSubmit] = useState(true);
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
     return (
         <Box sx={{
             height: (theme) => `calc(100vh - ${theme.myapp.adminHeaderHeight})`,
@@ -20,7 +26,8 @@ function TutorRegistrationManagement() {
                     width: "100%",
                     display: "flex",
                     justifyContent: "space-between",
-                    gap: 2
+                    gap: 2,
+                    alignItems: "center"
                 }}
                     mt={3}
                 >
@@ -41,14 +48,49 @@ function TutorRegistrationManagement() {
                             <MenuItem value={30}>Đã từ chối</MenuItem>
                         </Select>
                     </FormControl>
+                    <Stack direction='row' gap={3}>
+                        <Stack direction="row" gap={1} justifyItems="center">
+                            <Typography>Từ ngày</Typography>
+                            <TextField
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                sx={{
+                                    padding: "0"
+                                }} size='small'
+                                type='date'
+                            />
+                        </Stack>
+                        <MinimizeIcon />
+                        <Stack direction="row" gap={1} justifyItems="center">
+                            <Typography>Đến ngày</Typography>
+                            <TextField
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                sx={{
+                                    padding: "0"
+                                }} size='small'
+                                type='date'
+                            />
+                        </Stack>
+                    </Stack>
                     <TextField id="outlined-basic" label="Tìm người dùng" variant="outlined"
                         sx={{
                             padding: "0",
                             width: "300px"
-                        }} size='small' />
+                        }} size='small'
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                    />
                 </Box>
+                <Button variant='contained' sx={{ mt: 3 }} startIcon={<SearchIcon />}
+                    onClick={() => setSubmit(!submit)}
+                >Tìm kiếm
+                </Button>
                 <Box>
-                    <TutorRegistrationTable status={status} />
+                    <TutorRegistrationTable status={status} searchValue={searchValue} submit={submit}
+                        startDate={startDate}
+                        endDate={endDate}
+                    />
                 </Box>
             </Box>
         </Box>
