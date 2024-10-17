@@ -16,7 +16,6 @@ function ClientLayout() {
 
     const handleGetChildren = async () => {
         try {
-            console.log(userInfo);
             await services.ChildrenManagementAPI.listChildren(userInfo.id, (res) => {
                 console.log("data child ==> ", res);
             }, (err) => {

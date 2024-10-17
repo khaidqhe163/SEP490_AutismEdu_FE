@@ -5,7 +5,7 @@ const listAssessment = async (success, error) => {
     await get(API_CODE.API_GET_ASSESSMENT, success, error);
 };
 const createAssessment = async (params, success, error) => {
-    await get(API_CODE.API_CREATE_ASSESSMENT, params, success, error);
+    await post(API_CODE.API_CREATE_ASSESSMENT, params, success, error);
 };
 export const AssessmentManagementAPI = {
     listAssessment,
