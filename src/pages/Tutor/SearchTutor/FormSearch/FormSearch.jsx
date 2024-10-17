@@ -10,6 +10,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Slider from '@mui/material/Slider';
 import CALL_API_ADDRESS from '~/utils/call_api_address';
+import { useNavigate } from 'react-router-dom';
 function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFilterClick, searchCriteria, setSearchCriteria }) {
     const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
@@ -21,8 +22,10 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
     const [loadingDistricts, setLoadingDistricts] = useState(false);
     const [loadingCommunes, setLoadingCommunes] = useState(false);
 
+    const nav = useNavigate();
+
     const rangeSelector = (event, newValue) => {
-        
+
         setSearchCriteria(prevState => ({
             ...prevState,
             ageRange: newValue
@@ -39,7 +42,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
     const getDataProvince = async () => {
         setProvinces(await CALL_API_ADDRESS('province'));
     };
-    console.log(searchCriteria);
+
 
     const handleProvinceChange = (event) => {
         const provinceData = event.target.value;
@@ -109,7 +112,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
     };
     function handleClick(event) {
         event.preventDefault();
-        console.info('You clicked a breadcrumb.');
+        nav('/');
     }
     const handleButtonClick = (button) => {
         setSelected(button);
@@ -126,6 +129,8 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
             selectedRating: e.target.value
         }));
     };
+
+
     const breadcrumbs = [
         <Link underline="hover" key="1" color="inherit" href="/" onClick={handleClick}>
             Trang chủ
@@ -359,18 +364,18 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                             </MenuItem>
                                         </Select>
                                     </FormControl>
-                                    <Stack direction={'column'} sx={{width:'900px'}}>
-                                    <Typography variant='subtitle1'>Độ tuổi</Typography>
-                                    <Slider
-                                        max={15}
-                                        min={0}
-                                        step={1}
-                                        getAriaLabel={() => 'Temperature range'}
-                                        value={searchCriteria?.ageRange}
-                                        onChange={rangeSelector}
-                                        valueLabelDisplay="auto"
-                                        getAriaValueText={()=>`${searchCriteria?.ageRange}`}
-                                    />
+                                    <Stack direction={'column'} sx={{ width: '900px' }}>
+                                        <Typography variant='subtitle1'>Độ tuổi</Typography>
+                                        <Slider
+                                            max={15}
+                                            min={0}
+                                            step={1}
+                                            getAriaLabel={() => 'Temperature range'}
+                                            value={searchCriteria?.ageRange}
+                                            onChange={rangeSelector}
+                                            valueLabelDisplay="auto"
+                                            getAriaValueText={() => `${searchCriteria?.ageRange}`}
+                                        />
                                     </Stack>
                                 </Box>
                             </Grid>

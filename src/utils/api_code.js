@@ -34,6 +34,8 @@ const API_CODE = {
   API_TUTOR_REGISTER: '/v1/TutorRegistrationRequest',
   API_TUTOR_LIST: '/v1/TutorRegistrationRequest',
   API_TUTOR_STATUS: '/v1/TutorRegistrationRequest/changeStatus/',
+  API_GET_TUTORS: '/v1/Tutor',
+  API_GET_TUTOR: '/v1/Tutor/',
 
   //Curriculum management
   API_CREATE_CURRICULUM: '/v1/Curriculum',
@@ -44,13 +46,16 @@ const API_CODE = {
   //Available time management
   API_CREATE_AVAILABLE_TIME: '/v1/AvailableTime',
   API_GET_AVAILABLE_TIME: '/v1/AvailableTime',
-  API_REMOVE_AVAILABLE_TIME: '/v1/AvailableTime',
+  API_REMOVE_AVAILABLE_TIME: '/v1/AvailableTime/',
 
   //Children management
   API_CHILDREN_LIST: '/v1/ChildInformation/',
   API_CREATE_CHILD: '/v1/ChildInformation',
   API_UPDATE_CHILD: '/v1/ChildInformation',
 
+  //Tutor Request management
+  API_GET_TUTOR_REQUEST: '/TutorRequest',
+  API_POST_TUTOR_REQUEST: '/TutorRequest',
   //Assessment management
   API_GET_ASSESSMENT: '/v1/Assessment',
   API_CREATE_ASSESSMENT: '/v1/Assessment'
