@@ -4,23 +4,35 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { Stack, Typography, Avatar, Dialog, DialogTitle, DialogContent, DialogActions, Accordion, AccordionSummary, AccordionDetails, Button, Divider, Grid, AccordionActions } from '@mui/material';
+import { Stack, Typography, Avatar, Dialog, DialogTitle, DialogContent, DialogActions, Accordion, AccordionSummary, AccordionDetails, Button, Divider, Grid, AccordionActions, TextField } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import CreateStudentProfileModal from './TutorRequestModal/CreateStudentProfileModal';
 import RejectRequestModal from './TutorRequestModal/RejectRequestModal';
+import SearchIcon from '@mui/icons-material/Search';
+import InputAdornment from '@mui/material/InputAdornment';
 
 function TutorRequest() {
     const [age, setAge] = React.useState('');
     const [expanded, setExpanded] = React.useState(false);
-
     const [openDialog, setOpenDialog] = React.useState(false);
     const [currentNote, setCurrentNote] = React.useState('');
-
     const [selectedRequest, setSelectedRequest] = React.useState(null);
     const [openModal, setOpenModal] = React.useState(false);
-
     const [openRejectModal, setOpenRejectModal] = React.useState(false);
+    const [filters, setFilters] = React.useState({
+        search: '',
+        status: 'all',
+        orderBy: 'date',
+        sort: 'asc',
+    });
+
+    const handleFilterChange = (key) => (event) => {
+        setFilters({
+            ...filters,
+            [key]: event.target.value,
+        });
+    };
 
     const handleOpenModal = (request) => {
         setSelectedRequest(request);
@@ -118,48 +130,103 @@ function TutorRequest() {
         return statusText;
     };
 
-
-
     return (
         <Stack direction='column' sx={{
             width: "80%",
             margin: "auto",
             mt: "20px",
-            gap: 2
+            gap: 2,
+            backgroundColor: '#f9fafc',
+            padding: '20px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
         }}>
-            <Typography variant='h2' sx={{ mb: 3, textAlign: 'center' }}>Danh sách các yêu cầu</Typography>
-            <Stack direction={'row'} justifyContent={'flex-end'} sx={{ width: "100%", mb: 2 }}>
-                <Box sx={{ width: "25%" }}>
-                    <FormControl fullWidth size='small'>
-                        <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={age}
-                            label="Trạng thái"
-                            onChange={handleChange}
-                        >
-                            <MenuItem value={10}>Tất cả</MenuItem>
-                            <MenuItem value={1}>Đã chấp nhận</MenuItem>
-                            <MenuItem value={0}>Đang chờ</MenuItem>
-                            <MenuItem value={2}>Từ chối</MenuItem>
-                        </Select>
-                    </FormControl>
+            <Typography variant='h4' sx={{ mb: 3, textAlign: 'center', fontWeight: 'bold', color: '#333' }}>
+                Danh sách các yêu cầu
+            </Typography>
+
+            <Stack direction={'row'} justifyContent={'space-between'} alignItems="center" sx={{ width: "100%", mb: 2 }} spacing={3}>
+                <Box sx={{ flex: 1, mr: 3 }}>
+                    <TextField
+                        fullWidth
+                        size='small'
+                        label="Tìm kiếm"
+                        value={filters.search}
+                        onChange={handleFilterChange('search')}
+                        sx={{ backgroundColor: '#fff', borderRadius: '4px' }}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
                 </Box>
+
+                <Stack direction={'row'} justifyContent={'flex-end'} spacing={2} sx={{ flex: 1 }}>
+                    <Box sx={{ width: "45%" }}>
+                        <FormControl fullWidth size='small'>
+                            <InputLabel id="status-select-label">Trạng thái</InputLabel>
+                            <Select
+                                labelId="status-select-label"
+                                value={filters.status}
+                                label="Trạng thái"
+                                onChange={handleFilterChange('status')}
+                                sx={{ backgroundColor: '#fff', borderRadius: '4px' }}
+                            >
+                                <MenuItem value={'all'}>Tất cả</MenuItem>
+                                <MenuItem value={'approve'}>Đã chấp nhận</MenuItem>
+                                <MenuItem value={'pending'}>Đang chờ</MenuItem>
+                                <MenuItem value={'reject'}>Từ chối</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+
+                    <Box sx={{ width: "45%" }}>
+                        <FormControl fullWidth size='small'>
+                            <InputLabel id="sort-select-label">Thứ tự</InputLabel>
+                            <Select
+                                labelId="sort-select-label"
+                                value={filters.sort}
+                                label="Thứ tự"
+                                onChange={handleFilterChange('sort')}
+                                sx={{ backgroundColor: '#fff', borderRadius: '4px' }}
+                            >
+                                <MenuItem value="asc">Tăng dần theo ngày</MenuItem>
+                                <MenuItem value="desc">Giảm dần theo ngày</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </Stack>
             </Stack>
+
+
             <Box sx={{ width: "100%" }}>
                 {requests.map((request, index) => (
-                    <Accordion key={index} expanded={expanded === `panel${index}`} onChange={handleAccordionChange(`panel${index}`)} sx={{ boxShadow: 3, borderRadius: 2 }}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ bgcolor: 'background.default', borderBottom: '1px solid', borderColor: 'divider' }}>
+                    <Accordion key={index} expanded={expanded === `panel${index}`} onChange={handleAccordionChange(`panel${index}`)} sx={{
+                        boxShadow: 3,
+                        borderRadius: 2,
+                        marginBottom: '15px',
+                        backgroundColor: '#fff'
+                    }}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{
+                            backgroundColor: '#fff',
+                            borderBottom: '1px solid',
+                            borderColor: 'divider'
+                        }}>
                             <Stack direction={'row'} alignItems={'center'}>
-                                <Avatar src={request.parentAvatar} sx={{ borderRadius: '50%', width: 56, height: 56, mr: 2 }} />
+                                <Typography variant='body1' ml={2}>{index + 1}</Typography>
+                                <Avatar src={request.parentAvatar} sx={{ borderRadius: '50%', width: 56, height: 56, mx: 2 }} />
                                 <Stack>
                                     <Typography variant='subtitle1' fontWeight={500}>Yêu cầu từ phụ huynh:</Typography>
                                     <Typography variant='h6' fontWeight={600}>{request.parentName}</Typography>
                                 </Stack>
                             </Stack>
                             <Stack direction='row' gap={2} justifyContent='flex-end' alignItems='center' sx={{ flexGrow: 1 }}>
-                                <Button variant="contained" color="primary" startIcon={<QuestionAnswerIcon />}>Nhắn tin</Button>
+                                <Button variant="contained" color="primary" startIcon={<QuestionAnswerIcon />}>
+                                    Nhắn tin
+                                </Button>
 
                                 <Box width={130}>
                                     <Button
@@ -234,7 +301,7 @@ function TutorRequest() {
                                                 sx={{
                                                     display: '-webkit-box',
                                                     WebkitBoxOrient: 'vertical',
-                                                    WebkitLineClamp: 4,  
+                                                    WebkitLineClamp: 4,
                                                     overflow: 'hidden',
                                                     whiteSpace: 'normal',
                                                     lineHeight: 1.5,
@@ -286,25 +353,29 @@ function TutorRequest() {
                                 </Grid>
                             </Grid>
                         </AccordionDetails>
-                        {request.status === 0 && (<AccordionActions sx={{ justifyContent: 'flex-end' }}>
-                            <Button variant="contained" color="error" sx={{ mr: 1 }} onClick={() => handleOpenRejectModal(request)}>Từ Chối</Button>
-                            <Button variant="contained" color="success" sx={{ mr: 1 }} onClick={() => handleOpenModal(request)}>Chấp nhận</Button>
-                        </AccordionActions>)}
+                        {request.status === 0 && (
+                            <AccordionActions sx={{ justifyContent: 'flex-end', backgroundColor: '#f1f1f1', padding: '10px' }}>
+                                <Button variant="contained" color="success" onClick={() => handleOpenModal(request)}>
+                                    Chấp nhận
+                                </Button>
+                                <Button variant="contained" color="error" onClick={() => handleOpenRejectModal(request)}>
+                                    Từ chối
+                                </Button>
+                            </AccordionActions>
+                        )}
                     </Accordion>
                 ))}
-                {selectedRequest && (
-                    <CreateStudentProfileModal
-                        open={openModal}
-                        onClose={handleCloseModal}
-                        request={selectedRequest}
-                    />
-                )}
-                <RejectRequestModal
-                    open={openRejectModal}
-                    onClose={handleCloseRejectModal}
-                    onConfirm={handleConfirmReject}
-                />
             </Box>
+
+            {selectedRequest && (
+                <CreateStudentProfileModal open={openModal} onClose={handleCloseModal} request={selectedRequest} />
+            )}
+
+            {selectedRequest && (
+                <RejectRequestModal open={openRejectModal} onClose={handleCloseRejectModal} onConfirm={handleConfirmReject} />
+            )}
+
+
         </Stack>
     );
 }

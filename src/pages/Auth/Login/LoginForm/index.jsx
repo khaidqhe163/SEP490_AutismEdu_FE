@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUserInformation } from '~/redux/features/userSlice';
 import { jwtDecode } from 'jwt-decode';
 import services from '~/plugins/services';
-function LoginForm({ setVerify, setEmailVerify }) {
+function LoginForm({ setVerify, setEmailVerify , onLoginSuccess}) {
     const [showPassword, setShowPassword] = useState(false);
     const [emailError, setEmailError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
@@ -47,7 +47,7 @@ function LoginForm({ setVerify, setEmailVerify }) {
             services.UserManagementAPI.getUserById(userId, (res) => {
                 dispatch(setUserInformation(res.result))
                 enqueueSnackbar("Đăng nhập thành công!", { variant: "success" });
-                nav(`${PAGES.ROOT}`)
+                onLoginSuccess();
             }, (error) => {
                 enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
                 console.log(error);

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 
-function TutorRequestModal() {
+function TutorRequestModal({tutorId}) {
     const [open, setOpen] = useState(false);
     const [childData, setChildData] = useState([]);
     const [selectedChild, setSelectedChild] = useState({});
@@ -17,12 +17,9 @@ function TutorRequestModal() {
     const userInf = useSelector(userInfor);
     const nav = useNavigate();
 
-    console.log('description: ', description);
-
-
     const handleOpen = async () => {
         if (!userInf) {
-            nav('/autismedu/login');
+            nav('/autismedu/login', { state: { tutorId } });
         } else {
             await handleGetChildInformation();
             setOpen(true);
@@ -45,7 +42,7 @@ function TutorRequestModal() {
 
     const handleSaveRequest = async () => {
         const requestData = {
-            tutorId: userInf?.id,
+            tutorId: tutorId,
             childId: selectedChild?.id,
             description: description
         };

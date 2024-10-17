@@ -39,9 +39,15 @@ const API_CODE = {
 
   //Curriculum management
   API_CREATE_CURRICULUM: '/v1/Curriculum',
+  API_GET_CURRICULUMS: '/v1/Curriculum',
+  API_CHANGE_STATUS_CURRICULUM: '/v1/Curriculum/changeStatus/',
 
   //Certificate management
-  API_CERTIFICATE_STATUS: '/v1/Curriculum/changeStatus/',
+  API_CERTIFICATE_STATUS: '/v1/Certificate/changeStatus/',
+  API_GET_CERTIFICATE: '/v1/Certificate',
+  API_GET_CERTIFICATE_ID: '/v1/Certificate/',
+  API_CREATE_CERTIFICATE: '/v1/Certificate',
+  API_DELETE_CERTIFICATE: '/v1/Certificate/',
 
   //Available time management
   API_CREATE_AVAILABLE_TIME: '/v1/AvailableTime',
@@ -54,8 +60,8 @@ const API_CODE = {
   API_UPDATE_CHILD: '/v1/ChildInformation',
 
   //Tutor Request management
-  API_GET_TUTOR_REQUEST: '/TutorRequest',
-  API_POST_TUTOR_REQUEST: '/TutorRequest',
+  API_GET_TUTOR_REQUEST: '/v1/TutorRequest',
+  API_POST_TUTOR_REQUEST: '/v1/TutorRequest',
   //Assessment management
   API_GET_ASSESSMENT: '/v1/Assessment',
   API_CREATE_ASSESSMENT: '/v1/Assessment'

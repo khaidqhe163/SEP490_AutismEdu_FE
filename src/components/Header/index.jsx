@@ -56,8 +56,10 @@ function Header() {
         Cookies.remove("refresh_token");
         dispatch(setUserInformation(null))
         nav(PAGES.ROOT)
-    }
+    };
+    console.log('user: ');
     console.log(userInfo);
+
     return (
         <Stack
             direction="row"

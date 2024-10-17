@@ -165,6 +165,9 @@ function TutorProfile() {
         ));
     };
 
+    console.log(tutor);
+
+
     return (
         <Grid container sx={{ height: 'auto', width: "100%" }} py={5}>
             <Grid item xs={2} />
@@ -196,7 +199,7 @@ function TutorProfile() {
                                 </Stack>
                             </Box>
                             <Box ml={50}>
-                                <TutorRequestModal />
+                                <TutorRequestModal tutorId={id} />
                             </Box>
                         </Box>
 
@@ -284,27 +287,23 @@ function TutorProfile() {
                                             <Box py={3} sx={{ borderTop: "1px solid", borderBottom: "1px solid", borderColor: "lightgray" }}>
                                                 <Typography mb={2} variant='h5'>Kinh nghiệm làm việc</Typography>
                                                 <Stack direction={'column'} gap={1}>
-                                                    <Box sx={{ width: "100%", display: 'flex', direction: 'row', gap: 2 }}>
-                                                        <Box sx={{ maxWidth: "10%", height: "auto", borderRadius: "10px" }}>
+                                                    {tutor?.workExperiences?.length === 0 ? (
+                                                        <Typography variant='inherit'>Chưa có dữ liệu về kinh nghiệm làm việc</Typography>
+                                                    ) : (
+                                                        tutor?.workExperiences?.map((work, index) => (
+                                                            <Box key={index} sx={{ width: "100%", display: 'flex', flexDirection: 'row', gap: 2 }}>
+                                                                <Box sx={{ maxWidth: "10%", height: "auto", borderRadius: "10px" }}>
+                                                                    <BusinessCenterOutlinedIcon fontSize='large' />
+                                                                </Box>
+                                                                <Box>
+                                                                    <Typography variant='h6' fontSize={'medium'}>{work.companyName}</Typography>
+                                                                    <Typography variant='body1'>Vị trí: {work.position}</Typography>
+                                                                    <Typography variant='body2'>Từ ngày {formatDateCer(work.startDate)} {work?.endDate && `đến ${formatDateCer(work?.endDate)}`}</Typography>
+                                                                </Box>
+                                                            </Box>
+                                                        ))
+                                                    )}
 
-                                                            <BusinessCenterOutlinedIcon fontSize='large' />
-                                                        </Box>
-                                                        <Box>
-                                                            <Typography variant='h6' fontSize={'medium'}>Trung tâm giáo dục IPro</Typography>
-                                                            <Typography variant='body1'>Vị trí: Giáo viên chủ nhiệm</Typography>
-                                                            <Typography variant='body2'>Từ 06-2016 đến 08-2020</Typography>
-                                                        </Box>
-                                                    </Box>
-                                                    <Box sx={{ width: "100%", display: 'flex', direction: 'row', gap: 2 }}>
-                                                        <Box sx={{ maxWidth: "10%", height: "auto", borderRadius: "10px" }}>
-                                                            <BusinessCenterOutlinedIcon fontSize='large' />
-                                                        </Box>
-                                                        <Box>
-                                                            <Typography variant='h6' fontSize={'medium'}>Trung tâm Vina Health</Typography>
-                                                            <Typography variant='body1'>Vị trí: Chuyên gia tâm lý</Typography>
-                                                            <Typography variant='body2'>Từ 06-2016 đến 08-2020</Typography>
-                                                        </Box>
-                                                    </Box>
 
                                                 </Stack>
                                             </Box>

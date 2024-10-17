@@ -86,15 +86,17 @@ export default function TutorSideBar({ openMenu }) {
                         />
                     </ListItemButton>
                 </Link>
-                <ListItemButton>
-                    <ListItemIcon sx={listIconStyle}>
-                        <ContactPageOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                        primary="Yêu cầu dạy"
-                        sx={textStyle}
-                    />
-                </ListItemButton>
+                <Link to={PAGES.TUTOR_REQUEST}>
+                    <ListItemButton>
+                        <ListItemIcon sx={listIconStyle}>
+                            <ContactPageOutlinedIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                            primary="Yêu cầu dạy"
+                            sx={textStyle}
+                        />
+                    </ListItemButton>
+                </Link>
                 <Divider />
                 <ListItemButton onClick={handleOpenStudent}>
                     <ListItemIcon sx={listIconStyle}>
@@ -127,12 +129,14 @@ export default function TutorSideBar({ openMenu }) {
                     <ListItemText primary="Bài kiểm tra" style={textStyle} />
                 </ListItemButton>
                 <Divider />
-                <ListItemButton onClick={handleOpenSetting}>
-                    <ListItemIcon sx={listIconStyle}>
-                        <SettingsOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Cài đặt" style={textStyle} />
-                </ListItemButton>
+                <Link to={PAGES.TUTOR_SETTING}>
+                    <ListItemButton onClick={handleOpenSetting}>
+                        <ListItemIcon sx={listIconStyle}>
+                            <SettingsOutlinedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Cài đặt" style={textStyle} />
+                    </ListItemButton>
+                </Link>
             </List>
         </Drawer>
     );

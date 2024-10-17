@@ -21,17 +21,20 @@ import {
 import { useState } from 'react';
 import CreateCertificateDialog from './CertificateModal/CreateCertificateDialog';
 import { enqueueSnackbar } from 'notistack';
+import services from '~/plugins/services';
 
 function CertificateManagement() {
     const [status, setStatus] = useState('');
     const [openDialog, setOpenDialog] = useState(false);
     const [certificateData, setCertificateData] = useState({
-        name: '',
-        issuer: '',
-        issueDate: '',
-        expiryDate: '',
-        images: []
+        CertificateName: '',
+        IssuingInstitution: '',
+        IdentityCardNumber: '',
+        IssuingDate: '',
+        ExpirationDate: '',
+        Medias: []
     });
+    console.log(certificateData);
 
     const certificates = [
         {
@@ -85,6 +88,30 @@ function CertificateManagement() {
         const newImages = [...certificateData.images];
         newImages.splice(index, 1);
         setCertificateData({ ...certificateData, images: newImages });
+    };
+
+    const handleSubmitCertificate = async () => {
+
+        try {
+            const formData = new FormData();
+
+            formData.append('CertificateName', certificateData.CertificateName);
+            formData.append('IssuingInstitution', certificateData.IssuingInstitution);
+            formData.append('IdentityCardNumber', certificateData.IdentityCardNumber);
+            formData.append('IssuingDate', certificateData.IssuingDate);
+            formData.append('ExpirationDate', certificateData.ExpirationDate);
+
+            certificateData.Medias.forEach((file, index) => {
+                formData.append(`Medias[${index}]`, file);
+            });
+            await services.CertificateAPI.createCertificate(formData, (res) => {
+                enqueueSnackbar('Chứng chỉ của bạn đã được tạo thành công!', { variant: 'success' })
+            }, (error) => {
+                console.log(error);
+            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const statusText = (status) => {
@@ -175,6 +202,7 @@ function CertificateManagement() {
                 handleInputChange={handleInputChange}
                 handleImageUpload={handleImageUpload}
                 handleImageRemove={handleImageRemove}
+                handleSubmitCertificate={handleSubmitCertificate}
             />
         </Box>
     );

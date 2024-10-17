@@ -71,9 +71,6 @@ function SearchTutor() {
         handleGetTutor();
     };
 
-    const handleButtonClick = (button) => {
-        setSelected(button);
-    };
     function handleClick(event) {
         event.preventDefault();
         console.info('You clicked a breadcrumb.');
@@ -109,26 +106,24 @@ function SearchTutor() {
         maximumFractionDigits: 0,
     });
 
-    console.log(tutors);
-
 
     return (
         <Box sx={{ height: 'auto' }}>
             <FormSearch selected={selected} setSelected={setSelected}
                 showFilters={showFilters} handleSearch={handleSearch} handleFilterClick={handleFilterClick} searchCriteria={searchCriteria} setSearchCriteria={setSearchCriteria} />
-            <Grid container sx={{ height: 'auto', position: "relative", top: '-170px' }}>
+            <Grid container sx={{ height: 'auto', position: "relative", top: '-150px' }}>
 
                 <Grid item xs={2} />
 
                 <Grid item xs={8} sx={{ height: 'auto' }} mt={5}>
                     <Grid container sx={{ height: 'auto' }}>
                         <Grid item>
-                            <Grid container spacing={5}>
+                            <Grid container spacing={10}>
                                 {selected !== "list" ?
                                     tutors.map((t, index) =>
                                     (<Grid item xs={4} key={index}>
                                         <Card sx={{
-                                            padding: "20px", minHeight: "600px",
+                                            padding: "20px", minHeight: "600px", width: '400px',
                                             transition: "transform 0.3s ease, box-shadow 0.3s ease",
                                             '&:hover': {
                                                 transform: "scale(1.05) translateY(-10px)",
@@ -171,17 +166,19 @@ function SearchTutor() {
                                                         }
                                                     }}>{t.phoneNumber}</Typography></a>
                                                 </Box>
-                                                <Typography mt={3} sx={{
-                                                    display: '-webkit-box',
-                                                    WebkitLineClamp: 3,
-                                                    WebkitBoxOrient: 'vertical',
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                    height: '70px',
-                                                    width: '100%'
-                                                }}>
-                                                    {t.aboutMe} he Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and cruelty-free
-                                                </Typography>
+                                                {/* <Box
+                                                    sx={{
+                                                        display: '-webkit-box',
+                                                        WebkitLineClamp: 3,
+                                                        WebkitBoxOrient: 'vertical',
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                        height: '85px',
+                                                        width: '85%',
+                                                    }}
+                                                    dangerouslySetInnerHTML={{ __html: t.aboutMe }}
+                                                /> */}
+
 
                                                 <Box sx={{ display: "flex", gap: "15px", flexDirection: 'column' }}>
 
@@ -256,7 +253,7 @@ function SearchTutor() {
                                                         <LocationOnOutlinedIcon />
                                                         <Typography>{t?.address ? getCity(t.address) : 'Hồ Chí Minh'}</Typography>
                                                     </Box>
-                                                    <Typography mt={2} sx={{
+                                                    {/* <Typography mt={2} sx={{
                                                         display: '-webkit-box',
                                                         WebkitLineClamp: 3,
                                                         WebkitBoxOrient: 'vertical',
@@ -265,7 +262,7 @@ function SearchTutor() {
                                                         height: '75px'
                                                     }}>
                                                         {t.aboutMe} he Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and  cruelty-free
-                                                    </Typography>
+                                                    </Typography> */}
 
                                                     <Box sx={{ display: "flex", gap: "15px" }}>
                                                         <Box sx={{

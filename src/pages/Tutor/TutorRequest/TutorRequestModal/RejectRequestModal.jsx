@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Typography, Grid } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Typography, Grid, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 
@@ -9,6 +9,7 @@ const RejectRequestModal = ({ open, onClose, onConfirm }) => {
         reason: Yup.string()
             .required('Lý do không được để trống')
             .min(5, 'Lý do phải có ít nhất 5 ký tự'),
+        rejectType: Yup.string().required('Loại từ chối không được để trống'), // Validation cho loại từ chối
     });
 
     return (
@@ -18,16 +19,44 @@ const RejectRequestModal = ({ open, onClose, onConfirm }) => {
             </DialogTitle>
             <DialogContent>
                 <Formik
-                    initialValues={{ reason: '' }}
+                    initialValues={{ reason: '', rejectType: '' }} // Thêm rejectType
                     validationSchema={validationSchema}
                     onSubmit={(values) => {
-                        onConfirm(values.reason);
+                        onConfirm(values);
                         onClose();
                     }}
                 >
                     {({ values, handleChange, handleBlur, errors, touched }) => (
                         <Form>
-                            <Grid container mt={5}>
+                            <Grid container spacing={3} mt={5}>
+                                {/* Loại từ chối */}
+                                <Grid item xs={4}>
+                                    <Typography variant="body1" sx={{ fontWeight: 600, mb: 2 }}>
+                                        Loại từ chối:
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <FormControl fullWidth error={touched.rejectType && Boolean(errors.rejectType)}>
+                                        <InputLabel>Chọn loại từ chối</InputLabel>
+                                        <Select
+                                            name="rejectType"
+                                            value={values.rejectType}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            label="Chọn loại từ chối"
+                                        >
+                                            <MenuItem value={1}>Không tương thích với chương trình giảng dạy</MenuItem>
+                                            <MenuItem value={2}>Xung đột lịch trình</MenuItem>
+                                            <MenuItem value={3}>Lý do khác</MenuItem>
+                                        </Select>
+                                        {touched.rejectType && errors.rejectType && (
+                                            <Typography variant="caption" color="error">
+                                                {errors.rejectType}
+                                            </Typography>
+                                        )}
+                                    </FormControl>
+                                </Grid>
+
                                 <Grid item xs={4}>
                                     <Typography variant="body1" sx={{ fontWeight: 600, mb: 2 }}>
                                         Lý do:
@@ -57,7 +86,7 @@ const RejectRequestModal = ({ open, onClose, onConfirm }) => {
                                     type="submit"
                                     color="primary"
                                     variant="contained"
-                                    disabled={!values.reason || !!errors.reason} // Disable nếu lý do không hợp lệ
+                                    disabled={!values.reason || !!errors.reason || !values.rejectType || !!errors.rejectType} // Disable nếu lý do hoặc loại từ chối không hợp lệ
                                 >
                                     Xác nhận
                                 </Button>

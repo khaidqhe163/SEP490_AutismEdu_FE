@@ -17,11 +17,11 @@ import {
     Grid
 } from '@mui/material';
 
-export default function CreateCertificateDialog({ open, onClose, certificateData, setCertificateData, handleImageUpload, handleImageRemove }) {
+export default function CreateCertificateDialog({ open, onClose, certificateData, setCertificateData, handleSubmitCertificate }) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [openImageDialog, setOpenImageDialog] = useState(false);
+    const [listImg, setListImg] = useState([]);
 
-    // Handle image click to view details
     const handleImageClick = (image) => {
         setSelectedImage(image);
         setOpenImageDialog(true);
@@ -32,41 +32,56 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
         setSelectedImage(null);
     };
 
-    // Use Formik with Yup for validation
+    const handleImageRemove = (idx) => {
+        const updatedImages = listImg.filter((_, index) => index !== idx);
+        setListImg(updatedImages);
+        const updatedMedias = certificateData.Medias.filter((_, index) => index !== idx);
+        setCertificateData({ ...certificateData, Medias: updatedMedias });
+        formik.setFieldValue('Medias', updatedImages);
+    };
+
     const formik = useFormik({
         initialValues: {
-            name: certificateData.name || '',
-            issuer: certificateData.issuer || '',
-            issueDate: certificateData.issueDate || '',
-            expiryDate: certificateData.expiryDate || '',
-            images: certificateData.images || [], // Track image list
+            CertificateName: certificateData.CertificateName,
+            IssuingInstitution: certificateData.IssuingInstitution,
+            IdentityCardNumber: certificateData.IdentityCardNumber,
+            IssuingDate: certificateData.IssuingDate,
+            ExpirationDate: certificateData.ExpirationDate,
+            Medias: certificateData.Medias,
         },
         validationSchema: Yup.object({
-            name: Yup.string().required('Tên chứng chỉ là bắt buộc'),
-            issuer: Yup.string().required('Nơi cấp là bắt buộc'),
-            issueDate: Yup.date().required('Ngày cấp là bắt buộc'),
-            expiryDate: Yup.date().nullable(), // Optional
-            images: Yup.array().min(1, 'Phải có ít nhất một ảnh'), // At least 1 image required
+            CertificateName: Yup.string().required('Tên chứng chỉ là bắt buộc'),
+            IssuingInstitution: Yup.string().required('Nơi cấp là bắt buộc'),
+            IssuingDate: Yup.date().required('Ngày cấp là bắt buộc'),
+            ExpirationDate: Yup.date().nullable(),
+            Medias: Yup.array().min(1, 'Phải có ít nhất một ảnh'),
         }),
-        onSubmit: (values) => {
-            alert(JSON.stringify(values, null, 2)); // Display entered info temporarily
+        onSubmit: () => {
+            handleSubmitCertificate();  
+            onClose();                
         },
     });
 
-    // Update image list on upload
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setCertificateData({
+            ...certificateData,
+            [name]: value,
+        });
+
+        formik.setFieldValue(name, value);
+    };
+
     const handleImageUploadWrapper = (event) => {
         const files = event.target.files;
-        const uploadedImages = [...certificateData.images]; // Keep previous image list
-
-        // Create URL for uploaded images
-        for (let i = 0; i < files.length; i++) {
-            const url = URL.createObjectURL(files[i]);
-            uploadedImages.push({ url });
-        }
-
-        // Update image list in state
-        setCertificateData({ ...certificateData, images: uploadedImages });
-        formik.setFieldValue('images', uploadedImages); // Update images in Formik
+        const fileArray = Array.from(files);
+        const uploadedImages = fileArray.map((file) => {
+            return { url: URL.createObjectURL(file) };
+        });
+        setListImg(uploadedImages);
+        setCertificateData({ ...certificateData, Medias: fileArray });
+        formik.setFieldValue('Medias', uploadedImages);
     };
 
     return (
@@ -82,12 +97,11 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
                         <Grid item xs={8}>
                             <TextField
                                 fullWidth
-                                name="name"
-                                value={formik.values.name}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.name && Boolean(formik.errors.name)}
-                                helperText={formik.touched.name && formik.errors.name}
+                                name="CertificateName"
+                                value={certificateData.CertificateName}
+                                onChange={handleInputChange}
+                                error={formik.touched.CertificateName && Boolean(formik.errors.CertificateName)}
+                                helperText={formik.touched.CertificateName && formik.errors.CertificateName}
                                 variant="outlined"
                                 size="small"
                             />
@@ -100,17 +114,17 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
                         <Grid item xs={8}>
                             <TextField
                                 fullWidth
-                                name="issuer"
-                                value={formik.values.issuer}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.issuer && Boolean(formik.errors.issuer)}
-                                helperText={formik.touched.issuer && formik.errors.issuer}
+                                name="IssuingInstitution"
+                                value={certificateData.IssuingInstitution}
+                                onChange={handleInputChange}
+                                error={formik.touched.IssuingInstitution && Boolean(formik.errors.IssuingInstitution)}
+                                helperText={formik.touched.IssuingInstitution && formik.errors.IssuingInstitution}
                                 variant="outlined"
                                 size="small"
                             />
                         </Grid>
                     </Grid>
+
                     <Grid container spacing={2} mb={2}>
                         <Grid item xs={4}>
                             <Typography sx={{ mt: 1, fontWeight: '500', textAlign: 'right' }}>Ngày cấp:</Typography>
@@ -119,12 +133,11 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
                             <TextField
                                 fullWidth
                                 type="date"
-                                name="issueDate"
-                                value={formik.values.issueDate}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.issueDate && Boolean(formik.errors.issueDate)}
-                                helperText={formik.touched.issueDate && formik.errors.issueDate}
+                                name="IssuingDate"
+                                value={certificateData.IssuingDate}
+                                onChange={handleInputChange}
+                                error={formik.touched.IssuingDate && Boolean(formik.errors.IssuingDate)}
+                                helperText={formik.touched.IssuingDate && formik.errors.IssuingDate}
                                 variant="outlined"
                                 size="small"
                             />
@@ -138,12 +151,11 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
                             <TextField
                                 fullWidth
                                 type="date"
-                                name="expiryDate"
-                                value={formik.values.expiryDate}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.expiryDate && Boolean(formik.errors.expiryDate)}
-                                helperText={formik.touched.expiryDate && formik.errors.expiryDate}
+                                name="ExpirationDate"
+                                value={certificateData.ExpirationDate}
+                                onChange={handleInputChange}
+                                error={formik.touched.ExpirationDate && Boolean(formik.errors.ExpirationDate)}
+                                helperText={formik.touched.ExpirationDate && formik.errors.ExpirationDate}
                                 variant="outlined"
                                 size="small"
                             />
@@ -176,24 +188,22 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
                         <Grid item xs={4}></Grid>
                         <Grid item xs={8}>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                                {certificateData.images.map((image, index) => (
+                                {listImg?.map((image, index) => (
                                     <Box key={index} sx={{ position: 'relative', width: 100, height: 100, borderRadius: '8px', overflow: 'hidden', boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)' }}>
                                         <img src={image.url} alt="Chứng chỉ" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                         <IconButton
+                                            sx={{ position: 'absolute', top: 5, right: 5, color: 'red', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
                                             size="small"
-                                            sx={{ position: 'absolute', top: 0, right: 0 }}
-                                            color="error"
                                             onClick={() => handleImageRemove(index)}
                                         >
-                                            <DeleteIcon />
+                                            <DeleteIcon fontSize="small" />
                                         </IconButton>
                                         <IconButton
+                                            sx={{ position: 'absolute', top: 5, left: 5, color: '#fff', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
                                             size="small"
-                                            sx={{ position: 'absolute', top: 0, left: 0 }}
-                                            color="inherit"
-                                            onClick={() => handleImageClick(image)}
+                                            onClick={() => handleImageClick(image.url)}
                                         >
-                                            <VisibilityIcon />
+                                            <VisibilityIcon fontSize="small" />
                                         </IconButton>
                                     </Box>
                                 ))}
@@ -201,31 +211,21 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
                         </Grid>
                     </Grid>
                 </DialogContent>
-                <DialogActions sx={{ justifyContent: 'flex-end', paddingBottom: '16px' }}>
-                    <Button onClick={onClose} color="inherit" variant='outlined'>Huỷ</Button>
-                    <Button type="submit" variant="contained" color="primary" disabled={!formik.isValid || !formik.dirty || formik.values.images.length === 0}>
-                        Tạo
-                    </Button>
+                <DialogActions>
+                    <Button onClick={onClose} color="inherit" variant='outlined'>Hủy</Button>
+                    <Button type="submit" color="primary" variant='contained'>Lưu</Button>
                 </DialogActions>
             </form>
-
-            {/* Image preview dialog */}
-            <Dialog
-                open={openImageDialog}
-                onClose={handleCloseImageDialog}
-                maxWidth="md"
-                fullWidth
-            >
-                <DialogTitle sx={{ textAlign: 'center', fontSize: '1.25rem', fontWeight: '500' }}>Hình ảnh chứng chỉ</DialogTitle>
+            <Dialog open={openImageDialog} onClose={handleCloseImageDialog} maxWidth="md" fullWidth>
                 <DialogContent>
                     {selectedImage && (
-                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src={selectedImage.url} alt="Hình ảnh chứng chỉ" style={{ width: '100%', height: 'auto', maxHeight: '500px', objectFit: 'contain' }} />
+                        <Box sx={{ textAlign: 'center' }}>
+                            <img src={selectedImage} alt="Chứng chỉ" style={{ width: '100%', height: 'auto', maxHeight: '500px', objectFit: 'contain' }} />
                         </Box>
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseImageDialog} color="inherit">Đóng</Button>
+                    <Button onClick={handleCloseImageDialog} color="inherit" variant='outlined'>Đóng</Button>
                 </DialogActions>
             </Dialog>
         </Dialog>
