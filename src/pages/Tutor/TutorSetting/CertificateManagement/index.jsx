@@ -1,6 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import axios from "~/plugins/axios";
+import * as React from 'react';
+import { Visibility as VisibilityIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import {
     Box,
     Button,
@@ -10,22 +11,34 @@ import {
     MenuItem,
     Paper,
     Select,
+    Stack,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
     TableRow,
+    TextField,
     Typography
 } from '@mui/material';
 import { useState } from 'react';
 import CreateCertificateDialog from './CertificateModal/CreateCertificateDialog';
 import { enqueueSnackbar } from 'notistack';
 import services from '~/plugins/services';
+import SearchIcon from '@mui/icons-material/Search';
+import InputAdornment from '@mui/material/InputAdornment';
+import { useNavigate } from 'react-router-dom';
 
 function CertificateManagement() {
     const [status, setStatus] = useState('');
     const [openDialog, setOpenDialog] = useState(false);
+    const nav = useNavigate();
+    const [filters, setFilters] = React.useState({
+        search: '',
+        status: 'all',
+        orderBy: 'createdDate',
+        sort: 'asc',
+    });
     const [certificateData, setCertificateData] = useState({
         CertificateName: '',
         IssuingInstitution: '',
@@ -34,7 +47,8 @@ function CertificateManagement() {
         ExpirationDate: '',
         Medias: []
     });
-    console.log(certificateData);
+
+    const [pagination, setPagination] = useState(null);
 
     const certificates = [
         {
@@ -51,11 +65,17 @@ function CertificateManagement() {
             status: 0,
             feedback: 'Thiếu thông tin',
         },
-        // Thêm nhiều chứng chỉ nếu cần
     ];
 
-    const handleStatusChange = (event) => {
-        setStatus(event.target.value);
+    const handleViewDetail = (certificateId) => {
+        nav(`/autismtutor/certificate-detail/${1013}`);
+    };
+
+    const handleFilterChange = (key) => (event) => {
+        setFilters({
+            ...filters,
+            [key]: event.target.value,
+        });
     };
 
     const handleDialogOpen = () => {
@@ -91,7 +111,6 @@ function CertificateManagement() {
     };
 
     const handleSubmitCertificate = async () => {
-
         try {
             const formData = new FormData();
 
@@ -102,8 +121,10 @@ function CertificateManagement() {
             formData.append('ExpirationDate', certificateData.ExpirationDate);
 
             certificateData.Medias.forEach((file, index) => {
-                formData.append(`Medias[${index}]`, file);
+                formData.append(`Medias`, file);
             });
+
+            axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
             await services.CertificateAPI.createCertificate(formData, (res) => {
                 enqueueSnackbar('Chứng chỉ của bạn đã được tạo thành công!', { variant: 'success' })
             }, (error) => {
@@ -112,6 +133,7 @@ function CertificateManagement() {
         } catch (error) {
             console.log(error);
         }
+        axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
     };
 
     const statusText = (status) => {
@@ -130,57 +152,110 @@ function CertificateManagement() {
     return (
         <Box sx={{ width: "90%", margin: "auto", mt: "20px", gap: 2 }}>
             <Typography variant='h4' sx={{ mb: 3 }}>Danh sách chứng chỉ</Typography>
+            <Stack direction={'row'} justifyContent={'space-between'} alignItems="center" sx={{ width: "100%", mb: 2 }} spacing={3}>
+                <Box sx={{ flex: 2, mr: 3 }}>
+                    <TextField
+                        fullWidth
+                        size='small'
+                        label="Tìm kiếm"
+                        value={filters.search}
+                        onChange={handleFilterChange('search')}
+                        sx={{ backgroundColor: '#fff', borderRadius: '4px' }}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                </Box>
 
-            <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
-                <FormControl size="small" sx={{ minWidth: 200 }}>
-                    <InputLabel>Trạng thái</InputLabel>
-                    <Select
-                        value={status}
-                        onChange={handleStatusChange}
-                        label="Trạng thái"
-                    >
-                        <MenuItem value="">Tất cả</MenuItem>
-                        <MenuItem value={2}>Chờ duyệt</MenuItem>
-                        <MenuItem value={1}>Chấp nhận</MenuItem>
-                        <MenuItem value={0}>Từ chối</MenuItem>
-                    </Select>
-                </FormControl>
-                <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleDialogOpen}>
+                <Stack direction={'row'} justifyContent={'flex-end'} spacing={2} sx={{ flex: 1 }}>
+                    <Box sx={{ flexBasis: '45%' }}>
+                        <FormControl fullWidth size='small'>
+                            <InputLabel id="status-select-label">Trạng thái</InputLabel>
+                            <Select
+                                labelId="status-select-label"
+                                value={filters.status}
+                                label="Trạng thái"
+                                onChange={handleFilterChange('status')}
+                                sx={{ backgroundColor: '#fff', borderRadius: '4px' }}
+                            >
+                                <MenuItem value={'all'}>Tất cả</MenuItem>
+                                <MenuItem value={'approve'}>Đã chấp nhận</MenuItem>
+                                <MenuItem value={'pending'}>Đang chờ</MenuItem>
+                                <MenuItem value={'reject'}>Từ chối</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+
+                    <Box sx={{ flexBasis: '45%' }}>
+                        <FormControl fullWidth size='small'>
+                            <InputLabel id="sort-select-label">Thứ tự</InputLabel>
+                            <Select
+                                labelId="sort-select-label"
+                                value={filters.sort}
+                                label="Thứ tự"
+                                onChange={handleFilterChange('sort')}
+                                sx={{ backgroundColor: '#fff', borderRadius: '4px' }}
+                            >
+                                <MenuItem value="asc">Tăng dần theo ngày</MenuItem>
+                                <MenuItem value="desc">Giảm dần theo ngày</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </Stack>
+
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddIcon />}
+                    onClick={handleDialogOpen}
+                    sx={{ height: '40px', whiteSpace: 'nowrap' }} 
+                >
                     Thêm chứng chỉ
                 </Button>
-            </Box>
+            </Stack>
+
+      
 
             <Box>
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Số thứ tự</TableCell>
-                                <TableCell>Tên chứng chỉ</TableCell>
-                                <TableCell>Ngày tạo</TableCell>
-                                <TableCell>Trạng thái</TableCell>
-                                <TableCell>Phản hồi</TableCell>
-                                <TableCell>Hành động</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Số thứ tự</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Tên chứng chỉ</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Ngày tạo</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Phản hồi</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Hành động</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {certificates.map((certificate, index) => (
-                                <TableRow key={certificate.id}>
+                                <TableRow key={certificate.id} hover>
                                     <TableCell>{index + 1}</TableCell>
                                     <TableCell>{certificate.name}</TableCell>
-                                    <TableCell>{certificate.dateCreated}</TableCell>
+                                    <TableCell>{new Date(certificate.dateCreated).toLocaleDateString()}</TableCell>
                                     <TableCell>
-                                        <Button variant='text' color={
-                                            certificate.status === 1 ? 'success' :
-                                                certificate.status === 0 ? 'error' :
-                                                    'warning'
-                                        }>
+                                        <Button
+                                            variant="outlined"
+                                            color={
+                                                certificate.status === 1 ? 'success' :
+                                                    certificate.status === 0 ? 'error' :
+                                                        'warning'
+                                            }
+                                            size="small"
+                                            sx={{ borderRadius: 2, textTransform: 'none' }}
+                                        >
                                             {statusText(certificate.status)}
                                         </Button>
                                     </TableCell>
-                                    <TableCell>{certificate.feedback}</TableCell>
+                                    <TableCell>{certificate.feedback || 'Chưa có phản hồi'}</TableCell>
                                     <TableCell>
-                                        <IconButton color="primary" aria-label="xem chi tiết">
+                                        <IconButton color="primary" aria-label="xem chi tiết" onClick={() => handleViewDetail(certificate.id)}>
                                             <VisibilityIcon />
                                         </IconButton>
                                         <IconButton color="error" aria-label="xoá">

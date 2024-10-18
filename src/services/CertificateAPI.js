@@ -10,7 +10,7 @@ const getCertificates = async (success, error, params) => {
 };
 
 const getCertificateById = async (endpoint, success, error) => {
-    await get(API_CODE.API_GET_CERTIFICATE + endpoint, success, error);
+    await get(API_CODE.API_GET_CERTIFICATE_ID + endpoint, success, error);
 };
 
 const deleteCertificate = async (endpoint, data, success, error) => {

@@ -1,6 +1,7 @@
+import { Box, Tab } from '@mui/material';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Tab, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
@@ -11,10 +12,17 @@ import AvailableTimeManagement from './AvailableTimeManagement';
 import CertificateManagement from './CertificateManagement';
 
 function TutorSetting() {
-    const [value, setValue] = useState('1');
+    const navigate = useNavigate();
+    const location = useLocation();
+    
+    const initialTab = location.state?.selectedTab || '1';
+    const [value, setValue] = useState(initialTab);
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
+        navigate('.', { state: { selectedTab: newValue } }); 
     };
+
     return (
         <Box sx={{ width: '100%', typography: 'body1' }}>
             <TabContext value={value}>
@@ -34,7 +42,7 @@ function TutorSetting() {
                 <TabPanel value="4"><CertificateManagement /></TabPanel>
             </TabContext>
         </Box>
-    )
+    );
 }
 
-export default TutorSetting
+export default TutorSetting;

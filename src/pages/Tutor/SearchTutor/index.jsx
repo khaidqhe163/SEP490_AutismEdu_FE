@@ -28,9 +28,6 @@ function SearchTutor() {
     const navigate = useNavigate();
 
     const [selected, setSelected] = useState('grid');
-    const [searchValue, setSearchValue] = useState('');
-    const arrCenter = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    const [visibleCards, setVisibleCards] = useState(6);
     const [showFilters, setShowFilters] = useState(false);
 
 
