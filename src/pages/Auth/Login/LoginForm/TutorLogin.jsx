@@ -180,7 +180,7 @@ function TutorLogin({ setVerify, setEmailVerify }) {
                         Đăng nhập
                     </LoadingButton>
 
-                    <Typography sx={{ textAlign: "center", mt: "20px" }}>Bạn chưa có tài khoản? <Link to={PAGES.ROOT + PAGES.TUTORREGISTRATION} style={{ color: "#666cff" }}>Tạo tài khoản mới</Link></Typography>
+                    <Typography sx={{ textAlign: "center", mt: "20px" }}>Bạn chưa có tài khoản? <Link to={PAGES.TUTORREGISTRATION} style={{ color: "#666cff" }}>Tạo tài khoản mới</Link></Typography>
                 </CardContent>
             </Card>
         </Box>

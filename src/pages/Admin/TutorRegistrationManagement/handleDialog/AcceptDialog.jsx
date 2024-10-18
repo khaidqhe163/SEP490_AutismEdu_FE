@@ -34,7 +34,7 @@ function AcceptDialog({ id, status, setListTutor, listTutor }) {
                 {
                     id: id,
                     statusChange: status,
-                    rejectionReason: ""
+                    rejectionReason: rejectReason
                 },
                 (res) => {
                     setListTutor((pre) =>

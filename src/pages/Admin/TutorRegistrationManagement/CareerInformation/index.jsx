@@ -6,7 +6,7 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import TutorCertificate from '../TutorCertificate';
 import TutorCurriculum from '../TutorCurriculum';
 import TutorWorkExperience from '../TutorWorkExperience';
-function CareerInformation({ curriculums, certificates, workExperiences }) {
+function CareerInformation({ curriculums, certificates, workExperiences, id }) {
     const [value, setValue] = useState('1');
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -47,13 +47,13 @@ function CareerInformation({ curriculums, certificates, workExperiences }) {
                             </TabList>
                         </Box>
                         <TabPanel value="1">
-                            <TutorCertificate certificates={certificates} />
+                            <TutorCertificate certificates={certificates} id={id} />
                         </TabPanel>
                         <TabPanel value="2">
-                            <TutorWorkExperience workExperiences={workExperiences} />
+                            <TutorWorkExperience workExperiences={workExperiences} id={id} />
                         </TabPanel>
                         <TabPanel value="3">
-                            <TutorCurriculum curriculums={curriculums} />
+                            <TutorCurriculum curriculums={curriculums} id={id} />
                         </TabPanel>
                     </TabContext>
                 </Box>

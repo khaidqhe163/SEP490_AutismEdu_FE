@@ -1,7 +1,8 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Accordion, AccordionActions, AccordionSummary, Box, Button, Grid } from '@mui/material';
+import { Accordion, AccordionActions, AccordionSummary, Box, Grid, Typography } from '@mui/material';
 import AccordionDetails from '@mui/material/AccordionDetails';
-function TutorWorkExperience({ workExperiences }) {
+import RejectWorkExperiences from './handleDialog/RejectWorkExperiences';
+function TutorWorkExperience({ workExperiences, id }) {
     const formatDate = (date) => {
         const dateObj = new Date(date);
         const formattedDate = dateObj.getDate().toString().padStart(2, '0') + '/' +
@@ -36,11 +37,19 @@ function TutorWorkExperience({ workExperiences }) {
                                         <Grid item xs={8}>{w.position}</Grid>
                                         <Grid item xs={4}>Thời gian làm việc:</Grid>
                                         <Grid item xs={8}>{formatDate(w.startDate)} - {formatDate(w.endDate)}</Grid>
+                                        {
+                                            w.requestStatus === 0 && (
+                                                <>
+                                                    <Grid item xs={4}>Lý do từ chối:</Grid>
+                                                    <Grid item xs={8}>{w.rejectionReason}</Grid>
+                                                </>
+                                            )
+                                        }
                                     </Grid>
                                 </AccordionDetails>
                                 {
                                     w.requestStatus === 2 && (<AccordionActions>
-                                        <Button>Từ chối</Button>
+                                        <RejectWorkExperiences workExperiencesId={w.id} id={id} />
                                     </AccordionActions>)
                                 }
                             </Accordion>

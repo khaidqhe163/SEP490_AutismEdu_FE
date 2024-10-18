@@ -8,7 +8,7 @@ function TutorRegistrationManagement() {
     const [searchValue, setSearchValue] = useState("");
     const [submit, setSubmit] = useState(true);
     const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
+    const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
     return (
         <Box sx={{
             height: (theme) => `calc(100vh - ${theme.myapp.adminHeaderHeight})`,
@@ -58,6 +58,7 @@ function TutorRegistrationManagement() {
                                     padding: "0"
                                 }} size='small'
                                 type='date'
+                                inputProps={{ max: new Date().toISOString().split('T')[0] }}
                             />
                         </Stack>
                         <MinimizeIcon />
@@ -70,6 +71,7 @@ function TutorRegistrationManagement() {
                                     padding: "0"
                                 }} size='small'
                                 type='date'
+                                inputProps={{ max: new Date().toISOString().split('T')[0] }}
                             />
                         </Stack>
                     </Stack>

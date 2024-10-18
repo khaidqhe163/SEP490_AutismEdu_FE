@@ -64,7 +64,10 @@ const API_CODE = {
   API_POST_TUTOR_REQUEST: '/v1/TutorRequest',
   //Assessment management
   API_GET_ASSESSMENT: '/v1/Assessment',
-  API_CREATE_ASSESSMENT: '/v1/Assessment'
+  API_CREATE_ASSESSMENT: '/v1/Assessment',
+
+  //Work experiences management
+  API_WORK_EXPERIENCE_STATUS: '/v1/WorkExperience/changeStatus/'
 };
 
 export default API_CODE;

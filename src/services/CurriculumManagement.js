@@ -1,4 +1,4 @@
-import { del, post, get } from '~/services/BaseService';
+import { del, post, get, put } from '~/services/BaseService';
 import API_CODE from '~/utils/api_code';
 
 const createCurriculum = async (params, success, error) => {

@@ -5,10 +5,10 @@ import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import { Accordion, AccordionSummary, Box, Grid, IconButton, Modal } from '@mui/material';
 import AccordionActions from '@mui/material/AccordionActions';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import Button from '@mui/material/Button';
 import { useEffect, useRef, useState } from 'react';
+import RejectCertificate from './handleDialog/RejectCertificate';
 
-function TutorCertificate({ certificates }) {
+function TutorCertificate({ id, certificates }) {
     const [openViewImage, setOpenViewImage] = useState(false);
     const [currentImage, setCurrentImage] = useState('');
     const [scale, setScale] = useState(1);
@@ -121,6 +121,15 @@ function TutorCertificate({ certificates }) {
                                                 </>
                                             )
                                         }
+
+                                        {
+                                            c.requestStatus === 0 && (
+                                                <>
+                                                    <Grid item xs={3}>Lý do từ chối:</Grid>
+                                                    <Grid item xs={9}>{c.rejectionReason}</Grid>
+                                                </>
+                                            )
+                                        }
                                     </Grid>
                                     <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
                                         {
@@ -136,7 +145,7 @@ function TutorCertificate({ certificates }) {
                                     </Box>
                                     {
                                         c.requestStatus === 2 && (<AccordionActions>
-                                            <Button>Từ chối</Button>
+                                            <RejectCertificate certificateId={c.id} id={id} setCertificate={setDisplayList} />
                                         </AccordionActions>)
                                     }
                                 </AccordionDetails>
