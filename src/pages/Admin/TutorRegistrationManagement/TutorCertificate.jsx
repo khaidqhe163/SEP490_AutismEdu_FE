@@ -5,9 +5,7 @@ import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import { Accordion, AccordionSummary, Box, Grid, IconButton, Modal } from '@mui/material';
 import AccordionActions from '@mui/material/AccordionActions';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import Button from '@mui/material/Button';
 import { useEffect, useRef, useState } from 'react';
-import services from '~/plugins/services';
 import RejectCertificate from './handleDialog/RejectCertificate';
 
 function TutorCertificate({ id, certificates }) {
@@ -120,6 +118,15 @@ function TutorCertificate({ id, certificates }) {
                                                 <>
                                                     <Grid item xs={3}>Ngày hết hạn:</Grid>
                                                     <Grid item xs={9}>{c.expirationDate}</Grid>
+                                                </>
+                                            )
+                                        }
+
+                                        {
+                                            c.requestStatus === 0 && (
+                                                <>
+                                                    <Grid item xs={3}>Lý do từ chối:</Grid>
+                                                    <Grid item xs={9}>{c.rejectionReason}</Grid>
                                                 </>
                                             )
                                         }

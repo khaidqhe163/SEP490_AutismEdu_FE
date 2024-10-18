@@ -1,13 +1,13 @@
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { enqueueSnackbar } from 'notistack';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
+import TablePagging from '~/components/TablePagging';
+import TutorContext from '~/Context/TutorContext';
 import services from '~/plugins/services';
 import BasicInformation from './BasicInformation';
 import CareerInformation from './CareerInformation';
 import AcceptDialog from './handleDialog/acceptDialog';
-import TablePagging from '~/components/TablePagging';
-import TutorContext from '~/Context/TutorContext';
+import RejectReason from './RejectReason';
 
 function TutorRegistrationTable({ status, searchValue, submit, startDate, endDate }) {
     const [loading, setLoading] = useState(false);
@@ -57,7 +57,6 @@ function TutorRegistrationTable({ status, searchValue, submit, startDate, endDat
             console.log(error);
         }
     }
-
     console.log(listTutor);
     return (
         <TutorContext.Provider value={{ listTutor, setListTutor }}>
@@ -125,6 +124,12 @@ function TutorRegistrationTable({ status, searchValue, submit, startDate, endDat
                                                         <AcceptDialog id={tutor.id} status={0} setListTutor={setListTutor}
                                                             listTutor={listTutor} />
                                                     </Box>
+                                                )
+                                            }
+
+                                            {
+                                                tutor.requestStatus === 0 && (
+                                                    <RejectReason reason={tutor.rejectionReason}/>
                                                 )
                                             }
                                         </TableCell>

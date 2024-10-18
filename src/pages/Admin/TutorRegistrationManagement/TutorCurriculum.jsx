@@ -31,6 +31,13 @@ function TutorCurriculum({ curriculums, id }) {
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <Box sx={{ maxWidth: "100%" }} dangerouslySetInnerHTML={{ __html: c.description }} />
+                                    {
+                                        c.requestStatus === 0 && (
+                                            <>
+                                                <Typography sx={{ mt: 1, fontSize: "12px", color: "red" }}>Lý do từ chối: {c.rejectionReason}</Typography>
+                                            </>
+                                        )
+                                    }
                                 </AccordionDetails>
                                 {
                                     c.requestStatus === 2 && (<AccordionActions>
