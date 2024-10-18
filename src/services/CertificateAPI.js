@@ -1,8 +1,7 @@
-const { default: API_CODE } = require("~/utils/api_code");
-const { get } = require("./BaseService");
-
-const changeCertificateStatus = async (endpoint, success, error, params) => {
-    await get(API_CODE.API_CERTIFICATE_STATUS + endpoint, success, error, params);
+import { get, post, put } from "./BaseService";
+import API_CODE from '~/utils/api_code';
+const changeCertificateStatus = async (endpoint, params, success, error) => {
+    await put(API_CODE.API_CERTIFICATE_STATUS + endpoint, params, success, error);
 };
 
 export const CertificateAPI = {

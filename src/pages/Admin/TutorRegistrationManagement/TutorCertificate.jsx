@@ -7,8 +7,10 @@ import AccordionActions from '@mui/material/AccordionActions';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Button from '@mui/material/Button';
 import { useEffect, useRef, useState } from 'react';
+import services from '~/plugins/services';
+import RejectCertificate from './handleDialog/RejectCertificate';
 
-function TutorCertificate({ certificates }) {
+function TutorCertificate({ id, certificates }) {
     const [openViewImage, setOpenViewImage] = useState(false);
     const [currentImage, setCurrentImage] = useState('');
     const [scale, setScale] = useState(1);
@@ -136,7 +138,7 @@ function TutorCertificate({ certificates }) {
                                     </Box>
                                     {
                                         c.requestStatus === 2 && (<AccordionActions>
-                                            <Button>Từ chối</Button>
+                                            <RejectCertificate certificateId={c.id} id={id} setCertificate={setDisplayList} />
                                         </AccordionActions>)
                                     }
                                 </AccordionDetails>

@@ -1,7 +1,8 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionActions, AccordionSummary, Box, Button, Typography } from '@mui/material';
 import AccordionDetails from '@mui/material/AccordionDetails';
-function TutorCurriculum({ curriculums }) {
+import RejectCurriculum from './handleDialog/RejectCurriculum';
+function TutorCurriculum({ curriculums, id }) {
     return (
         <>
             <Box mt={3}>
@@ -33,7 +34,7 @@ function TutorCurriculum({ curriculums }) {
                                 </AccordionDetails>
                                 {
                                     c.requestStatus === 2 && (<AccordionActions>
-                                        <Button>Từ chối</Button>
+                                        <RejectCurriculum curriculumId={c.id} id={id} />
                                     </AccordionActions>)
                                 }
                             </Accordion>

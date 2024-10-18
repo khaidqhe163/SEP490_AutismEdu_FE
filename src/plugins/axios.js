@@ -20,7 +20,6 @@ const axiosInstance = axios.create({
 let isRefreshing = false;
 
 axiosInstance.interceptors.request.use(request => {
-  console.log(axiosInstance.defaults);
   let newAccesstToken = Cookies.get('access_token');
   if (newAccesstToken !== undefined) {
     request.headers.Authorization = `Bearer ${newAccesstToken}`;

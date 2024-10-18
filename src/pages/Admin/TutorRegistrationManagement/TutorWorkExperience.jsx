@@ -1,7 +1,11 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionActions, AccordionSummary, Box, Button, Grid } from '@mui/material';
 import AccordionDetails from '@mui/material/AccordionDetails';
-function TutorWorkExperience({ workExperiences }) {
+import RejectWorkExperiences from './handleDialog/RejectWorkExperiences';
+import { useContext } from 'react';
+import { useTutorContext } from '~/Context/TutorContext';
+function TutorWorkExperience({ workExperiences, id }) {
+    const { listTutor } = useTutorContext();
     const formatDate = (date) => {
         const dateObj = new Date(date);
         const formattedDate = dateObj.getDate().toString().padStart(2, '0') + '/' +
@@ -9,6 +13,7 @@ function TutorWorkExperience({ workExperiences }) {
             dateObj.getFullYear();
         return formattedDate;
     }
+    console.log(listTutor);
     return (
         <>
 
@@ -40,7 +45,7 @@ function TutorWorkExperience({ workExperiences }) {
                                 </AccordionDetails>
                                 {
                                     w.requestStatus === 2 && (<AccordionActions>
-                                        <Button>Từ chối</Button>
+                                        <RejectWorkExperiences workExperiencesId={w.id} id={id} />
                                     </AccordionActions>)
                                 }
                             </Accordion>

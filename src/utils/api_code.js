@@ -39,9 +39,9 @@ const API_CODE = {
 
   //Curriculum management
   API_CREATE_CURRICULUM: '/v1/Curriculum',
-
+  API_CURRICULUM_STATUS: '/v1/Curriculum/changeStatus/',
   //Certificate management
-  API_CERTIFICATE_STATUS: '/v1/Curriculum/changeStatus/',
+  API_CERTIFICATE_STATUS: '/v1/Certificate/changeStatus/',
 
   //Available time management
   API_CREATE_AVAILABLE_TIME: '/v1/AvailableTime',
@@ -58,7 +58,10 @@ const API_CODE = {
   API_POST_TUTOR_REQUEST: '/TutorRequest',
   //Assessment management
   API_GET_ASSESSMENT: '/v1/Assessment',
-  API_CREATE_ASSESSMENT: '/v1/Assessment'
+  API_CREATE_ASSESSMENT: '/v1/Assessment',
+
+  //Work experiences management
+  API_WORK_EXPERIENCE_STATUS: '/v1/WorkExperience/changeStatus/'
 };
 
 export default API_CODE;
