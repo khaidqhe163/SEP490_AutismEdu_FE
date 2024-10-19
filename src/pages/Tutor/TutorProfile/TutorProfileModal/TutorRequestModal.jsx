@@ -8,14 +8,23 @@ import { userInfor } from '~/redux/features/userSlice';
 import { useNavigate } from 'react-router-dom';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
+import { format } from 'date-fns';
 
-function TutorRequestModal({tutorId}) {
+function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
     const [open, setOpen] = useState(false);
     const [childData, setChildData] = useState([]);
     const [selectedChild, setSelectedChild] = useState({});
-    const [description, setDescription] = useState('');
     const userInf = useSelector(userInfor);
     const nav = useNavigate();
+
+    const menuProps = {
+        PaperProps: {
+            style: {
+                maxHeight: 200,
+                overflowY: 'auto',
+            },
+        },
+    };
 
     const handleOpen = async () => {
         if (!userInf) {
@@ -30,8 +39,13 @@ function TutorRequestModal({tutorId}) {
     const handleGetChildInformation = async () => {
         try {
             await services.ChildrenManagementAPI.listChildren(userInf?.id, (res) => {
-                setChildData(res.result);
-                setSelectedChild(res.result[0]);
+                if (res?.result?.length === 0) {
+                    nav('/autismedu/my-childlren');
+                } else {
+                    setChildData(res.result);
+                    const x = res?.result?.find((r) => (!rejectChildIds.includes(r?.id)))
+                    setSelectedChild(x);
+                }
             }, (error) => {
                 console.log(error);
             });
@@ -40,29 +54,35 @@ function TutorRequestModal({tutorId}) {
         }
     };
 
-    const handleSaveRequest = async () => {
+
+    const handleSaveRequest = async (note) => {
         const requestData = {
             tutorId: tutorId,
             childId: selectedChild?.id,
-            description: description
+            description: note
         };
+
         try {
             await services.TutorRequestAPI.createTutorRequest(requestData, (res) => {
                 setChildData([]);
-                handleClose();
                 enqueueSnackbar("Gửi yêu cầu tới gia sư thành công!", { variant: "success" });
+                handleClose();
             }, (error) => {
                 enqueueSnackbar("Gửi yêu cầu tới gia sư thất bại!", { variant: "error" });
                 console.log(error);
-            })
+            });
         } catch (error) {
             console.log(error);
         }
     };
 
     const validationSchema = Yup.object({
-        note: Yup.string().required('Vui lòng nhập ghi chú'),
+        note: Yup.string().min(10, 'Phải nhập tối thiểu 10 ký tự').required('Vui lòng nhập ghi chú'),
     });
+
+    const formatDate = (dateString) => {
+        return format(new Date(dateString), 'dd/MM/yyyy');
+    };
 
     return (
         <>
@@ -96,6 +116,7 @@ function TutorRequestModal({tutorId}) {
                             <Grid item xs={8}>
                                 <FormControl fullWidth margin="dense">
                                     <Select
+                                        MenuProps={menuProps}
                                         value={selectedChild?.id}
                                         onChange={(e) => {
                                             const selected = childData?.find(child => child?.id === e.target.value);
@@ -103,7 +124,11 @@ function TutorRequestModal({tutorId}) {
                                         }}
                                     >
                                         {childData?.map(child => (
-                                            <MenuItem key={child?.id} value={child?.id}>
+                                            <MenuItem
+                                                key={child?.id}
+                                                value={child?.id}
+                                                disabled={rejectChildIds.includes(child?.id)}
+                                            >
                                                 {child?.name}
                                             </MenuItem>
                                         ))}
@@ -111,7 +136,6 @@ function TutorRequestModal({tutorId}) {
                                 </FormControl>
                             </Grid>
                         </Grid>
-                        {/* Số điện thoại */}
                         <Grid item xs={12} container spacing={2} alignItems="center">
                             <Grid item xs={4}>
                                 <Typography>Số điện thoại:</Typography>
@@ -121,7 +145,6 @@ function TutorRequestModal({tutorId}) {
                             </Grid>
                         </Grid>
 
-                        {/* Tên trẻ */}
                         <Grid item xs={12} container spacing={2} alignItems="center">
                             <Grid item xs={4}>
                                 <Typography>Tên trẻ:</Typography>
@@ -131,7 +154,6 @@ function TutorRequestModal({tutorId}) {
                             </Grid>
                         </Grid>
 
-                        {/* Giới tính */}
                         <Grid item xs={12} container spacing={2} alignItems="center">
                             <Grid item xs={4}>
                                 <Typography>Giới tính:</Typography>
@@ -141,14 +163,12 @@ function TutorRequestModal({tutorId}) {
                             </Grid>
                         </Grid>
 
-                        {/* Ngày sinh */}
                         <Grid item xs={12} container spacing={2} alignItems="center">
                             <Grid item xs={4}>
                                 <Typography>Ngày sinh:</Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                {/* <Typography>{selectedChild?.birthDate?.toLocaleDateString()}</Typography> */}
-                                <Typography>{selectedChild?.birthDate}</Typography>
+                                <Typography>{selectedChild?.birthDate && formatDate(selectedChild?.birthDate)}</Typography>
                             </Grid>
                         </Grid>
 
@@ -158,8 +178,7 @@ function TutorRequestModal({tutorId}) {
                                 <Typography>Tuổi:</Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                {/* <Typography>{calculateAge(selectedChild.birthDate)}</Typography> */}
-                                <Typography>8</Typography>
+                                <Typography>{selectedChild?.birthDate && calculateAge(new Date(selectedChild?.birthDate))}</Typography>
                             </Grid>
                         </Grid>
 
@@ -172,11 +191,10 @@ function TutorRequestModal({tutorId}) {
                                     initialValues={{ note: '' }}
                                     validationSchema={validationSchema}
                                     onSubmit={(values) => {
-                                        setDescription(values.note);
-                                        handleSaveRequest(); // Call handleSaveRequest on form submit
+                                        handleSaveRequest(values.note); // Passing the note value here
                                     }}
                                 >
-                                    {({ values, errors, touched, handleChange }) => (
+                                    {({ values, errors, touched, handleChange, handleBlur }) => (
                                         <Form>
                                             <TextField
                                                 name="note"
@@ -185,6 +203,7 @@ function TutorRequestModal({tutorId}) {
                                                 rows={6}
                                                 value={values.note}
                                                 onChange={handleChange}
+                                                onBlur={handleBlur}
                                                 error={touched.note && Boolean(errors.note)}
                                                 helperText={touched.note && errors.note}
                                                 fullWidth
@@ -202,6 +221,7 @@ function TutorRequestModal({tutorId}) {
                                 </Formik>
                             </Grid>
                         </Grid>
+
                     </Grid>
                 </Box>
             </Modal>

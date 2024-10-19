@@ -258,7 +258,7 @@ function CertificateManagement() {
                                         <IconButton color="primary" aria-label="xem chi tiết" onClick={() => handleViewDetail(certificate.id)}>
                                             <VisibilityIcon />
                                         </IconButton>
-                                        <IconButton color="error" aria-label="xoá">
+                                        <IconButton color="error" aria-label="xoá" onClick={() => handleDeleteCertificate(certificate.id)}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </TableCell>

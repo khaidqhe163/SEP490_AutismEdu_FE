@@ -19,7 +19,7 @@ const RejectRequestModal = ({ open, onClose, onConfirm }) => {
             </DialogTitle>
             <DialogContent>
                 <Formik
-                    initialValues={{ reason: '', rejectType: '' }} // Thêm rejectType
+                    initialValues={{ rejectType: 1,reason: ''  }} 
                     validationSchema={validationSchema}
                     onSubmit={(values) => {
                         onConfirm(values);
@@ -86,7 +86,7 @@ const RejectRequestModal = ({ open, onClose, onConfirm }) => {
                                     type="submit"
                                     color="primary"
                                     variant="contained"
-                                    disabled={!values.reason || !!errors.reason || !values.rejectType || !!errors.rejectType} // Disable nếu lý do hoặc loại từ chối không hợp lệ
+                                    disabled={!values.reason || !!errors.reason || !values.rejectType || !!errors.rejectType} 
                                 >
                                     Xác nhận
                                 </Button>

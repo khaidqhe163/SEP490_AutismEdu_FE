@@ -12,7 +12,7 @@ import StarIcon from '@mui/icons-material/Star';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { Box, Button, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Button, Divider, Grid, Stack, Typography } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { format } from 'date-fns';
@@ -29,6 +29,11 @@ function TutorProfile() {
     const [availability, setAvailability] = useState([]);
     const [value, setValue] = useState('1');
     const [valueCurriculum, setValueCurriculum] = useState('1');
+
+    const [tutor, setTutor] = useState({});
+    console.log(tutor);
+    
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         handleGetAllAvailableTime(1);
@@ -57,9 +62,6 @@ function TutorProfile() {
     const handleChangeCurriculum = (event, newValue) => {
         setValueCurriculum(newValue);
     };
-
-    const [tutor, setTutor] = useState({});
-    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         handleGetProfile(id);
@@ -165,7 +167,6 @@ function TutorProfile() {
         ));
     };
 
-    console.log(tutor);
 
 
     return (
@@ -176,11 +177,11 @@ function TutorProfile() {
                     <Grid item xs={12} px={2}>
 
                         <Box sx={{ display: "flex", alignItems: 'center', mb: 5 }}>
-                            <Box sx={{ borderRadius: "50%", overflow: 'hidden', maxWidth: "18%", height: "auto" }} border={1}>
-                                <img
+                            <Box sx={{ overflow: 'hidden', maxWidth: "30%", height: "auto" }}>
+                                <Avatar
                                     src={tutor?.imageUrl}
                                     alt='avatartutor'
-                                    style={{ width: '100%', height: '100%', objectFit: "cover", objectPosition: "center" }}
+                                    style={{ width: '300px', height: '300px' }}
                                 />
                             </Box>
                             <Box ml={3}>
@@ -199,7 +200,7 @@ function TutorProfile() {
                                 </Stack>
                             </Box>
                             <Box ml={50}>
-                                <TutorRequestModal tutorId={id} />
+                                <TutorRequestModal rejectChildIds={tutor?.rejectChildIds} tutorId={id} calculateAge={calculateAge} />
                             </Box>
                         </Box>
 
