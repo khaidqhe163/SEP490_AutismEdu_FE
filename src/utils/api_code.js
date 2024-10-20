@@ -23,6 +23,7 @@ const API_CODE = {
   API_CREATE_USER: '/v1/User',
   API_GET_USER_ID: '/v1/User/',
   API_UPDATE_USER: '/v1/User/',
+  API_GET_USER_EMAIL: '/v1/User/email/',
   //Claim management
   API_GET_CLAIM: '/v1/Claim',
   API_ADD_CLAIM: '/v1/Claim',
@@ -67,7 +68,10 @@ const API_CODE = {
   API_CREATE_ASSESSMENT: '/v1/Assessment',
 
   //Work experiences management
-  API_WORK_EXPERIENCE_STATUS: '/v1/WorkExperience/changeStatus/'
+  API_WORK_EXPERIENCE_STATUS: '/v1/WorkExperience/changeStatus/',
+
+  //Student profile management
+  API_CREATE_STUDENT_PROFILE: '/v1/StudentProfile'
 };
 
 export default API_CODE;

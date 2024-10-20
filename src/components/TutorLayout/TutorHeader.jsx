@@ -41,7 +41,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
         nav(PAGES.TUTOR_LOGIN)
     }
 
-    console.log(tutorInfo);
     return (
         <Box sx={{
             position: "fixed",
@@ -61,7 +60,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                     <Logo sizeLogo={30} sizeName={25} />
                 </Box>
                 <Box sx={{ display: "flex", gap: 2 }}>
-                    <IconButton>
+                    <IconButton onClick={() => { nav(PAGES.STUDENT_CREATION) }}>
                         <AddOutlinedIcon />
                     </IconButton>
                     <IconButton>

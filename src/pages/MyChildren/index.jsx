@@ -81,9 +81,7 @@ function MyChildren() {
             formik.setFieldValue("fullName", children[currentChild].name)
             const gender = children[currentChild].gender === "Male" ? "True" : "False"
             formik.setFieldValue("gender", gender)
-            const dateString = children[currentChild].birthDate;
-            const [day, month, year] = dateString.split('/');
-            const formattedDate = `${year}-${month}-${day}`;
+            const formattedDate = children[currentChild].birthDate.split('T')[0];
             formik.setFieldValue("dateOfBirth", formattedDate)
         }
         setChange(true);
@@ -94,10 +92,8 @@ function MyChildren() {
             const fullName = formik.values.fullName;
             const gender = formik.values.gender === "True" ? "Male" : "Female";
             const dateOfBirth = formik.values.dateOfBirth;
-            const dateString = children[currentChild].birthDate;
-            const [day, month, year] = dateString.split('/');
-            const formattedDate = `${year}-${month}-${day}`;
-            if (dateOfBirth !== formattedDate || fullName !== children[currentChild].name || gender !== children[currentChild].gender) {
+            const dateString = children[currentChild].birthDate.split('T')[0];
+            if (dateOfBirth !== dateString || fullName !== children[currentChild].name || gender !== children[currentChild].gender) {
                 setChange(false);
             } else {
                 setChange(true)
@@ -115,6 +111,7 @@ function MyChildren() {
             console.log(error);
         }
     }
+    console.log(children);
     return (
         <Stack direction='row' justifyContent="center" pt={5}>
             <Stack sx={{ width: "80%" }} direction="row" justifyContent="center">

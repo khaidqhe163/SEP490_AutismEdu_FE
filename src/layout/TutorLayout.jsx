@@ -15,17 +15,6 @@ function TutorLayout() {
                     <Outlet />
                 </Stack>
             </Box>
-            <Box sx={{ position: "fixed", zIndex: 100, bottom: "50px", right: "100px" }}>
-                <IconButton sx={{
-                    bgcolor: "#b660ec", width: "70px", height: "70px", color: 'white',
-                    boxShadow: "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px",
-                    ':hover': {
-                        bgcolor: "#c992ec"
-                    }
-                }}>
-                    <MessageOutlinedIcon />
-                </IconButton>
-            </Box>
         </Box>
     )
 }

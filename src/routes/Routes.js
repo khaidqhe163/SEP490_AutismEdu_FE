@@ -29,6 +29,7 @@ import ChangePassword from '~/pages/Parent/ChangePassword'
 import AssessmentManagement from '~/pages/Admin/AssessmentManagement'
 import AssessmentCreation from '~/pages/Admin/AssessmentManagement/AssessmentCreation'
 import CertificateDetail from '~/pages/Tutor/TutorSetting/CertificateManagement/CertificateDetail'
+import StudentCreation from '~/pages/StudentProfile/StudentCreation'
 
 const UnLayoutRoutes = [
     {
@@ -130,6 +131,9 @@ const tutorRoutes = [
     }, {
         path: PAGES.CERTIFICATE_DETAIL,
         element: CertificateDetail
+    }, {
+        path: PAGES.STUDENT_CREATION,
+        element: StudentCreation
     }
 ]
 const adminRoutes = [

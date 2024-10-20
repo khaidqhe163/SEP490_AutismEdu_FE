@@ -29,7 +29,8 @@ const PAGES = {
   CHANGE_PASSWORD: '/change-password',
   ASSESSMENT_MANAGEMENT: '/admin/assessment-management',
   ASSESSMENT_CREATION: '/admin/assessment-creation',
-  CERTIFICATE_DETAIL: '/autismtutor/certificate-detail/:id'
+  CERTIFICATE_DETAIL: '/autismtutor/certificate-detail/:id',
+  STUDENT_CREATION: '/autismtutor/create-student-profile'
 };
 
 export default PAGES;

@@ -16,7 +16,6 @@ function GoogleLogin() {
     const nav = useNavigate();
     useEffect(() => {
         if (userId) {
-            console.log("zoday");
             services.UserManagementAPI.getUserById(userId, (res) => {
                 dispatch(setUserInformation(res.result))
                 enqueueSnackbar("Đăng nhập thành công!", { variant: "success" });
@@ -37,6 +36,7 @@ function GoogleLogin() {
                 const decodedToken = jwtDecode(res.result.accessToken);
                 setUserId(decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
             }, (err) => {
+                enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
                 console.log(err);
             },
             )

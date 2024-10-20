@@ -35,6 +35,10 @@ const createUser = async (params, success, error) => {
 const updateUser = async (endpoint, params, success, error) => {
     await put(API_CODE.API_UPDATE_USER + endpoint, params, success, error)
 }
+
+const getUserByEmail = async (endpoint, success, error) => {
+    await get(API_CODE.API_GET_USER_EMAIL + endpoint, success, error);
+}
 export const UserManagementAPI = {
     getUsers,
     lockUsers,
@@ -46,5 +50,6 @@ export const UserManagementAPI = {
     removeUserRoles,
     getUserById,
     createUser,
-    updateUser
+    updateUser,
+    getUserByEmail
 }
