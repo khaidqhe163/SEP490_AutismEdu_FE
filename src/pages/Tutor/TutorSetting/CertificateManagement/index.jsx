@@ -9,6 +9,7 @@ import {
     IconButton,
     InputLabel,
     MenuItem,
+    Pagination,
     Paper,
     Select,
     Stack,
@@ -28,9 +29,12 @@ import services from '~/plugins/services';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useNavigate } from 'react-router-dom';
+import LoadingComponent from '~/components/LoadingComponent';
+import DeleteConfirmationModal from './CertificateModal/DeleteConfirmationModal';
 
 function CertificateManagement() {
-    const [status, setStatus] = useState('');
+    const [idDelete, setIdDelete] = useState(-1);
+    const [loading, setLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const nav = useNavigate();
     const [filters, setFilters] = React.useState({
@@ -48,27 +52,62 @@ function CertificateManagement() {
         Medias: []
     });
 
-    const [pagination, setPagination] = useState(null);
+    const [certificateList, setCertificateList] = useState([]);
 
-    const certificates = [
-        {
-            id: 1,
-            name: 'Chứng chỉ A',
-            dateCreated: '2023-09-12',
-            status: 1,
-            feedback: 'Đạt yêu cầu',
-        },
-        {
-            id: 2,
-            name: 'Chứng chỉ B',
-            dateCreated: '2023-10-01',
-            status: 0,
-            feedback: 'Thiếu thông tin',
-        },
-    ];
+    const [pagination, setPagination] = useState({
+        pageNumber: 1,
+        pageSize: 10,
+        totalPages: 10,
+    });
+
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = (id) => {
+        setIdDelete(id);
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+
+    const handlePageChange = (event, value) => {
+        setPagination({ ...pagination, pageNumber: value });
+    };
+
+    React.useEffect(() => {
+        getCeritificates();
+    }, [filters, pagination.pageNumber]);
+
+    const getCeritificates = async () => {
+        try {
+            setLoading(true);
+            await services.CertificateAPI.getCertificates((res) => {
+                if (res?.result) {
+                    // const certiData = res.result.filter((c) => (!c.identityCardNumber));
+                    setCertificateList(res.result);
+                    setPagination(res.pagination);
+                }
+            }, (error) => {
+                console.log(error);
+
+            }, {
+                search: filters.search,
+                status: filters.status,
+                orderBy: filters.orderBy,
+                sort: filters.sort,
+                pageNumber: pagination?.pageNumber
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const handleViewDetail = (certificateId) => {
-        nav(`/autismtutor/certificate-detail/${1013}`);
+        nav(`/autismtutor/certificate-detail/${certificateId}`);
     };
 
     const handleFilterChange = (key) => (event) => {
@@ -149,6 +188,8 @@ function CertificateManagement() {
         }
     };
 
+    const totalPages = Math.ceil(pagination.total / pagination.pageSize);
+
     return (
         <Box sx={{ width: "90%", margin: "auto", mt: "20px", gap: 2 }}>
             <Typography variant='h4' sx={{ mb: 3 }}>Danh sách chứng chỉ</Typography>
@@ -212,13 +253,13 @@ function CertificateManagement() {
                     color="primary"
                     startIcon={<AddIcon />}
                     onClick={handleDialogOpen}
-                    sx={{ height: '40px', whiteSpace: 'nowrap' }} 
+                    sx={{ height: '40px', whiteSpace: 'nowrap' }}
                 >
                     Thêm chứng chỉ
                 </Button>
             </Stack>
 
-      
+
 
             <Box>
                 <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
@@ -234,23 +275,23 @@ function CertificateManagement() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {certificates.map((certificate, index) => (
+                            {certificateList.map((certificate, index) => (
                                 <TableRow key={certificate.id} hover>
-                                    <TableCell>{index + 1}</TableCell>
-                                    <TableCell>{certificate.name}</TableCell>
-                                    <TableCell>{new Date(certificate.dateCreated).toLocaleDateString()}</TableCell>
+                                    <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 10}</TableCell>
+                                    <TableCell>{certificate.certificateName}</TableCell>
+                                    <TableCell>{new Date(certificate.createdDate).toLocaleDateString()}</TableCell>
                                     <TableCell>
                                         <Button
                                             variant="outlined"
                                             color={
-                                                certificate.status === 1 ? 'success' :
-                                                    certificate.status === 0 ? 'error' :
+                                                certificate.requestStatus === 1 ? 'success' :
+                                                    certificate.requestStatus === 0 ? 'error' :
                                                         'warning'
                                             }
                                             size="small"
                                             sx={{ borderRadius: 2, textTransform: 'none' }}
                                         >
-                                            {statusText(certificate.status)}
+                                            {statusText(certificate.requestStatus)}
                                         </Button>
                                     </TableCell>
                                     <TableCell>{certificate.feedback || 'Chưa có phản hồi'}</TableCell>
@@ -258,16 +299,27 @@ function CertificateManagement() {
                                         <IconButton color="primary" aria-label="xem chi tiết" onClick={() => handleViewDetail(certificate.id)}>
                                             <VisibilityIcon />
                                         </IconButton>
-                                        <IconButton color="error" aria-label="xoá">
+                                        {!certificate.identityCardNumber && <IconButton color="error" aria-label="xoá" onClick={() => handleClickOpen(certificate.id)}>
                                             <DeleteIcon />
-                                        </IconButton>
+                                        </IconButton>}
+
                                     </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
+                    <Pagination
+                        count={totalPages}
+                        page={pagination.pageNumber}
+                        onChange={handlePageChange}
+                        color="primary"
+                    />
+                </Stack>
             </Box>
+
+            <DeleteConfirmationModal open={open} handleClose={handleClose} id={idDelete} />
 
             <CreateCertificateDialog
                 open={openDialog}
@@ -279,6 +331,8 @@ function CertificateManagement() {
                 handleImageRemove={handleImageRemove}
                 handleSubmitCertificate={handleSubmitCertificate}
             />
+
+            <LoadingComponent open={loading} setOpen={setLoading} />
         </Box>
     );
 };

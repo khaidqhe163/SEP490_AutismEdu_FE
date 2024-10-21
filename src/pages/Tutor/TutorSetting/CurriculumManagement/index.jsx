@@ -18,18 +18,18 @@ function CurriculumManagement() {
     const [curriculums, setCurriculums] = useState([
         {
             ageFrom: 0,
-            ageTo: 3,
-            contentCurriculum: "<p>Nội dung bổ sung:</p><p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>"
+            ageEnd: 3,
+            description: "<p>Nội dung bổ sung:</p><p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>"
         },
         {
             ageFrom: 4,
-            ageTo: 6,
-            contentCurriculum: "<p>Nội dung bổ sung:</p><p>* Phát triển khả năng giao tiếp hiệu quả trong môi trường xã hội.</p><p>* Học cách xử lý thông tin và giải quyết vấn đề qua câu chuyện.</p><p>* Luyện tập trí nhớ thông qua các hoạt động liên quan đến từ vựng.</p><p>* Nâng cao khả năng hiểu biết về ngữ pháp và cấu trúc câu.</p><p>* Cải thiện sự tự tin và khả năng diễn đạt thông qua thảo luận nhóm.</p>"
+            ageEnd: 6,
+            description: "<p>Nội dung bổ sung:</p><p>* Phát triển khả năng giao tiếp hiệu quả trong môi trường xã hội.</p><p>* Học cách xử lý thông tin và giải quyết vấn đề qua câu chuyện.</p><p>* Luyện tập trí nhớ thông qua các hoạt động liên quan đến từ vựng.</p><p>* Nâng cao khả năng hiểu biết về ngữ pháp và cấu trúc câu.</p><p>* Cải thiện sự tự tin và khả năng diễn đạt thông qua thảo luận nhóm.</p>"
         },
         {
             ageFrom: 7,
-            ageTo: 9,
-            contentCurriculum: "<p>Nội dung bổ sung:</p><p>* Phát triển khả năng giao tiếp hiệu quả trong môi trường xã hội.</p><p>* Học cách xử lý thông tin và giải quyết vấn đề qua câu chuyện.</p><p>* Luyện tập trí nhớ thông qua các hoạt động liên quan đến từ vựng.</p><p>* Nâng cao khả năng hiểu biết về ngữ pháp và cấu trúc câu.</p><p>* Cải thiện sự tự tin và khả năng diễn đạt thông qua thảo luận nhóm.</p>"
+            ageEnd: 9,
+            description: "<p>Nội dung bổ sung:</p><p>* Phát triển khả năng giao tiếp hiệu quả trong môi trường xã hội.</p><p>* Học cách xử lý thông tin và giải quyết vấn đề qua câu chuyện.</p><p>* Luyện tập trí nhớ thông qua các hoạt động liên quan đến từ vựng.</p><p>* Nâng cao khả năng hiểu biết về ngữ pháp và cấu trúc câu.</p><p>* Cải thiện sự tự tin và khả năng diễn đạt thông qua thảo luận nhóm.</p>"
         }
     ]);
     const [openCreateEdit, setOpenCreateEdit] = useState(false);
@@ -50,7 +50,7 @@ function CurriculumManagement() {
 
     const handleOpenEdit = (index) => {
         setIsEditing(true);
-        setCurrentEditIndex(index); // Xác định mục nào đang chỉnh sửa
+        setCurrentEditIndex(index);
         setOpenCreateEdit(true);
     };
 
@@ -143,7 +143,7 @@ function CurriculumManagement() {
                                         iconPosition="start"
                                         label={(
                                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                                Từ {curriculum.ageFrom} - {curriculum.ageTo} tuổi
+                                                Từ {curriculum.ageFrom} - {curriculum.ageEnd} tuổi
                                                 <IconButton
                                                     size="small"
                                                     onClick={(e) => {
@@ -173,7 +173,7 @@ function CurriculumManagement() {
                         </Box>
                         {curriculums.map((curriculum, index) => (
                             <TabPanel key={index} value={(index + 1).toString()}>
-                                <Box ml={2} dangerouslySetInnerHTML={{ __html: curriculum.contentCurriculum }}></Box>
+                                <Box ml={2} dangerouslySetInnerHTML={{ __html: curriculum.description }}></Box>
                             </TabPanel>
                         ))}
                     </TabContext>

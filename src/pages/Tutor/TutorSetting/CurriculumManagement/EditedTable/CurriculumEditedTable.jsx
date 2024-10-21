@@ -30,17 +30,17 @@ function CurriculumEditedTable({ curriculums }) {
                     {curriculums.map((curriculum, index) => (
                         <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#f9f9f9' } }}>
                             <TableCell>{index + 1}</TableCell>
-                            <TableCell>{curriculum.ageFrom} - {curriculum.ageTo} tuổi</TableCell>
+                            <TableCell>{curriculum.ageFrom} - {curriculum.ageEnd} tuổi</TableCell>
                             <TableCell sx={{ maxWidth: 300, whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                                {curriculum.contentCurriculum.length > 150 ? (
+                                {curriculum.description.length > 150 ? (
                                     <>
-                                        <div dangerouslySetInnerHTML={{ __html: curriculum.contentCurriculum.slice(0, 150) + '...' }} />
-                                        <Button onClick={() => handleOpenDialog(curriculum.contentCurriculum)} sx={{ textTransform: 'none', fontSize: '14px', color: '#1976d2', padding: 0 }}>
+                                        <div dangerouslySetInnerHTML={{ __html: curriculum.description.slice(0, 150) + '...' }} />
+                                        <Button onClick={() => handleOpenDialog(curriculum.description)} sx={{ textTransform: 'none', fontSize: '14px', color: '#1976d2', padding: 0 }}>
                                             Xem thêm
                                         </Button>
                                     </>
                                 ) : (
-                                    <div dangerouslySetInnerHTML={{ __html: curriculum.contentCurriculum }} />
+                                    <div dangerouslySetInnerHTML={{ __html: curriculum.description }} />
                                 )}
                             </TableCell>
                             <TableCell>{new Date().toLocaleDateString()}</TableCell>
