@@ -159,7 +159,7 @@ function Header() {
                             <Box sx={{
                                 display: {
                                     xs: "none",
-                                    lg: "block"
+                                    lg: "block",
                                 }
                             }}>
                                 <Link to={PAGES.ROOT + PAGES.LOGIN_OPTION}><ButtonComponent text="Đăng nhập" height="40px" /></Link>
@@ -168,7 +168,9 @@ function Header() {
                                 display: {
                                     xs: "none",
                                     lg: "block"
-                                }
+                                },
+                                width: '100px',
+                                height: "40px"
                             }}>Đăng ký</Button>
                             </Link>
                         </>

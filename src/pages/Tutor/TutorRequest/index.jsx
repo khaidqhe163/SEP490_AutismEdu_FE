@@ -64,7 +64,6 @@ function TutorRequest() {
     };
 
     const totalPages = Math.ceil(pagination.total / pagination.pageSize);
-    console.log(pagination.total + ' | ' + pagination.pageSize);
 
 
     const handleAccordionChange = (panel) => (event, isExpanded) => {

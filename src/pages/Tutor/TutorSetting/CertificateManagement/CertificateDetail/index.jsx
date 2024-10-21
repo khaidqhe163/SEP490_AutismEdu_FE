@@ -66,13 +66,16 @@ function CertificateDetail() {
                     border: '1px solid #ddd',
                 }}
             >
-                <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', textAlign: 'center' }}>
+                {!certificate?.identityCardNumber ?<Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', textAlign: 'center' }}>
                     Chi tiết chứng chỉ
-                </Typography>
+                </Typography>:<Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', textAlign: 'center' }}>
+                    Chi tiết căn cước công dân
+                </Typography>}
+
 
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={4}>
-                        <Typography sx={{ fontWeight: '500', textAlign: 'right' }}>Tên chứng chỉ:</Typography>
+                        <Typography sx={{ fontWeight: '500', textAlign: 'right' }}>Tên {!certificate?.identityCardNumber?'chứng chỉ':''}:</Typography>
                     </Grid>
                     <Grid item xs={8}>
                         <Typography sx={{ fontWeight: 'bold', color: '#616161' }}>{certificate.certificateName}</Typography>
@@ -109,7 +112,6 @@ function CertificateDetail() {
                         <Typography sx={{ fontWeight: '500', textAlign: 'right' }}>Trạng thái:</Typography>
                     </Grid>
                     <Grid item xs={8}>
-                        {/* <Typography sx={{ fontWeight: 'bold', color: '#616161' }}>{statusText(certificate.requestStatus)}</Typography> */}
                         <Button
                             variant="outlined"
                             color={
@@ -138,10 +140,10 @@ function CertificateDetail() {
                         </Grid>
                     </Grid>
                     <Grid item xs={4}>
-                        <Typography sx={{ fontWeight: '500', textAlign: 'right' }}>Hình ảnh chứng chỉ:</Typography>
+                        <Typography sx={{ fontWeight: '500', textAlign: 'right' }}>Hình ảnh {!certificate?.identityCardNumber?'chứng chỉ':'căn cước'}:</Typography>
                     </Grid>
                     <Grid item xs={8}>
-                        <Typography sx={{ fontWeight: 'bold', color: '#616161' }}>{certificate?.certificateMedias?.length === 0 ? 'Không có hình ảnh' : `Hiện có ${certificate?.certificateMedias?.length + 1} hình ảnh`}</Typography>
+                        <Typography sx={{ fontWeight: 'bold', color: '#616161' }}>{certificate?.certificateMedias?.length === 0 ? 'Không có hình ảnh' : `Hiện có ${certificate?.certificateMedias?.length} hình ảnh`}</Typography>
                     </Grid>
                     <Grid item xs={4}>
                     </Grid>
