@@ -7,11 +7,15 @@ const createCurriculum = async (params, success, error) => {
 const getCurriculums = async (success, error, params) => {
     await get(API_CODE.API_GET_CURRICULUMS, success, error, params);
 };
+const getUpdateRequest = async (success, error, params) => {
+    await get(API_CODE.API_GET_UPDATE_REQUEST, success, error, params);
+};
 const changeStatusCurriculum = async (endpoint, params, success, error) => {
     await put(API_CODE.API_CHANGE_STATUS_CURRICULUM + endpoint, params, success, error)
 }
 export const CurriculumManagementAPI = {
     createCurriculum,
     getCurriculums,
-    changeStatusCurriculum
+    changeStatusCurriculum,
+    getUpdateRequest,
 }

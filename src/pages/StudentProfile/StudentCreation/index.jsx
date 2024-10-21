@@ -89,7 +89,7 @@ function StudentCreation() {
         }
     }
     return (
-        <Box p="20px" sx={{ height: "calc(100vh - 65px)", bgcolor: "#f8fafb" }} overflow="auto">
+        <Box p="20px" sx={{ height: "calc(100vh - 65px)", bgcolor: "#f8fafb", width:'100%' }} overflow="auto">
             <Typography variant='h4'>Tạo hồ sơ học sinh</Typography>
             <Box sx={{
                 width: "100%",

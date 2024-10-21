@@ -43,6 +43,7 @@ const API_CODE = {
   //Curriculum management
   API_CREATE_CURRICULUM: '/v1/Curriculum',
   API_GET_CURRICULUMS: '/v1/Curriculum',
+  API_GET_UPDATE_REQUEST: '/v1/Curriculum/updateRequest',
   API_CHANGE_STATUS_CURRICULUM: '/v1/Curriculum/changeStatus/',
 
   //Certificate management

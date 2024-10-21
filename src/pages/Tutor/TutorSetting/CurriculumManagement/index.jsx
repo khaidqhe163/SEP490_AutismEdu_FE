@@ -1,6 +1,6 @@
 import { TabContext, TabPanel } from '@mui/lab';
 import { Box, Button, Typography, IconButton, Tabs, Tab } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ElevatorIcon from '@mui/icons-material/Elevator';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -9,12 +9,13 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import CurriculumEditedTable from './EditedTable/CurriculumEditedTable'; // Import the table component
 import CreateOrEditModal from './CurriculumModal/CreateOrEditModal';
 import DeleteConfirmationModal from './CurriculumModal/DeleteConfirmationModal';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 
 function CurriculumManagement() {
     const [valueCurriculum, setValueCurriculum] = useState('1');
+    const [curriculumData, setCurriculumData] = useState([]);
     const [curriculums, setCurriculums] = useState([
         {
             ageFrom: 0,
@@ -37,6 +38,31 @@ function CurriculumManagement() {
     const [isEditing, setIsEditing] = useState(false);
     const [currentEditIndex, setCurrentEditIndex] = useState(null);
     const [showTable, setShowTable] = useState(false);
+
+    useEffect(() => {
+        handleGetCurriculums();
+    }, []);
+
+    const handleGetCurriculums = async () => {
+        try {
+            await services.CurriculumManagementAPI.getCurriculums((res) => {
+                if (res?.result) {
+                    const curriData = res?.result.filter(r => r.isActive == true);
+                    setCurriculumData(curriData);
+                }
+            }, (error) => {
+                console.log(error);
+            }, {
+                status: 'all',
+                orderBy: 'createdDate',
+                sort: 'asc',
+                pageNumber: 1
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
 
     const handleChangeCurriculum = (event, newValue) => {
         setValueCurriculum(newValue);
@@ -104,18 +130,13 @@ function CurriculumManagement() {
         setShowTable(!showTable);
     };
 
+
+
     return (
         <Box sx={{ width: "90%", margin: "auto", mt: "20px", gap: 2 }}>
-            <Typography mb={2} variant='h4'>{showTable ? "Danh sách đã sửa" : "Khung chương trình học"}</Typography>
-
-
+            <Typography mb={4} variant='h4'>{showTable ? "Danh sách đã sửa" : "Khung chương trình học"}</Typography>
             {showTable ? (
-                <>
-                    <Box mb={3}>
-                        <Button mb={2} variant='contained' startIcon={<ArrowBackIcon />} onClick={() => setShowTable(false)}>Quay lại</Button>
-                    </Box>
-                    <CurriculumEditedTable curriculums={curriculums} />
-                </>
+                <CurriculumEditedTable setShowTable={setShowTable} />
             ) : (
                 <>
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }} gap={2}>
@@ -135,7 +156,7 @@ function CurriculumManagement() {
                                 scrollButtons
                                 variant="scrollable"
                             >
-                                {curriculums.map((curriculum, index) => (
+                                {curriculumData.map((curriculum, index) => (
                                     <Tab
                                         key={index}
                                         value={(index + 1).toString()}
@@ -171,7 +192,7 @@ function CurriculumManagement() {
                                 ))}
                             </Tabs>
                         </Box>
-                        {curriculums.map((curriculum, index) => (
+                        {curriculumData.map((curriculum, index) => (
                             <TabPanel key={index} value={(index + 1).toString()}>
                                 <Box ml={2} dangerouslySetInnerHTML={{ __html: curriculum.description }}></Box>
                             </TabPanel>
