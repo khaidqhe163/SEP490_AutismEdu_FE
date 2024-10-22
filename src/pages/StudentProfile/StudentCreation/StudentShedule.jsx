@@ -62,7 +62,7 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule, children
                 disableArr.push(l.weekday);
             }
         })
-        setDisableDate([...disableArr])
+        setDisableDate([...disableArr]);
     }, [startTime, endTime])
 
     const getExistSchedule = async () => {

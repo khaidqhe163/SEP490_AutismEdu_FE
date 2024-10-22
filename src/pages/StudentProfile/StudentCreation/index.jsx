@@ -8,7 +8,8 @@ import ParentProfile from './ParentProfile';
 import StudentShedule from './StudentShedule';
 import LoadingComponent from '~/components/LoadingComponent';
 import { enqueueSnackbar } from 'notistack';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import PAGES from '~/utils/pages';
 
 function StudentCreation() {
     const email = useRef(null);
@@ -20,6 +21,7 @@ function StudentCreation() {
     const [selectedAssessment, setSelectedAssessment] = useState([]);
     const [initialCondition, setInitialCondition] = useState("");
     const [listSchedule, setListShedule] = useState([]);
+    const nav = useNavigate();
     const location = useLocation();
     const request = location.state?.request;
 
@@ -89,8 +91,16 @@ function StudentCreation() {
                 scheduleTimeSlots: listSchedule
             },
                 (res) => {
-                    setChildren([]);
-                    setParent(null);
+                    if (request) {
+                        nav(PAGES.MY_STUDENT);
+                    } else {
+                        setChildren([]);
+                        setParent(null);
+                        setListShedule([]);
+                        setInitialCondition('');
+                        email.current.value = '';
+                    }
+
                     enqueueSnackbar("Tạo hồ sơ học sinh thành công!", { variant: "success" });
                 }, (err) => {
                     enqueueSnackbar("Tạo hồ sơ học sinh thất bại!", { variant: "error" });

@@ -36,7 +36,9 @@ function MyStudent() {
     return (
         <Stack direction="row" sx={{
             px: "50px",
-            pt: '30px'
+            pt: '30px',
+            gap: 5,
+            flexWrap: 'wrap'
         }}>
             {
                 listStudent.length !== 0 && listStudent.map((l) => {
@@ -48,7 +50,7 @@ function MyStudent() {
                                 p: "20px"
                             }}>
                                 <Typography gutterBottom variant="h5" component="div" color={"white"}>
-                                    ĐQK
+                                    {l.studentCode}
                                 </Typography>
                                 <Typography gutterBottom component="div" sx={{ width: "70%" }} color={"white"}>
                                     {l.name}

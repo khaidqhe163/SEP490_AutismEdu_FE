@@ -56,9 +56,9 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
             ExpirationDate: Yup.date().nullable(),
             Medias: Yup.array().min(1, 'Phải có ít nhất một ảnh'),
         }),
-        onSubmit: () => {
-            handleSubmitCertificate();  
-            onClose();                
+        onSubmit: async () => {
+            await handleSubmitCertificate();
+            onClose();
         },
     });
 

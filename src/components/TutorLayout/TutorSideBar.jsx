@@ -25,12 +25,12 @@ export default function TutorSideBar({ openMenu }) {
     const [listStudent, setListStudent] = React.useState([]);
     React.useEffect(() => {
         getListStudent();
-    }, [])
+    }, []);
 
     const getListStudent = async () => {
         try {
             await services.StudentProfileAPI.getListStudent((res) => {
-                console.log(res);
+                console.log(res.result);
                 setListStudent(res.result)
             }, (error) => {
                 console.log(error);
@@ -133,9 +133,9 @@ export default function TutorSideBar({ openMenu }) {
                                 <List component="div" disablePadding key={l.id}>
                                     <ListItemButton>
                                         <ListItemIcon sx={listIconStyle}>
-                                            <Avatar alt='Khai Dao' src='/' sx={{ background: "black", width: "30px", height: "30px" }} />
+                                            <Avatar alt={l.studentCode} src={'/'} sx={{ background: "black", width: "30px", height: "30px" }} />
                                         </ListItemIcon>
-                                        <ListItemText primary={`NGTT - ${l.name}`} />
+                                        <ListItemText primary={`${l.studentCode} - ${l.name}`} />
                                     </ListItemButton>
                                 </List>
                             )
