@@ -7,8 +7,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { tutorInfor } from '~/redux/features/tutorSlice';
 
 function AvailableTimeManagement() {
-    const tutorInfo = useSelector(tutorInfor);
 
+    const tutorInfo = useSelector(tutorInfor);
+    
     const [timeData, setTimeData] = useState({
         weekday: 1,
         from: '',
@@ -23,6 +24,7 @@ function AvailableTimeManagement() {
 
     const handleGetAllAvailableTime = async (weekday) => {
         try {
+            
             await services.AvailableTimeManagementAPI.getAvailableTime((res) => {
                 setAvailability(res.result || []);
             }, (error) => {
@@ -32,12 +34,11 @@ function AvailableTimeManagement() {
             console.log(error);
         }
     };
-    console.log(availability);
 
     const handleSave = async () => {
         try {
             await services.AvailableTimeManagementAPI.createAvailableTime(timeData, (res) => {
-                enqueueSnackbar("Create available time success!", { variant: "success" });
+                enqueueSnackbar("Tạo thời gian rảnh thành công!", { variant: "success" });
                 handleGetAllAvailableTime(timeData.weekday);
             }, (error) => {
                 if (error.code === 400) {
@@ -54,8 +55,6 @@ function AvailableTimeManagement() {
             to: ''
         }));
     };
-    console.log(timeData);
-
 
     const handleDeleteTime = async (timeSlotId, indexDelete) => {
         try {
@@ -63,7 +62,7 @@ function AvailableTimeManagement() {
                 setAvailability((prevAvailability) =>
                     prevAvailability.filter((_, index) => index !== indexDelete)
                 );
-                enqueueSnackbar("Remove available time success!", { variant: "success" });
+                enqueueSnackbar("Xoá thời gian rảnh thành công!", { variant: "success" });
             }, (error) => {
                 console.log(error);
             });
@@ -72,7 +71,6 @@ function AvailableTimeManagement() {
         }
     };
 
-    console.log(availability);
     // Handle weekday change
     const handleDateChange = async (weekday) => {
         setTimeData((prev) => ({

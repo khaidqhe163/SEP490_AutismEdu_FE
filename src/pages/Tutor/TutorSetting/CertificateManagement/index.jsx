@@ -41,7 +41,7 @@ function CertificateManagement() {
         search: '',
         status: 'all',
         orderBy: 'createdDate',
-        sort: 'asc',
+        sort: 'desc',
     });
     const [certificateData, setCertificateData] = useState({
         CertificateName: '',
@@ -151,6 +151,7 @@ function CertificateManagement() {
 
     const handleSubmitCertificate = async () => {
         try {
+            setLoading(true);
             const formData = new FormData();
 
             formData.append('CertificateName', certificateData.CertificateName);
@@ -165,12 +166,15 @@ function CertificateManagement() {
 
             axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
             await services.CertificateAPI.createCertificate(formData, (res) => {
+                setCertificateList([res.result, ...certificateList]);
                 enqueueSnackbar('Chứng chỉ của bạn đã được tạo thành công!', { variant: 'success' })
             }, (error) => {
                 console.log(error);
             })
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
         axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
     };
@@ -319,7 +323,7 @@ function CertificateManagement() {
                 </Stack>
             </Box>
 
-            <DeleteConfirmationModal open={open} handleClose={handleClose} id={idDelete} />
+            <DeleteConfirmationModal open={open} handleClose={handleClose} id={idDelete} certificateList={certificateList} setCertificateList={setCertificateList} />
 
             <CreateCertificateDialog
                 open={openDialog}

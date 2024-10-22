@@ -3,11 +3,13 @@ import { enqueueSnackbar } from 'notistack';
 import React from 'react';
 import services from '~/plugins/services';
 
-function DeleteConfirmationModal({ open, handleClose, id }) {
+function DeleteConfirmationModal({ open, handleClose, id, certificateList, setCertificateList }) {
 
     const handleDelete = async () => {
         try {
             await services.CertificateAPI.deleteCertificate(id, {}, (res) => {
+                const newListCerti = certificateList.filter((c) => c.id !== id);
+                setCertificateList(newListCerti);
                 enqueueSnackbar("Xoá thành công!", { variant: 'success' });
                 handleClose();
             }, (error) => {

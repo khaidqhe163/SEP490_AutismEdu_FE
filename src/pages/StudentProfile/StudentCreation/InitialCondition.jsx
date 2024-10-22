@@ -61,13 +61,13 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
                                             }
                                         </Select>
                                     </FormControl>
-                                </Grid >
+                                </Grid>
                             )
                         })
                     }
                 </Grid>
             </CardContent>
-        </Card >
+        </Card>
     )
 }
 

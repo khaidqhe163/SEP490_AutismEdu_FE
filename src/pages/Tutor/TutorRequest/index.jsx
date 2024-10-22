@@ -116,7 +116,6 @@ function TutorRequest() {
             setLoading(true);
             await services.TutorRequestAPI.getListTutorRequest((res) => {
                 if (res?.result) {
-                    // console.log('heL: ', pagination?.pageNumber);
                     setListRequest(res.result);
                     setPagination(res.pagination);
                 }
@@ -127,7 +126,7 @@ function TutorRequest() {
                 status: filters.status,
                 orderBy: 'createdDate',
                 sort: filters.sort,
-                pageNumber: pagination.pageNumber,
+                pageNumber: pagination?.pageNumber,
             });
         } catch (error) {
             console.log(error);
@@ -141,54 +140,7 @@ function TutorRequest() {
     }, [filters, pagination.pageNumber]);
 
 
-
-    // console.log(listRequest);
-
-    const requests = [
-        {
-            parentName: 'Nguyễn Văn An',
-            parentAvatar: 'https://static.vecteezy.com/system/resources/previews/027/448/973/original/avatar-account-icon-default-social-media-profile-photo-vector.jpg', // Replace with actual avatar URL
-            status: 1,
-            childInfo: {
-                phone: '0338581585',
-                parentName: 'Nguyễn Văn An',
-                childName: 'Nguyễn Văn B',
-                gender: 'Nam',
-                birthDate: new Date('2010-05-20'),
-                age: 14,
-                note: 'Tự kỷ là một trong những rối loạn phát triển hay gặp ở trẻ em. Tự kỷ là một trong những rối loạn phát triển hay gặp ở trẻ em.Tự kỷ là một trong những rối loạn phát triển hay gặp ở trẻ em.Tự kỷ là một trong những rối loạn phát triển hay gặp ở trẻ em.Trẻ mắc tự kỷ không những phát triển chậm về quan hệ xã hội, ngôn ngữ, giao tiếp, học hành mà còn có những rối loạn hành vi ảnh hưởng lớn đến gia đình và xã hội.'
-            },
-        },
-        {
-            parentName: 'Trần Thị Mai',
-            parentAvatar: 'https://static.vecteezy.com/system/resources/previews/027/448/973/original/avatar-account-icon-default-social-media-profile-photo-vector.jpg', // Replace with actual avatar URL
-            status: 2,
-            childInfo: {
-                phone: '0123456789',
-                parentName: 'Trần Thị Mai',
-                childName: 'Trần Minh',
-                gender: 'Nữ',
-                birthDate: new Date('2012-11-10'),
-                age: 12,
-                note: 'Cần hỗ trợ học toán.',
-            },
-        },
-        {
-            parentName: 'Trần Thị Giang',
-            parentAvatar: 'https://static.vecteezy.com/system/resources/previews/027/448/973/original/avatar-account-icon-default-social-media-profile-photo-vector.jpg', // Replace with actual avatar URL
-            status: 0,
-            childInfo: {
-                phone: '0123456789',
-                parentName: 'Trần Thị Giang',
-                childName: 'Trần Mun',
-                gender: 'Nữ',
-                birthDate: new Date('2012-11-10'),
-                age: 12,
-                note: 'Cần hỗ trợ học toán.Tự kỷ là một trong những rối loạn phát triển hay gặp ở trẻ em. Tự kỷ là một trong những rối loạn phát triển hay gặp ở trẻ em.Tự kỷ là một trong những rối loạn phát triển hay gặp ở trẻ em.Tự kỷ là một trong những rối loạn phát triển hay gặp ở trẻ em.Trẻ mắc tự kỷ không những phát triển chậm về quan hệ xã hội, ngôn ngữ, giao tiếp, học hành mà còn có những rối loạn hành vi ảnh hưởng lớn đến gia đình và xã hội.',
-            },
-        }
-    ];
-
+    
     const statusTransform = (status) => {
         let statusText = '';
         switch (status) {
@@ -220,8 +172,6 @@ function TutorRequest() {
         setPagination({ ...pagination, pageNumber: value });
     };
 
-    // console.log("Pagina");
-    // console.log(pagination);
 
     return (
         <Stack direction='column' sx={{

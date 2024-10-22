@@ -16,23 +16,7 @@ import { enqueueSnackbar } from 'notistack';
 function CurriculumManagement() {
     const [valueCurriculum, setValueCurriculum] = useState('1');
     const [curriculumData, setCurriculumData] = useState([]);
-    const [curriculums, setCurriculums] = useState([
-        {
-            ageFrom: 0,
-            ageEnd: 3,
-            description: "<p>Nội dung bổ sung:</p><p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>"
-        },
-        {
-            ageFrom: 4,
-            ageEnd: 6,
-            description: "<p>Nội dung bổ sung:</p><p>* Phát triển khả năng giao tiếp hiệu quả trong môi trường xã hội.</p><p>* Học cách xử lý thông tin và giải quyết vấn đề qua câu chuyện.</p><p>* Luyện tập trí nhớ thông qua các hoạt động liên quan đến từ vựng.</p><p>* Nâng cao khả năng hiểu biết về ngữ pháp và cấu trúc câu.</p><p>* Cải thiện sự tự tin và khả năng diễn đạt thông qua thảo luận nhóm.</p>"
-        },
-        {
-            ageFrom: 7,
-            ageEnd: 9,
-            description: "<p>Nội dung bổ sung:</p><p>* Phát triển khả năng giao tiếp hiệu quả trong môi trường xã hội.</p><p>* Học cách xử lý thông tin và giải quyết vấn đề qua câu chuyện.</p><p>* Luyện tập trí nhớ thông qua các hoạt động liên quan đến từ vựng.</p><p>* Nâng cao khả năng hiểu biết về ngữ pháp và cấu trúc câu.</p><p>* Cải thiện sự tự tin và khả năng diễn đạt thông qua thảo luận nhóm.</p>"
-        }
-    ]);
+
     const [openCreateEdit, setOpenCreateEdit] = useState(false);
     const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -82,9 +66,16 @@ function CurriculumManagement() {
 
     const handleSubmitCreate = async (formData) => {
         try {
-            await services.CurriculumManagementAPI.createCurriculum(formData, (res) => {
+            console.log(formData);
+
+            await services.CurriculumManagementAPI.createCurriculum({
+                ageFrom: formData.ageFrom,
+                ageEnd: formData.ageEnd,
+                description: formData.description,
+                originalCurriculumId: 0
+            }, (res) => {
                 console.log(formData);
-                enqueueSnackbar("Create curriculum success!", { variant: "success" });
+                enqueueSnackbar("Tạo khung chương trình thành công!", { variant: "success" });
                 setCurriculums([...curriculums, formData]);
                 setOpenCreateEdit(false);
             }, (error) => {
@@ -96,19 +87,29 @@ function CurriculumManagement() {
 
     };
 
-    const handleSubmitEdit = (updatedAgeFrom, updatedAgeTo, updatedProgramContent) => {
-        const updatedCurriculums = curriculums.map((curriculum, index) => {
-            if (index === currentEditIndex) {
-                return {
-                    ageFrom: updatedAgeFrom,
-                    ageTo: updatedAgeTo,
-                    contentCurriculum: updatedProgramContent
-                };
-            }
-            return curriculum;
-        });
-        setCurriculums(updatedCurriculums);
-        setOpenCreateEdit(false);
+
+    const handleSubmitEdit = async (formData, originalCurriculumId) => {
+        try {
+            console.log(formData);
+            console.log(originalCurriculumId);
+
+            await services.CurriculumManagementAPI.createCurriculum({
+                ageFrom: formData.ageFrom,
+                ageEnd: formData.ageEnd,
+                description: formData.description,
+                originalCurriculumId
+            }, (res) => {
+                console.log(res.result);
+                enqueueSnackbar("Cập nhật khung chương trình thành công!", { variant: "success" });
+                // setCurriculums([...curriculums, formData]);
+                setOpenCreateEdit(false);
+            }, (error) => {
+                console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+
     };
 
     const handleOpenDeleteConfirm = (index) => {
@@ -130,8 +131,6 @@ function CurriculumManagement() {
         setShowTable(!showTable);
     };
 
-
-
     return (
         <Box sx={{ width: "90%", margin: "auto", mt: "20px", gap: 2 }}>
             <Typography mb={4} variant='h4'>{showTable ? "Danh sách đã sửa" : "Khung chương trình học"}</Typography>
@@ -147,57 +146,60 @@ function CurriculumManagement() {
                             Tạo khung chương trình
                         </Button>
                     </Box>
-                    <TabContext value={valueCurriculum}>
-                        <Box sx={{ maxWidth: { xs: 320, sm: 750 } }}>
-                            <Tabs
-                                value={valueCurriculum}
-                                onChange={handleChangeCurriculum}
-                                aria-label="icon position tabs example"
-                                scrollButtons
-                                variant="scrollable"
-                            >
-                                {curriculumData.map((curriculum, index) => (
-                                    <Tab
-                                        key={index}
-                                        value={(index + 1).toString()}
-                                        icon={<ElevatorIcon />}
-                                        iconPosition="start"
-                                        label={(
-                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                                Từ {curriculum.ageFrom} - {curriculum.ageEnd} tuổi
-                                                <IconButton
-                                                    size="small"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleOpenEdit(index);
-                                                    }}
-                                                    color="default"
-                                                    sx={{ ml: 1 }}
-                                                >
-                                                    <EditIcon />
-                                                </IconButton>
-                                                <IconButton
-                                                    size="small"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleOpenDeleteConfirm(index);
-                                                    }}
-                                                    color="error"
-                                                >
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            </Box>
-                                        )}
-                                    />
-                                ))}
-                            </Tabs>
-                        </Box>
-                        {curriculumData.map((curriculum, index) => (
-                            <TabPanel key={index} value={(index + 1).toString()}>
-                                <Box ml={2} dangerouslySetInnerHTML={{ __html: curriculum.description }}></Box>
-                            </TabPanel>
-                        ))}
-                    </TabContext>
+                    {curriculumData.length === 0 ? 'Hiện tại không có khung chương trình.' :
+                        <TabContext value={valueCurriculum}>
+                            <Box sx={{ maxWidth: { xs: 320, sm: 750 } }}>
+                                <Tabs
+                                    value={valueCurriculum}
+                                    onChange={handleChangeCurriculum}
+                                    aria-label="icon position tabs example"
+                                    scrollButtons
+                                    variant="scrollable"
+                                >
+                                    {curriculumData?.map((curriculum, index) => (
+                                        <Tab
+                                            key={index}
+                                            value={(index + 1).toString()}
+                                            icon={<ElevatorIcon />}
+                                            iconPosition="start"
+                                            label={(
+                                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                    Từ {curriculum.ageFrom} - {curriculum.ageEnd} tuổi
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleOpenEdit(curriculum);
+                                                        }}
+                                                        color="default"
+                                                        sx={{ ml: 1 }}
+                                                    >
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleOpenDeleteConfirm(index);
+                                                        }}
+                                                        color="error"
+                                                    >
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </Box>
+                                            )}
+                                        />
+                                    ))}
+                                </Tabs>
+                            </Box>
+                            {curriculumData.map((curriculum, index) => (
+                                <TabPanel key={index} value={(index + 1).toString()}>
+                                    <Box ml={2} dangerouslySetInnerHTML={{ __html: curriculum.description }}></Box>
+                                </TabPanel>
+                            ))}
+                        </TabContext>
+                    }
+
                 </>
             )}
 
@@ -205,7 +207,7 @@ function CurriculumManagement() {
                 open={openCreateEdit}
                 handleClose={() => setOpenCreateEdit(false)}
                 handleSubmit={isEditing ? handleSubmitEdit : handleSubmitCreate}
-                initialData={isEditing ? curriculums[currentEditIndex] : null}
+                initialData={isEditing ? currentEditIndex : null}
                 isEditing={isEditing}
             />
 

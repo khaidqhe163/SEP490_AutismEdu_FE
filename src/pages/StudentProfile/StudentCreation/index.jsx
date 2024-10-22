@@ -158,9 +158,9 @@ function StudentCreation() {
                         initialCondition={initialCondition} setInitialCondition={setInitialCondition} />
                     <StudentShedule childrenInfor={children} listSchedule={listSchedule} setListSchedule={setListShedule} />
                 </Box>
-            </Stack >
+            </Stack>
             <LoadingComponent open={loading} />
-        </Box >
+        </Box>
     )
 }
 
