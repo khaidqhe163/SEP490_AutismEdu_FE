@@ -65,9 +65,11 @@ function StudentCreation() {
     const handleSubmit = async () => {
         if (initialCondition.trim() === "") {
             enqueueSnackbar("Chưa nhập điều kiện ban đầu!", { variant: "error" });
+            return;
         }
         if (listSchedule.length === 0) {
             enqueueSnackbar("Chưa nhập lịch học!", { variant: "error" });
+            return;
         }
         try {
             await services.StudentProfileAPI.createStudentProfile({
@@ -82,14 +84,14 @@ function StudentCreation() {
                     setParent(null);
                     enqueueSnackbar("Tạo hồ sơ học sinh thành công!", { variant: "success" });
                 }, (err) => {
-                    enqueueSnackbar("Tạo hồ sơ học sinh thất bại!", { variant: "success" });
+                    enqueueSnackbar("Tạo hồ sơ học sinh thất bại!", { variant: "error" });
                 })
         } catch (error) {
             console.log(error);
         }
     }
     return (
-        <Box p="20px" sx={{ height: "calc(100vh - 65px)", bgcolor: "#f8fafb" }} overflow="auto">
+        <Box p="20px" sx={{ height: "calc(100vh - 65px)", bgcolor: "#f8fafb", width: "100%" }} overflow="auto">
             <Typography variant='h4'>Tạo hồ sơ học sinh</Typography>
             <Box sx={{
                 width: "100%",

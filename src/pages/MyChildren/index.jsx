@@ -1,4 +1,4 @@
-import { Box, Button, Chip, FormHelperText, Grid, MenuItem, Select, Stack, TextField, Typography } from '@mui/material'
+import { Avatar, Box, Button, Chip, FormHelperText, Grid, MenuItem, Select, Stack, TextField, Typography } from '@mui/material'
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react'
 import childrenImg from '~/assets/images/children.png'
@@ -11,12 +11,15 @@ import { useSelector } from 'react-redux';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 import LoadingComponent from '~/components/LoadingComponent';
+import ModalUploadAvatar from '../Tutor/TutorRegistration/TutorInformation/ModalUploadAvatar';
 function MyChildren() {
     const [children, setChildren] = useState([]);
     const userInfo = useSelector(userInfor);
     const [currentChild, setCurrentChild] = useState(0);
     const [change, setChange] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [avatar, setAvatar] = useState(null);
+    const [childAvatar, setChildAvatar] = useState(null);
     useEffect(() => {
         if (userInfo) {
             handleGetChildren();
@@ -53,13 +56,14 @@ function MyChildren() {
         onSubmit: async (values) => {
             try {
                 setLoading(true);
-                await services.ChildrenManagementAPI.updateChild({
-                    childId: children[currentChild].id,
-                    name: values.fullName,
-                    birthDate: values.dateOfBirth,
-                    isMale: values.gender === "True" ? true : false
-                }, (res) => {
-                    console.log(res);
+                const formData = new FormData();
+
+                formData.append("childId", children[currentChild].id);
+                formData.append("Name", values.fullName);
+                formData.append("isMale", values.gender);
+                formData.append("BirthDate", values.dateOfBirth);
+                formData.append("Medias", avatar);
+                await services.ChildrenManagementAPI.updateChild(formData, (res) => {
                     setChildren((pre) => pre.map((child) => {
                         return child.id === children[currentChild].id ? res.result : child
                     }))
@@ -83,6 +87,7 @@ function MyChildren() {
             formik.setFieldValue("gender", gender)
             const formattedDate = children[currentChild].birthDate.split('T')[0];
             formik.setFieldValue("dateOfBirth", formattedDate)
+            setChildAvatar(children[currentChild].childInformationMedias[0].urlPath)
         }
         setChange(true);
     }, [children, currentChild])
@@ -93,7 +98,8 @@ function MyChildren() {
             const gender = formik.values.gender === "True" ? "Male" : "Female";
             const dateOfBirth = formik.values.dateOfBirth;
             const dateString = children[currentChild].birthDate.split('T')[0];
-            if (dateOfBirth !== dateString || fullName !== children[currentChild].name || gender !== children[currentChild].gender) {
+            if (dateOfBirth !== dateString || fullName !== children[currentChild].name
+                || gender !== children[currentChild].gender || avatar) {
                 setChange(false);
             } else {
                 setChange(true)
@@ -103,6 +109,7 @@ function MyChildren() {
     const handleGetChildren = async () => {
         try {
             await services.ChildrenManagementAPI.listChildren(userInfo.id, (res) => {
+                console.log(res);
                 setChildren(res.result);
             }, (err) => {
                 console.log("data child ==> ", err);
@@ -111,7 +118,7 @@ function MyChildren() {
             console.log(error);
         }
     }
-    console.log(children);
+    console.log(childAvatar);
     return (
         <Stack direction='row' justifyContent="center" pt={5}>
             <Stack sx={{ width: "80%" }} direction="row" justifyContent="center">
@@ -133,8 +140,23 @@ function MyChildren() {
                                         })
                                     }
                                 </Box>
+
                                 <form onSubmit={formik.handleSubmit}>
+
                                     <Grid container columnSpacing={2} rowSpacing={3} mt={4}>
+                                        <Grid item xs={2}>Ảnh đại diện: </Grid>
+                                        <Grid item xs={10}>
+                                            <ModalUploadAvatar setAvatar={setAvatar} />
+                                            <Box>
+                                                {
+                                                    avatar ? (
+                                                        <img src={URL.createObjectURL(avatar)} alt='avatar' width={150} />
+                                                    ) : (
+                                                        <img src={childAvatar} alt='avatar' width={150} />
+                                                    )
+                                                }
+                                            </Box>
+                                        </Grid>
                                         <Grid item xs={2}>Họ và tên: </Grid>
                                         <Grid item xs={10}>
                                             <TextField size='small' sx={{ width: "70%" }} fullWidth
