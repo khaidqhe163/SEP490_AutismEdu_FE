@@ -3,10 +3,10 @@ const checkValid = (value, field, setError, password) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (field === 1) {
         if (value === "") {
-            setError("Please enter email");
+            setError("Bắt buộc");
             return false;
         } else if (!emailRegex.test(value)) {
-            setError("Email is not valid");
+            setError("Email không hợp lệ");
             return false;
         } else {
             setError(null);
@@ -15,16 +15,16 @@ const checkValid = (value, field, setError, password) => {
     }
     if (field === 2) {
         if (value === "") {
-            setError("Please enter password");
+            setError("Bắt buộc");
             return false;
         } else if (value.length < 8) {
-            setError("Password must be more than 8 characters");
+            setError("Mật khẩu phải dài hơn 8 ký tự");
             return false;
         } else if (value.length > 15) {
-            setError("Password must be less than 15 characters");
+            setError("Mật khẩu phải nhỏ hơn 15 ký tự");
             return false;
         } else if (!rgPassword.test(value)) {
-            setError("Password is invalid!");
+            setError("Mật khẩu không hợp lệ!");
             return false;
         } else {
             setError(null);
@@ -33,10 +33,10 @@ const checkValid = (value, field, setError, password) => {
     }
     if (field === 3) {
         if (value === "") {
-            setError("Please enter confirm password");
+            setError("Bắt buộc");
             return false;
         } else if (value !== password) {
-            setError("Confirm password doesn't match with the password");
+            setError("Không trùng với mật khẩu");
             return false;
         } else {
             setError(null);

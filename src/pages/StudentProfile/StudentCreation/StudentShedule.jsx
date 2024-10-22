@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, Card, CardContent, Checkbox, Divider, FormControl, FormHelperText, IconButton, ListItemText, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import services from '~/plugins/services';
 const days = [
     {
         id: 1,
@@ -47,10 +48,15 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
     const [timeError, setTimeError] = useState("");
-    const [disableDate, setDisableDate] = useState([])
+    const [disableDate, setDisableDate] = useState([]);
+    const [existSchedule, setExistSchedule] = useState("");
+
+    useEffect(() => {
+        getExistSchedule();
+    }, [])
     useEffect(() => {
         const disableArr = [];
-        listSchedule.forEach((l) => {
+        existSchedule.forEach((l) => {
             if (toMinutes(l.from) < toMinutes(endTime) && toMinutes(startTime) < toMinutes(l.to)
                 && !disableArr.includes(l.weekday)) {
                 disableArr.push(l.weekday);
@@ -58,6 +64,24 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
         })
         setDisableDate([...disableArr])
     }, [startTime, endTime])
+
+    const getExistSchedule = async () => {
+        try {
+            await services.StudentProfileAPI.getTutorSchedule((res) => {
+                const arr = [];
+                res.result.forEach((a) => {
+                    a.scheduleTimeSlots.forEach((s) => {
+                        arr.push(s);
+                    })
+                })
+                setExistSchedule(arr);
+            }, (error) => {
+                console.log(error);
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const toMinutes = (time) => {
         const [hours, minutes] = time.split(':').map(Number);
         return hours * 60 + minutes;
@@ -82,10 +106,13 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
                     to: endTime
                 }
             })
-            const sortedItem = scheduleItem.sort((a, b) => {
+            const updatedSchedule = [...scheduleItem, ...listSchedule];
+            const sortedItem = updatedSchedule.sort((a, b) => {
                 return a.weekday - b.weekday
             })
-            setListSchedule([...sortedItem, ...listSchedule])
+            setListSchedule(sortedItem);
+            setExistSchedule([...existSchedule, ...sortedItem])
+            setDayOfWeek([]);
             setTimeError("");
         }
     }

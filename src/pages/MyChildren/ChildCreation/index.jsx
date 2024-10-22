@@ -1,10 +1,12 @@
 import { Box, Button, FormHelperText, Grid, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
 import { useFormik } from 'formik';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 import LoadingComponent from '~/components/LoadingComponent';
+import ModalUploadAvatar from '~/pages/Tutor/TutorRegistration/TutorInformation/ModalUploadAvatar';
+import axios from '~/plugins/axios';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -22,6 +24,14 @@ function ChildCreation({ setChildren }) {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [loading, setLoading] = useState(false);
+    const [avatar, setAvatar] = useState(null);
+
+    useEffect(() => {
+        if (!open) {
+            setAvatar(null);
+            formik.resetForm();
+        }
+    }, [open])
     const validate = values => {
         const errors = {};
         if (!values.fullName) {
@@ -35,6 +45,9 @@ function ChildCreation({ setChildren }) {
         if (!values.dateOfBirth) {
             errors.dateOfBirth = "Bắt buộc"
         }
+        if (!avatar) {
+            errors.avatar = "Bắt buộc"
+        }
         return errors;
     };
     const formik = useFormik({
@@ -47,11 +60,14 @@ function ChildCreation({ setChildren }) {
         onSubmit: async (values) => {
             try {
                 setLoading(true);
-                await services.ChildrenManagementAPI.createChild({
-                    name: values.fullName,
-                    birthDate: values.dateOfBirth,
-                    isMale: values.gender === "True" ? true : false
-                }, (res) => {
+                const formData = new FormData();
+
+                formData.append("Name", values.fullName);
+                formData.append("isMale", values.gender);
+                formData.append("BirthDate", values.dateOfBirth);
+                formData.append("Medias", avatar);
+                axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
+                await services.ChildrenManagementAPI.createChild(formData, (res) => {
                     console.log(res);
                     setChildren((pre) => [...pre, res.result])
                     enqueueSnackbar("Tạo thành công!", { variant: "success" });
@@ -60,6 +76,7 @@ function ChildCreation({ setChildren }) {
                     console.log(err);
                     enqueueSnackbar("Tạo thất bại!", { variant: "error" })
                 })
+                axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
                 setLoading(false)
             } catch (error) {
                 setLoading(false);
@@ -83,6 +100,21 @@ function ChildCreation({ setChildren }) {
                     </Typography>
                     <form onSubmit={formik.handleSubmit}>
                         <Grid container px="50px" py="50px" columnSpacing={2} rowSpacing={3}>
+                            <Grid item xs={3} textAlign="right">Ảnh đại diện</Grid>
+                            <Grid item xs={9}>
+                                <ModalUploadAvatar setAvatar={setAvatar} />
+                                {
+                                    !avatar && <FormHelperText error>
+                                        Bắt buộc
+                                    </FormHelperText>
+                                }
+                                <Box>
+                                    {
+                                        avatar &&
+                                        <img src={URL.createObjectURL(avatar)} alt='avatar' width={150} />
+                                    }
+                                </Box>
+                            </Grid>
                             <Grid item xs={3} textAlign="right">Họ và tên</Grid>
                             <Grid item xs={9}>
                                 <TextField size='small' fullWidth value={formik.values.fullName}
