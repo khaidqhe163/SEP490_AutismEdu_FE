@@ -75,7 +75,9 @@ const API_CODE = {
   API_WORK_EXPERIENCE_STATUS: '/v1/WorkExperience/changeStatus/',
 
   //Student profile management
-  API_CREATE_STUDENT_PROFILE: '/v1/StudentProfile'
+  API_CREATE_STUDENT_PROFILE: '/v1/StudentProfile',
+  API_GET_STUDENT_PROFILE: '/v1/StudentProfile',
+  API_GET_TUTOR_SCHEDULE: '/v1/StudentProfile/GetAllScheduleTimeSlot'
 };
 
 export default API_CODE;

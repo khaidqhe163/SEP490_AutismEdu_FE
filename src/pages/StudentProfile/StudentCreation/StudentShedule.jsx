@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, Card, CardContent, Checkbox, Divider, FormControl, FormHelperText, IconButton, ListItemText, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import services from '~/plugins/services';
 const days = [
     {
         id: 1,
@@ -47,7 +48,12 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
     const [timeError, setTimeError] = useState("");
-    const [disableDate, setDisableDate] = useState([])
+    const [disableDate, setDisableDate] = useState([]);
+    const [existSchedule, setExistSchedule] = useState("");
+
+    useEffect(() => {
+        getExistSchedule();
+    }, [])
     useEffect(() => {
         const disableArr = [];
         listSchedule.forEach((l) => {
@@ -58,6 +64,19 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
         })
         setDisableDate([...disableArr])
     }, [startTime, endTime])
+
+    const getExistSchedule = async () => {
+        try {
+            await services.StudentProfileAPI.getTutorSchedule((res) => {
+                console.log(res);
+                setExistSchedule(res.result);
+            }, (error) => {
+                console.log(error);
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const toMinutes = (time) => {
         const [hours, minutes] = time.split(':').map(Number);
         return hours * 60 + minutes;

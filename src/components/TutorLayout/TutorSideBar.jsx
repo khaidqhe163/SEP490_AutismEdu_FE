@@ -16,11 +16,30 @@ import * as React from 'react';
 import ContactPageOutlinedIcon from '@mui/icons-material/ContactPageOutlined';
 import { Link } from 'react-router-dom';
 import PAGES from '~/utils/pages';
+import services from '~/plugins/services';
 
 export default function TutorSideBar({ openMenu }) {
     const [openStudent, setOpenStudent] = React.useState(true);
     const [openSetting, setOpenSetting] = React.useState(true);
 
+    const [listStudent, setListStudent] = React.useState([]);
+    React.useEffect(() => {
+        getListStudent();
+    }, [])
+
+    const getListStudent = async () => {
+        try {
+            await services.StudentProfileAPI.getListStudent((res) => {
+                console.log(res);
+                setListStudent(res.result)
+            }, (error) => {
+                console.log(error);
+            }, {
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const textStyle = {
         opacity: openMenu ? 1 : 0,
         whiteSpace: 'nowrap',
@@ -66,15 +85,17 @@ export default function TutorSideBar({ openMenu }) {
                 }}
                 aria-labelledby="nested-list-subheader"
             >
-                <ListItemButton>
-                    <ListItemIcon sx={listIconStyle}>
-                        <HomeOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                        primary="Trang chủ"
-                        sx={textStyle}
-                    />
-                </ListItemButton>
+                <Link to={PAGES.MY_STUDENT}>
+                    <ListItemButton>
+                        <ListItemIcon sx={listIconStyle}>
+                            <HomeOutlinedIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                            primary="Trang chủ"
+                            sx={textStyle}
+                        />
+                    </ListItemButton>
+                </Link>
                 <Link to={PAGES.CALENDAR}>
                     <ListItemButton>
                         <ListItemIcon sx={listIconStyle}>
@@ -106,14 +127,20 @@ export default function TutorSideBar({ openMenu }) {
                     {openMenu && (openStudent ? <ExpandLess /> : <ExpandMore />)}
                 </ListItemButton>
                 <Collapse in={openStudent && openMenu} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon sx={listIconStyle}>
-                                <Avatar alt='Khai Dao' src='/' sx={{ background: "black", width: "30px", height: "30px" }} />
-                            </ListItemIcon>
-                            <ListItemText primary="NGTT - Nguyễn Việt Quân" />
-                        </ListItemButton>
-                    </List>
+                    {
+                        listStudent.length !== 0 && listStudent.map((l) => {
+                            return (
+                                <List component="div" disablePadding key={l.id}>
+                                    <ListItemButton>
+                                        <ListItemIcon sx={listIconStyle}>
+                                            <Avatar alt='Khai Dao' src='/' sx={{ background: "black", width: "30px", height: "30px" }} />
+                                        </ListItemIcon>
+                                        <ListItemText primary={`NGTT - ${l.name}`} />
+                                    </ListItemButton>
+                                </List>
+                            )
+                        })
+                    }
                 </Collapse>
                 <Divider />
                 <ListItemButton>
