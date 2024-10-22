@@ -4,7 +4,7 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import SearchIcon from '@mui/icons-material/Search';
 import Settings from '@mui/icons-material/Settings';
-import { Avatar, Badge, Box, Button, Divider, IconButton, InputBase, ListItemIcon, Menu, MenuItem, Stack, Tab, Tabs, TextField } from '@mui/material';
+import { Avatar, Badge, Box, Button, Divider, IconButton, InputAdornment, InputBase, ListItemIcon, Menu, MenuItem, Stack, Tab, Tabs, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -21,12 +21,17 @@ function Header() {
     const nav = useNavigate();
     const userInfo = useSelector(userInfor);
     const openAccountMenu = Boolean(accountMenu);
+    const [searchVal, setSearchVal] = useState('');
     const dispatch = useDispatch();
     const location = useLocation();
+
     useEffect(() => {
         if (location.pathname === "/autismedu") {
             setTab("1");
-        } else if (location.pathname.includes("/my-childlren")) {
+        } else if (location.pathname.includes("/list-tutor")) {
+            setTab("2");
+        }
+        else if (location.pathname.includes("/my-childlren")) {
             setTab("3");
         }
     }, [location])
@@ -56,7 +61,14 @@ function Header() {
         Cookies.remove("refresh_token");
         dispatch(setUserInformation(null))
         nav(PAGES.ROOT)
-    }
+    };
+
+    const handleSearch = () => {
+        nav('/autismedu/list-tutor', { state: { searchVal } });
+        setSearchVal('');
+    };
+
+
     return (
         <Stack
             direction="row"
@@ -99,14 +111,38 @@ function Header() {
                 </MenuItem>
             </Menu>
             <Stack direction="row" sx={{ alignItems: "center" }} spacing={2}>
-                <InputBase
+                {location.pathname !== '/autismedu/list-tutor' && <TextField
+                    variant="outlined"
+                    placeholder="Hãy tên gia sư mà bạn muốn tìm..."
+                    value={searchVal}
+                    onChange={(e) => setSearchVal(e.target.value)}
+                    fullWidth
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton onClick={handleSearch}>
+                                    <SearchIcon />
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                        sx: {
+                            width: '350px',
+                            height: '45px',
+                            borderRadius: '999px',
+                            backgroundColor: '#fff',
+                        },
+                    }}
+                />
+                }
+
+                {/* <InputBase
                     sx={{ ml: 1, flex: 1 }}
                     placeholder="Tìm kiếm gia sư"
                     inputProps={{ 'aria-label': 'search google maps' }}
                 />
                 <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
                     <SearchIcon />
-                </IconButton>
+                </IconButton> */}
 
                 {
                     userInfo && (
@@ -123,7 +159,7 @@ function Header() {
                             <Box sx={{
                                 display: {
                                     xs: "none",
-                                    lg: "block"
+                                    lg: "block",
                                 }
                             }}>
                                 <Link to={PAGES.ROOT + PAGES.LOGIN_OPTION}><ButtonComponent text="Đăng nhập" height="40px" /></Link>
@@ -132,7 +168,9 @@ function Header() {
                                 display: {
                                     xs: "none",
                                     lg: "block"
-                                }
+                                },
+                                width: '100px',
+                                height: "40px"
                             }}>Đăng ký</Button>
                             </Link>
                         </>

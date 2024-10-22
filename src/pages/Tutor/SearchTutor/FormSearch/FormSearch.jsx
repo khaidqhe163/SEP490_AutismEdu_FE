@@ -32,9 +32,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
         }));
     };
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+    
     useEffect(() => {
         getDataProvince();
     }, []);
@@ -130,6 +128,14 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
         }));
     };
 
+    const menuProps = {
+        PaperProps: {
+            style: {
+                maxHeight: 200,
+                overflowY: 'auto',
+            },
+        },
+    };
 
     const breadcrumbs = [
         <Link underline="hover" key="1" color="inherit" href="/" onClick={handleClick}>
@@ -218,7 +224,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                     <Grid item xs={9}>
                                         <TextField
                                             variant="outlined"
-                                            placeholder="Hãy nhập trung tâm mà bạn muốn tìm..."
+                                            placeholder="Hãy tên gia sư mà bạn muốn tìm..."
                                             value={searchCriteria.searchValue}
                                             onChange={handleSearchChange}
                                             fullWidth
@@ -285,6 +291,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                             value={selectedProvince}
                                             onChange={handleProvinceChange}
                                             label="Tỉnh/Thành phố"
+                                            MenuProps={menuProps}
                                         >
                                             {provinces.map(province => (
                                                 <MenuItem key={province.idProvince} value={province.idProvince + "|" + province.name}>
@@ -302,6 +309,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                             onChange={handleDistrictChange}
                                             label="Quận/Huyện"
                                             disabled={!selectedProvince}
+                                            MenuProps={menuProps}
                                         >
                                             {loadingDistricts ? (
                                                 <MenuItem disabled>
@@ -325,6 +333,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                             onChange={handleCommuneChange}
                                             label="Phường/Xã"
                                             disabled={!selectedDistrict}
+                                            MenuProps={menuProps}
                                         >
                                             {loadingCommunes ? (
                                                 <MenuItem disabled>

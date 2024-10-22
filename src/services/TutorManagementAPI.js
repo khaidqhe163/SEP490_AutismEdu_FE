@@ -19,10 +19,20 @@ const handleGetTutor = async (endpoint, success, error) => {
     await get(API_CODE.API_GET_TUTOR + endpoint, success, error);
 };
 
+const handleGetTutorProfile = async (success, error) => {
+    await get(API_CODE.API_GET_TUTOR_PROFILE, success, error);
+};
+
+const handleUpdateTutorProfile = async (endpoint, params, success, error) => {
+    await put(API_CODE.API_UPDATE_TUTOR_PROFILE + endpoint, params, success, error);
+};
+
 export const TutorManagementAPI = {
     registerAsTutor,
     listTutor,
     handleRegistrationForm,
     handleGetTutors,
     handleGetTutor,
+    handleGetTutorProfile,
+    handleUpdateTutorProfile,
 }

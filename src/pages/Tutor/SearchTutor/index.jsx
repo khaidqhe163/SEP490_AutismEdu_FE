@@ -5,7 +5,7 @@ import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Grid, IconButton, Link, Rating, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ButtonComponent from '~/Components/ButtonComponent';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
@@ -26,14 +26,19 @@ function SearchTutor() {
     const [pagination, setPagination] = useState(null);
 
     const navigate = useNavigate();
-
+    const location = useLocation();
     const [selected, setSelected] = useState('grid');
     const [showFilters, setShowFilters] = useState(false);
-
+    const searchVal = location.state?.searchVal;
+    useEffect(() => {
+        setSearchCriteria((prev) => ({ ...prev, searchValue: searchVal }));
+        handleSearch();
+    }, [location.state?.searchVal]);
 
     useEffect(() => {
-        handleGetTutor();
-    }, []);
+        handleSearch();
+    }, [searchCriteria]);
+
 
     const handleGetTutor = async (isMore = false) => {
         const tutorData = {
@@ -51,7 +56,8 @@ function SearchTutor() {
                 setPagination(res.pagination);
             }, (error) => {
                 console.log(error);
-            }, tutorData)
+            }, tutorData);
+
         } catch (error) {
             console.log(error)
         } finally {

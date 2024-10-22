@@ -37,10 +37,13 @@ const API_CODE = {
   API_TUTOR_STATUS: '/v1/TutorRegistrationRequest/changeStatus/',
   API_GET_TUTORS: '/v1/Tutor',
   API_GET_TUTOR: '/v1/Tutor/',
+  API_GET_TUTOR_PROFILE: '/v1/Tutor/profile',
+  API_UPDATE_TUTOR_PROFILE: '/v1/Tutor/',
 
   //Curriculum management
   API_CREATE_CURRICULUM: '/v1/Curriculum',
   API_GET_CURRICULUMS: '/v1/Curriculum',
+  API_GET_UPDATE_REQUEST: '/v1/Curriculum/updateRequest',
   API_CHANGE_STATUS_CURRICULUM: '/v1/Curriculum/changeStatus/',
 
   //Certificate management
@@ -63,6 +66,7 @@ const API_CODE = {
   //Tutor Request management
   API_GET_TUTOR_REQUEST: '/v1/TutorRequest',
   API_POST_TUTOR_REQUEST: '/v1/TutorRequest',
+  API_PUT_TUTOR_REQUEST: '/v1/TutorRequest/changeStatus/',
   //Assessment management
   API_GET_ASSESSMENT: '/v1/Assessment',
   API_CREATE_ASSESSMENT: '/v1/Assessment',
