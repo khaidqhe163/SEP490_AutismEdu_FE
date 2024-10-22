@@ -15,10 +15,13 @@ import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
 import { format } from 'date-fns';
 import { enqueueSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom';
 
 function TutorRequest() {
 
     const [listRequest, setListRequest] = React.useState([]);
+
+    const nav = useNavigate();
 
     const [pagination, setPagination] = React.useState({
         pageNumber: 1,
@@ -46,8 +49,7 @@ function TutorRequest() {
     };
 
     const handleOpenModal = (request) => {
-        setSelectedRequest(request);
-        setOpenModal(true);
+        nav('/autismtutor/create-student-profile', { state: {request} });
     };
 
     const handleCloseModal = () => {
@@ -116,6 +118,8 @@ function TutorRequest() {
             setLoading(true);
             await services.TutorRequestAPI.getListTutorRequest((res) => {
                 if (res?.result) {
+                    console.log(res.result);
+                    
                     setListRequest(res.result);
                     setPagination(res.pagination);
                 }
@@ -140,7 +144,7 @@ function TutorRequest() {
     }, [filters, pagination.pageNumber]);
 
 
-    
+
     const statusTransform = (status) => {
         let statusText = '';
         switch (status) {

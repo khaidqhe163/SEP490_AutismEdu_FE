@@ -1,6 +1,6 @@
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, Button, FormControl, FormHelperText, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
-import { useRef, useState } from 'react';
+import { Avatar, Box, Button, FormControl, FormHelperText, InputAdornment, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import services from '~/plugins/services';
 import ChildrenProfile from './ChildrenProfile';
 import InitialCondition from './InitialCondition';
@@ -8,7 +8,7 @@ import ParentProfile from './ParentProfile';
 import StudentShedule from './StudentShedule';
 import LoadingComponent from '~/components/LoadingComponent';
 import { enqueueSnackbar } from 'notistack';
-
+import { useLocation } from 'react-router-dom';
 
 function StudentCreation() {
     const email = useRef(null);
@@ -19,7 +19,16 @@ function StudentCreation() {
     const [currentChild, setCurrentChild] = useState(0);
     const [selectedAssessment, setSelectedAssessment] = useState([]);
     const [initialCondition, setInitialCondition] = useState("");
-    const [listSchedule, setListShedule] = useState([])
+    const [listSchedule, setListShedule] = useState([]);
+    const location = useLocation();
+    const request = location.state?.request;
+
+    useEffect(() => {
+        if (request?.parent) {
+            setParent(request?.parent);
+        }
+    }, []);
+
     const handleGetParent = async () => {
         if (email.current.value === "") {
             setEmailError("Vui lòng nhập tài khoản của phụ huynh!");
@@ -73,9 +82,9 @@ function StudentCreation() {
         }
         try {
             await services.StudentProfileAPI.createStudentProfile({
-                childId: children[currentChild].id,
+                childId: request ? request?.childInformation?.id : children[currentChild].id,
                 initialCondition: initialCondition,
-                tutorRequestId: -1,
+                tutorRequestId: request ? request?.id : -1,
                 initialAssessmentResults: selectedAssessment,
                 scheduleTimeSlots: listSchedule
             },
@@ -91,7 +100,7 @@ function StudentCreation() {
         }
     }
     return (
-        <Box p="20px" sx={{ height: "calc(100vh - 65px)", bgcolor: "#f8fafb", width:'100%' }} overflow="auto">
+        <Box p="20px" sx={{ height: "calc(100vh - 65px)", bgcolor: "#f8fafb", width: '100%' }} overflow="auto">
             <Typography variant='h4'>Tạo hồ sơ học sinh</Typography>
             <Box sx={{
                 width: "100%",
@@ -105,60 +114,82 @@ function StudentCreation() {
             }}>
                 <Box sx={{ width: "50%", display: "flex" }}>
                     <Box sx={{ width: "80%" }}>
-                        <TextField
-                            name='email'
-                            size='small'
-                            sx={{ width: "100%" }}
-                            placeholder='Nhập tài khoản phụ huynh'
-                            inputRef={email}
-                        />
-                        {
-                            emailError !== "" && (
-                                <FormHelperText error>
-                                    {emailError}
-                                </FormHelperText>
-                            )
-                        }
+                        {request ?
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Avatar
+                                    alt="H"
+                                    src={request?.parent?.imageUrl}
+                                    sx={{ width: 40, height: 40, marginRight: '8px', marginBottom: '4px' }}
+                                />
+                                <TextField id="input-with-sx" sx={{ width: "100%" }} label="Email phụ huynh" disabled='true' value={request?.parent?.email} variant="outlined" />
+                            </Box> : <>
+                                <TextField
+                                    name='email'
+                                    size='small'
+                                    sx={{ width: "100%" }}
+                                    placeholder='Nhập tài khoản phụ huynh'
+                                    inputRef={email}
+                                />
+                                {
+                                    emailError !== "" && (
+                                        <FormHelperText error>
+                                            {emailError}
+                                        </FormHelperText>
+                                    )
+                                }
+                            </>}
+
                     </Box>
-                    <Button variant='contained' sx={{ ml: 3, height: "40px" }}
+                    {!request && <Button variant='contained' sx={{ ml: 3, height: "40px" }}
                         onClick={handleGetParent}
-                    ><SearchIcon /></Button>
+                    ><SearchIcon /></Button>}
                 </Box>
                 {
-                    children.length !== 0 && (
-                        <>
-                            <Box>
-                                <FormControl size='small' sx={{ width: "300px" }}>
-                                    <Select value={currentChild}
-                                        onChange={(e) => setCurrentChild(e.target.value)}
-                                    >
-                                        {
-                                            children.map((c, index) => {
-                                                return (
-                                                    <MenuItem key={c.id} value={index}>{c.name}</MenuItem>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </FormControl>
-                            </Box>
-                            <Button variant='contained' onClick={handleSubmit}>Tạo hồ sơ</Button>
-                        </>
-                    )
+                    request ? (<Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Avatar
+                            alt="K"
+                            src={request?.childInformation?.childInformationMedias[0]?.urlPath}
+                            sx={{ width: 40, height: 40, marginRight: '8px', marginBottom: '4px' }}
+                        />
+                        <TextField id="input-with-sx" sx={{ width: "300px" }} label="Tên của học sinh" disabled='true' value={request?.childInformation?.name} variant="outlined" />
+                    </Box>) :
+
+                        children.length !== 0 && (
+                            <>
+                                <Box>
+                                    <FormControl size='small' sx={{ width: "300px" }}>
+                                        <Select value={currentChild}
+                                            onChange={(e) => setCurrentChild(e.target.value)}
+                                        >
+                                            {
+                                                children.map((c, index) => {
+                                                    return (
+                                                        <MenuItem key={c.id} value={index}>{c.name}</MenuItem>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </>
+                        )
                 }
+                <Button variant='contained' onClick={handleSubmit}>Tạo hồ sơ</Button>
 
             </Box>
             <Stack direction='row' gap={2} mt={3}>
                 <Box sx={{ width: "35%" }}>
                     <ParentProfile parent={parent} />
-                    <ChildrenProfile childrenInfo={children} currentChild={currentChild} />
+                    <ChildrenProfile childrenInfo={children} currentChild={currentChild} childrenInfoRequest={request?.childInformation} />
                 </Box>
                 <Box sx={{ width: "60%" }}>
                     <InitialCondition childrenInfor={children}
                         setSelectedAssessment={setSelectedAssessment}
                         selectedAssessment={selectedAssessment}
-                        initialCondition={initialCondition} setInitialCondition={setInitialCondition} />
-                    <StudentShedule childrenInfor={children} listSchedule={listSchedule} setListSchedule={setListShedule} />
+                        initialCondition={initialCondition} setInitialCondition={setInitialCondition}
+                        childrenInfoRequest={request?.childInformation}
+                    />
+                    <StudentShedule childrenInfor={children} listSchedule={listSchedule} setListSchedule={setListShedule} childrenInfoRequest={request?.childInformation} />
                 </Box>
             </Stack>
             <LoadingComponent open={loading} />

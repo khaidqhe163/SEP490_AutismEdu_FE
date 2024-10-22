@@ -1,7 +1,7 @@
 import { Card, CardContent, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import services from '~/plugins/services';
-function InitialCondition({ setInitialCondition, initialCondition, childrenInfor, selectedAssessment, setSelectedAssessment }) {
+function InitialCondition({ setInitialCondition, initialCondition, childrenInfor, selectedAssessment, setSelectedAssessment, childrenInfoRequest}) {
     const [assessment, setAssessment] = useState([]);
     useEffect(() => {
         handleGetAsessment();
@@ -34,7 +34,7 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
                     sx={{ width: "100%" }}
                     minRows={5}
                     multiline
-                    disabled={childrenInfor.length === 0}
+                    disabled={childrenInfoRequest ? false : childrenInfor.length === 0}
                     value={initialCondition}
                     onChange={(e) => { setInitialCondition(e.target.value) }}
                 />
@@ -46,7 +46,7 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
                                 <Grid item xs={6} key={a.id}>
                                     <Typography>{a.question}</Typography>
                                     <FormControl size='small' sx={{ width: "300px" }} key={a.id}>
-                                        <Select value={selectedAssessment[index].optionId} disabled={childrenInfor.length === 0}
+                                        <Select value={selectedAssessment[index].optionId} disabled={childrenInfoRequest ? false : childrenInfor.length === 0}
                                             onChange={(e) => {
                                                 selectedAssessment[index].optionId = Number(e.target.value);
                                                 setSelectedAssessment([...selectedAssessment]);

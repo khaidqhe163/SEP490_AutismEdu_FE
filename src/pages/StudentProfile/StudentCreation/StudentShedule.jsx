@@ -43,13 +43,13 @@ const MenuProps = {
         },
     },
 };
-function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
+function StudentShedule({ childrenInfor, listSchedule, setListSchedule, childrenInfoRequest }) {
     const [dayOfWeek, setDayOfWeek] = useState([]);
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
     const [timeError, setTimeError] = useState("");
     const [disableDate, setDisableDate] = useState([]);
-    const [existSchedule, setExistSchedule] = useState("");
+    const [existSchedule, setExistSchedule] = useState([]);
 
     useEffect(() => {
         getExistSchedule();
@@ -130,12 +130,12 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
                 <Box sx={{ display: "flex", gap: 3, mt: 2 }}>
                     <Box>
                         <Typography>Giờ bắt đầu</Typography>
-                        <TextField type='time' disabled={childrenInfor.length === 0} value={startTime}
+                        <TextField type='time' disabled={childrenInfoRequest ? false : childrenInfor.length === 0} value={startTime}
                             onChange={(e) => setStartTime(e.target.value)} />
                     </Box>
                     <Box>
                         <Typography>Giờ kết thúc</Typography>
-                        <TextField type='time' disabled={childrenInfor.length === 0}
+                        <TextField type='time' disabled={childrenInfoRequest ? false : childrenInfor.length === 0}
                             value={endTime}
                             onChange={(e) => setEndTime(e.target.value)}
                         />
@@ -151,7 +151,7 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
                                 onChange={handleChange}
                                 renderValue={(selected) => selected.join(', ')}
                                 MenuProps={MenuProps}
-                                disabled={childrenInfor.length === 0 || startTime === "" || endTime === ""}
+                                disabled={childrenInfoRequest ? false : childrenInfor.length === 0 || startTime === "" || endTime === ""}
                             >
                                 {days.map((day) => (
                                     <MenuItem key={day.id} value={day.day} disabled={disableDate.includes(day.id)}>
@@ -170,7 +170,7 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
                         </FormHelperText>
                     )
                 }
-                <Button variant='contained' sx={{ mt: 2 }} disabled={childrenInfor.length === 0} onClick={handleAddTime}>Thêm</Button>
+                <Button variant='contained' sx={{ mt: 2 }} disabled={childrenInfoRequest ? false : childrenInfor.length === 0} onClick={handleAddTime}>Thêm</Button>
                 <Box sx={{ display: "flex", mt: 3, flexWrap: "wrap", gap: 3 }}>
                     {
                         listSchedule.length !== 0 && listSchedule.map((schedule, index) => {
