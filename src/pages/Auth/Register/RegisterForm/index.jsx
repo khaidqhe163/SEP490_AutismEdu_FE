@@ -364,10 +364,10 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                                                     title={
                                                         <React.Fragment>
                                                             <ul style={{ padding: "0", listStyle: "none" }}>
-                                                                <li>Password length from 8 to 15 characters</li>
-                                                                <li>Contains at least 1 number</li>
-                                                                <li>Contains lowercase and uppercase letters</li>
-                                                                <li>Contains at least one of the following special characters (! @ $ ? _ -)</li>
+                                                                <li>Mật khẩu có từ 8 đến 15 ký tự</li>
+                                                                <li>Chứa ít nhất một chữ số</li>
+                                                                <li>Chứa ít nhất một chữ in hoa</li>
+                                                                <li>Chứa ít nhất một trong những ký tự sau (! @ $ ? _ -)</li>
                                                             </ul>
                                                         </React.Fragment>
                                                     }

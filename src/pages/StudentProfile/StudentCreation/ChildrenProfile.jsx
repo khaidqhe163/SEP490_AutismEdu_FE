@@ -10,7 +10,7 @@ function ChildrenProfile({ childrenInfo, currentChild }) {
                     <>
                         <CardMedia
                             sx={{ height: "250px" }}
-                            image="https://sep490g50v1.blob.core.windows.net/logos-public/8bd8350e-c12d-4636-8bf6-058dcb1c79a6.jpg"
+                            image={childrenInfo[currentChild].childInformationMedias[0].urlPath}
                             title="green iguana"
                         />
                         <CardContent sx={{ p: 0 }}>

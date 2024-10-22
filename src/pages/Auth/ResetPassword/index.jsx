@@ -63,7 +63,7 @@ function ResetPassword() {
                     confirmPassword: cfPassword
                 }, (res) => {
                     enqueueSnackbar("Đặt lại mật khẩu thành công!", { variant: "success" });
-                    nav(PAGES.ROOT + PAGES.LOGIN);
+                    nav(PAGES.ROOT + PAGES.LOGIN_OPTION);
                 }, (err) => {
                     if (err.code === 500) {
                         enqueueSnackbar("Đặt lại mật khẩu thất bại!", { variant: "error" });
@@ -90,10 +90,10 @@ function ResetPassword() {
                         </Typography>
                     </Box>
                     <Typography variant='h5' sx={{ color: "text.secondary", mt: "20px" }}>Đặt lại mật khẩu 🔒</Typography>
-                    <Typography sx={{ mt: "10px" }}>Your new password must be different from previously used passwords</Typography>
+                    <Typography sx={{ mt: "10px" }}>Mật khẩu mới của bạn phải khác với mật khẩu đã sử dụng trước đó</Typography>
                     <Box mt="30px">
                         <FormControl sx={{ ...INPUT_CSS, mt: "20px" }} variant="outlined">
-                            <InputLabel htmlFor="new-password">New Password</InputLabel>
+                            <InputLabel htmlFor="new-password">Mật khẩu mới</InputLabel>
                             <OutlinedInput
                                 error={!!passwordError}
                                 value={password}
@@ -117,7 +117,7 @@ function ResetPassword() {
                                         </IconButton>
                                     </InputAdornment>
                                 }
-                                label="Password"
+                                label="Mật khẩu mới"
                             />
                             {
                                 passwordError && (
@@ -132,10 +132,10 @@ function ResetPassword() {
                                                 title={
                                                     <React.Fragment>
                                                         <ul style={{ padding: "0", listStyle: "none" }}>
-                                                            <li>Password length from 8 to 15 characters</li>
-                                                            <li>Contains at least 1 number</li>
-                                                            <li>Contains lowercase and uppercase letters</li>
-                                                            <li>Contains at least one of the following special characters (. ! & %)</li>
+                                                            <li>Mật khẩu có từ 8 đến 15 ký tự</li>
+                                                            <li>Chứa ít nhất một chữ số</li>
+                                                            <li>Chứa ít nhất một chữ in hoa</li>
+                                                            <li>Chứa ít nhất một trong những ký tự sau (! @ $ ? _ -)</li>
                                                         </ul>
                                                     </React.Fragment>
                                                 }
@@ -148,7 +148,7 @@ function ResetPassword() {
                             }
                         </FormControl>
                         <FormControl sx={{ ...INPUT_CSS, mt: "20px" }} variant="outlined">
-                            <InputLabel htmlFor="confirm-password">Confirm Password</InputLabel>
+                            <InputLabel htmlFor="confirm-password">Nhập lại mật khẩu</InputLabel>
                             <OutlinedInput
                                 error={!!passwordConfirmError}
                                 value={cfPassword}
@@ -172,7 +172,7 @@ function ResetPassword() {
                                         </IconButton>
                                     </InputAdornment>
                                 }
-                                label="Confirm Password"
+                                label="Nhập lại mật khẩu"
                             />
                             {
                                 passwordConfirmError && (
@@ -184,12 +184,12 @@ function ResetPassword() {
                         </FormControl>
                     </Box>
                     <LoadingButton variant='contained' sx={{ width: "100%", marginTop: "20px" }} onClick={() => setLoading(true)}
-                        loading={loading} loadingIndicator="Sending...">
-                        Set New Password
+                        loading={loading} loadingIndicator="Loading...">
+                        Đặt lại mật khẩu
                     </LoadingButton>
                     <Typography textAlign={'center'} mt="20px">
                         <Link to={PAGES.LOGIN} style={{ color: "#666cff" }}>
-                            <ArrowBackIosNewIcon sx={{ fontSize: "12px" }} /> Back to login
+                            <ArrowBackIosNewIcon sx={{ fontSize: "12px" }} /> Trở về đăng nhập
                         </Link>
                     </Typography>
 

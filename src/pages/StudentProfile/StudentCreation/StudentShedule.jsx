@@ -56,7 +56,7 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
     }, [])
     useEffect(() => {
         const disableArr = [];
-        listSchedule.forEach((l) => {
+        existSchedule.forEach((l) => {
             if (toMinutes(l.from) < toMinutes(endTime) && toMinutes(startTime) < toMinutes(l.to)
                 && !disableArr.includes(l.weekday)) {
                 disableArr.push(l.weekday);
@@ -68,8 +68,13 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
     const getExistSchedule = async () => {
         try {
             await services.StudentProfileAPI.getTutorSchedule((res) => {
-                console.log(res);
-                setExistSchedule(res.result);
+                const arr = [];
+                res.result.forEach((a) => {
+                    a.scheduleTimeSlots.forEach((s) => {
+                        arr.push(s);
+                    })
+                })
+                setExistSchedule(arr);
             }, (error) => {
                 console.log(error);
             })
@@ -101,10 +106,13 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
                     to: endTime
                 }
             })
-            const sortedItem = scheduleItem.sort((a, b) => {
+            const updatedSchedule = [...scheduleItem, ...listSchedule];
+            const sortedItem = updatedSchedule.sort((a, b) => {
                 return a.weekday - b.weekday
             })
-            setListSchedule([...sortedItem, ...listSchedule])
+            setListSchedule(sortedItem);
+            setExistSchedule([...existSchedule, ...sortedItem])
+            setDayOfWeek([]);
             setTimeError("");
         }
     }
