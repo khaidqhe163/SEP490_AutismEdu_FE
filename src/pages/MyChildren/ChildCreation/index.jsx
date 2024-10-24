@@ -65,7 +65,7 @@ function ChildCreation({ setChildren }) {
                 formData.append("Name", values.fullName);
                 formData.append("isMale", values.gender);
                 formData.append("BirthDate", values.dateOfBirth);
-                formData.append("Medias", avatar);
+                formData.append("Media", avatar);
                 axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
                 await services.ChildrenManagementAPI.createChild(formData, (res) => {
                     console.log(res);

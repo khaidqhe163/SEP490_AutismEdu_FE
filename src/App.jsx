@@ -1,18 +1,17 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import AdminLayout from "./layout/AdminLayout";
-import { adminRoutes, publicRoutes, tutorRoutes, UnLayoutRoutes } from "./routes/Routes";
-import ClientLayout from "./layout/ClientLayout";
-import PAGES from "./utils/pages";
-import 'react-image-crop/dist/ReactCrop.css'
-import { useEffect } from "react";
-import services from "./plugins/services";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-import { enqueueSnackbar } from "notistack";
-import { setUserInformation } from "./redux/features/userSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import 'react-image-crop/dist/ReactCrop.css';
+import { useDispatch } from "react-redux";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import AdminLayout from "./layout/AdminLayout";
+import ClientLayout from "./layout/ClientLayout";
 import TutorLayout from "./layout/TutorLayout";
-import { setTutorInformation, tutorInfor } from "./redux/features/tutorSlice";
+import services from "./plugins/services";
+import { setTutorInformation } from "./redux/features/tutorSlice";
+import { setUserInformation } from "./redux/features/userSlice";
+import { adminRoutes, publicRoutes, tutorRoutes, UnLayoutRoutes } from "./routes/Routes";
+import PAGES from "./utils/pages";
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -41,7 +40,6 @@ function App() {
       console.log(error);
     }
   }
-  console.log(useSelector(tutorInfor));
   return (
     <>
       <BrowserRouter>

@@ -21,7 +21,6 @@ function ConfirmCareer({ career, setCareer, index }) {
         const deleteCareer = career.filter((c, i) => {
             return i !== index;
         })
-        console.log(deleteCareer);
         setCareer(deleteCareer);
         handleClose();
     }

@@ -1,71 +1,128 @@
-import { Card, CardContent, CardMedia, Grid, Typography } from '@mui/material';
-function ChildrenProfile({ childrenInfo, currentChild, childrenInfoRequest }) {
+import { Box, Card, CardContent, CardMedia, FormControl, FormHelperText, Grid, MenuItem, Select, TextField, Typography } from '@mui/material';
+import ModalUploadAvatar from '~/pages/Tutor/TutorRegistration/TutorInformation/ModalUploadAvatar';
+function ChildrenProfile({ childrenInfo, currentChild, hasAccount, formik, setAvatar, avatar }) {
     return (
         <Card sx={{ mt: 3, px: 2 }}>
             <CardContent sx={{ px: 0 }}>
                 <Typography variant='h5'>Thông tin trẻ</Typography>
             </CardContent>
             {
-                childrenInfoRequest ? <>
-                    <CardMedia
-                        sx={{ height: "250px" }}
-                        image={childrenInfoRequest?.childInformationMedias[0]?.urlPath}
-                        title="green iguana"
-                    />
-                    <CardContent sx={{ p: 0 }}>
-                        <Grid container rowSpacing={2} mt={1}>
-                            <Grid item xs={4}>
-                                <Typography>Họ tên trẻ:</Typography>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <Typography>{childrenInfoRequest?.name}</Typography>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Typography>Ngày sinh:</Typography>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <Typography>{childrenInfoRequest?.birthDate.split('T')[0]}</Typography>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Typography>Giới tính:</Typography>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <Typography>{childrenInfoRequest?.gender === "Male" ? "Nam" : "Nữ"}</Typography>
-                            </Grid>
-                        </Grid>
-                    </CardContent>
-                </> :
-                    (childrenInfo.length !== 0) && (
-                        <>
-                            <CardMedia
-                                sx={{ height: "250px" }}
-                                image={childrenInfo[currentChild].childInformationMedias[0].urlPath}
-                                title="green iguana"
-                            />
-                            <CardContent sx={{ p: 0 }}>
-                                <Grid container rowSpacing={2} mt={1}>
-                                    <Grid item xs={4}>
-                                        <Typography>Họ tên trẻ:</Typography>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                        <Typography>{childrenInfo[currentChild].name}</Typography>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Typography>Ngày sinh:</Typography>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                        <Typography>{childrenInfo[currentChild].birthDate.split('T')[0]}</Typography>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Typography>Giới tính:</Typography>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                        <Typography>{childrenInfo[currentChild].gender === "Male" ? "Nam" : "Nữ"}</Typography>
-                                    </Grid>
+                (childrenInfo.length !== 0 && hasAccount === "true") && (
+                    <>
+                        <CardMedia
+                            sx={{ height: "250px" }}
+                            image={childrenInfo[currentChild].imageUrlPath}
+                            title="green iguana"
+                        />
+                        <CardContent sx={{ p: 0 }}>
+                            <Grid container rowSpacing={2} mt={1}>
+                                <Grid item xs={4}>
+                                    <Typography>Họ tên trẻ:</Typography>
                                 </Grid>
-                            </CardContent>
-                        </>
-                    )
+                                <Grid item xs={8}>
+                                    <Typography>{childrenInfo[currentChild].name}</Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography>Ngày sinh:</Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <Typography>{childrenInfo[currentChild].birthDate.split('T')[0]}</Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography>Giới tính:</Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <Typography>{childrenInfo[currentChild].gender === "Male" ? "Nam" : "Nữ"}</Typography>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </>
+                )
+            }
+            {
+                hasAccount === "false" && (
+                    <>
+                        <CardContent sx={{ p: 0 }}>
+                            <Grid container rowSpacing={2} mt={1}>
+                                <Grid item xs={4}>
+                                    <Typography>Ảnh của trẻ:</Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <ModalUploadAvatar setAvatar={setAvatar} />
+                                    {
+                                        !avatar && <FormHelperText error>
+                                            Bắt buộc
+                                        </FormHelperText>
+                                    }
+                                    <Box>
+                                        {
+                                            avatar &&
+                                            <img src={URL.createObjectURL(avatar)} alt='avatar' width={150} />
+                                        }
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography>Họ tên:</Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <TextField size='small' fullWidth
+                                        value={formik.values.childName}
+                                        onChange={formik.handleChange}
+                                        name='childName'
+                                    />
+                                    {
+                                        formik.errors.childName && (
+                                            <FormHelperText error>
+                                                {formik.errors.childName}
+                                            </FormHelperText>
+                                        )
+                                    }
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography>Ngày sinh:</Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <TextField size='small' type='date' value={formik.values.dateOfBirth}
+                                        name='dateOfBirth'
+                                        onChange={formik.handleChange}
+                                        inputProps={{
+                                            max: new Date().toISOString().split('T')[0]
+                                        }} />
+                                    {
+                                        formik.errors.dateOfBirth && (
+                                            <FormHelperText error>
+                                                {formik.errors.dateOfBirth}
+                                            </FormHelperText>
+                                        )
+                                    }
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography>Giới tính:</Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <FormControl fullWidth size='small'>
+                                        <Select
+                                            name='gender'
+                                            value={formik.values.gender}
+                                            onChange={formik.handleChange}
+                                            fullWidth
+                                        >
+                                            <MenuItem value={"True"}>Nam</MenuItem>
+                                            <MenuItem value={"False"}>Nữ</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                    {
+                                        formik.errors.gender && (
+                                            <FormHelperText error>
+                                                {formik.errors.gender}
+                                            </FormHelperText>
+                                        )
+                                    }
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </>
+                )
             }
         </Card>
     )

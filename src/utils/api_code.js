@@ -77,7 +77,8 @@ const API_CODE = {
   //Student profile management
   API_CREATE_STUDENT_PROFILE: '/v1/StudentProfile',
   API_GET_STUDENT_PROFILE: '/v1/StudentProfile',
-  API_GET_TUTOR_SCHEDULE: '/v1/StudentProfile/GetAllScheduleTimeSlot'
+  API_GET_TUTOR_SCHEDULE: '/v1/StudentProfile/GetAllScheduleTimeSlot',
+  API_GET_STUDENT_ID: '/v1/StudentProfile/'
 };
 
 export default API_CODE;

@@ -63,7 +63,6 @@ function ParentProfile() {
             if (avatar) {
                 formData.append("Image", avatar)
             }
-            console.log(formData.get("Image"));
             axiosInstance.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
             await services.UserManagementAPI.updateUser(userInformation.id, formData, (res) => {
                 console.log(res);
@@ -92,7 +91,7 @@ function ParentProfile() {
             const data = await axios.get("https://vietnam-administrative-division-json-server-swart.vercel.app/province")
             const dataP = data.data;
             setProvinces(dataP);
-            if (userInformation !== null) {
+            if (userInformation !== null && userInformation.address) {
                 const address = userInformation.address.split('|');
                 const province = dataP.find((p) => { return p.name === address[0] });
                 if (province) {
@@ -140,7 +139,6 @@ function ParentProfile() {
 
     useEffect(() => {
         if (userInformation && provinces.length !== 0 && districts.length !== 0 && communes.length !== 0) {
-            const address = userInformation.address.split("|");
             const fullName = formik.values.fullName.trim();
             if (avatar) {
                 setChange(false);
@@ -157,31 +155,41 @@ function ParentProfile() {
             const selectedProvince = provinces.find((p) => {
                 return p.idProvince === formik.values.province;
             })
-            if (selectedProvince.name !== address[0]) {
+
+            if ((formik.values.province !== "" || formik.values.district !== ""
+                || formik.values.commune !== "") && userInformation.address) {
                 setChange(false);
                 return;
             }
-            const selectedDistrict = districts.find((d) => {
-                return d.idDistrict === formik.values.district;
-            })
-            if (selectedDistrict && (selectedDistrict.name !== address[1])) {
-                setChange(false);
-                return;
-            }
-            const selectedCommune = communes.find((c) => {
-                return c.idCommune === formik.values.commune;
-            })
-            if (selectedCommune && (selectedCommune.name !== address[2])) {
-                setChange(false);
-                return;
-            }
-            if (formik.values.homeNumber.trim() !== address[3]) {
-                setChange(false);
-                return;
+            if (userInformation.address) {
+                const address = userInformation.address.split("|");
+                if (selectedProvince.name !== address[0]) {
+                    setChange(false);
+                    return;
+                }
+                const selectedDistrict = districts.find((d) => {
+                    return d.idDistrict === formik.values.district;
+                })
+                if (selectedDistrict && (selectedDistrict.name !== address[1])) {
+                    setChange(false);
+                    return;
+                }
+                const selectedCommune = communes.find((c) => {
+                    return c.idCommune === formik.values.commune;
+                })
+                if (selectedCommune && (selectedCommune.name !== address[2])) {
+                    setChange(false);
+                    return;
+                }
+                if (formik.values.homeNumber.trim() !== address[3]) {
+                    setChange(false);
+                    return;
+                }
             }
             setChange(true);
         }
     }, [formik])
+    console.log(userInformation);
     return (
         <Box sx={{ bgcolor: "#efefef", width: "100%", py: "20px" }}>
             <Box sx={{

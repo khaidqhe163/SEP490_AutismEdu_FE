@@ -95,8 +95,8 @@ export default function CurriculumDetail({ curriculum, setCurriculum, endAge, st
                 <ListItemIcon onClick={handleOpen}>
                     <MenuBookIcon />
                 </ListItemIcon>
-                <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", flexGrow: 1 }} gap={2} onClick={handleOpen}>
-                    <Typography>{currentCurriculum.ageFrom} - {currentCurriculum.ageEnd} tuổi</Typography>
+                <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", flexGrow: 1 }} gap={2} >
+                    <Typography onClick={handleOpen}>{currentCurriculum.ageFrom} - {currentCurriculum.ageEnd} tuổi</Typography>
                     <ConfirmDeleteCurriculum curriculum={curriculum} setCurriculum={setCurriculum} index={index} />
                 </Stack>
             </ListItemButton>

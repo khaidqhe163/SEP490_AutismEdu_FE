@@ -54,8 +54,7 @@ function BasicInformation({ information }) {
                     p: 4,
                     gap: 2,
                     maxHeight: "90vh",
-                    overflow: "auto",
-
+                    overflow: "auto"
                 }}>
                     <IconButton sx={{ position: "absolute", top: "5px", right: "5px" }} onClick={handleClose}>
                         <CancelOutlinedIcon />
@@ -113,12 +112,13 @@ function BasicInformation({ information }) {
                         </Grid>
                     </Box>
                     <Box width="50%" pb={3}>
-                        <Typography variant='h6' mb={4}>Thông tin gia sư</Typography>
+                        <Typography variant='h5' mb={4}>Thông tin gia sư</Typography>
                         <Typography mt={2}>Độ tuổi dạy: {information.startAge} - {information.endAge} tuổi</Typography>
-                        <Typography mt={2}>Giá:   {formatter.format(information.price)}</Typography>
+                        <Typography mt={2}>Số tiếng trên buổi: {information.sessionHours} tiếng / buổi</Typography>
+                        <Typography mt={2}>Giá: {formatter.format(information.priceFrom)} - {formatter.format(information.priceEnd)}</Typography>
                         <Typography mt={2}>Giới thiệu: </Typography>
-                        <Box sx={{ maxHeight: "70%", mt: 2, overflowY: "auto", p: 3, borderRadius: "5px", border: "1px gray solid" }}>
-                            <Box sx={{ maxWidth: "100%" }} dangerouslySetInnerHTML={{ __html: information.description }} />
+                        <Box sx={{ maxHeight: "60%", mt: 2, overflowY: "auto", p: 3, borderRadius: "5px", border: "1px gray solid" }}>
+                            <Box sx={{ maxWidth: "100%" }} dangerouslySetInnerHTML={{ __html: information.aboutMe }} />
                         </Box>
                     </Box>
                 </Stack>

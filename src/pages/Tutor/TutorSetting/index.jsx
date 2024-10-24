@@ -14,17 +14,17 @@ import CertificateManagement from './CertificateManagement';
 function TutorSetting() {
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     const initialTab = location.state?.selectedTab || '1';
     const [value, setValue] = useState(initialTab);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
-        navigate('.', { state: { selectedTab: newValue } }); 
+        navigate('.', { state: { selectedTab: newValue } });
     };
 
     return (
-        <Box sx={{ width: '100%', typography: 'body1' }}>
+        <Box sx={{ width: '100%', typography: 'body1', height: "calc(100vh - 65px)", overflow: "auto" }}>
             <TabContext value={value}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <TabList onChange={handleChange} aria-label="lab API tabs example">
