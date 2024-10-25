@@ -76,7 +76,7 @@ function CurriculumEditedTable({ setShowTable }) {
         });
     };
 
-    const totalPages = Math.ceil(pagination.total / pagination.pageSize);
+    const totalPages = Math.ceil(pagination.totalPages / pagination.pageSize);
 
     const handlePageChange = (event, value) => {
         setPagination({ ...pagination, pageNumber: value });
@@ -84,44 +84,48 @@ function CurriculumEditedTable({ setShowTable }) {
 
     return (
         <Box>
-            <Stack direction={'row'} justifyContent={'flex-end'} spacing={2} my={3}>
-                <Box sx={{ flexBasis: '80%' }}>
-                    <Button mb={2} variant='contained' startIcon={<ArrowBackIcon />} onClick={() => setShowTable(false)}>Quay lại</Button>
-                </Box>
-                <Box sx={{ flexBasis: '10%' }}>
+            <Box>
+                <Button mb={2} variant='contained' startIcon={<ArrowBackIcon />} onClick={() => setShowTable(false)}>Quay lại</Button>
+            </Box>
+            <Stack direction={'row'} spacing={2} my={3}>
+                <Typography mb={4} variant='h4' width={"30%"}>Danh sách đã sửa</Typography>
 
-                    <FormControl fullWidth size='small'>
-                        <InputLabel id="status-select-label">Trạng thái</InputLabel>
-                        <Select
-                            labelId="status-select-label"
-                            value={filters.status}
-                            label="Trạng thái"
-                            onChange={handleFilterChange('status')}
-                            sx={{ backgroundColor: '#fff', borderRadius: '4px' }}
-                        >
-                            <MenuItem value={'all'}>Tất cả</MenuItem>
-                            <MenuItem value={'approve'}>Đã chấp nhận</MenuItem>
-                            <MenuItem value={'pending'}>Đang chờ</MenuItem>
-                            <MenuItem value={'reject'}>Từ chối</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Box>
+                <Stack direction={'row'} width={"70%"} justifyContent={'flex-end'} gap={2}>
+                    <Box sx={{ flexBasis: '10%' }}>
 
-                <Box sx={{ flexBasis: '10%' }}>
-                    <FormControl fullWidth size='small'>
-                        <InputLabel id="sort-select-label">Thứ tự</InputLabel>
-                        <Select
-                            labelId="sort-select-label"
-                            value={filters.sort}
-                            label="Thứ tự"
-                            onChange={handleFilterChange('sort')}
-                            sx={{ backgroundColor: '#fff', borderRadius: '4px' }}
-                        >
-                            <MenuItem value="asc">Tăng dần theo ngày</MenuItem>
-                            <MenuItem value="desc">Giảm dần theo ngày</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Box>
+                        <FormControl fullWidth size='small'>
+                            <InputLabel id="status-select-label">Trạng thái</InputLabel>
+                            <Select
+                                labelId="status-select-label"
+                                value={filters.status}
+                                label="Trạng thái"
+                                onChange={handleFilterChange('status')}
+                                sx={{ backgroundColor: '#fff', borderRadius: '4px' }}
+                            >
+                                <MenuItem value={'all'}>Tất cả</MenuItem>
+                                <MenuItem value={'approve'}>Đã chấp nhận</MenuItem>
+                                <MenuItem value={'pending'}>Đang chờ</MenuItem>
+                                <MenuItem value={'reject'}>Từ chối</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+
+                    <Box sx={{ flexBasis: '10%' }}>
+                        <FormControl fullWidth size='small'>
+                            <InputLabel id="sort-select-label">Thứ tự</InputLabel>
+                            <Select
+                                labelId="sort-select-label"
+                                value={filters.sort}
+                                label="Thứ tự"
+                                onChange={handleFilterChange('sort')}
+                                sx={{ backgroundColor: '#fff', borderRadius: '4px' }}
+                            >
+                                <MenuItem value="asc">Tăng dần theo ngày</MenuItem>
+                                <MenuItem value="desc">Giảm dần theo ngày</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </Stack>
             </Stack>
             {curriculums.length === 0 ? 'Hiện tại chưa có dữ liệu.' :
                 <>

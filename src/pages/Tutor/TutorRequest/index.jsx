@@ -49,7 +49,7 @@ function TutorRequest() {
     };
 
     const handleOpenModal = (request) => {
-        nav('/autismtutor/create-student-profile', { state: {request} });
+        nav('/autismtutor/create-student-profile', { state: { request } });
     };
 
     const handleCloseModal = () => {
@@ -65,7 +65,7 @@ function TutorRequest() {
         setOpenDialog(false);
     };
 
-    const totalPages = Math.ceil(pagination.total / pagination.pageSize);
+    const totalPages = Math.ceil(pagination.totalPages / pagination.pageSize);
 
 
     const handleAccordionChange = (panel) => (event, isExpanded) => {
@@ -119,7 +119,7 @@ function TutorRequest() {
             await services.TutorRequestAPI.getListTutorRequest((res) => {
                 if (res?.result) {
                     console.log(res.result);
-                    
+
                     setListRequest(res.result);
                     setPagination(res.pagination);
                 }
@@ -142,8 +142,6 @@ function TutorRequest() {
     React.useEffect(() => {
         handleGetListRequestTutor();
     }, [filters, pagination.pageNumber]);
-
-
 
     const statusTransform = (status) => {
         let statusText = '';
@@ -183,10 +181,11 @@ function TutorRequest() {
             margin: "auto",
             mt: "20px",
             gap: 2,
-            backgroundColor: '#f9fafc',
+            // backgroundColor: '#f9fafc',
             padding: '20px',
             borderRadius: '8px',
             boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+            height: `${listRequest.length === 0 ? '85vh' : 'auto'}`
         }}>
             <Typography variant='h4' sx={{ mb: 3, textAlign: 'center', fontWeight: 'bold', color: '#333' }}>
                 Danh sách các yêu cầu
@@ -250,168 +249,171 @@ function TutorRequest() {
 
 
             <Box sx={{ width: "100%" }}>
-                {listRequest.map((request, index) => (
-                    <Accordion key={index} expanded={expanded === `panel${index}`} onChange={handleAccordionChange(`panel${index}`)} sx={{
-                        boxShadow: 3,
-                        borderRadius: 2,
-                        marginBottom: '15px',
-                        backgroundColor: '#fff'
-                    }}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{
-                            backgroundColor: '#fff',
-                            borderBottom: '1px solid',
-                            borderColor: 'divider'
+                {listRequest.length !== 0 ?
+
+                    (listRequest.map((request, index) => (
+                        <Accordion key={index} expanded={expanded === `panel${index}`} onChange={handleAccordionChange(`panel${index}`)} sx={{
+                            boxShadow: 3,
+                            borderRadius: 2,
+                            marginBottom: '15px',
+                            backgroundColor: '#fff'
                         }}>
-                            <Stack direction={'row'} alignItems={'center'}>
-                                <Typography variant='body1' ml={2}>{(index + 1) + (pagination?.pageNumber - 1) * 5}</Typography>
-                                <Avatar src={request?.parent?.imageUrl} sx={{ borderRadius: '50%', width: 56, height: 56, mx: 2 }} />
-                                <Stack>
-                                    <Typography variant='subtitle1' fontWeight={500}>Yêu cầu từ phụ huynh:</Typography>
-                                    <Typography variant='h6' fontWeight={600}>{request?.parent?.fullName}</Typography>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{
+                                backgroundColor: '#fff',
+                                borderBottom: '1px solid',
+                                borderColor: 'divider'
+                            }}>
+                                <Stack direction={'row'} alignItems={'center'}>
+                                    <Typography variant='body1' ml={2}>{(index + 1) + (pagination?.pageNumber - 1) * 5}</Typography>
+                                    <Avatar src={request?.parent?.imageUrl} sx={{ borderRadius: '50%', width: 56, height: 56, mx: 2 }} />
+                                    <Stack>
+                                        <Typography variant='subtitle1' fontWeight={500}>Yêu cầu từ phụ huynh:</Typography>
+                                        <Typography variant='h6' fontWeight={600}>{request?.parent?.fullName}</Typography>
+                                    </Stack>
                                 </Stack>
-                            </Stack>
-                            <Stack direction='row' gap={2} justifyContent='flex-end' alignItems='center' sx={{ flexGrow: 1 }}>
-                                <Button variant="contained" color="primary" startIcon={<QuestionAnswerIcon />}>
-                                    Nhắn tin
-                                </Button>
-
-                                <Box width={130}>
-                                    <Button
-                                        variant='outlined'
-                                        color={request.requestStatus === 1 ? 'success' : request.requestStatus === 0 ? 'error' : 'warning'}
-                                        sx={{ textTransform: 'none' }}
-                                    >
-                                        {statusTransform(request?.requestStatus)}
+                                <Stack direction='row' gap={2} justifyContent='flex-end' alignItems='center' sx={{ flexGrow: 1 }}>
+                                    <Button variant="contained" color="primary" startIcon={<QuestionAnswerIcon />}>
+                                        Nhắn tin
                                     </Button>
-                                </Box>
-                            </Stack>
-                        </AccordionSummary>
-                        <AccordionDetails sx={{ bgcolor: 'background.paper' }}>
-                            <Typography variant='h6' sx={{ mt: 1 }}>Thông tin về trẻ</Typography>
-                            <Grid container spacing={2} mt={2}>
-                                <Grid item xs={12} container spacing={2} alignItems="center">
-                                    <Grid item xs={4}>
-                                        <Typography variant='body1' fontWeight={600}>Số điện thoại:</Typography>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                        <Typography variant='body1'>{request?.childInformation?.parentPhoneNumber}</Typography>
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={12} container spacing={2} alignItems="center">
-                                    <Grid item xs={4}>
-                                        <Typography variant='body1' fontWeight={600}>Tên phụ huynh:</Typography>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                        <Typography variant='body1'>{request?.parent?.fullName}</Typography>
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={12} container spacing={2} alignItems="center">
-                                    <Grid item xs={4}>
-                                        <Typography variant='body1' fontWeight={600}>Tên trẻ:</Typography>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                        <Typography variant='body1'>{request?.childInformation?.name}</Typography>
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={12} container spacing={2} alignItems="center">
-                                    <Grid item xs={4}>
-                                        <Typography variant='body1' fontWeight={600}>Giới tính:</Typography>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                        <Typography variant='body1'>{request?.childInformation?.gender}</Typography>
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={12} container spacing={2} alignItems="center">
-                                    <Grid item xs={4}>
-                                        <Typography variant='body1' fontWeight={600}>Ngày sinh:</Typography>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                        <Typography variant='body1'>{request?.childInformation?.birthDate && formatDate(request?.childInformation?.birthDate)}</Typography>
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={12} container spacing={2} alignItems="center">
-                                    <Grid item xs={4}>
-                                        <Typography variant='body1' fontWeight={600}>Tuổi:</Typography>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                        <Typography variant='body1'>{request?.childInformation?.birthDate && calculateAge(new Date(request?.childInformation?.birthDate))}</Typography>
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={12} container spacing={2} alignItems="flex-start">
-                                    <Grid item xs={4}>
-                                        <Typography variant='body1' fontWeight={600}>Ghi chú:</Typography>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                        <Box sx={{ maxWidth: '600px', overflow: 'hidden', wordBreak: 'break-word' }}>
-                                            <Typography
-                                                variant='body1'
-                                                sx={{
-                                                    display: '-webkit-box',
-                                                    WebkitBoxOrient: 'vertical',
-                                                    WebkitLineClamp: 4,
-                                                    overflow: 'hidden',
-                                                    whiteSpace: 'normal',
-                                                    lineHeight: 1.5,
-                                                }}
-                                            >
-                                                {request?.description}
-                                            </Typography>
 
-                                            {request?.description.length > 200 && (
-                                                <Typography
-                                                    variant='body2'
-                                                    component='span'
-                                                    onClick={() => handleOpenDialog(request?.description)}
-                                                    sx={{
-                                                        color: 'gray',
-                                                        cursor: 'pointer',
-                                                        marginLeft: '5px',
-                                                        textDecoration: 'underline',
-                                                    }}
-                                                >
-                                                    Xem thêm
-                                                </Typography>
-                                            )}
-                                        </Box>
-
-                                        <Dialog open={openDialog} onClose={handleCloseDialog}>
-                                            <DialogTitle>Ghi chú</DialogTitle>
-                                            <DialogContent>
+                                    <Box width={130}>
+                                        <Button
+                                            variant='outlined'
+                                            color={request.requestStatus === 1 ? 'success' : request.requestStatus === 0 ? 'error' : 'warning'}
+                                            sx={{ textTransform: 'none' }}
+                                        >
+                                            {statusTransform(request?.requestStatus)}
+                                        </Button>
+                                    </Box>
+                                </Stack>
+                            </AccordionSummary>
+                            <AccordionDetails sx={{ bgcolor: 'background.paper' }}>
+                                <Typography variant='h6' sx={{ mt: 1 }}>Thông tin về trẻ</Typography>
+                                <Grid container spacing={2} mt={2}>
+                                    <Grid item xs={12} container spacing={2} alignItems="center">
+                                        <Grid item xs={4}>
+                                            <Typography variant='body1' fontWeight={600}>Số điện thoại:</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            <Typography variant='body1'>{request?.childInformation?.parentPhoneNumber}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12} container spacing={2} alignItems="center">
+                                        <Grid item xs={4}>
+                                            <Typography variant='body1' fontWeight={600}>Tên phụ huynh:</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            <Typography variant='body1'>{request?.parent?.fullName}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12} container spacing={2} alignItems="center">
+                                        <Grid item xs={4}>
+                                            <Typography variant='body1' fontWeight={600}>Tên trẻ:</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            <Typography variant='body1'>{request?.childInformation?.name}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12} container spacing={2} alignItems="center">
+                                        <Grid item xs={4}>
+                                            <Typography variant='body1' fontWeight={600}>Giới tính:</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            <Typography variant='body1'>{request?.childInformation?.gender}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12} container spacing={2} alignItems="center">
+                                        <Grid item xs={4}>
+                                            <Typography variant='body1' fontWeight={600}>Ngày sinh:</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            <Typography variant='body1'>{request?.childInformation?.birthDate && formatDate(request?.childInformation?.birthDate)}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12} container spacing={2} alignItems="center">
+                                        <Grid item xs={4}>
+                                            <Typography variant='body1' fontWeight={600}>Tuổi:</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            <Typography variant='body1'>{request?.childInformation?.birthDate && calculateAge(new Date(request?.childInformation?.birthDate))}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12} container spacing={2} alignItems="flex-start">
+                                        <Grid item xs={4}>
+                                            <Typography variant='body1' fontWeight={600}>Ghi chú:</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            <Box sx={{ maxWidth: '600px', overflow: 'hidden', wordBreak: 'break-word' }}>
                                                 <Typography
                                                     variant='body1'
                                                     sx={{
-                                                        overflowWrap: 'break-word',
-                                                        wordBreak: 'break-word',
-                                                        maxWidth: '500px',
+                                                        display: '-webkit-box',
+                                                        WebkitBoxOrient: 'vertical',
+                                                        WebkitLineClamp: 4,
+                                                        overflow: 'hidden',
+                                                        whiteSpace: 'normal',
                                                         lineHeight: 1.5,
                                                     }}
                                                 >
-                                                    {currentNote}
+                                                    {request?.description}
                                                 </Typography>
-                                            </DialogContent>
-                                            <DialogActions>
-                                                <Button onClick={handleCloseDialog} color="primary">
-                                                    Đóng
-                                                </Button>
-                                            </DialogActions>
-                                        </Dialog>
-                                    </Grid>
 
+                                                {request?.description.length > 200 && (
+                                                    <Typography
+                                                        variant='body2'
+                                                        component='span'
+                                                        onClick={() => handleOpenDialog(request?.description)}
+                                                        sx={{
+                                                            color: 'gray',
+                                                            cursor: 'pointer',
+                                                            marginLeft: '5px',
+                                                            textDecoration: 'underline',
+                                                        }}
+                                                    >
+                                                        Xem thêm
+                                                    </Typography>
+                                                )}
+                                            </Box>
+
+                                            <Dialog open={openDialog} onClose={handleCloseDialog}>
+                                                <DialogTitle>Ghi chú</DialogTitle>
+                                                <DialogContent>
+                                                    <Typography
+                                                        variant='body1'
+                                                        sx={{
+                                                            overflowWrap: 'break-word',
+                                                            wordBreak: 'break-word',
+                                                            maxWidth: '500px',
+                                                            lineHeight: 1.5,
+                                                        }}
+                                                    >
+                                                        {currentNote}
+                                                    </Typography>
+                                                </DialogContent>
+                                                <DialogActions>
+                                                    <Button onClick={handleCloseDialog} color="primary">
+                                                        Đóng
+                                                    </Button>
+                                                </DialogActions>
+                                            </Dialog>
+                                        </Grid>
+
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </AccordionDetails>
-                        {request?.requestStatus === 2 && (
-                            <AccordionActions sx={{ justifyContent: 'flex-end', backgroundColor: '#f1f1f1', padding: '10px' }}>
-                                <Button variant="contained" color="success" onClick={() => handleOpenModal(request)}>
-                                    Chấp nhận
-                                </Button>
-                                <Button variant="contained" color="error" onClick={() => handleOpenRejectModal(request)}>
-                                    Từ chối
-                                </Button>
-                            </AccordionActions>
-                        )}
-                    </Accordion>
-                ))}
+                            </AccordionDetails>
+                            {request?.requestStatus === 2 && (
+                                <AccordionActions sx={{ justifyContent: 'flex-end', backgroundColor: '#f1f1f1', padding: '10px' }}>
+                                    <Button variant="contained" color="success" onClick={() => handleOpenModal(request)}>
+                                        Chấp nhận
+                                    </Button>
+                                    <Button variant="contained" color="error" onClick={() => handleOpenRejectModal(request)}>
+                                        Từ chối
+                                    </Button>
+                                </AccordionActions>
+                            )}
+                        </Accordion>
+                    ))) : <Typography variant='subtitle1'>Hiện tại chưa có yêu cầu nào.</Typography>
+                }
             </Box>
 
             {selectedRequest && openModal && (
@@ -422,14 +424,14 @@ function TutorRequest() {
                 <RejectRequestModal open={openRejectModal} onClose={handleCloseRejectModal} onConfirm={handleConfirmReject} />
             )}
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
+            {listRequest.length !== 0 && (<Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
                 <Pagination
                     count={totalPages}
                     page={pagination.pageNumber}
                     onChange={handlePageChange}
                     color="primary"
                 />
-            </Stack>
+            </Stack>)}
 
             <LoadingComponent open={loading} setOpen={setLoading} />
         </Stack>

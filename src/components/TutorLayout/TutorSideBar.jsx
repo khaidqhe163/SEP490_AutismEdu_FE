@@ -143,18 +143,21 @@ export default function TutorSideBar({ openMenu }) {
                     }
                 </Collapse>
                 <Divider />
-                <ListItemButton>
-                    <ListItemIcon sx={listIconStyle}>
-                        <MenuBookOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Bài tập" style={textStyle} />
-                </ListItemButton>
-                <ListItemButton>
-                    <ListItemIcon sx={listIconStyle}>
-                        <QuizOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Bài kiểm tra" style={textStyle} />
-                </ListItemButton>
+                <Link to={PAGES.EXERCISE_MANAGEMENT}>
+                    <ListItemButton>
+                        <ListItemIcon sx={listIconStyle}>
+                            <MenuBookOutlinedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Bài tập" style={textStyle} />
+                    </ListItemButton>
+                    <ListItemButton>
+                        <ListItemIcon sx={listIconStyle}>
+                            <QuizOutlinedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Bài kiểm tra" style={textStyle} />
+                    </ListItemButton>
+                </Link>
+
                 <Divider />
                 <Link to={PAGES.TUTOR_SETTING}>
                     <ListItemButton onClick={handleOpenSetting}>
