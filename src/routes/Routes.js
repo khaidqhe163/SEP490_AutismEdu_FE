@@ -31,6 +31,7 @@ import AssessmentCreation from '~/pages/Admin/AssessmentManagement/AssessmentCre
 import CertificateDetail from '~/pages/Tutor/TutorSetting/CertificateManagement/CertificateDetail'
 import StudentCreation from '~/pages/StudentProfile/StudentCreation'
 import ExerciseManagement from '~/pages/Tutor/ExerciseManagement'
+import StudentProfileApprove from '~/pages/StudentProfile/StudentProfileApprove'
 
 const UnLayoutRoutes = [
     {
@@ -108,6 +109,10 @@ const publicRoutes = [
     {
         path: PAGES.ROOT + PAGES.CHANGE_PASSWORD,
         element: ChangePassword
+    },
+    {
+        path: PAGES.ROOT + PAGES.APPROVE_STUDENT_PROFILE,
+        element: StudentProfileApprove
     }
 ]
 

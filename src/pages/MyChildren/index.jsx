@@ -12,6 +12,7 @@ import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 import LoadingComponent from '~/components/LoadingComponent';
 import ModalUploadAvatar from '../Tutor/TutorRegistration/TutorInformation/ModalUploadAvatar';
+import axios from '~/plugins/axios';
 function MyChildren() {
     const [children, setChildren] = useState([]);
     const userInfo = useSelector(userInfor);
@@ -62,7 +63,9 @@ function MyChildren() {
                 formData.append("Name", values.fullName);
                 formData.append("isMale", values.gender);
                 formData.append("BirthDate", values.dateOfBirth);
-                formData.append("Medias", avatar);
+                if (avatar)
+                    formData.append("Media", avatar);
+                axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
                 await services.ChildrenManagementAPI.updateChild(formData, (res) => {
                     setChildren((pre) => pre.map((child) => {
                         return child.id === children[currentChild].id ? res.result : child
@@ -72,8 +75,10 @@ function MyChildren() {
                     console.log(err);
                     enqueueSnackbar("Cập nhật thất bại!", { variant: "error" })
                 })
+                axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
                 setLoading(false);
                 setChange(true);
+                setAvatar(null);
             } catch (error) {
                 setLoading(false);
                 enqueueSnackbar("Tạo thất bại!", { variant: "error" })
@@ -87,7 +92,8 @@ function MyChildren() {
             formik.setFieldValue("gender", gender)
             const formattedDate = children[currentChild].birthDate.split('T')[0];
             formik.setFieldValue("dateOfBirth", formattedDate)
-            setChildAvatar(children[currentChild].childInformationMedias[0].urlPath)
+            setChildAvatar(children[currentChild].imageUrlPath)
+            setAvatar(null)
         }
         setChange(true);
     }, [children, currentChild])

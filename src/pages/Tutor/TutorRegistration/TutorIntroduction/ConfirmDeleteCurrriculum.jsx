@@ -8,8 +8,8 @@ import * as React from 'react';
 function ConfirmDeleteCurriculum({ curriculum, setCurriculum, index }) {
     const [open, setOpen] = React.useState(false);
 
-    const handleClickOpen = (event) => {
-        event.stopPropagation();
+    const handleClickOpen = (e) => {
+        e.stopPropagation();
         setOpen(true);
     };
 

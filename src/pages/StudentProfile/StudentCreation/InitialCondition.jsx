@@ -1,7 +1,8 @@
 import { Card, CardContent, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import services from '~/plugins/services';
-function InitialCondition({ setInitialCondition, initialCondition, childrenInfor, selectedAssessment, setSelectedAssessment, childrenInfoRequest}) {
+function InitialCondition({ setInitialCondition, initialCondition, childrenInfor,
+    selectedAssessment, setSelectedAssessment, hasAccount }) {
     const [assessment, setAssessment] = useState([]);
     useEffect(() => {
         handleGetAsessment();
@@ -9,7 +10,6 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
     const handleGetAsessment = async () => {
         try {
             await services.AssessmentManagementAPI.listAssessment((res) => {
-                console.log(res.result);
                 setAssessment(res.result);
                 const initialAssessment = res.result.map((r, index) => {
                     return {
@@ -25,16 +25,14 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
             console.log(error);
         }
     }
-    console.log("selected option", selectedAssessment);
     return (
         <Card sx={{ px: 2 }}>
             <CardContent sx={{ px: 0 }}>
                 <Typography variant='h5'>Tình trạng ban đầu</Typography>
                 <TextField
                     sx={{ width: "100%" }}
-                    minRows={5}
+                    minRows={10}
                     multiline
-                    disabled={childrenInfoRequest ? false : childrenInfor.length === 0}
                     value={initialCondition}
                     onChange={(e) => { setInitialCondition(e.target.value) }}
                 />
@@ -46,7 +44,7 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
                                 <Grid item xs={6} key={a.id}>
                                     <Typography>{a.question}</Typography>
                                     <FormControl size='small' sx={{ width: "300px" }} key={a.id}>
-                                        <Select value={selectedAssessment[index].optionId} disabled={childrenInfoRequest ? false : childrenInfor.length === 0}
+                                        <Select value={selectedAssessment[index].optionId}
                                             onChange={(e) => {
                                                 selectedAssessment[index].optionId = Number(e.target.value);
                                                 setSelectedAssessment([...selectedAssessment]);

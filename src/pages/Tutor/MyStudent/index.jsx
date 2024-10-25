@@ -2,7 +2,6 @@ import { Avatar, Box, Button, Card, CardActions, CardContent, Stack, Typography 
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import services from '~/plugins/services';
-import PAGES from '~/utils/pages';
 
 function MyStudent() {
     const [listStudent, setListStudent] = useState([]);
@@ -40,6 +39,10 @@ function MyStudent() {
             gap: 5,
             flexWrap: 'wrap'
         }}>
+            {
+                listStudent.length === 0 &&
+                <Typography sx={{ textAlign: "center" }}>Bạn đang không dạy học sinh nào</Typography>
+            }
             {
                 listStudent.length !== 0 && listStudent.map((l) => {
                     return (

@@ -1,16 +1,13 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, ListSubheader, Stack, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { useRef, useState } from 'react';
+import LoadingComponent from '~/components/LoadingComponent';
 import axios from "~/plugins/axios";
 import services from '~/plugins/services';
 import Career from './Career';
 import CareerDetail from './Career/CareerDetail';
 import CertificateAddition from './Certificate/CertificateAddition';
 import CertificateDetail from './Certificate/CertificateDetail';
-import { useNavigate } from 'react-router-dom';
-import PAGES from '~/utils/pages';
-import { LoadingButton } from '@mui/lab';
-import LoadingComponent from '~/components/LoadingComponent';
 function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, career, setCareer,
     setCertificate, tutorInformation, tutorIntroduction,
     IdVerification }) {
@@ -24,7 +21,6 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
     const handleSubmit = async () => {
         try {
             setOpenConfirm(false);
-            console.log("Hello");
             if (certificate?.length !== 0 && career?.length !== 0) {
                 setLoading(true);
                 const submitForm = new FormData();
@@ -36,8 +32,10 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 submitForm.append("DateOfBirth", tutorInformation.dateOfBirth);
                 submitForm.append("StartAge", tutorIntroduction.startAge);
                 submitForm.append("EndAge", tutorIntroduction.endAge);
-                submitForm.append("Price", tutorIntroduction.price);
-                submitForm.append("Description", tutorIntroduction.description);
+                submitForm.append("PriceFrom", tutorIntroduction.priceFrom);
+                submitForm.append("PriceEnd", tutorIntroduction.priceEnd);
+                submitForm.append("AboutMe", tutorIntroduction.description);
+                submitForm.append("SessionHours", tutorIntroduction.sessionHours);
                 tutorIntroduction.curriculum.forEach((curriculum, index) => {
                     submitForm.append(`Curriculums[${index}].Name`, curriculum.name);
                     submitForm.append(`Curriculums[${index}].ageFrom`, curriculum.ageFrom);
@@ -86,6 +84,7 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
             }
         } catch (error) {
             console.log(error);
+            setLoading(false)
         }
     }
     return (
