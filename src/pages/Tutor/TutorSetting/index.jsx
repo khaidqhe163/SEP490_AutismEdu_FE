@@ -14,7 +14,6 @@ import CertificateManagement from './CertificateManagement';
 function TutorSetting() {
     const navigate = useNavigate();
     const location = useLocation();
-    
     const initialTab = location.state?.selectedTab || '1';
     const [value, setValue] = useState(initialTab);
 

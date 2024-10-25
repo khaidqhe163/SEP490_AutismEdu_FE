@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import CurriculumEditedTable from './EditedTable/CurriculumEditedTable'; // Import the table component
+import CurriculumEditedTable from './EditedTable/CurriculumEditedTable'; 
 import CreateOrEditModal from './CurriculumModal/CreateOrEditModal';
 import DeleteConfirmationModal from './CurriculumModal/DeleteConfirmationModal';
 
@@ -76,7 +76,7 @@ function CurriculumManagement() {
             }, (res) => {
                 console.log(formData);
                 enqueueSnackbar("Tạo khung chương trình thành công!", { variant: "success" });
-                setCurriculums([...curriculums, formData]);
+                setCurriculumData([...curriculumData, formData]);
                 setOpenCreateEdit(false);
             }, (error) => {
                 console.log(error);
@@ -118,8 +118,8 @@ function CurriculumManagement() {
     };
 
     const handleDelete = () => {
-        const updatedCurriculums = curriculums.filter((_, i) => i !== currentEditIndex);
-        setCurriculums(updatedCurriculums);
+        const updatedCurriculums = curriculumData.filter((_, i) => i !== currentEditIndex);
+        setCurriculumData(updatedCurriculums);
         setOpenDeleteConfirm(false);
 
         if (valueCurriculum === (currentEditIndex + 1).toString()) {
@@ -133,11 +133,12 @@ function CurriculumManagement() {
 
     return (
         <Box sx={{ width: "90%", margin: "auto", mt: "20px", gap: 2 }}>
-            <Typography mb={4} variant='h4'>{showTable ? "Danh sách đã sửa" : "Khung chương trình học"}</Typography>
+
             {showTable ? (
                 <CurriculumEditedTable setShowTable={setShowTable} />
             ) : (
                 <>
+                    <Typography mb={4} variant='h4'>Khung chương trình học</Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }} gap={2}>
                         <Button color='primary' variant='contained' startIcon={<ListAltIcon />} onClick={handleShowTable}>
                             Danh Sách Đã Sửa

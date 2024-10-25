@@ -29,11 +29,10 @@ function TutorProfile() {
     const [availability, setAvailability] = useState([]);
     const [value, setValue] = useState('1');
     const [valueCurriculum, setValueCurriculum] = useState('1');
-
     const [tutor, setTutor] = useState({});
+    const [loading, setLoading] = useState(false);
     console.log(tutor);
     
-    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         handleGetAllAvailableTime(1);
@@ -176,15 +175,15 @@ function TutorProfile() {
                 <Grid container sx={{ height: "auto", width: "100%" }}>
                     <Grid item xs={12} px={2}>
 
-                        <Box sx={{ display: "flex", alignItems: 'center', mb: 5 }}>
-                            <Box sx={{ overflow: 'hidden', maxWidth: "30%", height: "auto" }}>
+                        <Box sx={{ display: "flex", alignItems: 'center', mb: 5, width: "100%" }}>
+                            <Box sx={{ overflow: 'hidden', width: "25%", height: "auto" }}>
                                 <Avatar
                                     src={tutor?.imageUrl}
                                     alt='avatartutor'
-                                    style={{ width: '300px', height: '300px' }}
+                                    style={{ width: '200px', height: '200px' }}
                                 />
                             </Box>
-                            <Box ml={3}>
+                            <Box ml={1} sx={{ width: "55%" }}>
                                 <Typography ml={0.5} variant='h4'>{tutor?.fullName}</Typography>
                                 <Stack direction={"row"} alignItems={"center"}><StarIcon sx={{ color: 'gold', mr: 0.5 }} /> <Typography variant='subtitle1' fontWeight={"bold"}>{tutor?.reviewScore}</Typography><Typography variant='body1' ml={1}>({tutor?.totalReview} lượt đánh giá)</Typography></Stack>
                                 <Typography variant='body1' ml={0.5}>Đã tham gia: {tutor?.createdDate && formatDate(tutor?.createdDate)}</Typography>
@@ -199,7 +198,7 @@ function TutorProfile() {
                                     </Box>
                                 </Stack>
                             </Box>
-                            <Box ml={50}>
+                            <Box sx={{ width: "20%" }}>
                                 <TutorRequestModal rejectChildIds={tutor?.rejectChildIds} tutorId={id} calculateAge={calculateAge} />
                             </Box>
                         </Box>
@@ -224,7 +223,7 @@ function TutorProfile() {
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }} mt={2}>
                                                     <PaidOutlinedIcon />
                                                     <Typography variant='subtitle1' sx={{ minWidth: '50px' }}>Học phí: </Typography>
-                                                    <Typography variant='h6'>{formatter.format(tutor?.price)}<Typography component="span" variant='body1'> / buổi</Typography></Typography>
+                                                    <Typography variant='h6'>{formatter.format(tutor?.priceFrom) + ' - ' + formatter.format(tutor?.priceEnd)}<Typography component="span" variant='body1'> / buổi <small>({tutor?.sessionHours} tiếng)</small></Typography></Typography>
                                                 </Box>
 
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}>
@@ -261,9 +260,7 @@ function TutorProfile() {
                                             <Box>
                                                 <Typography my={2} variant='h5'>Giới thiệu về tôi</Typography>
                                                 <Box sx={{ width: "85%" }} dangerouslySetInnerHTML={{ __html: tutor.aboutMe }} />
-                                                {/* <Typography variant='body1'>
-                                                    {tutor.aboutMe}
-                                                </Typography> */}
+
                                             </Box>
 
                                             <Box sx={{ borderTop: "1px solid", borderColor: "lightgray" }}>

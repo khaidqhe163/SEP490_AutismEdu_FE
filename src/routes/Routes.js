@@ -30,6 +30,7 @@ import AssessmentManagement from '~/pages/Admin/AssessmentManagement'
 import AssessmentCreation from '~/pages/Admin/AssessmentManagement/AssessmentCreation'
 import CertificateDetail from '~/pages/Tutor/TutorSetting/CertificateManagement/CertificateDetail'
 import StudentCreation from '~/pages/StudentProfile/StudentCreation'
+import ExerciseManagement from '~/pages/Tutor/ExerciseManagement'
 
 const UnLayoutRoutes = [
     {
@@ -134,6 +135,9 @@ const tutorRoutes = [
     }, {
         path: PAGES.STUDENT_CREATION,
         element: StudentCreation
+    }, {
+        path: PAGES.EXERCISE_MANAGEMENT,
+        element: ExerciseManagement
     }
 ]
 const adminRoutes = [

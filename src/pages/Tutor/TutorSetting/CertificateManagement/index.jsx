@@ -192,7 +192,7 @@ function CertificateManagement() {
         }
     };
 
-    const totalPages = Math.ceil(pagination.total / pagination.pageSize);
+    const totalPages = Math.ceil(pagination.totalPages / pagination.pageSize);
 
     return (
         <Box sx={{ width: "90%", margin: "auto", mt: "20px", gap: 2 }}>

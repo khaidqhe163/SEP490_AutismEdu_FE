@@ -45,7 +45,9 @@ function TutorHeader({ openMenu, setOpenMenu }) {
         <Box sx={{
             position: "fixed",
             top: "0",
-            width: "100vw"
+            width: "100vw",
+            zIndex:100,
+            bgcolor:'white'
         }}>
             <Stack direction='row' sx={{
                 justifyContent: "space-between",
