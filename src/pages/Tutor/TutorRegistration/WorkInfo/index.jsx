@@ -159,7 +159,7 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 </Button>
                 <Box sx={{ flex: '1 1 auto' }} />
                 <Button onClick={() => setOpenConfirm(true)}>
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                    {activeStep === steps.length - 1 ? 'Kết thúc' : 'Tiếp theo'}
                 </Button>
             </Box>
             {

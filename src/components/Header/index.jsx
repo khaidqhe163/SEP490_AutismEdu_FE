@@ -30,6 +30,8 @@ function Header() {
             setTab("1");
         } else if (location.pathname.includes("/list-tutor")) {
             setTab("2");
+        } else if (location.pathname.includes("/my-tutor")) {
+            setTab("2");
         }
         else if (location.pathname.includes("/my-childlren")) {
             setTab("3");
@@ -77,7 +79,8 @@ function Header() {
                 justifyContent: "space-between", alignItems: "center", position: "fixed", top: "0px",
                 height: "80px", width: "100vw", px: "20px",
                 zIndex: "10",
-                bgcolor: "white"
+                bgcolor: "white",
+                boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px"
             }}>
             <Logo sizeLogo="50px" sizeName="35px" />
             <Tabs value={tab} sx={{
@@ -101,7 +104,7 @@ function Header() {
                     role: 'listbox',
                 }}
             >
-                <MenuItem>
+                <MenuItem onClick={(event) => handleMenuItemClick(event, PAGES.ROOT + PAGES.MY_TUTOR)}>
                     Gia sư của tôi
                 </MenuItem>
                 <MenuItem
@@ -111,7 +114,7 @@ function Header() {
                 </MenuItem>
             </Menu>
             <Stack direction="row" sx={{ alignItems: "center" }} spacing={2}>
-                {location.pathname !== '/autismedu/list-tutor' && <TextField
+                <TextField
                     variant="outlined"
                     placeholder="Hãy tên gia sư mà bạn muốn tìm..."
                     value={searchVal}
@@ -133,16 +136,6 @@ function Header() {
                         },
                     }}
                 />
-                }
-
-                {/* <InputBase
-                    sx={{ ml: 1, flex: 1 }}
-                    placeholder="Tìm kiếm gia sư"
-                    inputProps={{ 'aria-label': 'search google maps' }}
-                />
-                <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-                    <SearchIcon />
-                </IconButton> */}
 
                 {
                     userInfo && (

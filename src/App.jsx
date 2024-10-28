@@ -16,11 +16,15 @@ function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     const accessToken = Cookies.get("access_token");
-    if (!accessToken) return;
+    if (!accessToken) {
+      dispatch(setTutorInformation(undefined));
+      return;
+    }
     const decodedToken = jwtDecode(accessToken);
     const userId = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+    const roles = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
     if (userId) {
-      getUserInformation(userId, decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']);
+      getUserInformation(userId, roles);
     }
   }, [])
 
@@ -29,8 +33,10 @@ function App() {
       services.UserManagementAPI.getUserById(userId, (res) => {
         if (roles.includes("Parent")) {
           dispatch(setUserInformation(res.result))
+          dispatch(setTutorInformation(undefined))
         } else if (roles.includes("Tutor")) {
           dispatch(setTutorInformation(res.result))
+          dispatch(setUserInformation(undefined))
         }
       }, (error) => {
         console.log(error);
