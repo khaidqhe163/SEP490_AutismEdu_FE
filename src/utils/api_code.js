@@ -78,7 +78,19 @@ const API_CODE = {
   API_CREATE_STUDENT_PROFILE: '/v1/StudentProfile',
   API_GET_STUDENT_PROFILE: '/v1/StudentProfile',
   API_GET_TUTOR_SCHEDULE: '/v1/StudentProfile/GetAllScheduleTimeSlot',
-  API_GET_STUDENT_ID: '/v1/StudentProfile/'
+  API_GET_STUDENT_ID: '/v1/StudentProfile/',
+
+  //Exercuse management
+  API_GET_ALL_EXERCISE_TYPE: '/v1/ExerciseType/getAllNoPaging',
+  API_GET_EXERCISE_BY_TYPE: '/v1/Exercise/',
+  API_GET_LIST_EXERCISE_TYPE: '/v1/ExerciseType',
+  API_GET_EXERCISE_BY_TYPE_ID: '/v1/ExerciseType/exercise/',
+  API_CREATE_EXERCISE: '/v1/Exercise',
+  API_DELETE_EXERCISE: '/v1/Exercise/',
+
+  //Syllabus management
+  API_CREATE_SYLLABUS: '/v1/Syllabus'
+
 };
 
 export default API_CODE;

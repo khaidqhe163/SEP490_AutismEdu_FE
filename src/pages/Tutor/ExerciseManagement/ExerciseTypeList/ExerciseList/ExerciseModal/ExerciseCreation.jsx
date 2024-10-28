@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Card, CardActionArea, CardContent, Grid, InputAdornment, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, MenuItem, Select, FormControl, InputLabel, Dialog, DialogTitle, DialogContent, DialogActions, Pagination, Divider } from '@mui/material';
+import { original } from '@reduxjs/toolkit';
+import services from '~/plugins/services';
+import { enqueueSnackbar } from 'notistack';
+import LoadingComponent from '~/components/LoadingComponent';
 
 
-function ExerciseCreation({ open, handleClose, id = 0 }) {
-
+function ExerciseCreation({ setExercises, exerciseType, open, handleClose }) {
+    const [loading, setLoading] = useState(false);
     const [exerciseData, setExerciseData] = useState({
-        exerciseTypeId: id,
         exerciseName: "",
-        exerciseContent: ""
+        description: "",
+        exerciseTypeId: exerciseType?.id,
+        originalId: 0
     });
 
     const handleChangeData = (e) => {
@@ -15,11 +20,25 @@ function ExerciseCreation({ open, handleClose, id = 0 }) {
         setExerciseData(prevData => ({ ...prevData, [name]: value }));
     };
 
-    const handleSubmit = () => {
-        console.log(exerciseData);
-        console.log('Tạo thành công!');
-        setTimeout(() => handleClose(), 2000);
-    }
+    const handleSubmit = async () => {
+        try {
+            setLoading(true);
+            await services.ExerciseManagementAPI.createExercise(exerciseData, (res) => {
+                if (res?.result) {
+                    const newExercise = res.result;
+                    setExercises((prev) => [newExercise, ...prev]);
+                    enqueueSnackbar("Tạo bài tập thành công!", { variant: 'success' })
+                    handleClose();
+                }
+            }, (error) => {
+                console.log(error);
+            })
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
@@ -32,7 +51,7 @@ function ExerciseCreation({ open, handleClose, id = 0 }) {
                             <Typography variant="body1" fontWeight={600} textAlign={'right'}>Tên loại bài tập:</Typography>
                         </Grid>
                         <Grid item xs={8}>
-                            <Typography variant="body1">Nay trẻ học gì</Typography>
+                            <Typography variant="body1">{exerciseType?.exerciseTypeName}</Typography>
                         </Grid>
                         <Grid item xs={4}>
                             <Typography variant="body1" fontWeight={600} textAlign={'right'}>Tên bài tập:</Typography>
@@ -56,8 +75,8 @@ function ExerciseCreation({ open, handleClose, id = 0 }) {
                                 size="small"
                                 multiline
                                 rows={4}
-                                name='exerciseContent'
-                                value={exerciseData.exerciseContent}
+                                name='description'
+                                value={exerciseData.description}
                                 onChange={handleChangeData}
                             />
                         </Grid>
@@ -68,6 +87,8 @@ function ExerciseCreation({ open, handleClose, id = 0 }) {
                 <Button onClick={handleClose} color="primary">Hủy</Button>
                 <Button onClick={handleSubmit} color="primary" variant="contained">Tạo</Button>
             </DialogActions>
+            <LoadingComponent open={loading} setOpen={setLoading} />
+
         </Dialog>
     )
 }
