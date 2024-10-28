@@ -77,8 +77,10 @@ const API_CODE = {
   //Student profile management
   API_CREATE_STUDENT_PROFILE: '/v1/StudentProfile',
   API_GET_STUDENT_PROFILE: '/v1/StudentProfile',
+  API_GET_MY_TUTOR: '/v1/StudentProfile/GetAllChildStudentProfile',
   API_GET_TUTOR_SCHEDULE: '/v1/StudentProfile/GetAllScheduleTimeSlot',
-  API_GET_STUDENT_ID: '/v1/StudentProfile/'
+  API_GET_STUDENT_ID: '/v1/StudentProfile/',
+  API_CHANGE_STUDENT_PROFILE_STATUS: '/v1/StudentProfile/changeStatus'
 };
 
 export default API_CODE;

@@ -31,6 +31,8 @@ import AssessmentCreation from '~/pages/Admin/AssessmentManagement/AssessmentCre
 import CertificateDetail from '~/pages/Tutor/TutorSetting/CertificateManagement/CertificateDetail'
 import StudentCreation from '~/pages/StudentProfile/StudentCreation'
 import StudentProfileApprove from '~/pages/StudentProfile/StudentProfileApprove'
+import MyTutor from '~/pages/Tutor/MyTutor'
+import MyTutorDetail from '~/pages/Tutor/MyTutor/MyTutorDetail'
 
 const UnLayoutRoutes = [
     {
@@ -112,6 +114,14 @@ const publicRoutes = [
     {
         path: PAGES.ROOT + PAGES.APPROVE_STUDENT_PROFILE,
         element: StudentProfileApprove
+    },
+    {
+        path: PAGES.ROOT + PAGES.MY_TUTOR,
+        element: MyTutor
+    },
+    {
+        path: PAGES.ROOT + PAGES.MY_TUTOR_DETAIL,
+        element: MyTutorDetail
     }
 ]
 

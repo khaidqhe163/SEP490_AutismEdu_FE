@@ -70,37 +70,6 @@ function StudentCreation() {
         }
     }
 
-    const handleSubmit = async () => {
-        if (initialCondition.trim() === "") {
-            enqueueSnackbar("Chưa nhập điều kiện ban đầu!", { variant: "error" });
-            return;
-        }
-        if (listSchedule.length === 0) {
-            enqueueSnackbar("Chưa nhập lịch học!", { variant: "error" });
-            return;
-        }
-        try {
-            await services.StudentProfileAPI.createStudentProfile({
-                childId: children[currentChild].id,
-                initialCondition: initialCondition,
-                tutorRequestId: -1,
-                initialAssessmentResults: selectedAssessment,
-                scheduleTimeSlots: listSchedule
-            },
-                (res) => {
-                    setChildren([]);
-                    setParent(null);
-                    setListShedule([]);
-                    setInitialCondition('');
-                    email.current.value = '';
-                    enqueueSnackbar("Tạo hồ sơ học sinh thành công!", { variant: "success" });
-                }, (err) => {
-                    enqueueSnackbar("Tạo hồ sơ học sinh thất bại!", { variant: "error" });
-                })
-        } catch (error) {
-            console.log(error);
-        }
-    }
     const validate = values => {
         const errors = {};
         if (hasAccount === "false") {
@@ -205,14 +174,16 @@ function StudentCreation() {
                 axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
                 await services.StudentProfileAPI.createStudentProfile(formData,
                     (res) => {
-                        console.log(res);
+                        enqueueSnackbar("Tạo hồ sơ học sinh thành công!", { variant: "success" });
                         setChildren([]);
                         setParent(null);
                         setListShedule([]);
                         setInitialCondition('');
-                        email.current.value = '';
-                        enqueueSnackbar("Tạo hồ sơ học sinh thành công!", { variant: "success" });
+                        setAvatar(null)
                         formik.resetForm();
+                        if (email) {
+                            email.current.value = '';
+                        }
                     }, (err) => {
                         enqueueSnackbar("Tạo hồ sơ học sinh thất bại!", { variant: "error" });
                     })

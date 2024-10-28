@@ -31,7 +31,9 @@ const PAGES = {
   ASSESSMENT_CREATION: '/admin/assessment-creation',
   CERTIFICATE_DETAIL: '/autismtutor/certificate-detail/:id',
   STUDENT_CREATION: '/autismtutor/create-student-profile',
-  APPROVE_STUDENT_PROFILE: '/approve-student-profile/:id'
+  APPROVE_STUDENT_PROFILE: '/approve-student-profile/:id',
+  MY_TUTOR: '/my-tutor',
+  MY_TUTOR_DETAIL: '/my-tutor/:id'
 };
 
 export default PAGES;
