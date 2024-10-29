@@ -8,7 +8,7 @@ import LoadingComponent from '~/components/LoadingComponent';
 import { enqueueSnackbar } from 'notistack';
 
 
-export default function SyllabusCreation({ handleBack }) {
+export default function SyllabusCreation({ handleBack, setListSyllabus }) {
 
     const [loading, setLoading] = useState(false);
 
@@ -67,14 +67,23 @@ export default function SyllabusCreation({ handleBack }) {
             setLoading(true);
             const data = { ...syllabusData, syllabusExercises: [...selectedList] };
             await services.SyllabusManagementAPI.createSyllabus(data, (res) => {
-                enqueueSnackbar("Tạo giáo trình thành công!", { variant: 'success' });
-                setSelectedClone([]);
-                setSelectedList([]);
-                setSyllabusData({
-                    ageFrom: 0,
-                    ageEnd: 0,
-                    syllabusExercises: []
-                });
+                if (res?.result) {
+                    setListSyllabus((prev) => {
+                        const addSyllabus = [...prev, res.result];
+                        addSyllabus.sort((a, b) => a.ageFrom - b.ageFrom);
+                        console.log(addSyllabus);
+
+                        return addSyllabus;
+                    });
+                    enqueueSnackbar("Tạo giáo trình thành công!", { variant: 'success' });
+                    setSelectedClone([]);
+                    setSelectedList([]);
+                    setSyllabusData({
+                        ageFrom: 0,
+                        ageEnd: 0,
+                        syllabusExercises: []
+                    });
+                }
             }, (error) => {
                 console.log(error);
             })
@@ -139,23 +148,19 @@ export default function SyllabusCreation({ handleBack }) {
                             <Stack direction={'row'}>
                                 <Stack sx={{ width: '90%' }} direction={'column'} gap={2}>
                                     {selectedClone?.map((s, index) => (
-                                        <>
-                                            <Stack direction={'row'} gap={2} sx={{ width: '100%%' }}>
-                                                <Box sx={{ width: "5%" }}>
-                                                    <CheckCircleIcon color='success' fontSize='medium' />
+                                        <Stack direction={'row'} gap={2} sx={{ width: '100%' }}>
+                                            <Box sx={{ width: "5%" }}>
+                                                <CheckCircleIcon color='success' fontSize='medium' />
+                                            </Box>
+                                            <Box key={index} sx={{ width: '95%' }}>
+                                                <Typography variant='h6'>{`${index + 1}. `}{s.eType.exerciseTypeName}</Typography>
+                                                <Box ml={2}>
+                                                    {s?.lsExercise?.map((l, index) => (
+                                                        <Typography key={index} variant='body1'>{`${index + 1}. `}{l?.exerciseName}</Typography>
+                                                    ))}
                                                 </Box>
-                                                <Box key={index} sx={{ width: '95%' }}>
-                                                    <Typography variant='h6'>{`${index + 1}. `}{s.eType.exerciseTypeName}</Typography>
-                                                    <Box ml={2}>
-                                                        {s?.lsExercise?.map((l, index) => (
-                                                            <Typography key={index} variant='body1'>{`${index + 1}. `}{l?.exerciseName}</Typography>
-                                                        ))}
-                                                    </Box>
-                                                </Box>
-
-                                            </Stack>
-
-                                        </>
+                                            </Box>
+                                        </Stack>
                                     ))}
                                 </Stack>
                                 <Box sx={{ width: "10%", display: "flex", alignItems: "end" }}>
@@ -173,7 +178,7 @@ export default function SyllabusCreation({ handleBack }) {
 
             <Stack direction="row" justifyContent="flex-end" spacing={2} mt={3}>
                 <Button color="primary" variant="outlined" onClick={handleBack}>Hủy</Button>
-                <Button color="primary" variant="contained" sx={{ width: 100 }} onClick={handleSubmitSyllabus}>Lưu</Button>
+                <Button color="primary" variant="contained" sx={{ width: 100 }} onClick={handleSubmitSyllabus} disabled={selectedList.length === 0}>Lưu</Button>
             </Stack>
 
             <LoadingComponent open={loading} setOpen={setLoading} />

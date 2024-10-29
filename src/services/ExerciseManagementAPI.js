@@ -22,7 +22,7 @@ const createExercise = async (params, success, error) => {
 
 const deleteExercise = async (endpoint, data, success, error) => {
     await del(API_CODE.API_DELETE_EXERCISE + endpoint, data, success, error);
-}
+};
 
 
 export const ExerciseManagementAPI = {

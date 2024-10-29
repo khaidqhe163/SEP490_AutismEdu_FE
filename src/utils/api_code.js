@@ -89,7 +89,10 @@ const API_CODE = {
   API_DELETE_EXERCISE: '/v1/Exercise/',
 
   //Syllabus management
-  API_CREATE_SYLLABUS: '/v1/Syllabus'
+  API_CREATE_SYLLABUS: '/v1/Syllabus',
+  API_GET_LIST_SYLLABUS: '/v1/Syllabus',
+  API_ASSIGN_SYLLABUS: '/v1/Syllabus/',
+  API_DELETE_SYLLABUS: '/v1/Syllabus/',
 
 };
 

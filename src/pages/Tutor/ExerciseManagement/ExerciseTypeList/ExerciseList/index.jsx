@@ -28,6 +28,7 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
     const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
     const [openCreation, setOpenCreation] = useState(false);
     const [currentDeleteIndex, setCurrentDeleteIndex] = useState(null);
+    const [done, setDone] = useState(false);
 
     const [pagination, setPagination] = useState({
         pageNumber: 1,
@@ -61,6 +62,7 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
         } catch (error) {
             console.log(error);
         } finally {
+            setDone(true);
             setLoading(false);
         }
     }
@@ -116,7 +118,6 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
         } finally {
             setLoading(false);
             setOpenDeleteConfirm(false);
-            console.log('Xoá thành công!');
         }
     };
 
@@ -129,8 +130,8 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
 
     return (
         <Stack direction='column' sx={{ width: "90%", margin: "auto", gap: 2 }}>
-            <Box sx={{ display: 'flex' }}>
-                <Button mb={2} variant='contained' startIcon={<ArrowBackIcon />} onClick={() => setShowExerciseList(false)}>Quay lại</Button>
+            <Box sx={{ display: 'flex' }} mt={1}>
+                <Button variant='contained' startIcon={<ArrowBackIcon />} onClick={() => setShowExerciseList(false)}>Quay lại</Button>
             </Box>
             <Typography variant='h4' textAlign={'center'} my={2}>Danh sách bài tập</Typography>
 
@@ -173,7 +174,7 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
 
             </Box>
 
-            {exercises.length !== 0 ? <>
+            {done && ((done && exercises.length !== 0) ? <>
                 <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
                     <Table>
                         <TableHead>
@@ -235,7 +236,7 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
                         color="primary"
                     />
                 </Stack>
-            </> : 'Hiện tại chưa có bài tập nào.'}
+            </> : 'Hiện tại chưa có bài tập nào.')}
 
             <LoadingComponent open={loading} setOpen={setLoading} />
 
@@ -249,9 +250,9 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
                 </DialogActions>
             </Dialog>
 
-            <ExerciseCreation setExercises={setExercises} exerciseType={selectedExerciseType} open={openCreation} handleClose={() => setOpenCreation(false)} />
-            <ExerciseUpdateModal openEditDialog={openEditDialog} handleCloseEditDialog={handleCloseEditDialog} selectedExercise={selectedExercise} setSelectedExercise={setSelectedExercise} exerciseTypeName={selectedExerciseType.exerciseTypeName} />
-            <DeleteConfirmationModal open={openDeleteConfirm} handleClose={() => { setOpenDeleteConfirm(false) }} handleDelete={handleDeleteExercise} />
+            {openCreation && <ExerciseCreation setExercises={setExercises} exerciseType={selectedExerciseType} open={openCreation} handleClose={() => setOpenCreation(false)} />}
+            {openEditDialog && <ExerciseUpdateModal exercises={exercises} setExercises={setExercises} openEditDialog={openEditDialog} handleCloseEditDialog={handleCloseEditDialog} selectedExercise={selectedExercise} setSelectedExercise={setSelectedExercise} selectedExerciseType={selectedExerciseType} />}
+            {openDeleteConfirm && <DeleteConfirmationModal open={openDeleteConfirm} handleClose={() => { setOpenDeleteConfirm(false) }} handleDelete={handleDeleteExercise} />}
         </Stack>
     );
 }

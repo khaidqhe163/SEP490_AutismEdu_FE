@@ -1,15 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Card, CardActionArea, CardContent, Grid, InputAdornment, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, MenuItem, Select, FormControl, InputLabel, Dialog, DialogTitle, DialogContent, DialogActions, Pagination, Divider } from '@mui/material';
 import services from '~/plugins/services';
+import { enqueueSnackbar } from 'notistack';
+import { LoadingButton } from '@mui/lab';
 
 
-function ExerciseUpdateModal({ openEditDialog, handleCloseEditDialog, selectedExercise, setSelectedExercise, exerciseTypeName }) {
+function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCloseEditDialog, selectedExercise, setSelectedExercise, exerciseTypeName, selectedExerciseType }) {
+    console.log(selectedExercise);
+    const [loading, setLoading] = useState(false);
+
     const handleSave = async () => {
         try {
-            // await services.ExerciseManagementAPI
-            
+            setLoading(true);
+            const dataUpdate = {
+                exerciseName: selectedExercise?.exerciseName,
+                description: selectedExercise?.description,
+                exerciseTypeId: selectedExerciseType.id,
+                originalId: selectedExercise?.id
+            };
+            await services.ExerciseManagementAPI.createExercise(dataUpdate, (res) => {
+                if (res?.result) {
+                    const indexExercise = exercises.findIndex((e) => e.id === selectedExercise.id);
+                    exercises.splice(indexExercise, 1, res.result);
+                    enqueueSnackbar("Chỉnh sửa bài tập thành công!", { variant: 'success' });
+                    handleCloseEditDialog();
+                }
+
+            }, (error) => {
+                console.log(error);
+            })
+
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -28,7 +52,7 @@ function ExerciseUpdateModal({ openEditDialog, handleCloseEditDialog, selectedEx
                             <Typography variant="body1" fontWeight={600} textAlign={'right'}>Tên loại bài tập:</Typography>
                         </Grid>
                         <Grid item xs={8}>
-                            <Typography variant="body1">{exerciseTypeName}</Typography>
+                            <Typography variant="body1">{selectedExerciseType?.exerciseTypeName}</Typography>
                         </Grid>
                         <Grid item xs={4}>
                             <Typography variant="body1" fontWeight={600} textAlign={'right'}>Tên bài tập:</Typography>
@@ -62,7 +86,15 @@ function ExerciseUpdateModal({ openEditDialog, handleCloseEditDialog, selectedEx
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleCloseEditDialog} color="primary">Hủy</Button>
-                <Button onClick={handleSave} color="primary" variant="contained">Lưu</Button>
+                <LoadingButton
+                    onClick={handleSave}
+                    loading={loading}
+                    variant="contained"
+                    color='primary'
+                >
+                    Lưu
+                </LoadingButton>
+                {/* <Button onClick={handleSave} color="primary" variant="contained">{loading ? '' : 'Lưu'}</Button> */}
             </DialogActions>
         </Dialog>
     )

@@ -30,6 +30,7 @@ function ExerciseTypeList() {
     useEffect(() => {
         setTimeout(() => {
             handleGetAllExerciseType();
+            window.scrollTo(0, 0);
         }, 500);
     }, [search, pagination.pageNumber]);
 
@@ -87,7 +88,7 @@ function ExerciseTypeList() {
         }}>
             <Typography variant='h4' textAlign={'center'} my={2}>Danh sách loại bài tập</Typography>
 
-            <Box width={'60%'} margin={'auto'}>
+            <Box width={'60%'} margin={'auto'} mb={2}>
                 <TextField
                     fullWidth
                     size='small'
@@ -147,14 +148,14 @@ function ExerciseTypeList() {
                     </Grid>
                 ))}
             </Grid>
-            <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
+            {exerciseTypes.length !== 0 && <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
                 <Pagination
                     count={totalPages}
                     page={pagination.pageNumber}
                     onChange={handlePageChange}
                     color="primary"
                 />
-            </Stack>
+            </Stack>}
             <LoadingComponent open={loading} setOpen={setLoading} />
 
         </Stack>

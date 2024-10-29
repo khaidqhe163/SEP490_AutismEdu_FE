@@ -8,7 +8,8 @@ import LoadingComponent from '~/components/LoadingComponent';
 import { enqueueSnackbar } from 'notistack';
 
 
-export default function SyllabusAssign({ handleBack, from = 1, end = 3 }) {
+export default function SyllabusAssign({ handleBack, selectedAssign, setListSyllabus }) {
+    console.log(selectedAssign);
 
     const [loading, setLoading] = useState(false);
 
@@ -18,8 +19,9 @@ export default function SyllabusAssign({ handleBack, from = 1, end = 3 }) {
 
 
     const [syllabusData, setSyllabusData] = useState({
-        ageFrom: from,
-        ageEnd: end,
+        id: selectedAssign?.id,
+        ageFrom: selectedAssign?.ageFrom,
+        ageEnd: selectedAssign?.ageEnd,
         syllabusExercises: []
     });
     console.log(syllabusData);
@@ -63,13 +65,27 @@ export default function SyllabusAssign({ handleBack, from = 1, end = 3 }) {
         try {
             setLoading(true);
             const data = { ...syllabusData, syllabusExercises: [...selectedList] };
-            await services.SyllabusManagementAPI.createSyllabus(data, (res) => {
-                enqueueSnackbar("Gán bài tập vào giáo trình thành công!", { variant: 'success' });
+            await services.SyllabusManagementAPI.assignExerciseSyllabus(selectedAssign?.id, data, (res) => {
+                if (res?.result) {
+                    setListSyllabus((prev) => {
+                        const updateData = prev.map((p) => {
+                            if (p.id === res.result?.id) {
+                                p.exerciseTypes = res.result?.exerciseTypes;
+                                return p;
+                            } else {
+                                return p;
+                            }
+                        });
+                        return updateData;
+                    });
+                }
+                enqueueSnackbar("Gán bài tập thành công!", { variant: 'success' });
                 setSelectedClone([]);
                 setSelectedList([]);
                 setSyllabusData({
-                    ageFrom: 0,
-                    ageEnd: 0,
+                    id: selectedAssign?.id,
+                    ageFrom: selectedAssign?.ageFrom,
+                    ageEnd: selectedAssign?.ageEnd,
                     syllabusExercises: []
                 });
             }, (error) => {
