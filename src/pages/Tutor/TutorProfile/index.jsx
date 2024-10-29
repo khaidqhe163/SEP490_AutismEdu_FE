@@ -22,6 +22,8 @@ import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 import TutorRequestModal from './TutorProfileModal/TutorRequestModal';
 import TutorRating from './TutorRating';
+import { setUserInformation, userInfor } from '~/redux/features/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function TutorProfile() {
     const { id } = useParams();
@@ -31,8 +33,8 @@ function TutorProfile() {
     const [valueCurriculum, setValueCurriculum] = useState('1');
     const [tutor, setTutor] = useState({});
     const [loading, setLoading] = useState(false);
+    const userInfo = useSelector(userInfor)
     console.log(tutor);
-    
 
     useEffect(() => {
         handleGetAllAvailableTime(1);
@@ -63,6 +65,7 @@ function TutorProfile() {
     };
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         handleGetProfile(id);
     }, [id]);
 
@@ -373,7 +376,7 @@ function TutorProfile() {
                                                 </Box>
                                             </Stack>
                                             <Divider />
-                                            <TutorRating />
+                                            <TutorRating tutorId={id} userInfo={userInfo}/>
                                         </Box>
                                     </>
                                 </TabPanel>
