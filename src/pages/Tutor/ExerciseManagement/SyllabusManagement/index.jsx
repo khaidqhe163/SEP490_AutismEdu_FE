@@ -141,7 +141,7 @@ export default function SyllabusManagement() {
                             <Stack direction={'row'} p={5} borderRadius={3} bgcolor={'#fff8e3'}>
                                 <Stack sx={{ width: '80%' }} direction={'column'} gap={2}>
                                     {syllabus?.exerciseTypes?.map((s, index) => (
-                                        <Stack direction={'row'} gap={2} sx={{ width: '100%' }}>
+                                        <Stack direction={'row'} gap={2} sx={{ width: '100%' }} key={index}>
                                             <Box sx={{ width: "5%" }}>
                                                 <CheckCircleIcon color='success' fontSize='large' />
                                             </Box>
@@ -153,7 +153,6 @@ export default function SyllabusManagement() {
                                                     ))}
                                                 </Box>
                                             </Box>
-
                                         </Stack>
                                     ))}
                                 </Stack>
