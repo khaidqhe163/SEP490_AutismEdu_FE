@@ -210,8 +210,8 @@ function SearchTutor() {
                                                     </Box>
 
                                                 </Box>
-                                                <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t.price)}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi</Typography></Typography>
-                                            </CardContent>
+                                                <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t.priceFrom)} - {formatter.format(t.priceEnd)}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography>
+                                                </CardContent>
                                             <CardActions>
                                                 <Button sx={{ fontSize: "20px" }} onClick={() => handleClickToProfile(t.userId)}>Tìm hiểu thêm <ArrowForwardIcon /></Button>
                                             </CardActions>
@@ -220,6 +220,7 @@ function SearchTutor() {
                                     ) : tutors.map((t, index) => (<Grid item xs={12} key={index}>
                                         <Card sx={{
                                             display: 'flex',
+                                            justifyContent: 'center',
                                             padding: "20px",
                                             transition: "transform 0.3s ease, box-shadow 0.3s ease",
                                             '&:hover': {
@@ -256,16 +257,16 @@ function SearchTutor() {
                                                         <LocationOnOutlinedIcon />
                                                         <Typography>{t?.address ? getCity(t.address) : 'Hồ Chí Minh'}</Typography>
                                                     </Box>
-                                                    {/* <Typography mt={2} sx={{
+                                                    <Typography mt={2} sx={{
                                                         display: '-webkit-box',
                                                         WebkitLineClamp: 3,
                                                         WebkitBoxOrient: 'vertical',
                                                         overflow: 'hidden',
                                                         textOverflow: 'ellipsis',
-                                                        height: '75px'
+                                                            width: '1000px'
                                                     }}>
-                                                        {t.aboutMe} he Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and  cruelty-free
-                                                    </Typography> */}
+                                                        {/* {t.aboutMe} he Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and  cruelty-free */}
+                                                    </Typography>
 
                                                     <Box sx={{ display: "flex", gap: "15px" }}>
                                                         <Box sx={{
@@ -306,7 +307,7 @@ function SearchTutor() {
                                                         </Box>
 
                                                     </Box>
-                                                    <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t.price)}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi</Typography></Typography>
+                                                    <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t.priceFrom)} - {formatter.format(t.priceEnd)}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography>
 
 
                                                 </CardContent>

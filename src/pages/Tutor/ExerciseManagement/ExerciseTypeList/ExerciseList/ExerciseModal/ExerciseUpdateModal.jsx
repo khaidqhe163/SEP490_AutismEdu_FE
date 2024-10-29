@@ -7,7 +7,7 @@ function ExerciseUpdateModal({ openEditDialog, handleCloseEditDialog, selectedEx
     const handleSave = async () => {
         try {
             // await services.ExerciseManagementAPI
-            
+
         } catch (error) {
             console.log(error);
         }
