@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem, Checkbox, FormControl, InputLabel, Stack, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem, Checkbox, FormControl, InputLabel, Stack, Typography, Divider } from '@mui/material';
 import services from '~/plugins/services';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 
 function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList, setSelectedList, selectedClone, setSelectedClone }) {
     const [newData, setNewData] = useState({
@@ -135,28 +137,32 @@ function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList,
 
     return (
         <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
-            <DialogTitle>Thêm loại bài tập và bài tập</DialogTitle>
+            <DialogTitle textAlign={'center'} variant='h5'>Thêm loại bài tập và bài tập</DialogTitle>
+            <Divider/>
             <DialogContent>
                 <Stack spacing={3} mt={2}>
-                    <FormControl fullWidth>
-                        <InputLabel>Loại bài tập</InputLabel>
-                        <Select
-                            name="exerciseTypeId"
-                            value={newData.exerciseTypeId}
-                            onChange={handleChangeData}
-                            label="Loại bài tập"
-                            sx={{ backgroundColor: '#f3f4f6', borderRadius: 1 }}
-                        >
-                            {exerciseTypes.map((type) => (
-                                <MenuItem key={type.id} value={type.id}>
-                                    {type.exerciseTypeName}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    <Box>
+                        <Typography variant="h6" mb={1}>Loại bài tập:</Typography>
+                        <Autocomplete
+                            options={exerciseTypes}
+                            getOptionLabel={(option) => option.exerciseTypeName}
+                            value={exerciseTypes.find(type => type.id === newData.exerciseTypeId) || null}
+                            onChange={(event, selected) => {
+                                handleChangeData({
+                                    target: {
+                                        name: 'exerciseTypeId',
+                                        value: selected ? selected.id : ''
+                                    }
+                                });
+                            }}
+                            renderInput={(params) => (
+                                <TextField {...params} placeholder="Chọn loại bài tập" />
+                            )}
+                        />
+                    </Box>
 
                     <Box>
-                        <Typography variant="h6">Bài tập:</Typography>
+                        <Typography variant="h6" mb={1}>Bài tập:</Typography>
                         {exercises.length === 0 ? 'Hiện không có bài tập nào!' : exercises.map(exercise => (
                             <Stack key={exercise.id} direction="row" alignItems="center">
                                 <Checkbox

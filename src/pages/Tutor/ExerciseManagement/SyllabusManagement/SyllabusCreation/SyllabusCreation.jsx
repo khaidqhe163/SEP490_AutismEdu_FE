@@ -148,7 +148,7 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
                             <Stack direction={'row'}>
                                 <Stack sx={{ width: '90%' }} direction={'column'} gap={2}>
                                     {selectedClone?.map((s, index) => (
-                                        <Stack direction={'row'} gap={2} sx={{ width: '100%' }}>
+                                        <Stack direction={'row'} gap={2} sx={{ width: '100%' }} key={index}>
                                             <Box sx={{ width: "5%" }}>
                                                 <CheckCircleIcon color='success' fontSize='medium' />
                                             </Box>
