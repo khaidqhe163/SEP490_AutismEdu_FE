@@ -339,5 +339,5 @@ function CertificateManagement() {
             <LoadingComponent open={loading} setOpen={setLoading} />
         </Box>
     );
-};
+}
 export default CertificateManagement;

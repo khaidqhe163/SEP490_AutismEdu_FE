@@ -8,11 +8,18 @@ import LoadingComponent from '~/components/LoadingComponent';
 import ExerciseUpdateModal from './ExerciseModal/ExerciseUpdateModal';
 import DeleteConfirmationModal from './ExerciseModal/DeleteConfirmationModal';
 import ExerciseCreation from './ExerciseModal/ExerciseCreation';
+import services from '~/plugins/services';
+import { format } from 'date-fns';
+import { enqueueSnackbar } from 'notistack';
 
 function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
-    const [search, setSearch] = useState('');
-    const [sortOrder, setSortOrder] = useState('asc');
-    const [filteredExercises, setFilteredExercises] = useState([]);
+
+    const [dataFilter, setDataFilter] = useState({
+        search: '',
+        orderBy: 'createdDate',
+        sort: 'desc'
+    });
+    const [exercises, setExercises] = useState([]);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedContent, setSelectedContent] = useState('');
     const [loading, setLoading] = useState(false);
@@ -21,33 +28,49 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
     const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
     const [openCreation, setOpenCreation] = useState(false);
     const [currentDeleteIndex, setCurrentDeleteIndex] = useState(null);
+    const [done, setDone] = useState(false);
 
     const [pagination, setPagination] = useState({
         pageNumber: 1,
         pageSize: 10,
-        totalPages: 10,
+        total: 10,
     });
 
-    const exercises = [
-        { ExerciseId: 1, ExerciseName: 'Bài tập phát âm 1', ExerciseTypeId: 1, ExerciseContent: 'Nội dung bài tập 1', TutorId: 1, CreatedDate: '2023-01-01', UpdatedDate: '2023-01-10' },
-        { ExerciseId: 2, ExerciseName: 'Bài tập phát âm 2', ExerciseTypeId: 1, ExerciseContent: 'Nội dung bài tập 2', TutorId: 2, CreatedDate: '2023-02-01', UpdatedDate: '2023-02-10' },
-        { ExerciseId: 3, ExerciseName: 'Bài tập nghe 1', ExerciseTypeId: 1, ExerciseContent: 'Nội dung bài tập nghe 1', TutorId: 1, CreatedDate: '2023-03-01', UpdatedDate: '2023-03-10' }
-    ];
 
     useEffect(() => {
-        const filtered = exercises
-            .filter(exercise => exercise.ExerciseTypeId === selectedExerciseType.id && exercise.ExerciseName.toLowerCase().includes(search.toLowerCase()))
-            .sort((a, b) => (sortOrder === 'asc' ? new Date(a.CreatedDate) - new Date(b.CreatedDate) : new Date(b.CreatedDate) - new Date(a.CreatedDate)));
-        setFilteredExercises(filtered);
-    }, [search, sortOrder, selectedExerciseType]);
+        setTimeout(() => {
+            handleGetExerciseByTypeId();
+        }, 500);
+    }, [dataFilter, pagination.pageNumber]);
 
-    const handleSearch = (e) => {
-        setSearch(e.target.value);
-    };
+    const handleGetExerciseByTypeId = async () => {
+        try {
+            setLoading(true);
+            await services.ExerciseManagementAPI.getExerciseByTypeId(selectedExerciseType?.id, (res) => {
+                if (res?.result) {
+                    setExercises(res.result);
+                    setPagination((res.pagination));
+                }
+            }, (error) => {
+                console.log(error);
+            }, {
+                search: dataFilter.search,
+                pageNumber: pagination.pageNumber,
+                orderBy: 'createdDate',
+                sort: dataFilter.sort
+            })
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setDone(true);
+            setLoading(false);
+        }
+    }
 
-    const handleSortChange = (e) => {
-        setSortOrder(e.target.value);
-    };
+    const handleChangeDataFilter = (e) => {
+        const { name, value } = e.target;
+        setDataFilter((prev) => ({ ...prev, [name]: value }));
+    }
 
     const handleOpenDialog = (content) => {
         setSelectedContent(content);
@@ -78,29 +101,48 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
         setOpenDeleteConfirm(true);
     }
 
-    const handleDeleteExercise = () => {
-        const newExercise = filteredExercises.filter((exercise) => exercise.ExerciseId !== currentDeleteIndex);
-        setFilteredExercises(newExercise);
-        console.table(newExercise)
-        console.log('Xoá thành công!');
-        setOpenDeleteConfirm(false);
-    }
+    const handleDeleteExercise = async () => {
+        try {
+            setLoading(true);
+            await services.ExerciseManagementAPI.deleteExercise(currentDeleteIndex, {}, (res) => {
+                if (res?.result) {
+                    const newExercise = exercises.filter((e) => e.id !== currentDeleteIndex);
+                    setExercises(newExercise);
+                    enqueueSnackbar("Xoá bài tập thành công thành công", { variant: 'success' });
+                }
+            }, (error) => {
+                console.log(error);
+            })
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+            setOpenDeleteConfirm(false);
+        }
+    };
 
-    const totalPages = Math.ceil(pagination.totalPages / pagination.pageSize);
+    const formatDate = (dateString) => {
+        return format(new Date(dateString), 'dd/MM/yyyy');
+    };
+
+
+    const totalPages = Math.ceil(pagination.total / pagination.pageSize);
 
     return (
         <Stack direction='column' sx={{ width: "90%", margin: "auto", gap: 2 }}>
-            <Box sx={{ display: 'flex' }}>
-                <Button mb={2} variant='contained' startIcon={<ArrowBackIcon />} onClick={() => setShowExerciseList(false)}>Quay lại</Button>
+            <Box sx={{ display: 'flex' }} mt={1}>
+                <Button variant='contained' startIcon={<ArrowBackIcon />} onClick={() => setShowExerciseList(false)}>Quay lại</Button>
             </Box>
             <Typography variant='h4' textAlign={'center'} my={2}>Danh sách bài tập</Typography>
 
             <Box display="flex" justifyContent="space-between" alignItems="center" width="100%" mb={2}>
                 <TextField
+                    disabled={(exercises.length === 0 && dataFilter.search === '')}
                     size='small'
                     label="Tìm kiếm"
-                    value={search}
-                    onChange={handleSearch}
+                    name="search"
+                    value={dataFilter.search}
+                    onChange={handleChangeDataFilter}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
@@ -115,8 +157,10 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
                     <FormControl fullWidth size='small' sx={{ width: '40%' }}>
                         <InputLabel id="sort-select-label">Thứ tự</InputLabel>
                         <Select
-                            value={sortOrder}
-                            onChange={handleSortChange}
+                            disabled={exercises.length === 0}
+                            name='sort'
+                            value={dataFilter.sort}
+                            onChange={handleChangeDataFilter}
                             size='small'
                             label='Thứ tự'
                             sx={{ backgroundColor: '#fff', borderRadius: '4px' }}
@@ -130,67 +174,69 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
 
             </Box>
 
-            <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell sx={{ fontWeight: 'bold' }}>STT</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Tên bài tập</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Nội dung</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Ngày tạo</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Hành động</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {filteredExercises.map((exercise, index) => (
-                            <TableRow key={exercise.ExerciseId} hover>
-                                <TableCell>{index + 1}</TableCell>
-                                <TableCell>{exercise.ExerciseName}</TableCell>
-                                <TableCell>
-                                    <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-                                        <Box sx={{
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
-                                            maxWidth: 350
-                                        }}>
-                                            {exercise.ExerciseContent}
-                                        </Box>
-                                        {exercise.ExerciseContent.length > 55 && (
-                                            <Button
-                                                variant="text"
-                                                size="small"
-                                                onClick={() => handleOpenDialog(exercise.ExerciseContent)}
-                                                sx={{ textTransform: 'none', color: 'primary.main' }}
-                                            >
-                                                Xem thêm
-                                            </Button>
-                                        )}
-                                    </Box>
-                                </TableCell>
-                                <TableCell>{new Date(exercise.CreatedDate).toLocaleDateString()}</TableCell>
-                                <TableCell>
-                                    <IconButton color="primary" aria-label="chỉnh sửa" onClick={() => handleOpenEditDialog(exercise)}>
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton color="error" aria-label="xoá" onClick={() => handleOpenDelete(exercise.ExerciseId)}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
+            {done && ((done && exercises.length !== 0) ? <>
+                <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell sx={{ fontWeight: 'bold' }}>STT</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Tên bài tập</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Nội dung</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Ngày tạo</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Hành động</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {exercises.map((exercise, index) => (
+                                <TableRow key={exercise.id} hover>
+                                    <TableCell>{index + 1}</TableCell>
+                                    <TableCell>{exercise.exerciseName}</TableCell>
+                                    <TableCell>
+                                        <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
+                                            <Box sx={{
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                                maxWidth: 350
+                                            }}>
+                                                {exercise.description}
+                                            </Box>
+                                            {exercise.description.length > 55 && (
+                                                <Button
+                                                    variant="text"
+                                                    size="small"
+                                                    onClick={() => handleOpenDialog(exercise.description)}
+                                                    sx={{ textTransform: 'none', color: 'primary.main' }}
+                                                >
+                                                    Xem thêm
+                                                </Button>
+                                            )}
+                                        </Box>
+                                    </TableCell>
+                                    <TableCell>{formatDate(exercise?.createdDate)}</TableCell>
+                                    <TableCell>
+                                        <IconButton color="primary" aria-label="chỉnh sửa" onClick={() => handleOpenEditDialog(exercise)}>
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton color="error" aria-label="xoá" onClick={() => handleOpenDelete(exercise.id)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
-                <Pagination
-                    count={totalPages}
-                    page={pagination.pageNumber}
-                    onChange={handlePageChange}
-                    color="primary"
-                />
-            </Stack>
+                <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
+                    <Pagination
+                        count={totalPages}
+                        page={pagination.pageNumber}
+                        onChange={handlePageChange}
+                        color="primary"
+                    />
+                </Stack>
+            </> : 'Hiện tại chưa có bài tập nào.')}
 
             <LoadingComponent open={loading} setOpen={setLoading} />
 
@@ -204,9 +250,9 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
                 </DialogActions>
             </Dialog>
 
-            <ExerciseCreation open={openCreation} handleClose={() => setOpenCreation(false)} />
-            <ExerciseUpdateModal openEditDialog={openEditDialog} handleCloseEditDialog={handleCloseEditDialog} selectedExercise={selectedExercise} />
-            <DeleteConfirmationModal open={openDeleteConfirm} handleClose={() => { setOpenDeleteConfirm(false) }} handleDelete={handleDeleteExercise} />
+            {openCreation && <ExerciseCreation setExercises={setExercises} exerciseType={selectedExerciseType} open={openCreation} handleClose={() => setOpenCreation(false)} />}
+            {openEditDialog && <ExerciseUpdateModal exercises={exercises} setExercises={setExercises} openEditDialog={openEditDialog} handleCloseEditDialog={handleCloseEditDialog} selectedExercise={selectedExercise} setSelectedExercise={setSelectedExercise} selectedExerciseType={selectedExerciseType} />}
+            {openDeleteConfirm && <DeleteConfirmationModal open={openDeleteConfirm} handleClose={() => { setOpenDeleteConfirm(false) }} handleDelete={handleDeleteExercise} />}
         </Stack>
     );
 }

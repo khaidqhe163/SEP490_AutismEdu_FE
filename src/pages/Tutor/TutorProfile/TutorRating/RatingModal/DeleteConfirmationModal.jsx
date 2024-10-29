@@ -1,7 +1,25 @@
 import { Box, Button, Modal, Typography, Divider } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 import React from 'react';
+import services from '~/plugins/services';
 
-function DeleteConfirmationModal({ open, handleClose, handleDelete }) {
+function DeleteConfirmationModal({ id, open, handleClose, ratingList, setRatingList }) {
+
+    const handleDelete = async () => {
+        try {
+            // await services.CertificateAPI.deleteCertificate(id, {}, (res) => {
+            //     const newListCerti = certificateList.filter((c) => c.id !== id);
+            //     setCertificateList(newListCerti);
+            //     enqueueSnackbar("Xoá thành công!", { variant: 'success' });
+            //     handleClose();
+            // }, (error) => {
+            //     console.log(error);
+            // })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const style = {
         position: 'absolute',
         top: '50%',
@@ -22,7 +40,7 @@ function DeleteConfirmationModal({ open, handleClose, handleDelete }) {
                 </Typography>
                 <Divider />
                 <Typography mt={2} mb={4}>
-                    Bạn có chắc chắn muốn xoá chương trình học này không?
+                    Bạn có chắc chắn muốn xoá chứng chỉ này không?
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
                     <Button variant="outlined" onClick={handleClose}>Huỷ</Button>
