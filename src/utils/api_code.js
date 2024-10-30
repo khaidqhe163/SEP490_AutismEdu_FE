@@ -80,7 +80,11 @@ const API_CODE = {
   API_GET_MY_TUTOR: '/v1/StudentProfile/GetAllChildStudentProfile',
   API_GET_TUTOR_SCHEDULE: '/v1/StudentProfile/GetAllScheduleTimeSlot',
   API_GET_STUDENT_ID: '/v1/StudentProfile/',
-  API_CHANGE_STUDENT_PROFILE_STATUS: '/v1/StudentProfile/changeStatus'
+  API_CHANGE_STUDENT_PROFILE_STATUS: '/v1/StudentProfile/changeStatus',
+
+  //Progress report 
+  API_CREATE_PROGRESS_REPORT: '/v1/ProgressReport',
+  API_GET_LIST_PROGRESS_REPORT: '/v1/ProgressReport'
 };
 
 export default API_CODE;
