@@ -84,7 +84,21 @@ const API_CODE = {
 
   //Progress report 
   API_CREATE_PROGRESS_REPORT: '/v1/ProgressReport',
-  API_GET_LIST_PROGRESS_REPORT: '/v1/ProgressReport'
+  API_GET_LIST_PROGRESS_REPORT: '/v1/ProgressReport',
+  //Exercuse management
+  API_GET_ALL_EXERCISE_TYPE: '/v1/ExerciseType/getAllNoPaging',
+  API_GET_EXERCISE_BY_TYPE: '/v1/Exercise/',
+  API_GET_LIST_EXERCISE_TYPE: '/v1/ExerciseType',
+  API_GET_EXERCISE_BY_TYPE_ID: '/v1/ExerciseType/exercise/',
+  API_CREATE_EXERCISE: '/v1/Exercise',
+  API_DELETE_EXERCISE: '/v1/Exercise/',
+
+  //Syllabus management
+  API_CREATE_SYLLABUS: '/v1/Syllabus',
+  API_GET_LIST_SYLLABUS: '/v1/Syllabus',
+  API_ASSIGN_SYLLABUS: '/v1/Syllabus/',
+  API_DELETE_SYLLABUS: '/v1/Syllabus/',
+
 };
 
 export default API_CODE;

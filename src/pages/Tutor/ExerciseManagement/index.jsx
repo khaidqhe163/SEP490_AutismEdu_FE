@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import ExerciseTypeList from './ExerciseTypeList';
+import SyllabusManagement from './SyllabusManagement';
 
 function ExerciseManagement() {
 
@@ -25,7 +26,7 @@ function ExerciseManagement() {
                     <ExerciseTypeList />
                 </TabPanel>
                 <TabPanel value="2">
-
+                    <SyllabusManagement />
                 </TabPanel>
 
             </TabContext>

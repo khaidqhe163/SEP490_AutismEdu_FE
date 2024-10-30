@@ -30,10 +30,10 @@ import AssessmentManagement from '~/pages/Admin/AssessmentManagement'
 import AssessmentCreation from '~/pages/Admin/AssessmentManagement/AssessmentCreation'
 import CertificateDetail from '~/pages/Tutor/TutorSetting/CertificateManagement/CertificateDetail'
 import StudentCreation from '~/pages/StudentProfile/StudentCreation'
-import StudentProfileApprove from '~/pages/StudentProfile/StudentProfileApprove'
 import ExerciseManagement from '~/pages/Tutor/ExerciseManagement'
 import MyTutor from '~/pages/Tutor/MyTutor'
 import MyTutorDetail from '~/pages/Tutor/MyTutor/MyTutorDetail'
+import StudentProfileApprove from '~/pages/StudentProfile/StudentProfileApprove'
 
 const UnLayoutRoutes = [
     {

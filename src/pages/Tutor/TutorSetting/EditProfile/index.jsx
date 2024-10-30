@@ -80,6 +80,8 @@ function EditProfile() {
     const getTutorInformation = async () => {
         try {
             await services.TutorManagementAPI.handleGetTutorProfile((res) => {
+                console.log(res.result);
+
                 setTutor(res.result);
                 if (res?.result?.address) {
                     const [provinceName, districtName, communeName, address] = res.result.address.split('|');
@@ -189,7 +191,9 @@ function EditProfile() {
         const updatedAddress = `${selectedProvince}|${selectedDistrict}|${selectedCommune}|${specificAddress}`;
         // console.log({ ...tutor, address: updatedAddress, price: parseFloat(tutor?.price) });
         const updateTutor = {
-            price: parseFloat(tutor.price),
+            priceFrom: parseFloat(tutor.priceFrom),
+            priceEnd: parseFloat(tutor.priceEnd),
+            sessionHours: tutor.sessionHours,
             address: updatedAddress,
             aboutMe: tutor.aboutMe,
             phoneNumber: tutor.phoneNumber,
@@ -222,7 +226,7 @@ function EditProfile() {
                     <Button size='small' variant='outlined' color='success'>Đã chấp nhận</Button>}
             </Stack>
             <Grid container spacing={3} component="form" onSubmit={(e) => e.preventDefault()}>
-                <Grid item xs={12} md={6}>
+                {/* <Grid item xs={12} md={6}>
                     <TextField
                         fullWidth
                         required
@@ -235,19 +239,38 @@ function EditProfile() {
                             inputComponent: NumericFormatCustom,
                         }}
                     />
-                </Grid>
+                </Grid> */}
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={6} md={3}>
                     <TextField
                         fullWidth
                         required
-                        label="Số điện thoại"
+                        label="Học phí từ"
                         variant="outlined"
-                        name="phoneNumber"
-                        value={tutor?.phoneNumber || ''}
+                        name="priceFrom"
+                        value={tutor?.priceFrom || ''}
                         onChange={handleInputChange}
+                        InputProps={{
+                            inputComponent: NumericFormatCustom,
+                        }}
                     />
                 </Grid>
+
+                <Grid item xs={6} md={3}>
+                    <TextField
+                        fullWidth
+                        required
+                        label="Đến"
+                        variant="outlined"
+                        name="priceEnd"
+                        value={tutor?.priceEnd || ''}
+                        onChange={handleInputChange}
+                        InputProps={{
+                            inputComponent: NumericFormatCustom,
+                        }}
+                    />
+                </Grid>
+
                 <Grid item xs={12} md={6}>
                     <TextField
                         fullWidth
@@ -259,7 +282,23 @@ function EditProfile() {
                         onChange={handleInputChange}
                     />
                 </Grid>
-                <Grid item xs={6} md={3}>
+
+
+
+
+                <Grid item xs={4} md={2}>
+                    <TextField
+                        fullWidth
+                        required
+                        label="Số giờ dạy trên buổi"
+                        variant="outlined"
+                        name="sessionHours"
+                        value={tutor?.sessionHours || ''}
+                        onChange={handleInputChange}
+                    />
+                </Grid>
+
+                <Grid item xs={4} md={2}>
                     <TextField
                         required
                         type='number'
@@ -271,7 +310,7 @@ function EditProfile() {
                         onChange={handleInputChange}
                     />
                 </Grid>
-                <Grid item xs={6} md={3}>
+                <Grid item xs={4} md={2}>
                     <TextField
                         required
                         type='number'
@@ -280,6 +319,19 @@ function EditProfile() {
                         variant="outlined"
                         name="endAge"
                         value={tutor?.endAge || ''}
+                        onChange={handleInputChange}
+                    />
+                </Grid>
+
+
+                <Grid item xs={12} md={6}>
+                    <TextField
+                        fullWidth
+                        required
+                        label="Số điện thoại"
+                        variant="outlined"
+                        name="phoneNumber"
+                        value={tutor?.phoneNumber || ''}
                         onChange={handleInputChange}
                     />
                 </Grid>

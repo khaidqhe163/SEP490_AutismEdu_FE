@@ -14,6 +14,8 @@ import { CertificateAPI } from "~/services/CertificateAPI";
 import { WorkExperiencesAPI } from "~/services/WorkExperiencesAPI";
 import { StudentProfileAPI } from "~/services/StudentProfileAPI";
 import { ProgressReportAPI } from "~/services/ProgressReportAPI";
+import { ExerciseManagementAPI } from "~/services/ExerciseManagementAPI";
+import { SyllabusManagementAPI } from "~/services/SyllabusManagementAPI";
 // Initialize the BaseService with the axios instance and API prefix
 (function () {
   initializeService(axios, "/api");
@@ -33,7 +35,9 @@ const services = {
   CertificateAPI,
   WorkExperiencesAPI,
   StudentProfileAPI,
-  ProgressReportAPI
+  ProgressReportAPI,
+  ExerciseManagementAPI,
+  SyllabusManagementAPI,
 };
 
 export default services;

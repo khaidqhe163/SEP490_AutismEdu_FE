@@ -22,7 +22,7 @@ function DeleteConfirmationModal({ open, handleClose, handleDelete }) {
                 </Typography>
                 <Divider />
                 <Typography mt={2} mb={4}>
-                    Bạn có chắc chắn muốn xoá chương trình học này không?
+                    Bạn có chắc chắn muốn xoá giáo trình này không?
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
                     <Button variant="outlined" onClick={handleClose}>Huỷ</Button>
