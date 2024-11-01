@@ -13,6 +13,7 @@ import { AssessmentManagementAPI } from "~/services/AssessmentManagmentAPI";
 import { CertificateAPI } from "~/services/CertificateAPI";
 import { WorkExperiencesAPI } from "~/services/WorkExperiencesAPI";
 import { StudentProfileAPI } from "~/services/StudentProfileAPI";
+import { ProgressReportAPI } from "~/services/ProgressReportAPI";
 import { ExerciseManagementAPI } from "~/services/ExerciseManagementAPI";
 import { SyllabusManagementAPI } from "~/services/SyllabusManagementAPI";
 import { ReviewManagementAPI } from "~/services/ReviewManagementAPI";
@@ -35,6 +36,7 @@ const services = {
   CertificateAPI,
   WorkExperiencesAPI,
   StudentProfileAPI,
+  ProgressReportAPI,
   ExerciseManagementAPI,
   SyllabusManagementAPI,
   ReviewManagementAPI,

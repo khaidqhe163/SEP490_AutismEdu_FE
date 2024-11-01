@@ -83,6 +83,9 @@ const API_CODE = {
   API_GET_STUDENT_ID: '/v1/StudentProfile/',
   API_CHANGE_STUDENT_PROFILE_STATUS: '/v1/StudentProfile/changeStatus',
 
+  //Progress report 
+  API_CREATE_PROGRESS_REPORT: '/v1/ProgressReport',
+  API_GET_LIST_PROGRESS_REPORT: '/v1/ProgressReport',
   //Exercuse management
   API_GET_ALL_EXERCISE_TYPE: '/v1/ExerciseType/getAllNoPaging',
   API_GET_EXERCISE_BY_TYPE: '/v1/Exercise/',

@@ -7,8 +7,9 @@ import { TabPanel } from '@mui/lab';
 import StudentInformation from './StudentInformation';
 import services from '~/plugins/services';
 import { useParams } from 'react-router-dom';
+import ProgressReport from './ProgressReport';
 function StudentDetail() {
-    const [tab, setTabs] = useState(0);
+    const [tab, setTabs] = useState('1');
     const { id } = useParams();
     const [studentProfile, setStudentProfile] = useState();
     const handleChange = (event, newValue) => {
@@ -50,6 +51,9 @@ function StudentDetail() {
                 </Box>
             </Box>
             <Divider sx={{ width: "100%" }} />
+            {
+                tab === 1 && <ProgressReport/>
+            }
             {
                 tab === 2 && <StudentInformation studentProfile={studentProfile} />
             }
