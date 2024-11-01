@@ -35,6 +35,8 @@ function TutorProfile() {
     const [loading, setLoading] = useState(false);
     const userInfo = useSelector(userInfor)
     console.log(tutor);
+    console.log(userInfo);
+
 
     useEffect(() => {
         handleGetAllAvailableTime(1);
@@ -120,7 +122,7 @@ function TutorProfile() {
     const formatAddress = (address) => {
         let adrs = address.split('|');
         return adrs.reverse().join(', ');
-    }
+    };
 
     const renderWeekButtons = () => {
         const weekDays = [
@@ -170,7 +172,6 @@ function TutorProfile() {
     };
 
 
-
     return (
         <Grid container sx={{ height: 'auto', width: "100%" }} py={5}>
             <Grid item xs={2} />
@@ -203,6 +204,9 @@ function TutorProfile() {
                             </Box>
                             <Box sx={{ width: "20%" }}>
                                 <TutorRequestModal rejectChildIds={tutor?.rejectChildIds} tutorId={id} calculateAge={calculateAge} />
+                                {/* <Button onClick={handleOpenHistory} startIcon={<ForwardToInboxIcon />} variant='contained' color='primary' size='large'>
+                                    Lịch sử gửi yêu cầu
+                                </Button> */}
                             </Box>
                         </Box>
 
@@ -376,7 +380,7 @@ function TutorProfile() {
                                                 </Box>
                                             </Stack>
                                             <Divider />
-                                            <TutorRating tutorId={id} userInfo={userInfo}/>
+                                            {id && <TutorRating tutorId={id} userInfo={userInfo} />}
                                         </Box>
                                     </>
                                 </TabPanel>

@@ -20,6 +20,7 @@ function Header() {
     const [accountMenu, setAccountMenu] = React.useState(null);
     const nav = useNavigate();
     const userInfo = useSelector(userInfor);
+
     const openAccountMenu = Boolean(accountMenu);
     const [searchVal, setSearchVal] = useState('');
     const dispatch = useDispatch();
@@ -31,6 +32,8 @@ function Header() {
         } else if (location.pathname.includes("/list-tutor")) {
             setTab("2");
         } else if (location.pathname.includes("/my-tutor")) {
+            setTab("2");
+        } else if (location.pathname.includes("/request-history")) {
             setTab("2");
         }
         else if (location.pathname.includes("/my-childlren")) {
@@ -112,6 +115,11 @@ function Header() {
                 >
                     Danh sách gia sư
                 </MenuItem>
+                {userInfo && (<MenuItem
+                    onClick={(event) => handleMenuItemClick(event, PAGES.ROOT + PAGES.TUTOR_REQUEST_HISTORY)}
+                >
+                    Lịch sử yêu cầu
+                </MenuItem>)}
             </Menu>
             <Stack direction="row" sx={{ alignItems: "center" }} spacing={2}>
                 <TextField

@@ -34,7 +34,8 @@ const PAGES = {
   APPROVE_STUDENT_PROFILE: '/approve-student-profile/:id',
   EXERCISE_MANAGEMENT:'/autismtutor/exercise',
   MY_TUTOR: '/my-tutor',
-  MY_TUTOR_DETAIL: '/my-tutor/:id'
+  MY_TUTOR_DETAIL: '/my-tutor/:id',
+  TUTOR_REQUEST_HISTORY: '/request-history',
 };
 
 export default PAGES;

@@ -114,232 +114,100 @@ function SearchTutor() {
         <Box sx={{ height: 'auto' }}>
             <FormSearch selected={selected} setSelected={setSelected}
                 showFilters={showFilters} handleSearch={handleSearch} handleFilterClick={handleFilterClick} searchCriteria={searchCriteria} setSearchCriteria={setSearchCriteria} />
-            <Grid container sx={{ height: 'auto', position: "relative", top: '-150px' }}>
+            <Box sx={{ height: 'auto', position: "relative", top: '-150px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
-                <Grid item xs={2} />
-
-                <Grid item xs={8} sx={{ height: 'auto' }} mt={5}>
-                    <Grid container sx={{ height: 'auto' }}>
-                        <Grid item>
-                            <Grid container spacing={10}>
-                                {selected !== "list" ?
-                                    tutors.map((t, index) =>
-                                    (<Grid item xs={4} key={index}>
-                                        <Card sx={{
-                                            padding: "20px", minHeight: "600px", width: '400px',
-                                            transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                                            '&:hover': {
-                                                transform: "scale(1.05) translateY(-10px)",
-                                                boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-                                            },
-                                            borderRadius: "5px",
-                                        }}>
-                                            <CardMedia
-                                                sx={{ height: 240, objectPosition: "top", objectFit: "cover" }}
-                                                image={t.imageUrl}
-                                                title="apeople"
-                                            />
-                                            <CardContent>
-                                                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                                                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                                                        <Rating name="read-only" value={t.reviewScore} readOnly />
-                                                        <Typography ml={2}>({t.totalReview} reviews)</Typography>
-                                                    </Box>
-                                                    <IconButton>
-                                                        <BookmarkBorderIcon />
-                                                    </IconButton>
-                                                </Box>
-                                                <Typography gutterBottom variant="h4" component="div" sx={{ fontSize: "26px" }}>
-                                                    {t.fullName}
-                                                </Typography>
-                                                <Box sx={{ display: "flex", alignItems: "center", gap: "5px", mt: 2 }}>
-                                                    <LocationOnOutlinedIcon />
-                                                    <Typography>{t?.address ? getCity(t.address) : 'Hồ Chí Minh'}</Typography>
-                                                </Box>
-                                                <Box sx={{
-                                                    display: "flex", alignItems: "center", gap: "5px", mt: 2,
-                                                    '&:hover': {
-                                                        color: "blue"
-                                                    }
-                                                }}>
-                                                    <LocalPhoneOutlinedIcon />
-                                                    <a href={`tel:${t.phoneNumber}`}><Typography sx={{
-                                                        '&:hover': {
-                                                            color: "blue"
-                                                        }
-                                                    }}>{t.phoneNumber}</Typography></a>
-                                                </Box>
-                                                {/* <Box
-                                                    sx={{
-                                                        display: '-webkit-box',
-                                                        WebkitLineClamp: 3,
-                                                        WebkitBoxOrient: 'vertical',
-                                                        overflow: 'hidden',
-                                                        textOverflow: 'ellipsis',
-                                                        height: '85px',
-                                                        width: '85%',
-                                                    }}
-                                                    dangerouslySetInnerHTML={{ __html: t.aboutMe }}
-                                                /> */}
-
-
-                                                <Box sx={{ display: "flex", gap: "15px", flexDirection: 'column' }}>
-
-                                                    <Box sx={{
-                                                        display: "flex", alignItems: "center", gap: "10px", mt: 2,
-                                                        '&:hover': {
-                                                            color: "blue"
-                                                        }
-                                                    }}>
-                                                        <EmailOutlinedIcon />
-                                                        <a href='mailto:xuanthulab.net@gmail.com'>
-                                                            <Typography
-                                                                sx={{
-                                                                    whiteSpace: 'nowrap',
-                                                                    overflow: 'hidden',
-                                                                    textOverflow: 'ellipsis',
-                                                                    maxWidth: '280px',
-                                                                    '&:hover': {
-                                                                        color: "blue"
-                                                                    }
-                                                                }}
-                                                            >
-                                                                {t.email}
-                                                            </Typography>
-                                                        </a>
-                                                    </Box>
-
-                                                </Box>
-                                                <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t.priceFrom)} - {formatter.format(t.priceEnd)}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography>
-                                                </CardContent>
-                                            <CardActions>
-                                                <Button sx={{ fontSize: "20px" }} onClick={() => handleClickToProfile(t.userId)}>Tìm hiểu thêm <ArrowForwardIcon /></Button>
-                                            </CardActions>
-                                        </Card>
-                                    </Grid>)
-                                    ) : tutors.map((t, index) => (<Grid item xs={12} key={index}>
-                                        <Card sx={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            padding: "20px",
-                                            transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                                            '&:hover': {
-                                                transform: "scale(1.05) translateY(-10px)",
-                                                boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-                                            },
-                                            borderRadius: "5px",
-                                            minHeight: "500"
-                                        }}>
-
-                                            <CardMedia
-                                                sx={{ width: '40%', height: 'auto', borderRadius: '8px' }}
-                                                // image="https://sep490g50v1.blob.core.windows.net/logos-public/21ba5f2c-1f01-42c5-927b-2f66b885e34b.jpg"
-                                                image={t.imageUrl}
-                                                title="Hanoi"
-                                            />
-
-
-                                            <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', padding: "20px" }}>
-                                                <CardContent sx={{ flexGrow: 1 }}>
-                                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                                                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                                                            <Rating name="read-only" value={t.reviewScore} readOnly />
-                                                            <Typography ml={2}>({t.totalReview} reviews)</Typography>
-                                                        </Box>
-                                                        <IconButton>
-                                                            <BookmarkBorderIcon />
-                                                        </IconButton>
-                                                    </Box>
-                                                    <Typography gutterBottom variant="h4" component="div" sx={{ fontSize: "26px" }}>
-                                                        {t.fullName}
-                                                    </Typography>
-                                                    <Box sx={{ display: "flex", alignItems: "center", gap: "5px", mt: 2 }}>
-                                                        <LocationOnOutlinedIcon />
-                                                        <Typography>{t?.address ? getCity(t.address) : 'Hồ Chí Minh'}</Typography>
-                                                    </Box>
-                                                    <Typography mt={2} sx={{
-                                                        display: '-webkit-box',
-                                                        WebkitLineClamp: 3,
-                                                        WebkitBoxOrient: 'vertical',
-                                                        overflow: 'hidden',
-                                                        textOverflow: 'ellipsis',
-                                                            width: '1000px'
-                                                    }}>
-                                                        {/* {t.aboutMe} he Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and  cruelty-free */}
-                                                    </Typography>
-
-                                                    <Box sx={{ display: "flex", gap: "15px" }}>
-                                                        <Box sx={{
-                                                            display: "flex", alignItems: "center", gap: "10px", mt: 2,
-                                                            '&:hover': {
-                                                                color: "blue"
-                                                            }
-                                                        }}>
-                                                            <LocalPhoneOutlinedIcon />
-                                                            <a href={`tel:${t.phoneNumber}`}><Typography sx={{
-                                                                '&:hover': {
-                                                                    color: "blue"
-                                                                }
-                                                            }}>{t.phoneNumber}</Typography></a>
-                                                        </Box>
-                                                        <Box sx={{
-                                                            display: "flex", alignItems: "center", gap: "10px", mt: 2,
-                                                            '&:hover': {
-                                                                color: "blue"
-                                                            }
-                                                        }}>
-                                                            <EmailOutlinedIcon />
-                                                            <a href='mailto:xuanthulab.net@gmail.com'>
-                                                                <Typography
-                                                                    sx={{
-                                                                        whiteSpace: 'nowrap',
-                                                                        overflow: 'hidden',
-                                                                        textOverflow: 'ellipsis',
-                                                                        maxWidth: '300px',
-                                                                        '&:hover': {
-                                                                            color: "blue"
-                                                                        }
-                                                                    }}
-                                                                >
-                                                                    {t.email}
-                                                                </Typography>
-                                                            </a>
-                                                        </Box>
-
-                                                    </Box>
-                                                    <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t.priceFrom)} - {formatter.format(t.priceEnd)}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography>
-
-
-                                                </CardContent>
-                                                <CardActions>
-                                                    <Button sx={{ fontSize: "20px" }} onClick={() => handleClickToProfile(t.userId)}>Tìm hiểu thêm <ArrowForwardIcon /></Button>
-                                                </CardActions>
+                <Box sx={{ width: '100%', maxWidth: '1200px', mx: 'auto', mt: 5, display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', gap: 3 }}>
+                    {selected !== "list" ? (
+                        tutors.map((t, index) => (
+                            <Box key={index} sx={{ width: '400px', height: 'auto', padding: "20px", borderRadius: "5px", transition: "transform 0.3s ease, box-shadow 0.3s ease", '&:hover': { transform: "scale(1.05) translateY(-10px)", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)" } }}>
+                                <Card sx={{ height: "620px", width: '100%' }}>
+                                    <CardMedia sx={{ height: 240, objectPosition: "top", objectFit: "cover" }} image={t.imageUrl} title="apeople" />
+                                    <CardContent>
+                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                                                <Rating name="read-only" value={t.reviewScore} readOnly />
+                                                <Typography ml={2}>({t.totalReview} reviews)</Typography>
                                             </Box>
-                                        </Card>
-                                    </Grid>))}
-
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={2}></Grid>
-                    </Grid>
-
-                </Grid>
-                <Grid item xs={2} />
-                <Grid item xs={12} mt={5} sx={{ display: "flex", justifyContent: "center" }}>
-                    {(Math.ceil(pagination?.total / pagination?.pageSize) > pagination?.pageNumber) && (
-                        <Grid item xs={12} mt={5} sx={{ display: "flex", justifyContent: "center" }}>
-                            <ButtonComponent
-                                action={handleShowMore}
-                                width={"200px"}
-                                height={"50px"}
-                                text={"Xem thêm"}
-                                borderRadius={"20px"}
-                            />
-                        </Grid>
+                                            <IconButton><BookmarkBorderIcon /></IconButton>
+                                        </Box>
+                                        <Typography gutterBottom variant="h4" component="div" sx={{ fontSize: "26px" }}>{t.fullName}</Typography>
+                                        <Box sx={{ display: "flex", alignItems: "center", gap: "5px", mt: 2 }}>
+                                            <LocationOnOutlinedIcon />
+                                            <Typography>{t?.address ? getCity(t.address) : 'Hồ Chí Minh'}</Typography>
+                                        </Box>
+                                        <Box sx={{ display: "flex", alignItems: "center", gap: "5px", mt: 2, '&:hover': { color: "blue" } }}>
+                                            <LocalPhoneOutlinedIcon />
+                                            <a href={`tel:${t.phoneNumber}`}><Typography sx={{ '&:hover': { color: "blue" } }}>{t.phoneNumber}</Typography></a>
+                                        </Box>
+                                        <Box sx={{ display: "flex", gap: "15px", flexDirection: 'column' }}>
+                                            <Box sx={{ display: "flex", alignItems: "center", gap: "10px", mt: 2, '&:hover': { color: "blue" } }}>
+                                                <EmailOutlinedIcon />
+                                                <a href={`mailto:${t.email}`}><Typography sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '280px', '&:hover': { color: "blue" } }}>{t.email}</Typography></a>
+                                            </Box>
+                                        </Box>
+                                        <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t.priceFrom)} - {formatter.format(t.priceEnd)}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button sx={{ fontSize: "20px" }} onClick={() => handleClickToProfile(t.userId)}>Tìm hiểu thêm <ArrowForwardIcon /></Button>
+                                    </CardActions>
+                                </Card>
+                            </Box>
+                        ))
+                    ) : (
+                        tutors.map((t, index) => (
+                            <Box key={index} sx={{ width: '100%', maxWidth: '900px', padding: "20px", borderRadius: "5px", transition: "transform 0.3s ease, box-shadow 0.3s ease", '&:hover': { transform: "scale(1.05) translateY(-10px)", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)" } }}>
+                                <Card sx={{ display: 'flex', justifyContent: 'center', minHeight: "500px" }}>
+                                    <CardMedia sx={{ width: '40%', height: 'auto', borderRadius: '8px' }} image={t.imageUrl} title="Hanoi" />
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', padding: "20px" }}>
+                                        <CardContent sx={{ flexGrow: 1 }}>
+                                            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                                    <Rating name="read-only" value={t.reviewScore} readOnly />
+                                                    <Typography ml={2}>({t.totalReview} reviews)</Typography>
+                                                </Box>
+                                                <IconButton><BookmarkBorderIcon /></IconButton>
+                                            </Box>
+                                            <Typography gutterBottom variant="h4" component="div" sx={{ fontSize: "26px" }}>{t.fullName}</Typography>
+                                            <Box sx={{ display: "flex", alignItems: "center", gap: "5px", mt: 2 }}>
+                                                <LocationOnOutlinedIcon />
+                                                <Typography>{t?.address ? getCity(t.address) : 'Hồ Chí Minh'}</Typography>
+                                            </Box>
+                                            <Typography mt={2} sx={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis', width: '1000px' }}>{t.aboutMe}</Typography>
+                                            <Box sx={{ display: "flex", gap: "15px" }}>
+                                                <Box sx={{ display: "flex", alignItems: "center", gap: "10px", mt: 2, '&:hover': { color: "blue" } }}>
+                                                    <LocalPhoneOutlinedIcon />
+                                                    <a href={`tel:${t.phoneNumber}`}><Typography sx={{ '&:hover': { color: "blue" } }}>{t.phoneNumber}</Typography></a>
+                                                </Box>
+                                                <Box sx={{ display: "flex", alignItems: "center", gap: "10px", mt: 2, '&:hover': { color: "blue" } }}>
+                                                    <EmailOutlinedIcon />
+                                                    <a href={`mailto:${t.email}`}><Typography sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '300px', '&:hover': { color: "blue" } }}>{t.email}</Typography></a>
+                                                </Box>
+                                            </Box>
+                                            <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t.priceFrom)} - {formatter.format(t.priceEnd)}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography>
+                                        </CardContent>
+                                        <CardActions>
+                                            <Button sx={{ fontSize: "20px" }} onClick={() => handleClickToProfile(t.userId)}>Tìm hiểu thêm <ArrowForwardIcon /></Button>
+                                        </CardActions>
+                                    </Box>
+                                </Card>
+                            </Box>
+                        ))
                     )}
-                </Grid>
-            </Grid>
+                </Box>
+
+                <Box mt={5} sx={{ display: "flex", justifyContent: "center", width: '100%' }}>
+                    {(Math.ceil(pagination?.total / pagination?.pageSize) > pagination?.pageNumber) && (
+                        <ButtonComponent
+                            action={handleShowMore}
+                            width={"200px"}
+                            height={"50px"}
+                            text={"Xem thêm"}
+                            borderRadius={"20px"}
+                        />
+                    )}
+                </Box>
+            </Box>
+
             <LoadingComponent open={loading} setOpen={setLoading} />
         </Box>
     );

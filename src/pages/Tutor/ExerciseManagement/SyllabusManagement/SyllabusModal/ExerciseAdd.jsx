@@ -10,12 +10,12 @@ function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList,
         exerciseIds: []
     });
 
-    console.log(newData);
+    // console.log(newData);
 
 
     const [exercises, setExercises] = useState([]);
 
-    console.log(exerciseTypes);
+    // console.log(exerciseTypes);
 
     useEffect(() => {
 

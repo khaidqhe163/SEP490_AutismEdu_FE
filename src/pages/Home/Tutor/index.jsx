@@ -110,7 +110,7 @@ function Tutor() {
                                                         >{listTutor[currentTutor].email}</Typography></a>
                                                     </Box>
                                                 </Box>
-                                                <Typography mt={5} variant='h5'>{formatter.format(listTutor[currentTutor].price)} / buổi</Typography>
+                                                <Typography mt={4} variant='h5' color={'green'}>{formatter.format(listTutor[currentTutor].priceFrom)} - {formatter.format(listTutor[currentTutor].priceEnd)}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({listTutor[currentTutor]?.sessionHours} tiếng)</small></Typography></Typography>
 
                                             </CardContent>
                                             <CardActions>

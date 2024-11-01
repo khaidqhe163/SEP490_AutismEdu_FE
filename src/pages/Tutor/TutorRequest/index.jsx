@@ -48,8 +48,34 @@ function TutorRequest() {
         });
     };
 
-    const handleOpenModal = (request) => {
-        nav('/autismtutor/create-student-profile', { state: { request } });
+    const handleOpenModal = async(request) => {
+        // nav('/autismtutor/create-student-profile', { state: { request } });
+        try {
+            setLoading(true);
+            const body = {
+                id: request?.id,
+                statusChange: 1,
+                rejectType: 0,
+                rejectionReason: ""
+            };
+            await services.TutorRequestAPI.changeStatusTutorRequest(selectedRequest?.id, body, (res) => {
+                const newListRequest = listRequest.map((r, index) => {
+                    if (r.id == request?.id) {
+                        return { ...r, requestStatus: 1 };
+                    } else {
+                        return r;
+                    }
+                });
+                setListRequest(newListRequest);
+                enqueueSnackbar('Chấp nhận yêu cầu thành công!', { variant: 'success' });
+            }, (error) => {
+                console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleCloseModal = () => {
@@ -89,7 +115,7 @@ function TutorRequest() {
             statusChange: 0,
             rejectType,
             rejectionReason: reason
-        }
+        };
         try {
             await services.TutorRequestAPI.changeStatusTutorRequest(selectedRequest?.id, body, (res) => {
                 const newListRequest = listRequest.map((r, index) => {
@@ -172,6 +198,11 @@ function TutorRequest() {
 
     const handlePageChange = (event, value) => {
         setPagination({ ...pagination, pageNumber: value });
+    };
+
+    const formatAddress = (address) => {
+        let adrs = address.split('|');
+        return adrs.reverse().join(', ');
     };
 
 
@@ -290,20 +321,26 @@ function TutorRequest() {
                             <AccordionDetails sx={{ bgcolor: 'background.paper' }}>
                                 <Typography variant='h6' sx={{ mt: 1 }}>Thông tin về trẻ</Typography>
                                 <Grid container spacing={2} mt={2}>
-                                    <Grid item xs={12} container spacing={2} alignItems="center">
-                                        <Grid item xs={4}>
-                                            <Typography variant='body1' fontWeight={600}>Số điện thoại:</Typography>
-                                        </Grid>
-                                        <Grid item xs={8}>
-                                            <Typography variant='body1'>{request?.childInformation?.parentPhoneNumber}</Typography>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item xs={12} container spacing={2} alignItems="center">
+
+                                    {/* <Grid item xs={12} container spacing={2} alignItems="center">
                                         <Grid item xs={4}>
                                             <Typography variant='body1' fontWeight={600}>Tên phụ huynh:</Typography>
                                         </Grid>
                                         <Grid item xs={8}>
                                             <Typography variant='body1'>{request?.parent?.fullName}</Typography>
+                                        </Grid>
+                                    </Grid> */}
+                                    <Grid item xs={12} container spacing={2} alignItems="center" mb={2}>
+                                        <Grid item xs={4}>
+                                            <Typography variant='body1' fontWeight={600}>Ảnh:</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            <Avatar alt="Remy Sharp"
+                                                sx={{
+                                                    width: "150px",
+                                                    height: "150px"
+                                                }}
+                                                src={request?.childInformation?.imageUrlPath || ''} />
                                         </Grid>
                                     </Grid>
                                     <Grid item xs={12} container spacing={2} alignItems="center">
@@ -311,7 +348,7 @@ function TutorRequest() {
                                             <Typography variant='body1' fontWeight={600}>Tên trẻ:</Typography>
                                         </Grid>
                                         <Grid item xs={8}>
-                                            <Typography variant='body1'>{request?.childInformation?.name}</Typography>
+                                            <Typography variant='subtitle1'>{request?.childInformation?.name}</Typography>
                                         </Grid>
                                     </Grid>
                                     <Grid item xs={12} container spacing={2} alignItems="center">
@@ -319,7 +356,23 @@ function TutorRequest() {
                                             <Typography variant='body1' fontWeight={600}>Giới tính:</Typography>
                                         </Grid>
                                         <Grid item xs={8}>
-                                            <Typography variant='body1'>{request?.childInformation?.gender}</Typography>
+                                            <Typography variant='subtitle1'>{request?.childInformation?.gender === 'Female' ? 'Nữ':'Nam'}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                    {request?.requestStatus === 1 && <Grid item xs={12} container spacing={2} alignItems="center">
+                                        <Grid item xs={4}>
+                                            <Typography variant='body1' fontWeight={600}>Số điện thoại:</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            <Typography variant='subtitle1'>{request?.childInformation?.parentPhoneNumber}</Typography>
+                                        </Grid>
+                                    </Grid>}
+                                    <Grid item xs={12} container spacing={2} alignItems="center">
+                                        <Grid item xs={4}>
+                                            <Typography variant='body1' fontWeight={600}>Địa chỉ:</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            <Typography variant='subtitle1'>{formatAddress(request?.childInformation?.address)}</Typography>
                                         </Grid>
                                     </Grid>
                                     <Grid item xs={12} container spacing={2} alignItems="center">
@@ -327,7 +380,7 @@ function TutorRequest() {
                                             <Typography variant='body1' fontWeight={600}>Ngày sinh:</Typography>
                                         </Grid>
                                         <Grid item xs={8}>
-                                            <Typography variant='body1'>{request?.childInformation?.birthDate && formatDate(request?.childInformation?.birthDate)}</Typography>
+                                            <Typography variant='subtitle1'>{request?.childInformation?.birthDate && formatDate(request?.childInformation?.birthDate)}</Typography>
                                         </Grid>
                                     </Grid>
                                     <Grid item xs={12} container spacing={2} alignItems="center">
@@ -335,7 +388,7 @@ function TutorRequest() {
                                             <Typography variant='body1' fontWeight={600}>Tuổi:</Typography>
                                         </Grid>
                                         <Grid item xs={8}>
-                                            <Typography variant='body1'>{request?.childInformation?.birthDate && calculateAge(new Date(request?.childInformation?.birthDate))}</Typography>
+                                            <Typography variant='subtitle1'>{request?.childInformation?.birthDate && calculateAge(new Date(request?.childInformation?.birthDate))}</Typography>
                                         </Grid>
                                     </Grid>
                                     <Grid item xs={12} container spacing={2} alignItems="flex-start">
@@ -345,7 +398,7 @@ function TutorRequest() {
                                         <Grid item xs={8}>
                                             <Box sx={{ maxWidth: '600px', overflow: 'hidden', wordBreak: 'break-word' }}>
                                                 <Typography
-                                                    variant='body1'
+                                                    variant='subtitle1'
                                                     sx={{
                                                         display: '-webkit-box',
                                                         WebkitBoxOrient: 'vertical',

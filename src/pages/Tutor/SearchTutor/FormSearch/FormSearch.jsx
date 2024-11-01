@@ -154,9 +154,9 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
             }}
         >
             <Grid container sx={{ height: '100%' }}>
-                <Grid item xs={2} />
+                <Grid item xs={1} />
 
-                <Grid item xs={8}>
+                <Grid item xs={10}>
                     <Box mt={5} sx={{ padding: '10px' }}>
                         <Stack spacing={2}>
                             <Breadcrumbs separator="›" aria-label="breadcrumb">
@@ -394,7 +394,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                     </Box>
                 </Grid>
 
-                <Grid item xs={2} />
+                <Grid item xs={1} />
             </Grid>
         </Box>
     )
