@@ -17,12 +17,15 @@ import ContactPageOutlinedIcon from '@mui/icons-material/ContactPageOutlined';
 import { Link } from 'react-router-dom';
 import PAGES from '~/utils/pages';
 import services from '~/plugins/services';
+import { useDispatch, useSelector } from 'react-redux';
+import { listStudent, setListStudent } from '~/redux/features/listStudent';
 
 export default function TutorSideBar({ openMenu }) {
     const [openStudent, setOpenStudent] = React.useState(true);
-    const [openSetting, setOpenSetting] = React.useState(true);
-
-    const [listStudent, setListStudent] = React.useState([]);
+    const [selectedIndex, setSelectedIndex] = React.useState(0);
+    const [currentStudent, setCurrentStudent] = React.useState(0)
+    const listStudents = useSelector(listStudent);
+    const dispatch = useDispatch();
     React.useEffect(() => {
         getListStudent();
     }, []);
@@ -31,7 +34,7 @@ export default function TutorSideBar({ openMenu }) {
         try {
             await services.StudentProfileAPI.getListStudent((res) => {
                 console.log(res.result);
-                setListStudent(res.result)
+                dispatch(setListStudent(res.result))
             }, (error) => {
                 console.log(error);
             }, {
@@ -40,6 +43,10 @@ export default function TutorSideBar({ openMenu }) {
             console.log(error);
         }
     }
+
+    const handleListItemClick = (event, index) => {
+        setSelectedIndex(index);
+    };
     const textStyle = {
         opacity: openMenu ? 1 : 0,
         whiteSpace: 'nowrap',
@@ -52,19 +59,9 @@ export default function TutorSideBar({ openMenu }) {
         justifyContent: "center",
         transition: 'min-width 0.3s ease'
     }
-
-    React.useEffect(() => {
-        if (!openMenu) {
-            setOpenSetting(false);
-        }
-    }, [openMenu])
-    const handleOpenSetting = () => {
-        setOpenSetting(!openSetting);
-    };
     const handleOpenStudent = () => {
         setOpenStudent(!openStudent);
     };
-
     return (
         <Drawer variant="permanent" open={openMenu} sx={{
             width: openMenu ? 300 : 80,
@@ -86,7 +83,10 @@ export default function TutorSideBar({ openMenu }) {
                 aria-labelledby="nested-list-subheader"
             >
                 <Link to={PAGES.MY_STUDENT}>
-                    <ListItemButton>
+                    <ListItemButton
+                        selected={selectedIndex === 0}
+                        onClick={(event) => handleListItemClick(event, 0)}
+                    >
                         <ListItemIcon sx={listIconStyle}>
                             <HomeOutlinedIcon />
                         </ListItemIcon>
@@ -97,7 +97,10 @@ export default function TutorSideBar({ openMenu }) {
                     </ListItemButton>
                 </Link>
                 <Link to={PAGES.CALENDAR}>
-                    <ListItemButton>
+                    <ListItemButton
+                        selected={selectedIndex === 1}
+                        onClick={(event) => handleListItemClick(event, 1)}
+                    >
                         <ListItemIcon sx={listIconStyle}>
                             <CalendarMonthOutlinedIcon />
                         </ListItemIcon>
@@ -108,7 +111,10 @@ export default function TutorSideBar({ openMenu }) {
                     </ListItemButton>
                 </Link>
                 <Link to={PAGES.TUTOR_REQUEST}>
-                    <ListItemButton>
+                    <ListItemButton
+                        selected={selectedIndex === 2}
+                        onClick={(event) => handleListItemClick(event, 2)}
+                    >
                         <ListItemIcon sx={listIconStyle}>
                             <ContactPageOutlinedIcon />
                         </ListItemIcon>
@@ -119,7 +125,9 @@ export default function TutorSideBar({ openMenu }) {
                     </ListItemButton>
                 </Link>
                 <Divider />
-                <ListItemButton onClick={handleOpenStudent}>
+                <ListItemButton onClick={handleOpenStudent}
+                    selected={selectedIndex === 3}
+                >
                     <ListItemIcon sx={listIconStyle}>
                         <GroupOutlinedIcon />
                     </ListItemIcon>
@@ -128,39 +136,41 @@ export default function TutorSideBar({ openMenu }) {
                 </ListItemButton>
                 <Collapse in={openStudent && openMenu} timeout="auto" unmountOnExit>
                     {
-                        listStudent.length !== 0 && listStudent.map((l) => {
+                        listStudents && listStudents.length !== 0 && listStudents.map((l, index) => {
                             return (
-                                <List component="div" disablePadding key={l.id}>
-                                    <ListItemButton>
-                                        <ListItemIcon sx={listIconStyle}>
-                                            <Avatar alt={l.studentCode} src={'/'} sx={{ background: "black", width: "30px", height: "30px" }} />
-                                        </ListItemIcon>
-                                        <ListItemText primary={`${l.studentCode} - ${l.name}`} />
-                                    </ListItemButton>
-                                </List>
+                                <Link to={'/autismtutor/student-detail/' + l.id} key={l.id}>
+                                    <List component="div" disablePadding>
+                                        <ListItemButton
+                                            onClick={(event) => { setCurrentStudent(index); handleListItemClick(event, 3) }}
+                                            selected={selectedIndex === 3 && currentStudent === index}
+                                        >
+                                            <ListItemIcon sx={listIconStyle}>
+                                                <Avatar alt={l.studentCode} src={'/'} sx={{ background: "black", width: "30px", height: "30px" }} />
+                                            </ListItemIcon>
+                                            <ListItemText primary={`${l.studentCode} - ${l.name}`} />
+                                        </ListItemButton>
+                                    </List>
+                                </Link>
                             )
                         })
                     }
                 </Collapse>
                 <Divider />
                 <Link to={PAGES.EXERCISE_MANAGEMENT}>
-                    <ListItemButton>
+                    <ListItemButton selected={selectedIndex === 4}
+                        onClick={(event) => handleListItemClick(event, 4)}
+                    >
                         <ListItemIcon sx={listIconStyle}>
                             <MenuBookOutlinedIcon />
                         </ListItemIcon>
                         <ListItemText primary="Bài tập" style={textStyle} />
                     </ListItemButton>
-                    <ListItemButton>
-                        <ListItemIcon sx={listIconStyle}>
-                            <QuizOutlinedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Bài kiểm tra" style={textStyle} />
-                    </ListItemButton>
                 </Link>
 
                 <Divider />
-                <Link to={PAGES.TUTOR_SETTING}>
-                    <ListItemButton onClick={handleOpenSetting}>
+                <Link to={PAGES.TUTOR_SETTING} >
+                    <ListItemButton selected={selectedIndex === 5}
+                        onClick={(event) => handleListItemClick(event, 5)}>
                         <ListItemIcon sx={listIconStyle}>
                             <SettingsOutlinedIcon />
                         </ListItemIcon>

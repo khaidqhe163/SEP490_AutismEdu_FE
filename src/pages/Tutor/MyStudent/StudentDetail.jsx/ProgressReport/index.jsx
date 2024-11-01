@@ -92,7 +92,7 @@ function ProgressReport() {
         <Box px={5} pt={2} pb={3}>
             <Stack direction='row' justifyContent="space-between">
                 <Typography variant='h4'>Tình trạng mới nhất</Typography>
-                <ProgressReportCreation />
+                <ProgressReportCreation currentReport={currentReport} />
             </Stack>
             {
                 progressReports.length === 0 ?

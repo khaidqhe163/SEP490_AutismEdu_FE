@@ -8,8 +8,11 @@ import StudentInformation from './StudentInformation';
 import services from '~/plugins/services';
 import { useParams } from 'react-router-dom';
 import ProgressReport from './ProgressReport';
+import Calendar from '../../Calendar';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import AssessmentChart from './AssessmentChart';
 function StudentDetail() {
-    const [tab, setTabs] = useState('1');
+    const [tab, setTabs] = useState(0);
     const { id } = useParams();
     const [studentProfile, setStudentProfile] = useState();
     const handleChange = (event, newValue) => {
@@ -19,6 +22,11 @@ function StudentDetail() {
     useEffect(() => {
         handleGetStudentProfile();
     }, [])
+
+    useEffect(() => {
+        handleGetStudentProfile();
+        setTabs(0)
+    }, [id])
     const handleGetStudentProfile = async () => {
         try {
             await services.StudentProfileAPI.getStudentProfileById(id, (res) => {
@@ -31,6 +39,7 @@ function StudentDetail() {
             console.log(error);
         }
     }
+    console.log(tab);
     return (
         <Box sx={{
             flexGrow: 2, height: "calc(100vh - 65px)",
@@ -44,6 +53,7 @@ function StudentDetail() {
                 >
                     <Tab icon={<CalendarMonthOutlinedIcon />} iconPosition="end" label="Lịch học" />
                     <Tab icon={<NoteAltOutlinedIcon />} iconPosition="end" label="Sổ liên lạc" />
+                    <Tab icon={<BarChartIcon />} iconPosition="end" label="Biểu đồ đánh giá" />
                     <Tab icon={<AccountBoxOutlinedIcon />} iconPosition="end" label="Thông tin học sinh" />
                 </Tabs>
                 <Box>
@@ -52,10 +62,16 @@ function StudentDetail() {
             </Box>
             <Divider sx={{ width: "100%" }} />
             {
-                tab === 1 && <ProgressReport/>
+                tab === 0 && <Calendar />
             }
             {
-                tab === 2 && <StudentInformation studentProfile={studentProfile} />
+                tab === 1 && <ProgressReport />
+            }
+            {
+                tab === 2 && <AssessmentChart studentProfile={studentProfile} />
+            }
+            {
+                tab === 3 && <StudentInformation studentProfile={studentProfile} />
             }
         </Box>
     )

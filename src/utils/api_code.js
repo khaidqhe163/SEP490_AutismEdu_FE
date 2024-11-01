@@ -107,6 +107,9 @@ const API_CODE = {
   API_UPDATE_REVIEW: '/v1/Review/',
   API_DELETE_REVIEW: '/v1/Review/',
 
+
+  //Schedule
+  API_GET_SCHEDULE: '/v1/Schedule'
 };
 
 export default API_CODE;
