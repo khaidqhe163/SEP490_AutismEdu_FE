@@ -99,6 +99,9 @@ const API_CODE = {
   API_ASSIGN_SYLLABUS: '/v1/Syllabus/',
   API_DELETE_SYLLABUS: '/v1/Syllabus/',
 
+
+  //Schedule
+  API_GET_SCHEDULE: '/v1/Schedule'
 };
 
 export default API_CODE;

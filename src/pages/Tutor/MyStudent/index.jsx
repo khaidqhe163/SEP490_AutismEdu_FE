@@ -1,27 +1,31 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, Stack, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import services from '~/plugins/services';
+import { listStudent } from '~/redux/features/listStudent';
 
 function MyStudent() {
-    const [listStudent, setListStudent] = useState([]);
-    useEffect(() => {
-        getListStudent();
-    }, [])
+    // const [listStudent, setListStudent] = useState([]);
+    const listStudents = useSelector(listStudent);
+    const dispatch = useDispatch();
+    // useEffect(() => {
+    //     getListStudent();
+    // }, [])
 
-    const getListStudent = async () => {
-        try {
-            await services.StudentProfileAPI.getListStudent((res) => {
-                console.log(res);
-                setListStudent(res.result)
-            }, (error) => {
-                console.log(error);
-            }, {
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    // const getListStudent = async () => {
+    //     try {
+    //         await services.StudentProfileAPI.getListStudent((res) => {
+    //             console.log(res);
+    //             setListStudent(res.result)
+    //         }, (error) => {
+    //             console.log(error);
+    //         }, {
+    //         })
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
 
     const formatDate = (d) => {
         const date = new Date(d);
@@ -30,7 +34,7 @@ function MyStudent() {
 
     const formatAddress = (d) => {
         const splitedAdd = d.split("|");
-        return `${splitedAdd[3]} - ${splitedAdd[2]} - ${splitedAdd[1]} - ${splitedAdd[0]} -`
+        return `${splitedAdd[3]} - ${splitedAdd[2]} - ${splitedAdd[1]} - ${splitedAdd[0]}`
     }
     return (
         <Stack direction="row" sx={{
@@ -40,11 +44,11 @@ function MyStudent() {
             flexWrap: 'wrap'
         }}>
             {
-                listStudent.length === 0 &&
+                listStudents && listStudents.length === 0 &&
                 <Typography sx={{ textAlign: "center" }}>Bạn đang không dạy học sinh nào</Typography>
             }
             {
-                listStudent.length !== 0 && listStudent.map((l) => {
+                listStudents && listStudents.length !== 0 && listStudents.map((l) => {
                     return (
                         <Card sx={{ width: 345 }} key={l.id}>
                             <Box sx={{
@@ -58,7 +62,7 @@ function MyStudent() {
                                 <Typography gutterBottom component="div" sx={{ width: "70%" }} color={"white"}>
                                     {l.name}
                                 </Typography>
-                                <Avatar alt='Khai Dao' src='/' sx={{
+                                <Avatar alt={l.studentCode} src={l?.imageUrlPath ? l.imageUrlPath : "/"} sx={{
                                     height: "80px",
                                     width: "80px",
                                     fontSize: "40px",

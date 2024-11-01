@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormHelperText, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material'
+import { Box, Button, FormControl, FormHelperText, List, ListItem, ListItemIcon, ListItemText, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import MinimizeIcon from '@mui/icons-material/Minimize';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
@@ -7,7 +7,12 @@ import { useFormik } from 'formik';
 import LoadingComponent from '~/components/LoadingComponent';
 import { enqueueSnackbar } from 'notistack';
 import { useParams } from 'react-router-dom';
-function ProgressReportCreation() {
+import DoneIcon from '@mui/icons-material/Done';
+import CloseIcon from '@mui/icons-material/Close';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+function ProgressReportCreation({ currentReport }) {
     const [open, setOpen] = useState();
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -23,6 +28,18 @@ function ProgressReportCreation() {
             formik.resetForm();
         }
     }, [open])
+
+    useEffect(() => {
+        if (assessment && currentReport) {
+            const preData = currentReport.assessmentResults.map((a) => {
+                return {
+                    questionId: a.questionId,
+                    optionId: a.optionId
+                }
+            })
+            setSelectedAssessment(preData)
+        }
+    }, [assessment, currentReport])
     const handleGetAsessment = async () => {
         try {
             setLoading(true);
@@ -95,6 +112,26 @@ function ProgressReportCreation() {
             }
         }
     })
+    const formatDate = (date) => {
+        if (!date) {
+            return "";
+        }
+        const d = new Date(date);
+        return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
+    }
+
+    const getDefaultValue = (assessment) => {
+        if (!assessment || !currentReport) {
+            return 1;
+        }
+        const displayItem = currentReport.assessmentResults.find((a) => {
+            return a.question === assessment.question;
+        })
+        if (!displayItem) {
+            return 1;
+        }
+        return displayItem
+    }
     return (
         <Box>
             <Button variant='contained' onClick={handleOpen}>Tạo đánh giá mới</Button>
@@ -108,137 +145,191 @@ function ProgressReportCreation() {
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        width: "900px",
+                        width: "90vw",
                         bgcolor: 'background.paper',
                         boxShadow: 24,
                         p: 4,
                         maxHeight: "80vh",
                         overflow: 'auto'
                     }}>
-                        <form onSubmit={formik.handleSubmit}>
-                            <Typography id="modal-modal-title" variant="h5" component="h2">
-                                Tạo đánh giá mới
-                            </Typography>
-                            <Stack direction='row' alignItems='center' gap={2} mt={3}>
-                                <Box>
-                                    <Typography>Từ ngày</Typography>
-                                    <TextField type='date' name='from'
-                                        onChange={formik.handleChange}
-                                        value={formik.values.from}
-                                        inputProps={{
-                                            max: new Date().toISOString().split('T')[0],
-                                        }}
-                                    />
-                                    {
-                                        formik.errors.from && (
-                                            <FormHelperText error>
-                                                {formik.errors.from}
-                                            </FormHelperText>
-                                        )
-                                    }
-                                </Box>
-                                <MinimizeIcon />
-                                <Box>
-                                    <Typography>Đến ngày</Typography>
-                                    <TextField type='date' name='to'
-                                        onChange={formik.handleChange}
-                                        value={formik.values.to}
-                                        inputProps={{
-                                            max: new Date().toISOString().split('T')[0],
-                                        }}
-                                    />
-                                    {
-                                        formik.errors.to && (
-                                            <FormHelperText error>
-                                                {formik.errors.to}
-                                            </FormHelperText>
-                                        )
-                                    }
-                                </Box>
-                            </Stack>
+                        <Stack direction='row' gap={2}>
+                            <form onSubmit={formik.handleSubmit} style={{ width: "60%" }}>
+                                <Typography id="modal-modal-title" variant="h5" component="h2">
+                                    Tạo đánh giá mới
+                                </Typography>
+                                <Stack direction='row' alignItems='center' gap={2} mt={3}>
+                                    <Box>
+                                        <Typography>Từ ngày</Typography>
+                                        <TextField type='date' name='from'
+                                            onChange={formik.handleChange}
+                                            value={formik.values.from}
+                                            inputProps={{
+                                                max: new Date().toISOString().split('T')[0],
+                                            }}
+                                        />
+                                        {
+                                            formik.errors.from && (
+                                                <FormHelperText error>
+                                                    {formik.errors.from}
+                                                </FormHelperText>
+                                            )
+                                        }
+                                    </Box>
+                                    <MinimizeIcon />
+                                    <Box>
+                                        <Typography>Đến ngày</Typography>
+                                        <TextField type='date' name='to'
+                                            onChange={formik.handleChange}
+                                            value={formik.values.to}
+                                            inputProps={{
+                                                max: new Date().toISOString().split('T')[0],
+                                            }}
+                                        />
+                                        {
+                                            formik.errors.to && (
+                                                <FormHelperText error>
+                                                    {formik.errors.to}
+                                                </FormHelperText>
+                                            )
+                                        }
+                                    </Box>
+                                </Stack>
 
-                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                Đã làm được
-                            </Typography>
-                            <TextField multiline fullWidth minRows={5} maxRows={10}
-                                name='achieved'
-                                onChange={formik.handleChange}
-                                value={formik.values.achieved}
-                            />
-                            {
-                                formik.errors.achieved && (
-                                    <FormHelperText error>
-                                        {formik.errors.achieved}
-                                    </FormHelperText>
-                                )
-                            }
-                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                Chưa làm được
-                            </Typography>
-                            <TextField multiline fullWidth minRows={5} maxRows={10}
-                                name='failed'
-                                onChange={formik.handleChange}
-                                value={formik.values.failed} />
-                            {
-                                formik.errors.failed && (
-                                    <FormHelperText error>
-                                        {formik.errors.failed}
-                                    </FormHelperText>
-                                )
-                            }
-                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                Ghi chú thêm
-                            </Typography>
-                            <TextField multiline fullWidth minRows={5} maxRows={10}
-                                name='noteFromTutor'
-                                onChange={formik.handleChange}
-                                value={formik.values.noteFromTutor}
-                            />
-                            {
-                                formik.errors.noteFromTutor && (
-                                    <FormHelperText error>
-                                        {formik.errors.noteFromTutor}
-                                    </FormHelperText>
-                                )
-                            }
-                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                Đánh giá
-                            </Typography>
-                            <Stack direction='row' sx={{ width: "100%" }} flexWrap='wrap' rowGap={2}>
+                                <Stack direction='row' gap={2} mt={2}>
+                                    <DoneIcon sx={{ color: "green" }} />
+                                    <Typography>Đã làm được</Typography>
+                                </Stack>
+                                <TextField multiline fullWidth minRows={5} maxRows={10}
+                                    name='achieved'
+                                    onChange={formik.handleChange}
+                                    value={formik.values.achieved}
+                                    sx={{ mt: 1 }}
+                                />
                                 {
-                                    assessment && assessment.map((a, index) => {
-                                        return (
-                                            <Box sx={{ display: "flex", width: "50%" }} key={a.id}>
-                                                <ArrowRightIcon sx={{ fontSize: "40px", color: "red" }} />
-                                                <Box>
-                                                    <Typography>{a.question}</Typography>
-                                                    <FormControl size='small' sx={{ width: "300px" }} key={a.id}>
-                                                        <Select value={selectedAssessment[index].optionId}
-                                                            onChange={(e) => {
-                                                                selectedAssessment[index].optionId = Number(e.target.value);
-                                                                setSelectedAssessment([...selectedAssessment]);
-                                                            }}
-                                                        >
-                                                            {
-                                                                a.assessmentOptions.map((option) => {
-                                                                    return (
-                                                                        <MenuItem value={option.id} key={option.id}>{option.point} điểm</MenuItem>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </Select>
-                                                    </FormControl>
-                                                </Box>
-                                            </Box>
-                                        )
-                                    })
+                                    formik.errors.achieved && (
+                                        <FormHelperText error>
+                                            {formik.errors.achieved}
+                                        </FormHelperText>
+                                    )
                                 }
-                            </Stack>
-                            <Box sx={{ display: "flex", justifyContent: 'end', gap: 1 }}>
-                                <Button variant='contained' sx={{ mt: 5 }} type='submit'>Tạo sổ</Button>
-                                <Button sx={{ mt: 5 }} onClick={handleClose}>Huỷ</Button>
-                            </Box>
-                        </form>
+                                <Stack direction='row' gap={2} mt={2}>
+                                    <CloseIcon sx={{ color: "red" }} />
+                                    <Typography>Chưa làm được</Typography>
+                                </Stack>
+                                <TextField multiline fullWidth minRows={5} maxRows={10}
+                                    name='failed'
+                                    onChange={formik.handleChange}
+                                    value={formik.values.failed}
+                                    sx={{ mt: 1 }} />
+                                {
+                                    formik.errors.failed && (
+                                        <FormHelperText error>
+                                            {formik.errors.failed}
+                                        </FormHelperText>
+                                    )
+                                }
+                                <Stack direction='row' gap={2} mt={2}>
+                                    <EditNoteIcon sx={{ color: "blue" }} />
+                                    <Typography>Ghi chú thêm</Typography>
+                                </Stack>
+                                <TextField multiline fullWidth minRows={5} maxRows={10}
+                                    name='noteFromTutor'
+                                    onChange={formik.handleChange}
+                                    value={formik.values.noteFromTutor}
+                                    sx={{ mt: 1 }}
+                                />
+                                {
+                                    formik.errors.noteFromTutor && (
+                                        <FormHelperText error>
+                                            {formik.errors.noteFromTutor}
+                                        </FormHelperText>
+                                    )
+                                }
+                                <Stack direction='row' gap={2} mt={2}>
+                                    <ListAltIcon sx={{ color: "orange" }} />
+                                    <Typography>Danh sách đánh giá</Typography>
+                                </Stack>
+                                <Stack direction='row' sx={{ width: "100%" }} flexWrap='wrap' rowGap={2}>
+                                    {
+                                        assessment && assessment.map((a, index) => {
+                                            return (
+                                                <Box sx={{ display: "flex", width: "50%" }} key={a.id}>
+                                                    <ArrowRightIcon sx={{ fontSize: "40px", color: "red" }} />
+                                                    <Box>
+                                                        <Typography>{a.question}</Typography>
+                                                        <FormControl size='small' sx={{ width: "300px" }} key={a.id}>
+                                                            <Select value={selectedAssessment[index].optionId}
+                                                                onChange={(e) => {
+                                                                    selectedAssessment[index].optionId = Number(e.target.value);
+                                                                    setSelectedAssessment([...selectedAssessment]);
+                                                                }}
+                                                            >
+                                                                {
+                                                                    a.assessmentOptions.map((option) => {
+                                                                        return (
+                                                                            <MenuItem value={option.id} key={option.id}>{option.point} điểm</MenuItem>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Box>
+                                                </Box>
+                                            )
+                                        })
+                                    }
+                                </Stack>
+                                <Box sx={{ display: "flex", gap: 1 }}>
+                                    <Button variant='contained' sx={{ mt: 5 }} type='submit'>Tạo sổ</Button>
+                                    <Button sx={{ mt: 5 }} onClick={handleClose}>Huỷ</Button>
+                                </Box>
+                            </form>
+                            {
+                                currentReport && (
+                                    <Box sx={{ width: "38%" }}>
+                                        <Typography variant='h5'>Đánh giá trước đó</Typography>
+                                        <Typography mt={2}>Thời gian: {formatDate(currentReport?.from)} - {formatDate(currentReport?.to)}</Typography>
+                                        <Stack direction='row' gap={2} mt={2}>
+                                            <DoneIcon sx={{ color: "green" }} />
+                                            <Typography>Đã làm được</Typography>
+                                        </Stack>
+                                        <Typography sx={{ whiteSpace: "break-spaces" }}>{currentReport.achieved}</Typography>
+                                        <Stack direction='row' gap={2} mt={2}>
+                                            <CloseIcon sx={{ color: "red" }} />
+                                            <Typography>Chưa làm được</Typography>
+                                        </Stack>
+                                        <Typography sx={{ whiteSpace: "break-spaces" }}>{currentReport.failed}</Typography>
+                                        <Stack direction='row' gap={2} mt={2}>
+                                            <EditNoteIcon sx={{ color: "blue" }} />
+                                            <Typography>Ghi chú thêm</Typography>
+                                        </Stack>
+                                        <Typography sx={{ whiteSpace: "break-spaces" }}>{currentReport.noteFromTutor}</Typography>
+                                        <Stack direction='row' gap={2} mt={2}>
+                                            <ListAltIcon sx={{ color: "orange" }} />
+                                            <Typography>Danh sách đánh giá</Typography>
+                                        </Stack>
+                                        <List sx={{ height: '500px', overflow: "auto" }}>
+                                            {
+                                                currentReport && currentReport.assessmentResults.map((a) => {
+                                                    return (
+                                                        <ListItem key={a.id}>
+                                                            <ListItemIcon>
+                                                                <ChevronRightIcon />
+                                                            </ListItemIcon>
+                                                            <ListItemText
+                                                                primary={a.question}
+                                                                secondary={`Điểm: ${a.point}`}
+                                                            />
+                                                        </ListItem>
+                                                    )
+                                                })
+                                            }
+                                        </List>
+                                    </Box>
+                                )
+                            }
+                        </Stack>
+
                         <LoadingComponent open={loading} />
                     </Box>
                 </Modal>
