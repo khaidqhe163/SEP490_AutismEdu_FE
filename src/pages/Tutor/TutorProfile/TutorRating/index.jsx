@@ -362,17 +362,20 @@ function TutorRating({ tutorId, userInfo }) {
 
                     </Box>
 
-                )) : 'Hiện tại chưa có đánh giá nào về gia sư.'}
+                )) : <Typography my={5} variant='subtitle1' textAlign={'center'}>Hiện tại chưa có đánh giá nào về gia sư.</Typography>}
+
+                {(dataReviewStats && dataReviewStats?.reviews?.length !== 0) &&
+                    <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
+                        <Pagination
+                            count={totalPages}
+                            page={pagination.pageNumber}
+                            onChange={handlePageChange}
+                            color="primary"
+                        />
+                    </Stack>}
 
                 {open && <DeleteConfirmationModal id={idDelete} open={open} handleClose={handleClose} dataReviewStats={dataReviewStats} setDataReviewStats={setDataReviewStats} />}
-                <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
-                    <Pagination
-                        count={totalPages}
-                        page={pagination.pageNumber}
-                        onChange={handlePageChange}
-                        color="primary"
-                    />
-                </Stack>
+
                 <LoadingComponent open={loading} setOpen={setLoading} />
             </Box>
         )
