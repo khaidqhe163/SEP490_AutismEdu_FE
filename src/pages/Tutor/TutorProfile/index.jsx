@@ -266,7 +266,7 @@ function TutorProfile() {
                                         <Box display="flex" flexDirection="column" gap={3}>
                                             <Box>
                                                 <Typography my={2} variant='h5'>Giới thiệu về tôi</Typography>
-                                                <Box sx={{ width: "85%" }} dangerouslySetInnerHTML={{ __html: tutor.aboutMe }} />
+                                                <Box width={'100%'} bgcolor={'#fff8e3'} mt={2} p={3} borderRadius={'20px'} dangerouslySetInnerHTML={{ __html: tutor.aboutMe }} />
 
                                             </Box>
 

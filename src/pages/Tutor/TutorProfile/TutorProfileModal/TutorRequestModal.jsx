@@ -43,7 +43,7 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                     nav('/autismedu/my-childlren');
                 } else {
                     setChildData(res.result);
-                    const x = res?.result?.find((r) => (!rejectChildIds.includes(r?.id)))
+                    const x = res?.result?.find((r) => (!rejectChildIds?.includes(r?.id)))
                     setSelectedChild(x);
                 }
             }, (error) => {
@@ -127,7 +127,7 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                                             <MenuItem
                                                 key={child?.id}
                                                 value={child?.id}
-                                                disabled={rejectChildIds.includes(child?.id)}
+                                                disabled={rejectChildIds?.includes(child?.id)}
                                             >
                                                 {child?.name}
                                             </MenuItem>

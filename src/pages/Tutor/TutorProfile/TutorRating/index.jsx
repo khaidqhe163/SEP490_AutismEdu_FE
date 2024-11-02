@@ -311,8 +311,8 @@ function TutorRating({ tutorId, userInfo }) {
                                 </Box>
                             </Stack>
                             <Typography width={'15%'} textAlign={'right'}><small>{dayjs(new Date(r?.createdDate)).fromNow()}</small></Typography>
-                            {/* {userInfo?.id === r?.parent?.id && ( */}
-                            {userInfo?.id === r?.parentId && (
+                            {userInfo?.id === r?.parent?.id && (
+                            // {userInfo?.id === r?.id && (
                                 <>
                                     <IconButton onClick={handleOpenMenu} size='medium'>
                                         <MoreHorizIcon />

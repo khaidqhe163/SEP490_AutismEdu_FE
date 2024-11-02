@@ -1,10 +1,32 @@
 import { Box, Button, Card, CardContent, CardMedia, Grid, Stack, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import ChipComponent from '~/components/ChipComponent';
 
 
 function BigCity() {
+    const nav = useNavigate();
+
+    const handleGetCity = (key) => {
+        const city = getCity(key);
+        nav('/autismedu/list-tutor', { state: { city } });
+    };
+    const getCity = (key) => {
+        switch (key) {
+            case 1:
+                return "08|Tỉnh Tuyên Quang";
+                // return "01|Thành phố Hà Nội"
+            case 2:
+                return "48|Thành phố Đà Nẵng";
+            case 3:
+                return "79|Thành phố Hồ Chí Minh";
+            case 4:
+                return "31|Thành phố Hải Phòng";
+            default:
+                return '';
+        }
+    };
     return (
-        <Stack direction="row" sx={{ mt: "30px", paddingBottom: "30px", justifyContent: "center", pb:"100px" }}>
+        <Stack direction="row" sx={{ mt: "30px", paddingBottom: "30px", justifyContent: "center", pb: "100px" }}>
             <Box sx={{
                 width: {
                     xl: "80%",
@@ -37,7 +59,7 @@ function BigCity() {
                                 <Typography gutterBottom variant="h5" component="div">
                                     Hà Nội
                                 </Typography>
-                                <Button sx={{ fontWeight: "bold" }}>Khám phá</Button>
+                                <Button sx={{ fontWeight: "bold" }} onClick={() => handleGetCity(1)}>Khám phá</Button>
                             </CardContent>
                         </Card>
                     </Grid>
@@ -58,7 +80,7 @@ function BigCity() {
                                 <Typography gutterBottom variant="h5" component="div">
                                     Đà Nẵng
                                 </Typography>
-                                <Button sx={{ fontWeight: "bold" }}>Khám phá</Button>
+                                <Button sx={{ fontWeight: "bold" }} onClick={() => handleGetCity(2)}>Khám phá</Button>
                             </CardContent>
                         </Card>
                     </Grid>
@@ -79,7 +101,7 @@ function BigCity() {
                                 <Typography gutterBottom variant="h5" component="div">
                                     Hồ Chí Minh
                                 </Typography>
-                                <Button sx={{ fontWeight: "bold" }}>Khám phá</Button>
+                                <Button sx={{ fontWeight: "bold" }} onClick={() => handleGetCity(3)}>Khám phá</Button>
                             </CardContent>
                         </Card>
                     </Grid >
@@ -100,7 +122,7 @@ function BigCity() {
                                 <Typography gutterBottom variant="h5" component="div">
                                     Hải Phòng
                                 </Typography>
-                                <Button sx={{ fontWeight: "bold" }}>Khám phá</Button>
+                                <Button sx={{ fontWeight: "bold" }} onClick={() => handleGetCity(4)}>Khám phá</Button>
                             </CardContent>
                         </Card>
                     </Grid>
