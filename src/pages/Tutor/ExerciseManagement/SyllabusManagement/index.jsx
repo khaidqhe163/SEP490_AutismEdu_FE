@@ -36,7 +36,7 @@ export default function SyllabusManagement() {
                 }
             }, (error) => {
                 console.log(error);
-            }, { orderBy: 'ageFrom', sort: 'asc', pageNumber: 1 });
+            }, { orderBy: 'ageFrom', sort: 'asc'});
         } catch (error) {
             console.log(error);
         } finally {

@@ -33,7 +33,7 @@ function Tutor() {
     }
 
     const formatAddress = (address) => {
-        const splitedAdd = address.split("|");
+        const splitedAdd = address?.split("|");
         let formatedAddress = "";
         splitedAdd.forEach((s, index) => {
             if (index === 0)

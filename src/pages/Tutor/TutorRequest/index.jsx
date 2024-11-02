@@ -201,10 +201,11 @@ function TutorRequest() {
     };
 
     const formatAddress = (address) => {
-        let adrs = address.split('|');
-        return adrs.reverse().join(', ');
+        let adrs = address?.split('|');
+        return adrs?.reverse()?.join(', ');
     };
 
+    console.log(listRequest);
 
     return (
         <Stack direction='column' sx={{

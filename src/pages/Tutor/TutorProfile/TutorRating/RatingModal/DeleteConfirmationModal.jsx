@@ -4,26 +4,19 @@ import React from 'react';
 import services from '~/plugins/services';
 
 function DeleteConfirmationModal({ id, open, handleClose, dataReviewStats, setDataReviewStats }) {
-
+    console.log(id);
     const handleDelete = async () => {
         try {
-            await services.ReviewManagementAPI.deleteReview(id, (res) => {
-                console.log('delete hello');
-                
-                const newData = dataReviewStats?.reviews?.filter((r) => r?.id !== id);
-                setDataReviewStats((prev) => ({ ...prev, reviews: newData }));
-                enqueueSnackbar("Xoá đánh giá thành công", { variant: 'success' });
+            await services.ReviewManagementAPI.deleteReview(id, {}, (res) => {
+                if (res?.result) {
+                    const newData = dataReviewStats?.reviews?.filter((r) => r?.id !== id);
+                    setDataReviewStats((prev) => ({ ...prev, reviews: newData }));
+                    enqueueSnackbar(res.result, { variant: 'success' });
+                }
             }, (error) => {
+                console.log('Tuoi l');
                 console.log(error);
             })
-            // await services.CertificateAPI.deleteCertificate(id, {}, (res) => {
-            //     const newListCerti = certificateList.filter((c) => c.id !== id);
-            //     setCertificateList(newListCerti);
-            //     enqueueSnackbar("Xoá thành công!", { variant: 'success' });
-            //     handleClose();
-            // }, (error) => {
-            //     console.log(error);
-            // })
         } catch (error) {
             console.log(error);
         } finally {

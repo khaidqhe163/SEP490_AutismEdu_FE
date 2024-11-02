@@ -13,8 +13,8 @@ function BigCity() {
     const getCity = (key) => {
         switch (key) {
             case 1:
-                return "08|Tỉnh Tuyên Quang";
-                // return "01|Thành phố Hà Nội"
+                // return "08|Tỉnh Tuyên Quang";
+                return "01|Thành phố Hà Nội"
             case 2:
                 return "48|Thành phố Đà Nẵng";
             case 3:

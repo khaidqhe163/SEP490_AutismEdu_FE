@@ -40,7 +40,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
 
     const handleProvinceChange = (event) => {
         const provinceData = event.target.value;
-        let arrProvince = provinceData.split("|");
+        let arrProvince = provinceData?.split("|");
         let [provinceId, provinceName] = arrProvince;
 
         setSelectedProvince(provinceId + "|" + provinceName);
@@ -68,7 +68,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
 
     const handleDistrictChange = (event) => {
         const districtData = event.target.value;
-        let arrDistrict = districtData.split("|");
+        let arrDistrict = districtData?.split("|");
         let [districtId, districtName] = arrDistrict;
 
         setSelectedDistrict(districtId + "|" + districtName);
@@ -94,7 +94,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
 
     const handleCommuneChange = (event) => {
         const communeData = event.target.value;
-        let arrCommune = communeData.split("|");
+        let arrCommune = communeData?.split("|");
         let [communeId, communeName] = arrCommune;
 
         setSelectedCommune(communeId + "|" + communeName);

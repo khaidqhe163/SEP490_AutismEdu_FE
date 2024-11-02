@@ -46,9 +46,8 @@ function TutorRating({ tutorId, userInfo }) {
             setTempContent(selectedReview?.description);
         }
     }, [selectedReview]);
+
     console.log(dataReviewStats);
-
-
 
 
     const handleChangeRatingData = (e) => {
@@ -65,7 +64,6 @@ function TutorRating({ tutorId, userInfo }) {
     };
 
     const handleEditClick = (r) => {
-        // console.log(r);
         setSelectedReview(r);
         setIsEditing(true);
         handleCloseMenu();
@@ -159,11 +157,18 @@ function TutorRating({ tutorId, userInfo }) {
         }
     };
 
-    const handleDeleteReview = async () => {
-
-    }
 
     const totalPages = Math.ceil(pagination.total / pagination.pageSize);
+
+    // const isReviewExist = dataReviewStats?.reviews?.includes(userInfo?.id);
+    const checkReviewExist = () => {
+        if (dataReviewStats?.reviews) {
+            const arrayReview = dataReviewStats.reviews?.map((r) => r?.parent?.id);
+            return arrayReview?.includes(userInfo?.id);
+        }
+    };
+
+    const isRevewExist = checkReviewExist();
 
     dayjs.extend(relativeTime);
 
@@ -178,7 +183,6 @@ function TutorRating({ tutorId, userInfo }) {
                                 value={dataReviewStats?.averageScore}
                                 readOnly
                                 precision={0.1} />
-                            {/* <Rating name="half-rating-read" value={} precision={0.1} readOnly /> */}
                         </Typography>
                         <small>{dataReviewStats?.totalReviews} lượt đánh giá</small>
                     </Box>
@@ -253,7 +257,7 @@ function TutorRating({ tutorId, userInfo }) {
                     </Box>
                 </Stack>
                 <Typography mt={3} variant='h4'>Đánh giá</Typography>
-                {userInfo && <Stack direction='row' mt={3} sx={{ alignItems: "start" }}>
+                {userInfo && !isRevewExist && <Stack direction='row' mt={3} sx={{ alignItems: "start" }}>
                     <Box sx={{
                         display: "flex",
                         alignItems: "center",
@@ -312,7 +316,7 @@ function TutorRating({ tutorId, userInfo }) {
                             </Stack>
                             <Typography width={'15%'} textAlign={'right'}><small>{dayjs(new Date(r?.createdDate)).fromNow()}</small></Typography>
                             {userInfo?.id === r?.parent?.id && (
-                            // {userInfo?.id === r?.id && (
+                                // {userInfo?.id === r?.id && (
                                 <>
                                     <IconButton onClick={handleOpenMenu} size='medium'>
                                         <MoreHorizIcon />
@@ -322,7 +326,7 @@ function TutorRating({ tutorId, userInfo }) {
                                             <EditIcon fontSize="small" color='primary' sx={{ mr: 1 }} />
                                             Chỉnh sửa
                                         </MenuItem>
-                                        <MenuItem onClick={() => handleClickOpen(r?.id)}>
+                                        <MenuItem onClick={() => { handleClickOpen(r?.id); handleCloseMenu(); }}>
                                             <DeleteIcon fontSize="small" color='error' sx={{ mr: 1 }} />
                                             Xoá
                                         </MenuItem>
@@ -362,9 +366,11 @@ function TutorRating({ tutorId, userInfo }) {
 
                     </Box>
 
-                )) : <Typography my={5} variant='subtitle1' textAlign={'center'}>Hiện tại chưa có đánh giá nào về gia sư.</Typography>}
+                )) : <Typography my={5} variant='subtitle1' textAlign={'center'}>Hiện tại chưa có đánh giá nào về gia sư.</Typography>
+                }
 
-                {(dataReviewStats && dataReviewStats?.reviews?.length !== 0) &&
+                {
+                    (dataReviewStats && dataReviewStats?.reviews?.length !== 0) &&
                     <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
                         <Pagination
                             count={totalPages}
@@ -372,12 +378,13 @@ function TutorRating({ tutorId, userInfo }) {
                             onChange={handlePageChange}
                             color="primary"
                         />
-                    </Stack>}
+                    </Stack>
+                }
 
                 {open && <DeleteConfirmationModal id={idDelete} open={open} handleClose={handleClose} dataReviewStats={dataReviewStats} setDataReviewStats={setDataReviewStats} />}
 
                 <LoadingComponent open={loading} setOpen={setLoading} />
-            </Box>
+            </Box >
         )
     )
 }
