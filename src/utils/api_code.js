@@ -109,7 +109,11 @@ const API_CODE = {
 
 
   //Schedule
-  API_GET_SCHEDULE: '/v1/Schedule'
+  API_GET_SCHEDULE: '/v1/Schedule',
+  API_GET_SCHEDULE_BY_ID: '/v1/Schedule/',
+  API_UPDATE_ASSIGN_EXERCISES: '/v1/Schedule/AssignExercises/',
+  API_UPDATE_SCHEDULE_CHANGE_STATUS: '/v1/Schedule/changeStatus/',
+
 };
 
 export default API_CODE;

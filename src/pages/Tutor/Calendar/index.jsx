@@ -39,6 +39,8 @@ function Calendar() {
     const { id } = useParams();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isEvaluateModalOpen, setEvaluateModalOpen] = useState(false);
+    const [selectedKey, setSelectedKey] = useState('');
+    const [aSchedule, setASchedule] = useState(null);
     const tutorInformation = useSelector(tutorInfor);
     const [weekInYears, setWeekInYears] = useState([]);
     const [listYears, setListYears] = useState([]);
@@ -59,7 +61,7 @@ function Calendar() {
         try {
             setLoading(true);
             await services.ScheduleAPI.getSchedule((res) => {
-                console.log(res);
+                console.log(res.result);
                 organizeSchedulesByDay(res.result)
                 setSchedule(res.result)
             }, (err) => {
@@ -181,11 +183,33 @@ function Calendar() {
         }
         const [hours, minutes] = timeString.split(':');
         const formattedTime = `${hours}:${minutes}`;
-        return formattedTime
+        return formattedTime;
     };
 
     console.log(filterSchedule);
-    
+    const handleAssign = (f, keys) => {
+        console.log(f);
+        console.log(keys);
+        setSelectedKey(keys);
+        setASchedule(f);
+        setModalOpen(true);
+    };
+
+    const handleOpenEvaluate = (f, keys) => {
+        console.log(f);
+        console.log(keys);
+        setSelectedKey(keys);
+        setASchedule(f);
+        setEvaluateModalOpen(true);
+    };
+
+    const passStatus = (value) => {
+        return value === 2 ? 'Chưa có dữ liệu' : value === 1 ? "Đạt" : "Chưa đạt"
+    };
+    const attendanceStatus = (value) => {
+        return value === 2 ? 'Chưa có dữ liệu' : value === 1 ? "Có mặt" : "Vắng"
+    };
+
     return (
         <>
             <Box p="30px" sx={{ width: "100%", height: "calc(100vh - 64px)" }}>
@@ -289,12 +313,12 @@ function Calendar() {
                                                         mb: 1, borderRadius: '10px',
                                                         mt: 2,
                                                     }}>
-                                                        <Typography sx={{ color: "#7850d4" }}>Mã: {f.studentProfile.studentCode}</Typography>
+                                                        <Typography sx={{ color: "#7850d4" }}>Mã: {f.studentProfile?.studentCode}</Typography>
                                                         <Typography sx={{ color: "#7850d4", fontWeight: "bold" }}>({formatTime(f.start)} - {formatTime(f.end)})</Typography>
-                                                        <Typography sx={{ color: "#7850d4", fontSize: "12px" }}>Đánh giá: Chưa đạt</Typography>
-                                                        <Typography sx={{ color: "#7850d4", fontSize: "12px" }}>TT: Chưa học</Typography>
-                                                        <Button variant='contained' sx={{ mt: 2, fontSize: "12px" }}>Gán bài tập</Button>
-                                                        <Button variant='contained' sx={{ mt: 2, fontSize: "12px" }}>Đánh giá</Button>
+                                                        <Typography sx={{ color: "#7850d4", fontSize: "12px" }}>Đánh giá: {passStatus(f.passingStatus)}</Typography>
+                                                        <Typography sx={{ color: "green", fontSize: "12px" }} >({attendanceStatus(f.attendanceStatus)})</Typography>
+                                                        <Button variant='contained' color='primary' sx={{ mt: 2, fontSize: "12px" }} onClick={() => handleAssign(f, keys)}>Gán bài tập</Button>
+                                                        <Button variant='contained' color='secondary' sx={{ mt: 2, fontSize: "12px" }} onClick={() => handleOpenEvaluate(f, keys)}>Đánh giá</Button>
                                                     </Box>
                                                 )
                                             })
@@ -306,8 +330,8 @@ function Calendar() {
                     )}
 
                 </Stack>
-                {/* {isModalOpen && <AssignExercise isOpen={isModalOpen} setModalOpen={setModalOpen} schedule={schedule} />} */}
-                {/* {isEvaluateModalOpen && <Evaluate isOpen={isEvaluateModalOpen} setModalOpen={setEvaluateModalOpen} schedule={schedule} />} */}
+                {isModalOpen && selectedKey && aSchedule && <AssignExercise isOpen={isModalOpen} setModalOpen={setModalOpen} schedule={aSchedule} filterSchedule={filterSchedule} setFilterSchedule={setFilterSchedule} selectedKey={selectedKey} />}
+                {isEvaluateModalOpen && aSchedule && <Evaluate isOpen={isEvaluateModalOpen} setModalOpen={setEvaluateModalOpen} schedule={aSchedule} selectedKey={selectedKey} filterSchedule={filterSchedule} setFilterSchedule={setFilterSchedule} />}
                 <LoadingComponent open={loading} />
             </Box>
         </>
