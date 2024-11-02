@@ -1,7 +1,7 @@
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, Button, Divider, FormControl, FormControlLabel, FormHelperText, FormLabel, MenuItem, Radio, RadioGroup, Select, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, FormControl, FormControlLabel, FormHelperText, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Stack, TextField, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 import ChildrenProfile from './ChildrenProfile';
@@ -26,6 +26,11 @@ function StudentCreation() {
     const [districts, setDistricts] = useState([]);
     const [communes, setCommunes] = useState([]);
     const [avatar, setAvatar] = useState(null);
+    const [sendRequest, setSendRequest] = useState("true")
+    const [selectedRequest, setSelectedRequest] = useState(0);
+    useEffect(() => {
+        handleGetTutorRequest();
+    }, [])
     const handleGetParent = async () => {
         if (email.current.value === "") {
             setEmailError("Vui lòng nhập tài khoản của phụ huynh!");
@@ -55,8 +60,11 @@ function StudentCreation() {
             console.log(error);
         }
     }
-    const handleChange = (event) => {
+    const handleChangeAccount = (event) => {
         setHasAccount(event.target.value);
+    };
+    const handleChangeSendRequest = (event) => {
+        setSendRequest(event.target.value);
     };
     const handleGetChildren = async (id) => {
         try {
@@ -194,6 +202,18 @@ function StudentCreation() {
             }
         }
     });
+
+    const handleGetTutorRequest = async () => {
+        try {
+            await services.TutorRequestAPI.getTutorRequestNoProfile((res) => {
+                console.log("request ==> ", res.result);
+            }, (err) => {
+                console.log(err);
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <Box p="20px" sx={{ height: "calc(100vh - 65px)", bgcolor: "#f8fafb", width: '100%' }} overflow="auto">
             <Typography variant='h4'>Tạo hồ sơ học sinh</Typography>
@@ -208,22 +228,61 @@ function StudentCreation() {
                 flexWrap: "wrap"
             }}>
                 <Box sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
-                    <FormControl>
-                        <FormLabel id="demo-radio-buttons-group-label">Phụ huynh đã có tài khoản chưa?</FormLabel>
-                        <RadioGroup
-                            aria-labelledby="demo-radio-buttons-group-label"
-                            value={hasAccount}
-                            name="radio-buttons-group"
-                            onChange={handleChange}
-                        >
-                            <FormControlLabel value="true" control={<Radio />} label="Có" />
-                            <FormControlLabel value="false" control={<Radio />} label="Chưa" />
-                        </RadioGroup>
-                    </FormControl>
+                    <Box>
+                        <FormControl>
+                            <FormLabel id="hasAccount">Phụ huynh đã có tài khoản chưa?</FormLabel>
+                            <RadioGroup
+                                row
+                                aria-labelledby="hasAccount"
+                                value={hasAccount}
+                                name="hasAccount"
+                                onChange={handleChangeAccount}
+                            >
+                                <FormControlLabel value="true" control={<Radio />} label="Có" />
+                                <FormControlLabel value="false" control={<Radio />} label="Chưa" />
+                            </RadioGroup>
+                        </FormControl>
+                        <br />
+                        <FormControl sx={{ mt: 2 }}>
+                            <FormLabel id="requested">Phụ huynh đã gửi yêu cầu?</FormLabel>
+                            <RadioGroup
+                                row
+                                aria-labelledby="requested"
+                                value={sendRequest}
+                                name="sendRequested"
+                                onChange={handleChangeSendRequest}
+                            >
+                                <FormControlLabel value="true" control={<Radio />} label="Có" />
+                                <FormControlLabel value="false" control={<Radio />} label="Chưa" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Box>
                     <Button variant='contained' onClick={formik.handleSubmit} sx={{ height: "40px" }}>Tạo hồ sơ</Button>
                 </Box>
                 {
-                    hasAccount === "true" && (
+                    hasAccount === "true" && sendRequest === 'true' && (
+                        <>
+                            <Divider sx={{ width: "100%" }} />
+                            <Box>
+                                <FormControl sx={{ m: 1, minWidth: 120 }}>
+                                    <InputLabel id="requestList">Age</InputLabel>
+                                    <Select
+                                        labelId="requestList"
+                                        value={selectedRequest}
+                                        label="Age"
+                                        onChange={(e) => { setSelectedRequest(e.target.value) }}
+                                    >
+                                        <MenuItem value={0}>Tên </MenuItem>
+                                        <MenuItem value={1}>Twenty</MenuItem>
+                                        <MenuItem value={2}>Thirty</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                        </>
+                    )
+                }
+                {
+                    hasAccount === "true" && sendRequest === 'false' && (
                         <>
                             <Divider sx={{ width: "100%" }} />
                             <Box sx={{ width: "50%", display: "flex", mt: 2 }}>

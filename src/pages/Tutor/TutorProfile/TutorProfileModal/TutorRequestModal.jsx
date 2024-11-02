@@ -127,7 +127,7 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                                             <MenuItem
                                                 key={child?.id}
                                                 value={child?.id}
-                                                disabled={rejectChildIds.includes(child?.id)}
+                                                disabled={rejectChildIds?.includes(child?.id)}
                                             >
                                                 {child?.name}
                                             </MenuItem>
