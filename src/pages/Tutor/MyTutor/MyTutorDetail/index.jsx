@@ -104,17 +104,17 @@ function MyTutorDetail() {
                         alignItems: "center",
                         mt: 5
                     }}>
-                        <Avatar alt={studentProfile?.tutor.fullName || "R"}
-                            src={studentProfile?.tutor.imageUrl || "/"}
+                        <Avatar alt={studentProfile?.tutor?.fullName || "R"}
+                            src={studentProfile?.tutor?.imageUrl || "/"}
                             sx={{ width: "150px", height: "150px" }}
                         />
                         <Box>
-                            <Typography variant='h4'>{studentProfile?.tutor.fullName}</Typography>
+                            <Typography variant='h4'>{studentProfile?.tutor?.fullName}</Typography>
                             <Stack direction="row" alignItems="center" gap={2} mt={2}>
-                                <LocalPhoneIcon /><Typography> {studentProfile?.tutor.phoneNumber}</Typography>
+                                <LocalPhoneIcon /><Typography> {studentProfile?.tutor?.phoneNumber}</Typography>
                             </Stack>
                             <Stack direction="row" alignItems="center" gap={2} mt={2}>
-                                <LocationOnOutlinedIcon /><Typography> {formatAddress(studentProfile?.tutor.address)}</Typography>
+                                <LocationOnOutlinedIcon /><Typography> {formatAddress(studentProfile?.tutor?.address)}</Typography>
                             </Stack>
                         </Box>
                     </Stack>

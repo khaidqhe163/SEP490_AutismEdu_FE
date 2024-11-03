@@ -66,8 +66,8 @@ function StudentSchedule({ studentProfile }) {
         const year = new Date().getFullYear();
         const weeks = generateMondaysAndSundays(year);
         setWeekInYears(weeks);
-        const today = new Date();
-        setCurrentWeek(weeks.findIndex(week => today >= week.monday && today <= week.sunday));
+        const today = resetTime(new Date());
+        setCurrentWeek(weeks.findIndex(week => today >= resetTime(week.monday) && today <= resetTime(week.sunday)));
         if (id) {
             setCurrentStudent(id);
         }
@@ -152,6 +152,16 @@ function StudentSchedule({ studentProfile }) {
         const formattedTime = `${hours}:${minutes}`;
         return formattedTime
     }
+    function resetTime(date) {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+
+    const passStatus = (value) => {
+        return value === 2 ? 'Chưa có dữ liệu' : value === 1 ? "Đạt" : "Chưa đạt"
+    };
+    const attendanceStatus = (value) => {
+        return value === 2 ? 'Chưa có dữ liệu' : value === 1 ? "Có mặt" : "Vắng"
+    };
     return (
         <>
             <Box p="30px" sx={{ width: "80%", margin: "auto" }}>
@@ -255,11 +265,10 @@ function StudentSchedule({ studentProfile }) {
                                                         mb: 1, borderRadius: '10px',
                                                         mt: 2,
                                                     }}>
-                                                        <Typography sx={{ color: "#7850d4" }}>Mã: {f.studentProfile.studentCode}</Typography>
+                                                        <Typography sx={{ color: "#7850d4" }}>Mã: {f.studentProfile?.studentCode}</Typography>
                                                         <Typography sx={{ color: "#7850d4", fontWeight: "bold" }}>({formatTime(f.start)} - {formatTime(f.end)})</Typography>
-                                                        <Typography sx={{ color: "#7850d4", fontSize: "12px" }}>Đánh giá: Chưa đạt</Typography>
-                                                        <Typography sx={{ color: "#7850d4", fontSize: "12px" }}>TT: Chưa học</Typography>
-                                                        <Button variant='contained' sx={{ mt: 2, fontSize: "12px" }}>Xem chi tiết</Button>
+                                                        <Typography sx={{ color: "#7850d4", fontSize: "12px" }}>Đánh giá: {passStatus(f.passingStatus)}</Typography>
+                                                        <Typography sx={{ color: "green", fontSize: "12px" }} >({attendanceStatus(f.attendanceStatus)})</Typography>
                                                     </Box>
                                                 )
                                             })
