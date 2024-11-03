@@ -3,22 +3,26 @@ import { enqueueSnackbar } from 'notistack';
 import React from 'react';
 import services from '~/plugins/services';
 
-function DeleteConfirmationModal({ id, open, handleClose, ratingList, setRatingList }) {
-
+function DeleteConfirmationModal({ id, open, handleClose, dataReviewStats, setDataReviewStats }) {
+    console.log(id);
     const handleDelete = async () => {
         try {
-            // await services.CertificateAPI.deleteCertificate(id, {}, (res) => {
-            //     const newListCerti = certificateList.filter((c) => c.id !== id);
-            //     setCertificateList(newListCerti);
-            //     enqueueSnackbar("Xoá thành công!", { variant: 'success' });
-            //     handleClose();
-            // }, (error) => {
-            //     console.log(error);
-            // })
+            await services.ReviewManagementAPI.deleteReview(id, {}, (res) => {
+                if (res?.result) {
+                    const newData = dataReviewStats?.reviews?.filter((r) => r?.id !== id);
+                    setDataReviewStats((prev) => ({ ...prev, reviews: newData }));
+                    enqueueSnackbar(res.result, { variant: 'success' });
+                }
+            }, (error) => {
+                console.log('Tuoi l');
+                console.log(error);
+            })
         } catch (error) {
             console.log(error);
+        } finally {
+            handleClose();
         }
-    }
+    };
 
     const style = {
         position: 'absolute',
@@ -40,7 +44,7 @@ function DeleteConfirmationModal({ id, open, handleClose, ratingList, setRatingL
                 </Typography>
                 <Divider />
                 <Typography mt={2} mb={4}>
-                    Bạn có chắc chắn muốn xoá chứng chỉ này không?
+                    Bạn có chắc chắn muốn xoá đánh giá này không?
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
                     <Button variant="outlined" onClick={handleClose}>Huỷ</Button>

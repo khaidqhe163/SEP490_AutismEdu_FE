@@ -34,6 +34,7 @@ import ExerciseManagement from '~/pages/Tutor/ExerciseManagement'
 import MyTutor from '~/pages/Tutor/MyTutor'
 import MyTutorDetail from '~/pages/Tutor/MyTutor/MyTutorDetail'
 import StudentProfileApprove from '~/pages/StudentProfile/StudentProfileApprove'
+import TutorRequestHistory from '~/pages/Parent/TutorRequestHistory/TutorRequestHistory'
 
 const UnLayoutRoutes = [
     {
@@ -123,6 +124,10 @@ const publicRoutes = [
     {
         path: PAGES.ROOT + PAGES.MY_TUTOR_DETAIL,
         element: MyTutorDetail
+    },
+    {
+        path: PAGES.ROOT + PAGES.TUTOR_REQUEST_HISTORY,
+        element: TutorRequestHistory
     }
 ]
 

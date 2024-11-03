@@ -1,52 +1,63 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, Card, CardActionArea, CardContent, Grid, InputAdornment, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, MenuItem, Select, FormControl, InputLabel, Dialog, DialogTitle, DialogContent, DialogActions, Pagination, Divider } from '@mui/material';
+import React, { useState } from 'react';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Grid, TextField, Typography, Divider } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
-import { LoadingButton } from '@mui/lab';
-
 
 function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCloseEditDialog, selectedExercise, setSelectedExercise, exerciseTypeName, selectedExerciseType }) {
-    console.log(selectedExercise);
     const [loading, setLoading] = useState(false);
 
-    const handleSave = async () => {
-        try {
-            setLoading(true);
-            const dataUpdate = {
-                exerciseName: selectedExercise?.exerciseName,
-                description: selectedExercise?.description,
-                exerciseTypeId: selectedExerciseType.id,
-                originalId: selectedExercise?.id
-            };
-            await services.ExerciseManagementAPI.createExercise(dataUpdate, (res) => {
-                if (res?.result) {
-                    const indexExercise = exercises.findIndex((e) => e.id === selectedExercise.id);
-                    exercises.splice(indexExercise, 1, res.result);
-                    enqueueSnackbar("Chỉnh sửa bài tập thành công!", { variant: 'success' });
-                    handleCloseEditDialog();
-                }
+    const validationSchema = Yup.object({
+        exerciseName: Yup.string()
+            .required("Tên bài tập là bắt buộc")
+            .min(3, "Tên bài tập phải có ít nhất 3 ký tự"),
+        description: Yup.string()
+            .required("Nội dung là bắt buộc")
+            .min(5, "Nội dung phải có ít nhất 5 ký tự"),
+    });
 
-            }, (error) => {
+    const formik = useFormik({
+        initialValues: {
+            exerciseName: selectedExercise?.exerciseName || '',
+            description: selectedExercise?.description || '',
+        },
+        validationSchema,
+        enableReinitialize: true,
+        onSubmit: async (values) => {
+            try {
+                setLoading(true);
+                const dataUpdate = {
+                    exerciseName: values.exerciseName,
+                    description: values.description,
+                    exerciseTypeId: selectedExerciseType.id,
+                    originalId: selectedExercise?.id
+                };
+                await services.ExerciseManagementAPI.createExercise(dataUpdate, (res) => {
+                    if (res?.result) {
+                        const indexExercise = exercises.findIndex((e) => e.id === selectedExercise.id);
+                        exercises.splice(indexExercise, 1, res.result);
+                        enqueueSnackbar("Chỉnh sửa bài tập thành công!", { variant: 'success' });
+                        handleCloseEditDialog();
+                    }
+                }, (error) => {
+                    console.log(error);
+                });
+            } catch (error) {
                 console.log(error);
-            })
+            } finally {
+                setLoading(false);
+            }
+        },
+    });
 
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false)
-        }
-    };
-
-    const handleChangeExercise = (e) => {
-        const { name, value } = e.target;
-        setSelectedExercise((prev) => ({ ...prev, [name]: value }));
-    }
     return (
         <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
             <DialogTitle variant='h5' textAlign={'center'}>Chỉnh sửa bài tập</DialogTitle>
             <Divider />
             <DialogContent>
-                {selectedExercise && (
+                <form onSubmit={formik.handleSubmit}>
                     <Grid container spacing={3}>
                         <Grid item xs={4}>
                             <Typography variant="body1" fontWeight={600} textAlign={'right'}>Tên loại bài tập:</Typography>
@@ -62,8 +73,11 @@ function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCl
                                 fullWidth
                                 size="small"
                                 name='exerciseName'
-                                value={selectedExercise.exerciseName}
-                                onChange={handleChangeExercise}
+                                value={formik.values.exerciseName}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.exerciseName && Boolean(formik.errors.exerciseName)}
+                                helperText={formik.touched.exerciseName && formik.errors.exerciseName}
                             />
                         </Grid>
 
@@ -77,27 +91,30 @@ function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCl
                                 size="small"
                                 multiline
                                 rows={4}
-                                value={selectedExercise.description}
-                                onChange={handleChangeExercise}
+                                value={formik.values.description}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.description && Boolean(formik.errors.description)}
+                                helperText={formik.touched.description && formik.errors.description}
                             />
                         </Grid>
                     </Grid>
-                )}
+                </form>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleCloseEditDialog} color="primary">Hủy</Button>
                 <LoadingButton
-                    onClick={handleSave}
+                    onClick={formik.handleSubmit}
                     loading={loading}
                     variant="contained"
-                    color='primary'
+                    color="primary"
+                    disabled={!formik.dirty || !formik.isValid}
                 >
                     Lưu
                 </LoadingButton>
-                {/* <Button onClick={handleSave} color="primary" variant="contained">{loading ? '' : 'Lưu'}</Button> */}
             </DialogActions>
         </Dialog>
-    )
+    );
 }
 
-export default ExerciseUpdateModal
+export default ExerciseUpdateModal;

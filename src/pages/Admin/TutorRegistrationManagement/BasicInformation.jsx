@@ -30,7 +30,7 @@ function BasicInformation({ information }) {
     }
 
     const formatAddress = (address) => {
-        const addressParts = address.split('|');
+        const addressParts = address?.split('|');
         const formattedAddress = `${addressParts[3]} - ${addressParts[2]} - ${addressParts[1]} - ${addressParts[0]}`;
         return formattedAddress;
     }

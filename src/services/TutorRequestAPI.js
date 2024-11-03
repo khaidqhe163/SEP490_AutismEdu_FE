@@ -11,6 +11,10 @@ const getListTutorRequest = async (success, error, params) => {
 
 const changeStatusTutorRequest = async (endpoint, params, success, error) => {
     await put(API_CODE.API_PUT_TUTOR_REQUEST + endpoint, params, success, error);
+};
+
+const getListRequestHistory = async (success, error, params) => {
+    await get(API_CODE.API_GET_TUTOR_REQUEST_HISTORY, success, error, params);
 }
 const getTutorRequestNoProfile = async (success, error) => {
     await get(API_CODE.API_GET_NO_PROFILE, success, error);
@@ -21,5 +25,6 @@ export const TutorRequestAPI = {
     createTutorRequest,
     getListTutorRequest,
     changeStatusTutorRequest,
-    getTutorRequestNoProfile
+    getTutorRequestNoProfile,
+    getListRequestHistory,
 }

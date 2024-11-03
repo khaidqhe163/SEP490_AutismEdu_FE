@@ -38,6 +38,7 @@ export default function TutorSideBar({ openMenu }) {
             }, (error) => {
                 console.log(error);
             }, {
+                status: "Teaching"
             })
         } catch (error) {
             console.log(error);

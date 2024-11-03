@@ -14,6 +14,9 @@ import { enqueueSnackbar } from 'notistack';
 
 function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
 
+    console.log(selectedExerciseType);
+
+
     const [dataFilter, setDataFilter] = useState({
         search: '',
         orderBy: 'createdDate',
@@ -135,6 +138,7 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
             </Box>
             <Typography variant='h4' textAlign={'center'} my={2}>Danh sách bài tập</Typography>
 
+
             <Box display="flex" justifyContent="space-between" alignItems="center" width="100%" mb={2}>
                 <TextField
                     disabled={(exercises.length === 0 && dataFilter.search === '')}
@@ -173,6 +177,9 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
                 </Box>
 
             </Box>
+
+            <Typography variant='h6'>Loại bài tập: <span style={{ fontWeight: '100' }}>{selectedExerciseType?.exerciseTypeName}</span></Typography>
+
 
             {done && ((done && exercises.length !== 0) ? <>
                 <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>

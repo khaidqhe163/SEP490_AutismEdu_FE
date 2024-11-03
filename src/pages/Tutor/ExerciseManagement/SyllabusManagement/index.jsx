@@ -36,7 +36,7 @@ export default function SyllabusManagement() {
                 }
             }, (error) => {
                 console.log(error);
-            }, { orderBy: 'ageFrom', sort: 'asc', pageNumber: 1 });
+            }, { orderBy: 'ageFrom', sort: 'asc'});
         } catch (error) {
             console.log(error);
         } finally {
@@ -156,7 +156,7 @@ export default function SyllabusManagement() {
                                         </Stack>
                                     ))}
                                 </Stack>
-                                <Stack direction={'column'} justifyContent={'space-between'} alignItems={'center'} sx={{ width: "20%" }}>
+                                <Stack direction={'column'} gap={2} justifyContent={'space-between'} alignItems={'center'} sx={{ width: "20%" }}>
                                     <Button variant='contained' startIcon={<AssignmentIcon />} sx={{ width: '80%' }} onClick={() => handleAssign(syllabus)}>Gán bài tập</Button>
                                     <img src='https://cdn-icons-png.freepik.com/256/4295/4295914.png?semt=ais_hybrid'
                                         style={{ width: "60%", objectFit: "cover", objectPosition: "center" }}

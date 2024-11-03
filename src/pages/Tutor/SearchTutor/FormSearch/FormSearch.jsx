@@ -11,11 +11,13 @@ import React, { useEffect, useState } from 'react';
 import Slider from '@mui/material/Slider';
 import CALL_API_ADDRESS from '~/utils/call_api_address';
 import { useNavigate } from 'react-router-dom';
-function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFilterClick, searchCriteria, setSearchCriteria }) {
+function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFilterClick, searchCriteria, setSearchCriteria, city }) {
     const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [communes, setCommunes] = useState([]);
-    const [selectedProvince, setSelectedProvince] = useState('');
+    const [selectedProvince, setSelectedProvince] = useState(() => {
+        return city ?? '';
+    });
     const [selectedDistrict, setSelectedDistrict] = useState('');
     const [selectedCommune, setSelectedCommune] = useState('');
     const [selectedRating, setSelectedRating] = useState('');
@@ -32,7 +34,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
         }));
     };
 
-    
+
     useEffect(() => {
         getDataProvince();
     }, []);
@@ -105,7 +107,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
 
         setSearchCriteria(prev => ({
             ...prev,
-            address: `${selectedProvince.split("|")[1]}|${selectedDistrict.split("|")[1]}|${communeName}` // Thêm tỉnh, quận/huyện, và phường/xã
+            address: `${selectedProvince.split("|")[1]}|${selectedDistrict.split("|")[1]}|${communeName}` 
         }));
     };
     function handleClick(event) {
@@ -154,9 +156,9 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
             }}
         >
             <Grid container sx={{ height: '100%' }}>
-                <Grid item xs={2} />
+                <Grid item xs={1} />
 
-                <Grid item xs={8}>
+                <Grid item xs={10}>
                     <Box mt={5} sx={{ padding: '10px' }}>
                         <Stack spacing={2}>
                             <Breadcrumbs separator="›" aria-label="breadcrumb">
@@ -170,10 +172,8 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                     </Box>
                     <Box mt={4} sx={{ padding: '0px', color: "white" }}>
                         <Grid container spacing={0}>
-                            {/* Cột 4 */}
                             <Grid item xs={6}>
                                 <Box>
-                                    {/* Nút "Lưới" */}
                                     <Button
                                         variant="contained"
                                         onClick={() => handleButtonClick('grid')}
@@ -194,7 +194,6 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                         Lưới
                                     </Button>
 
-                                    {/* Nút "Danh sách" */}
                                     <Button
                                         variant="contained"
                                         onClick={() => handleButtonClick('list')}
@@ -217,10 +216,8 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                             </Grid>
 
 
-                            {/* Cột 6 */}
                             <Grid item xs={6}>
                                 <Grid container spacing={2} alignItems="center">
-                                    {/* Thanh tìm kiếm */}
                                     <Grid item xs={9}>
                                         <TextField
                                             variant="outlined"
@@ -245,7 +242,6 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                         />
                                     </Grid>
 
-                                    {/* Nút bộ lọc */}
                                     <Grid item xs={3}>
                                         <Button
                                             variant="contained"
@@ -301,7 +297,6 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                         </Select>
                                     </FormControl>
 
-                                    {/* Select Quận/Huyện */}
                                     <FormControl fullWidth variant="outlined" sx={{ backgroundColor: "white", borderRadius: "5px" }} disabled={!selectedProvince}>
                                         <InputLabel>Quận/Huyện</InputLabel>
                                         <Select
@@ -325,7 +320,6 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                         </Select>
                                     </FormControl>
 
-                                    {/* Select Phường/Xã */}
                                     <FormControl fullWidth variant="outlined" sx={{ backgroundColor: "white", borderRadius: "5px" }} disabled={!selectedDistrict}>
                                         <InputLabel>Phường/Xã</InputLabel>
                                         <Select
@@ -394,7 +388,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                     </Box>
                 </Grid>
 
-                <Grid item xs={2} />
+                <Grid item xs={1} />
             </Grid>
         </Box>
     )

@@ -1,189 +1,213 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, Stack, Typography, TextField, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem, Checkbox, FormControl, InputLabel, Divider } from '@mui/material';
+import { Box, Button, Grid, Stack, Typography, TextField, IconButton, Dialog, Divider, Icon } from '@mui/material';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import AddIcon from '@mui/icons-material/Add';
 import ExerciseAdd from '../SyllabusModal/ExerciseAdd';
 import services from '~/plugins/services';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LoadingComponent from '~/components/LoadingComponent';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { enqueueSnackbar } from 'notistack';
 
-
 export default function SyllabusCreation({ handleBack, setListSyllabus }) {
-
     const [loading, setLoading] = useState(false);
-
     const [exerciseTypes, setExerciseTypes] = useState([]);
-
     const [selectedList, setSelectedList] = useState([]);
-
-    const [syllabusData, setSyllabusData] = useState({
-        ageFrom: 0,
-        ageEnd: 0,
-        syllabusExercises: []
-    });
-    console.log(syllabusData);
-
-
     const [selectedClone, setSelectedClone] = useState([]);
-
-
     const [openModal, setOpenModal] = useState(false);
 
+    const [ageFrom, setAgeFrom] = useState('');
+    const [ageEnd, setAgeEnd] = useState('');
+
+
     useEffect(() => {
-        handleGetAllExerciseType()
+        handleGetAllExerciseType();
     }, []);
+
+    useEffect(() => {
+        formik.setFieldValue('ageFrom', ageFrom);
+        formik.setFieldValue('ageEnd', ageEnd);
+        formik.validateForm();
+    }, [ageFrom, ageEnd]);
+
 
     const handleGetAllExerciseType = async () => {
         try {
-            await services.ExerciseManagementAPI.getAllExerciseType((res) => {
-                if (res?.result) {
-                    setExerciseTypes(res.result);
-                }
-            }, (error) => {
-                console.log(error);
-
-            }, { search: '', orderBy: 'createdDate', sort: 'desc' });
+            await services.ExerciseManagementAPI.getAllExerciseType(
+                (res) => {
+                    if (res?.result) {
+                        setExerciseTypes(res.result);
+                    }
+                },
+                (error) => console.log(error),
+                { search: '', orderBy: 'createdDate', sort: 'desc' }
+            );
         } catch (error) {
             console.log(error);
         }
     };
 
-    const handleOpenModal = () => {
-        setOpenModal(true);
-    };
+    const handleOpenModal = () => setOpenModal(true);
+    const handleCloseModal = () => setOpenModal(false);
 
-    const handleCloseModal = () => {
-        setOpenModal(false);
-    };
+    // Formik setup
+    const formik = useFormik({
+        initialValues: {
+            ageFrom: ageFrom,
+            ageEnd: ageEnd,
+            syllabusExercises: selectedList,
+        },
+        validationSchema: Yup.object({
+            ageFrom: Yup.number()
+                .required('Bắt buộc phải nhập')
+                .min(0, 'Tuổi phải lớn hơn 0'),
+            ageEnd: Yup.number()
+                .required('Bắt buộc phải nhập')
+                .min(Yup.ref('ageFrom'), 'Tuổi kết thúc phải lớn hơn tuổi bắt đầu'),
+            syllabusExercises: Yup.array()
+                .min(1, 'Phải có ít nhất 1 loại bài tập và bài tập'),
+        }),
 
-    const handleChangeSyllabus = (e) => {
-        const { name, value } = e.target;
-        setSyllabusData((prev) => ({ ...prev, [name]: parseInt(value) }))
-    }
-
-    const handleSubmitSyllabus = async () => {
-        console.log('Submited!');
-        try {
-            setLoading(true);
-            const data = { ...syllabusData, syllabusExercises: [...selectedList] };
-            await services.SyllabusManagementAPI.createSyllabus(data, (res) => {
-                if (res?.result) {
-                    setListSyllabus((prev) => {
-                        const addSyllabus = [...prev, res.result];
-                        addSyllabus.sort((a, b) => a.ageFrom - b.ageFrom);
-                        console.log(addSyllabus);
-
-                        return addSyllabus;
-                    });
-                    enqueueSnackbar("Tạo giáo trình thành công!", { variant: 'success' });
-                    setSelectedClone([]);
-                    setSelectedList([]);
-                    setSyllabusData({
-                        ageFrom: 0,
-                        ageEnd: 0,
-                        syllabusExercises: []
-                    });
-                }
-            }, (error) => {
+        onSubmit: async (values) => {
+            try {
+                setLoading(true);
+                const data = { ...values, syllabusExercises: [...selectedList] };
+                await services.SyllabusManagementAPI.createSyllabus(data, (res) => {
+                    if (res?.result) {
+                        setListSyllabus((prev) => [...prev, res.result].sort((a, b) => a.ageFrom - b.ageFrom));
+                        enqueueSnackbar("Tạo giáo trình thành công!", { variant: 'success' });
+                        setAgeFrom('');
+                        setAgeEnd('');
+                        setSelectedClone([]);
+                        setSelectedList([]);
+                        formik.resetForm();
+                    }
+                }, (error) => console.log(error));
+            } catch (error) {
                 console.log(error);
-            })
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false);
-        }
+            } finally {
+                setLoading(false);
+            }
+        },
+        enableReinitialize: true,
+    });
+
+    const handleAgeFromChange = (value) => {
+        setAgeFrom(parseInt(value));
     };
 
-    console.table(selectedClone);
+    const handleAgeEndChange = (value) => {
+        setAgeEnd(parseInt(value));
+    };
 
-
-    console.table(selectedList);
+    const handleDeleteItem = (id) => {
+        console.log(id);
+        
+        const newList = selectedList.filter((s) => s.exerciseTypeId !== id);
+        const newListClone = selectedClone.filter((s) => s.eType.id !== id);
+        console.table(newListClone);
+        
+        setSelectedList(newList);
+        setSelectedClone(newListClone);
+    };
 
     return (
-        <Stack direction={'column'} gap={3} sx={{ width: "80%", margin: "auto", padding: 3, backgroundColor: '#fff', borderRadius: 2, boxShadow: 3 }}>
-            <Typography variant='h4' my={2} textAlign="center" sx={{ fontWeight: 'bold' }}>Tạo giáo trình</Typography>
+        <Stack direction="column" gap={3} sx={{ width: "80%", margin: "auto", padding: 3, backgroundColor: '#fff', borderRadius: 2, boxShadow: 3 }}>
+            <Typography variant="h4" my={2} textAlign="center" sx={{ fontWeight: 'bold' }}>Tạo giáo trình</Typography>
             <Divider />
-            <Grid container spacing={2} alignItems="center" mt={2}>
-                <Grid item xs={4}>
-                    <Typography variant='h6' sx={{ textAlign: 'right', pr: 2 }}>Độ tuổi:</Typography>
-                </Grid>
-                <Grid item xs={8}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={4}>
-                            <TextField
-                                onChange={handleChangeSyllabus}
-                                name='ageFrom'
-                                label="Từ"
-                                type="number"
-                                size="small"
-                                fullWidth
-                            />
+            <form onSubmit={formik.handleSubmit}>
+                <Grid container spacing={2} alignItems="center" mt={2}>
+                    <Grid item xs={4}>
+                        <Typography variant="h6" sx={{ textAlign: 'right', pr: 2 }}>Độ tuổi:</Typography>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={4}>
+                                <TextField
+                                    name="ageFrom"
+                                    label="Từ"
+                                    type="number"
+                                    value={ageFrom}
+                                    onChange={(e) => handleAgeFromChange(e.target.value)}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.ageFrom && Boolean(formik.errors.ageFrom)}
+                                    helperText={formik.touched.ageFrom && formik.errors.ageFrom}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    name="ageEnd"
+                                    label="Đến"
+                                    type="number"
+                                    value={ageEnd}
+                                    onChange={(e) => handleAgeEndChange(e.target.value)}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.ageEnd && Boolean(formik.errors.ageEnd)}
+                                    helperText={formik.touched.ageEnd && formik.errors.ageEnd}
+                                />
+                            </Grid>
                         </Grid>
-                        <Grid item xs={4}>
-                            <TextField
-                                onChange={handleChangeSyllabus}
-                                name='ageEnd'
-                                label="Đến"
-                                type="number"
-                                size="small"
-                                fullWidth
-                            />
-                        </Grid>
+                    </Grid>
 
+                    <Grid item xs={4}>
+                        <Typography variant="h6" sx={{ textAlign: 'right', pr: 2 }}>Thêm loại bài tập và bài tập</Typography>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <IconButton onClick={handleOpenModal} color="primary" sx={{ backgroundColor: '#f5f7f8', borderRadius: '50%', padding: 1 }}>
+                            <AddIcon />
+                        </IconButton>
+                        {formik.errors.syllabusExercises && (
+                            <Typography color="error" variant="body2">
+                                {formik.errors.syllabusExercises}
+                            </Typography>
+                        )}
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        {selectedClone.length > 0 && (
+                            <Box sx={{ width: '85%', margin: 'auto' }} p={2} borderRadius={2} bgcolor={'#fff8e3'}>
+                                <Typography variant="h6" mb={2}>Danh sách loại bài tập và bài tập:</Typography>
+                                <Stack direction="row" gap={3}>
+                                    <Stack sx={{ width: '90%' }} direction="column" gap={2}>
+                                        {selectedClone.map((s, index) => (
+                                            <Stack direction="row" gap={2} sx={{ width: '100%' }} key={index}>
+                                                <Box sx={{ width: "5%" }}>
+                                                    <CheckCircleIcon color="success" fontSize="medium" />
+                                                </Box>
+                                                <Box sx={{ width: '95%' }}>
+                                                    <Typography variant="h6">{`${index + 1}. ${s.eType.exerciseTypeName}`}</Typography>
+                                                    <Box ml={2}>
+                                                        {s.lsExercise.map((l, idx) => (
+                                                            <Typography key={idx} variant="body1">{`${idx + 1}. ${l.exerciseName}`}</Typography>
+                                                        ))}
+                                                    </Box>
+                                                </Box>
+                                                <Box sx={{ width: '5%' }}>
+                                                    <IconButton color='error' onClick={() => handleDeleteItem(s.eType.id)}>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </Box>
+                                            </Stack>
+                                        ))}
+                                    </Stack>
+                                    <Box sx={{ width: "10%", display: "flex", alignItems: "end" }}>
+                                        <img src="https://cdn-icons-png.freepik.com/256/4295/4295914.png?semt=ais_hybrid" style={{ width: "100%", objectFit: "cover", objectPosition: "center" }} />
+                                    </Box>
+                                </Stack>
+                            </Box>
+                        )}
                     </Grid>
                 </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant='h6' sx={{ textAlign: 'right', pr: 2 }}>Thêm loại bài tập và bài tập</Typography>
-                </Grid>
-                <Grid item xs={8}>
-                    <IconButton onClick={handleOpenModal} color="primary" sx={{ backgroundColor: '#f5f7f8', borderRadius: '50%', padding: 1 }}>
-                        <AddIcon />
-                    </IconButton>
-                </Grid>
-                <Grid item xs={12}>
-                    {selectedClone.length !== 0 && (
-                        <Box sx={{ width: '85%', margin: 'auto' }} p={2} borderRadius={2} bgcolor={'#fff8e3'}>
-                            <Typography variant='h6' mb={2}>Danh sách loại bài tập và bài tập:</Typography>
-                            <Stack direction={'row'}>
-                                <Stack sx={{ width: '90%' }} direction={'column'} gap={2}>
-                                    {selectedClone?.map((s, index) => (
-                                        <Stack direction={'row'} gap={2} sx={{ width: '100%' }} key={index}>
-                                            <Box sx={{ width: "5%" }}>
-                                                <CheckCircleIcon color='success' fontSize='medium' />
-                                            </Box>
-                                            <Box key={index} sx={{ width: '95%' }}>
-                                                <Typography variant='h6'>{`${index + 1}. `}{s.eType.exerciseTypeName}</Typography>
-                                                <Box ml={2}>
-                                                    {s?.lsExercise?.map((l, index) => (
-                                                        <Typography key={index} variant='body1'>{`${index + 1}. `}{l?.exerciseName}</Typography>
-                                                    ))}
-                                                </Box>
-                                            </Box>
-                                        </Stack>
-                                    ))}
-                                </Stack>
-                                <Box sx={{ width: "10%", display: "flex", alignItems: "end" }}>
-                                    <img src='https://cdn-icons-png.freepik.com/256/4295/4295914.png?semt=ais_hybrid'
-                                        style={{ width: "100%", objectFit: "cover", objectPosition: "center" }}
-                                    />
-                                </Box>
-                            </Stack>
-                        </Box>
-                    )}
-
-
-                </Grid>
-            </Grid>
-
-            <Stack direction="row" justifyContent="flex-end" spacing={2} mt={3}>
-                <Button color="primary" variant="outlined" onClick={handleBack}>Hủy</Button>
-                <Button color="primary" variant="contained" sx={{ width: 100 }} onClick={handleSubmitSyllabus} disabled={selectedList.length === 0}>Lưu</Button>
-            </Stack>
+                <Stack direction="row" justifyContent="flex-end" spacing={2} mt={3}>
+                    <Button color="primary" variant="outlined" onClick={handleBack}>Hủy</Button>
+                    <Button type="submit" color="primary" variant="contained" sx={{ width: 100 }} disabled={!formik.isValid}>Lưu</Button>
+                </Stack>
+            </form>
 
             <LoadingComponent open={loading} setOpen={setLoading} />
-
-            <ExerciseAdd openModal={openModal} handleCloseModal={handleCloseModal} exerciseTypes={exerciseTypes} selectedList={selectedList} setSelectedList={setSelectedList} selectedClone={selectedClone} setSelectedClone={setSelectedClone} />
+            {openModal && <ExerciseAdd openModal={openModal} handleCloseModal={handleCloseModal} exerciseTypes={exerciseTypes} selectedList={selectedList} setSelectedList={setSelectedList} selectedClone={selectedClone} setSelectedClone={setSelectedClone} />}
         </Stack>
     );
 }

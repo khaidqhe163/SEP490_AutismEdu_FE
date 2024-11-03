@@ -65,6 +65,7 @@ const API_CODE = {
 
   //Tutor Request management
   API_GET_TUTOR_REQUEST: '/v1/TutorRequest',
+  API_GET_TUTOR_REQUEST_HISTORY: '/v1/TutorRequest/history',
   API_POST_TUTOR_REQUEST: '/v1/TutorRequest',
   API_PUT_TUTOR_REQUEST: '/v1/TutorRequest/changeStatus/',
   API_GET_NO_PROFILE: '/v1/TutorRequest/NoStudentProfile',
@@ -99,6 +100,13 @@ const API_CODE = {
   API_GET_LIST_SYLLABUS: '/v1/Syllabus',
   API_ASSIGN_SYLLABUS: '/v1/Syllabus/',
   API_DELETE_SYLLABUS: '/v1/Syllabus/',
+
+  //Review management
+  API_GET_REVIEW: '/v1/Review',
+  API_GET_REVIEW_STATS: '/v1/Review/GetTutorReviewStats/',
+  API_CREATE_REVIEW: '/v1/Review',
+  API_UPDATE_REVIEW: '/v1/Review/',
+  API_DELETE_REVIEW: '/v1/Review/',
 
 
   //Schedule
