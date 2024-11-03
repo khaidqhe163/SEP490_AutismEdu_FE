@@ -3,29 +3,28 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import services from '~/plugins/services';
-import { listStudent } from '~/redux/features/listStudent';
+import { listStudent, setListStudent } from '~/redux/features/listStudent';
 
 function MyStudent() {
-    // const [listStudent, setListStudent] = useState([]);
     const listStudents = useSelector(listStudent);
     const dispatch = useDispatch();
-    // useEffect(() => {
-    //     getListStudent();
-    // }, [])
+    useEffect(() => {
+        getListStudent();
+    }, [])
 
-    // const getListStudent = async () => {
-    //     try {
-    //         await services.StudentProfileAPI.getListStudent((res) => {
-    //             console.log(res);
-    //             setListStudent(res.result)
-    //         }, (error) => {
-    //             console.log(error);
-    //         }, {
-    //         })
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
+    const getListStudent = async () => {
+        try {
+            await services.StudentProfileAPI.getListStudent((res) => {
+                console.log(res);
+                dispatch(setListStudent(res.result))
+            }, (error) => {
+                console.log(error);
+            }, {
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const formatDate = (d) => {
         const date = new Date(d);

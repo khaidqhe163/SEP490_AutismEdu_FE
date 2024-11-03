@@ -17,7 +17,7 @@ function AssessmentManagement() {
     const handleGetAsessment = async () => {
         try {
             await services.AssessmentManagementAPI.listAssessment((res) => {
-                setAssessment(res.result)
+                setAssessment(res.result.questions)
             }, (err) => {
                 console.log(err);
             })

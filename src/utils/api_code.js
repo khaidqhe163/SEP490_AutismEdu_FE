@@ -68,6 +68,7 @@ const API_CODE = {
   API_GET_TUTOR_REQUEST_HISTORY: '/v1/TutorRequest/history',
   API_POST_TUTOR_REQUEST: '/v1/TutorRequest',
   API_PUT_TUTOR_REQUEST: '/v1/TutorRequest/changeStatus/',
+  API_GET_NO_PROFILE: '/v1/TutorRequest/NoStudentProfile',
   //Assessment management
   API_GET_ASSESSMENT: '/v1/Assessment',
   API_CREATE_ASSESSMENT: '/v1/Assessment',

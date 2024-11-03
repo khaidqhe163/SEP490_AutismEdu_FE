@@ -6,19 +6,13 @@ import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 import { listStudent } from '~/redux/features/listStudent';
 import { tutorInfor } from '~/redux/features/tutorSlice';
-import AssignExercise from './CalendarModal/AssignExercise';
-import Evaluate from './CalendarModal/Evaluate';
-function Calendar() {
+function StudentSchedule({ studentProfile }) {
     const { id } = useParams();
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [isEvaluateModalOpen, setEvaluateModalOpen] = useState(false);
-    const [selectedKey, setSelectedKey] = useState('');
-    const [aSchedule, setASchedule] = useState(null);
-    const tutorInformation = useSelector(tutorInfor);
     const [weekInYears, setWeekInYears] = useState([]);
     const [listYears, setListYears] = useState([]);
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
     const [currentWeek, setCurrentWeek] = useState(0);
+    const [schedules, setSchedule] = useState([]);
     const [filterSchedule, setFilterSchedule] = useState(null);
     const [loading, setLoading] = useState(false);
     const [currentStudent, setCurrentStudent] = useState(0);
@@ -33,7 +27,9 @@ function Calendar() {
         try {
             setLoading(true);
             await services.ScheduleAPI.getSchedule((res) => {
+                console.log(res);
                 organizeSchedulesByDay(res.result)
+                setSchedule(res.result)
             }, (err) => {
                 console.log(err);
             }, {
@@ -50,12 +46,13 @@ function Calendar() {
 
     useEffect(() => {
         if (id) {
-            setCurrentStudent(id);
+            setCurrentStudent(id)
         }
     }, [id])
     useEffect(() => {
-        if (tutorInformation) {
-            const startYear = new Date(tutorInformation.createdDate).getFullYear();
+        if (studentProfile) {
+            console.log(studentProfile);
+            const startYear = new Date(studentProfile.createdDate).getFullYear();
             const currentYear = new Date().getFullYear();
             const years = [];
             for (let year = startYear; year <= currentYear; year++) {
@@ -64,14 +61,13 @@ function Calendar() {
             years.reverse();
             setListYears(years);
         }
-    }, [tutorInformation])
+    }, [studentProfile])
     useEffect(() => {
         const year = new Date().getFullYear();
         const weeks = generateMondaysAndSundays(year);
         setWeekInYears(weeks);
-        const today = resetTime(new Date());
-        const index = weeks.findIndex(week => today >= resetTime(week.monday) && today <= resetTime(week.sunday));
-        setCurrentWeek(index);
+        const today = new Date();
+        setCurrentWeek(weeks.findIndex(week => today >= week.monday && today <= week.sunday));
         if (id) {
             setCurrentStudent(id);
         }
@@ -104,11 +100,6 @@ function Calendar() {
         }
         return result;
     }
-
-    function resetTime(date) {
-        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    }
-
 
     function organizeSchedulesByDay(listSchedule) {
         const days = {
@@ -149,6 +140,7 @@ function Calendar() {
                     break;
             }
         });
+        console.log(days);
         setFilterSchedule(days)
     }
 
@@ -158,31 +150,11 @@ function Calendar() {
         }
         const [hours, minutes] = timeString.split(':');
         const formattedTime = `${hours}:${minutes}`;
-        return formattedTime;
-    };
-
-    const handleAssign = (f, keys) => {
-        setSelectedKey(keys);
-        setASchedule(f);
-        setModalOpen(true);
-    };
-
-    const handleOpenEvaluate = (f, keys) => {
-        setSelectedKey(keys);
-        setASchedule(f);
-        setEvaluateModalOpen(true);
-    };
-
-    const passStatus = (value) => {
-        return value === 2 ? 'Chưa có dữ liệu' : value === 1 ? "Đạt" : "Chưa đạt"
-    };
-    const attendanceStatus = (value) => {
-        return value === 2 ? 'Chưa có dữ liệu' : value === 1 ? "Có mặt" : "Vắng"
-    };
-
+        return formattedTime
+    }
     return (
         <>
-            <Box p="30px" sx={{ width: "100%", height: "calc(100vh - 64px)" }}>
+            <Box p="30px" sx={{ width: "80%", margin: "auto" }}>
                 <Stack direction='row' alignItems="center" gap={3}>
                     {
                         !id && (
@@ -221,7 +193,7 @@ function Calendar() {
                             {
                                 listYears.map((l) => {
                                     return (
-                                        <MenuItem key={l} value={l} >{l}</MenuItem>
+                                        <MenuItem key={l} value={l}>{l}</MenuItem>
                                     )
                                 })
                             }
@@ -283,12 +255,11 @@ function Calendar() {
                                                         mb: 1, borderRadius: '10px',
                                                         mt: 2,
                                                     }}>
-                                                        <Typography sx={{ color: "#7850d4" }}>Mã: {f.studentProfile?.studentCode}</Typography>
+                                                        <Typography sx={{ color: "#7850d4" }}>Mã: {f.studentProfile.studentCode}</Typography>
                                                         <Typography sx={{ color: "#7850d4", fontWeight: "bold" }}>({formatTime(f.start)} - {formatTime(f.end)})</Typography>
-                                                        <Typography sx={{ color: "#7850d4", fontSize: "12px" }}>Đánh giá: {passStatus(f.passingStatus)}</Typography>
-                                                        <Typography sx={{ color: "green", fontSize: "12px" }} >({attendanceStatus(f.attendanceStatus)})</Typography>
-                                                        <Button variant='contained' color='primary' sx={{ mt: 2, fontSize: "12px" }} onClick={() => handleAssign(f, keys)}>Gán bài tập</Button>
-                                                        <Button variant='contained' color='secondary' sx={{ mt: 2, fontSize: "12px" }} onClick={() => handleOpenEvaluate(f, keys)}>Đánh giá</Button>
+                                                        <Typography sx={{ color: "#7850d4", fontSize: "12px" }}>Đánh giá: Chưa đạt</Typography>
+                                                        <Typography sx={{ color: "#7850d4", fontSize: "12px" }}>TT: Chưa học</Typography>
+                                                        <Button variant='contained' sx={{ mt: 2, fontSize: "12px" }}>Xem chi tiết</Button>
                                                     </Box>
                                                 )
                                             })
@@ -300,12 +271,10 @@ function Calendar() {
                     )}
 
                 </Stack>
-                {isModalOpen && selectedKey && aSchedule && <AssignExercise isOpen={isModalOpen} setModalOpen={setModalOpen} schedule={aSchedule} filterSchedule={filterSchedule} setFilterSchedule={setFilterSchedule} selectedKey={selectedKey} />}
-                {isEvaluateModalOpen && aSchedule && <Evaluate isOpen={isEvaluateModalOpen} setModalOpen={setEvaluateModalOpen} schedule={aSchedule} selectedKey={selectedKey} filterSchedule={filterSchedule} setFilterSchedule={setFilterSchedule} />}
                 <LoadingComponent open={loading} />
             </Box>
         </>
     )
 }
 
-export default Calendar
+export default StudentSchedule

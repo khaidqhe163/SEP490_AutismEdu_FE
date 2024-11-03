@@ -1,7 +1,7 @@
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, Button, Divider, FormControl, FormControlLabel, FormHelperText, FormLabel, MenuItem, Radio, RadioGroup, Select, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, FormControl, FormControlLabel, FormHelperText, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Stack, TextField, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 import ChildrenProfile from './ChildrenProfile';
@@ -10,6 +10,8 @@ import ParentProfile from './ParentProfile';
 import StudentShedule from './StudentShedule';
 import { useFormik } from 'formik';
 import axios from '~/plugins/axios';
+import { useNavigate } from 'react-router-dom';
+import PAGES from '~/utils/pages';
 
 function StudentCreation() {
     const email = useRef(null);
@@ -26,8 +28,26 @@ function StudentCreation() {
     const [districts, setDistricts] = useState([]);
     const [communes, setCommunes] = useState([]);
     const [avatar, setAvatar] = useState(null);
+    const [sendRequest, setSendRequest] = useState("true")
+    const [selectedRequest, setSelectedRequest] = useState("");
+    const [listTutorRequest, setListTutorRequest] = useState([]);
+    const nav = useNavigate();
+    useEffect(() => {
+        handleGetTutorRequest();
+    }, [])
+
+    useEffect(() => {
+        if (selectedRequest !== "" && typeof selectedRequest === 'number' && listTutorRequest.length !== 0) {
+            if (listTutorRequest[selectedRequest]) {
+                console.log(listTutorRequest[selectedRequest]);
+                setParent(listTutorRequest[selectedRequest].parent)
+                setChildren([listTutorRequest[selectedRequest].childInformation])
+            }
+        }
+    }, [selectedRequest])
     const handleGetParent = async () => {
         if (email.current.value === "") {
+            console.log("zoday");
             setEmailError("Vui lòng nhập tài khoản của phụ huynh!");
             return;
         }
@@ -55,8 +75,17 @@ function StudentCreation() {
             console.log(error);
         }
     }
-    const handleChange = (event) => {
+    const handleChangeAccount = (event) => {
         setHasAccount(event.target.value);
+    };
+    const handleChangeSendRequest = (event) => {
+        setSendRequest(event.target.value);
+        setParent(null);
+        setChildren([]);
+        setSelectedRequest("");
+        setListShedule([]);
+        setInitialCondition('');
+        setAvatar(null)
     };
     const handleGetChildren = async (id) => {
         try {
@@ -144,6 +173,10 @@ function StudentCreation() {
                 enqueueSnackbar("Chưa nhập lịch học!", { variant: "error" });
                 return;
             }
+            if (hasAccount === "true" && sendRequest === "true" && selectedRequest === "") {
+                enqueueSnackbar("Chưa chọn yêu cầu!", { variant: "error" });
+                return;
+            }
             const formData = new FormData();
             if (hasAccount === "false") {
                 formData.append("Email", values.email);
@@ -157,6 +190,11 @@ function StudentCreation() {
                 formData.append("ChildId", 0);
             }
             else {
+                if (sendRequest === "true") {
+                    formData.append("TutorRequestId", listTutorRequest[selectedRequest].id)
+                } else {
+                    formData.append("TutorRequestId", 0)
+                }
                 formData.append("ChildId", children[currentChild].id);
             }
             formData.append("InitialCondition", initialCondition);
@@ -175,15 +213,7 @@ function StudentCreation() {
                 await services.StudentProfileAPI.createStudentProfile(formData,
                     (res) => {
                         enqueueSnackbar("Tạo hồ sơ học sinh thành công!", { variant: "success" });
-                        setChildren([]);
-                        setParent(null);
-                        setListShedule([]);
-                        setInitialCondition('');
-                        setAvatar(null)
-                        formik.resetForm();
-                        if (email) {
-                            email.current.value = '';
-                        }
+                        nav(PAGES.MY_STUDENT)
                     }, (err) => {
                         enqueueSnackbar("Tạo hồ sơ học sinh thất bại!", { variant: "error" });
                     })
@@ -194,6 +224,20 @@ function StudentCreation() {
             }
         }
     });
+
+    const handleGetTutorRequest = async () => {
+        try {
+            await services.TutorRequestAPI.getTutorRequestNoProfile((res) => {
+                console.log("request ==> ", res.result);
+                setListTutorRequest(res.result)
+            }, (err) => {
+                console.log(err);
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    console.log(formik.errors);
     return (
         <Box p="20px" sx={{ height: "calc(100vh - 65px)", bgcolor: "#f8fafb", width: '100%' }} overflow="auto">
             <Typography variant='h4'>Tạo hồ sơ học sinh</Typography>
@@ -208,22 +252,83 @@ function StudentCreation() {
                 flexWrap: "wrap"
             }}>
                 <Box sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
-                    <FormControl>
-                        <FormLabel id="demo-radio-buttons-group-label">Phụ huynh đã có tài khoản chưa?</FormLabel>
-                        <RadioGroup
-                            aria-labelledby="demo-radio-buttons-group-label"
-                            value={hasAccount}
-                            name="radio-buttons-group"
-                            onChange={handleChange}
-                        >
-                            <FormControlLabel value="true" control={<Radio />} label="Có" />
-                            <FormControlLabel value="false" control={<Radio />} label="Chưa" />
-                        </RadioGroup>
-                    </FormControl>
+                    <Box>
+                        <FormControl>
+                            <FormLabel id="hasAccount">Phụ huynh đã có tài khoản chưa?</FormLabel>
+                            <RadioGroup
+                                row
+                                aria-labelledby="hasAccount"
+                                value={hasAccount}
+                                name="hasAccount"
+                                onChange={handleChangeAccount}
+                            >
+                                <FormControlLabel value="true" control={<Radio />} label="Có" />
+                                <FormControlLabel value="false" control={<Radio />} label="Chưa" />
+                            </RadioGroup>
+                        </FormControl>
+                        <br />
+                        {
+                            hasAccount === "true" && (
+                                <FormControl sx={{ mt: 2 }}>
+                                    <FormLabel id="requested">Phụ huynh đã gửi yêu cầu?</FormLabel>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="requested"
+                                        value={sendRequest}
+                                        name="sendRequested"
+                                        onChange={handleChangeSendRequest}
+                                    >
+                                        <FormControlLabel value="true" control={<Radio />} label="Có" />
+                                        <FormControlLabel value="false" control={<Radio />} label="Chưa" />
+                                    </RadioGroup>
+                                </FormControl>
+                            )
+                        }
+                    </Box>
                     <Button variant='contained' onClick={formik.handleSubmit} sx={{ height: "40px" }}>Tạo hồ sơ</Button>
                 </Box>
                 {
-                    hasAccount === "true" && (
+                    hasAccount === "true" && sendRequest === 'true' && (
+                        <>
+                            <Divider sx={{ width: "100%" }} />
+                            <Box mt={3}>
+                                <InputLabel>Chọn yêu cầu</InputLabel>
+                                <FormControl sx={{ m: 1, width: 400 }}>
+                                    <Select
+                                        value={selectedRequest}
+                                        name='selectedRequest'
+                                        onChange={(event) => {
+                                            setSelectedRequest(event.target.value)
+                                        }}
+                                        renderValue={(selected) => {
+                                            if (!selected || selected === "") {
+                                                return <em>Yêu cầu</em>;
+                                            }
+                                            return selectedRequest ? selectedRequest : "";
+                                        }}
+                                        displayEmpty={true}
+                                        size='small'
+                                    >
+                                        <MenuItem disabled value="">
+                                            <em>Yêu cầu</em>
+                                        </MenuItem>
+                                        {
+                                            listTutorRequest.length !== 0 && listTutorRequest?.map((request, index) => {
+                                                return (
+                                                    <MenuItem value={index} key={request?.id}>
+                                                        {request.parent.fullName} - {request.parent.email}
+                                                    </MenuItem>
+                                                )
+                                            })
+                                        }
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                        </>
+                    )
+                }
+                {
+                    hasAccount === "true" && sendRequest === 'false' && (
                         <>
                             <Divider sx={{ width: "100%" }} />
                             <Box sx={{ width: "50%", display: "flex", mt: 2 }}>

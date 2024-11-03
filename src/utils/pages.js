@@ -16,7 +16,7 @@ const PAGES = {
   TUTORPROFILEUPDATE: '/tutor-profile-update/:id',
   TUTORREGISTRATIONMANAGEMENT: '/admin/tutor-registration-management',
   TUTORREGISTRATION: '/autismtutor/tutor-registration',
-  MY_STUDENT: '/autismtutor/my-student',
+  MY_STUDENT: '/autismtutor',
   STUDENT_DETAIL: '/autismtutor/student-detail/:id',
   TUTOR_SETTING: '/autismtutor/tutor-setting',
   LOGIN_OPTION: '/login-option',

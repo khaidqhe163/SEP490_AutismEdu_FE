@@ -1,6 +1,9 @@
-import { Card, CardContent, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Button, Card, CardContent, FormControl, Grid, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import services from '~/plugins/services';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import AssessmentGuild from './AssessmentGuild';
+import AssessmentDetail from './AssessmentDetail';
 function InitialCondition({ setInitialCondition, initialCondition, childrenInfor,
     selectedAssessment, setSelectedAssessment, hasAccount }) {
     const [assessment, setAssessment] = useState([]);
@@ -10,8 +13,8 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
     const handleGetAsessment = async () => {
         try {
             await services.AssessmentManagementAPI.listAssessment((res) => {
-                setAssessment(res.result);
-                const initialAssessment = res.result.map((r, index) => {
+                setAssessment(res.result.questions);
+                const initialAssessment = res.result.questions.map((r, index) => {
                     return {
                         questionId: r.id,
                         optionId: r.assessmentOptions[0].id
@@ -36,13 +39,20 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
                     value={initialCondition}
                     onChange={(e) => { setInitialCondition(e.target.value) }}
                 />
-                <Grid container columnSpacing={2} rowSpacing={2} mt={1}>
-
+                <Typography variant='h5' mt={5}>Danh sách đánh giá</Typography>
+                <AssessmentGuild />
+                <Grid container columnSpacing={2} rowSpacing={2}>
                     {
                         assessment.map((a, index) => {
                             return (
                                 <Grid item xs={6} key={a.id}>
-                                    <Typography>{a.question}</Typography>
+                                    <Stack direction='row' alignItems='center' sx={{
+                                        width: "300px",
+                                        justifyContent: "space-between"
+                                    }}>
+                                        <Typography>{a.question}</Typography>
+                                        <AssessmentDetail assessment={a} />
+                                    </Stack>
                                     <FormControl size='small' sx={{ width: "300px" }} key={a.id}>
                                         <Select value={selectedAssessment[index].optionId}
                                             onChange={(e) => {

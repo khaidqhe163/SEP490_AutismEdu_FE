@@ -58,14 +58,14 @@ const MenuProps = {
 };
 
 function AssessmentChart({ studentProfile }) {
-    const [chartData, setChartData] = useState([]);
+    const [chartData, setChartData] = useState(null);
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
     const [progressReports, setProgressReports] = useState([]);
     const [assessments, setAssessment] = useState([]);
     const [initialCondition, setInitialCondition] = useState(null);
     const [pagination, setPagination] = useState(null);
-    const [displayAssessment, setDisplayAssessment] = useState([]);
+    const [displayAssessment, setDisplayAssessment] = useState(null);
     const [selectedAssessment, setSelectedAssessment] = useState([]);
     useEffect(() => {
         handleGetReports();
@@ -122,7 +122,7 @@ function AssessmentChart({ studentProfile }) {
                 labels: label,
                 datasets: datasets
             });
-            setSelectedAssessment({
+            setDisplayAssessment({
                 labels: label,
                 datasets: datasets
             })
@@ -130,10 +130,17 @@ function AssessmentChart({ studentProfile }) {
     }, [assessments, progressReports, studentProfile, pagination, initialCondition])
 
     useEffect(() => {
-        const updatedAssessment = displayAssessment.datasets.filter((s) => {
-            return selectedAssessment.includes(s.label)
-        })
-        setDisplayAssessment(updatedAssessment);
+        console.log("assessment ==> ", displayAssessment);
+        if (selectedAssessment.length !== 0 && displayAssessment?.datasets) {
+            const updatedAssessment = chartData.datasets.filter((s) => {
+                return selectedAssessment.includes(s.label)
+            })
+            console.log("Updated assessment ==> ", updatedAssessment);
+            setDisplayAssessment({
+                ...displayAssessment,
+                datasets: updatedAssessment
+            });
+        }
     }, [selectedAssessment])
 
     const handleGetReports = async () => {
@@ -182,31 +189,30 @@ function AssessmentChart({ studentProfile }) {
         const {
             target: { value },
         } = event;
-        setDisplayAssessment(
-            typeof value === 'string' ? value.split(',') : value,
+        setSelectedAssessment(
+            typeof value === 'string' ? value.split(',') : value
         );
     };
     return (
         <Box px={5} pt={2} pb={3}>
             {
-                selectedAssessment && selectedAssessment.length !== 0 && chartData && chartData.length !== 0 && (
+                assessments && assessments.length !== 0 && chartData && (
                     <div>
                         <FormControl sx={{ m: 1, width: 300 }}>
                             <InputLabel id="label-select">Đánh giá</InputLabel>
                             <Select
                                 labelId="label-select"
-                                id="demo-multiple-checkbox"
                                 multiple
                                 value={selectedAssessment}
                                 onChange={handleChange}
-                                input={<OutlinedInput label="Tag" />}
+                                input={<OutlinedInput label="Đánh giá" />}
                                 renderValue={(selected) => selected.join(', ')}
                                 MenuProps={MenuProps}
                             >
-                                {assessments.map((name) => (
-                                    <MenuItem key={name} value={name}>
-                                        <Checkbox checked={selectedAssessment.includes(name)} />
-                                        <ListItemText primary={name} />
+                                {assessments.map((a) => (
+                                    <MenuItem key={a.id} value={a.question}>
+                                        <Checkbox checked={selectedAssessment.includes(a.question)} />
+                                        <ListItemText primary={a.question} />
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -227,12 +233,12 @@ function AssessmentChart({ studentProfile }) {
                                 legend: {
                                     display: true,
                                     position: "bottom",
-                                },
+                                }
                             },
                             scales: {
                                 x: {
                                     ticks: {
-                                        maxTicksLimit: 11,
+                                        maxTicksLimit: 11
                                     }
                                 },
                                 y: {
@@ -243,9 +249,9 @@ function AssessmentChart({ studentProfile }) {
                                         stepSize: 0.5,
                                         callback: function (value) {
                                             return value.toFixed(1);
-                                        },
-                                    },
-                                },
+                                        }
+                                    }
+                                }
                             }
                         }}
                     />

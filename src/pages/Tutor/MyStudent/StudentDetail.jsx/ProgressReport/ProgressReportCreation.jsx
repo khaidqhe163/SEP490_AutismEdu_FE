@@ -44,8 +44,8 @@ function ProgressReportCreation({ currentReport }) {
         try {
             setLoading(true);
             await services.AssessmentManagementAPI.listAssessment((res) => {
-                setAssessment(res.result);
-                const initialAssessment = res.result.map((r, index) => {
+                setAssessment(res.result.questions);
+                const initialAssessment = res.result.questions.map((r, index) => {
                     return {
                         questionId: r.id,
                         optionId: r.assessmentOptions[0].id

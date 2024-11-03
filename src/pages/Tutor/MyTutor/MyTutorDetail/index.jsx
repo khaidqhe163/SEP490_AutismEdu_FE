@@ -10,6 +10,9 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import ChildInformation from './ChildrenInformation';
 import services from '~/plugins/services';
+import Calendar from '../../Calendar';
+import StudentSchedule from './StudentSchedule';
+import StudentProgressReport from './StudentProgressReport';
 const StyledTabs = styled((props) => (
     <Tabs
         {...props}
@@ -126,12 +129,14 @@ function MyTutorDetail() {
                         aria-label="tab-center"
                     >
                         <StyledTab value="1" label="Lịch học" />
-                        <StyledTab value="2" label="Biểu đồ đánh gía" />
-                        <StyledTab value="3" label="Sổ liên lạc" />
+                        <StyledTab value="2" label="Sổ liên lạc" />
+                        <StyledTab value="3" label="Biểu đồ đánh gía" />
                         <StyledTab value="4" label="Thông tin học sinh" />
                     </StyledTabs>
                 </Box>
             </Box>
+            {1 === Number(tab) && <StudentSchedule studentProfile={studentProfile} />}
+            {2 === Number(tab) && <StudentProgressReport />}
             {4 === Number(tab) && <ChildInformation studentProfile={studentProfile} />}
             <Divider sx={{ width: "80%", margin: "auto", mt: "100px" }} />
         </Box >
