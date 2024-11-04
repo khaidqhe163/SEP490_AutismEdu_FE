@@ -30,16 +30,16 @@ function StudentDetail() {
     const handleGetStudentProfile = async () => {
         try {
             await services.StudentProfileAPI.getStudentProfileById(id, (res) => {
-                console.log(res);
                 setStudentProfile(res.result)
             }, (error) => {
                 console.log(error);
+            }, {
+                status: "Teaching"
             })
         } catch (error) {
             console.log(error);
         }
     }
-    console.log(tab);
     return (
         <Box sx={{
             flexGrow: 2, height: "calc(100vh - 65px)",
@@ -65,7 +65,7 @@ function StudentDetail() {
                 tab === 0 && <Calendar />
             }
             {
-                tab === 1 && <ProgressReport />
+                tab === 1 && <ProgressReport studentProfile={studentProfile} />
             }
             {
                 tab === 2 && <AssessmentChart studentProfile={studentProfile} />

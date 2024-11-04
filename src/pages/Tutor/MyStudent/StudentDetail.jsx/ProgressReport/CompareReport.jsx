@@ -50,6 +50,13 @@ function CompareReport({ open, setOpen, selectedItem, compareItem }) {
             return NOT_CHANGE
         }
     }
+    const formatDate = (date) => {
+        if (!date) {
+            return "";
+        }
+        const d = new Date(date);
+        return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
+    }
     return (
         open && <Modal
             open={open}
@@ -69,8 +76,8 @@ function CompareReport({ open, setOpen, selectedItem, compareItem }) {
             }}>
                 <Typography sx={{ textAlign: "center" }} variant='h5'>So sánh 2 sổ liên lạc</Typography>
                 <Stack direction='row' mt={5}>
-                    <Typography sx={{ width: "50%", textAlign: "center" }}>20/20/2024 - 20/20/2024</Typography>
-                    <Typography sx={{ width: "50%", textAlign: "center" }}>20/20/2024 - 20/20/2024</Typography>
+                    <Typography sx={{ width: "50%", textAlign: "center" }}>{formatDate(selectedItem.from)} - {formatDate(selectedItem.to)}</Typography>
+                    <Typography sx={{ width: "50%", textAlign: "center" }}>{formatDate(compareItem.from)} - {formatDate(compareItem.to)}</Typography>
                 </Stack>
                 <Box sx={{ width: '100%', mt: 2 }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

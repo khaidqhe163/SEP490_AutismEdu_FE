@@ -1,4 +1,4 @@
-import { Box, Checkbox, colors, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select } from "@mui/material";
+import { Box, Checkbox, colors, FormControl, IconButton, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
@@ -13,7 +13,8 @@ import {
 } from "chart.js";
 import { useParams } from "react-router-dom";
 import services from "~/plugins/services";
-
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const generatedColors = new Set([
@@ -67,6 +68,7 @@ function AssessmentChart({ studentProfile }) {
     const [pagination, setPagination] = useState(null);
     const [displayAssessment, setDisplayAssessment] = useState(null);
     const [selectedAssessment, setSelectedAssessment] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
     useEffect(() => {
         handleGetReports();
         handleGetAsessment();
@@ -85,14 +87,13 @@ function AssessmentChart({ studentProfile }) {
                         return assessment.question === a.question;
                     })
                     if (question) {
-                        data.data.push(question.point)
+                        data.data.unshift(question.point)
                     }
                 })
-                reportData.push(data);
+                reportData.unshift(data);
             })
-            const reverseArr = reportData.reverse();
             const colorArray = Array.from(generatedColors);
-            const datasets = reverseArr.map((dataset, index) => ({
+            const datasets = reportData.map((dataset, index) => ({
                 ...dataset,
                 borderColor: index < 15 ? colorArray[index] : getUniqueRandomColor(),
                 fill: false,
@@ -104,8 +105,9 @@ function AssessmentChart({ studentProfile }) {
             for (let i = 0; i <= labelLength; i++) {
                 label.push("");
             }
-
-            if ((pagination.total <= 10) || (pagination.total / pagination.pageSize === pagination.pageNumber)) {
+            console.log(pagination.total / pagination.pageSize + 1);
+            if ((pagination.total <= 10) || (Math.floor(pagination.total / pagination.pageSize + 1) === pagination.pageNumber)) {
+                console.log("zoay");
                 label.unshift(formatDate(studentProfile.createdDate));
                 datasets.forEach((d) => {
                     const initAssessment = initialCondition.find((i) => {
@@ -130,12 +132,10 @@ function AssessmentChart({ studentProfile }) {
     }, [assessments, progressReports, studentProfile, pagination, initialCondition])
 
     useEffect(() => {
-        console.log("assessment ==> ", displayAssessment);
         if (selectedAssessment.length !== 0 && displayAssessment?.datasets) {
             const updatedAssessment = chartData.datasets.filter((s) => {
                 return selectedAssessment.includes(s.label)
             })
-            console.log("Updated assessment ==> ", updatedAssessment);
             setDisplayAssessment({
                 ...displayAssessment,
                 datasets: updatedAssessment
@@ -143,19 +143,28 @@ function AssessmentChart({ studentProfile }) {
         }
     }, [selectedAssessment])
 
+    useEffect(() => {
+        handleGetReports();
+    }, [currentPage])
     const handleGetReports = async () => {
         try {
             setLoading(true);
             await services.ProgressReportAPI.getListProgressReport((res) => {
-                console.log(res);
-                setProgressReports(res.result.progressReports);
+                if (res.result.progressReports.length < 10 && progressReports.length !== 0) {
+                    const remainingItem = progressReports.slice(-(10 - res.result.progressReports.length));
+                    setProgressReports([...remainingItem, ...res.result.progressReports]);
+                } else {
+                    setProgressReports(res.result.progressReports);
+                }
                 setInitialCondition(res.result.initialAssessmentResultDTO);
                 setPagination(res.pagination);
             }, (err) => {
                 console.log(err);
             }, {
                 studentProfileId: id,
-                getInitialResult: true
+                getInitialResult: true,
+                orderBy: "dateFrom",
+                pageNumber: currentPage
             })
             setLoading(false);
         } catch (error) {
@@ -172,8 +181,8 @@ function AssessmentChart({ studentProfile }) {
     const handleGetAsessment = async () => {
         try {
             await services.AssessmentManagementAPI.listAssessment((res) => {
-                setAssessment(res.result)
-                const assessmentNames = res.result.map((r) => {
+                setAssessment(res.result.questions)
+                const assessmentNames = res.result.questions.map((r) => {
                     return r.question
                 })
                 setSelectedAssessment(assessmentNames)
@@ -197,27 +206,36 @@ function AssessmentChart({ studentProfile }) {
         <Box px={5} pt={2} pb={3}>
             {
                 assessments && assessments.length !== 0 && chartData && (
-                    <div>
-                        <FormControl sx={{ m: 1, width: 300 }}>
-                            <InputLabel id="label-select">Đánh giá</InputLabel>
-                            <Select
-                                labelId="label-select"
-                                multiple
-                                value={selectedAssessment}
-                                onChange={handleChange}
-                                input={<OutlinedInput label="Đánh giá" />}
-                                renderValue={(selected) => selected.join(', ')}
-                                MenuProps={MenuProps}
-                            >
-                                {assessments.map((a) => (
-                                    <MenuItem key={a.id} value={a.question}>
-                                        <Checkbox checked={selectedAssessment.includes(a.question)} />
-                                        <ListItemText primary={a.question} />
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </div>
+                    <>
+                        <Stack direction='row'>
+                            <FormControl sx={{ m: 1, width: 300 }}>
+                                <InputLabel id="label-select">Đánh giá</InputLabel>
+                                <Select
+                                    labelId="label-select"
+                                    multiple
+                                    value={selectedAssessment}
+                                    onChange={handleChange}
+                                    input={<OutlinedInput label="Đánh giá" />}
+                                    renderValue={(selected) => selected.join(', ')}
+                                    MenuProps={MenuProps}
+                                >
+                                    {assessments.map((a) => (
+                                        <MenuItem key={a.id} value={a.question}>
+                                            <Checkbox checked={selectedAssessment.includes(a.question)} />
+                                            <ListItemText primary={a.question} />
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Stack>
+                        <Box sx={{ width: "100%", textAlign: "center" }}>
+                            <IconButton disabled={pagination?.pageNumber * pagination?.pageSize >= pagination?.total}
+                                onClick={() => setCurrentPage(currentPage + 1)}>
+                                <KeyboardArrowLeftIcon />
+                            </IconButton>
+                            <IconButton disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}><ChevronRightIcon /></IconButton>
+                        </Box>
+                    </>
                 )
             }
             {

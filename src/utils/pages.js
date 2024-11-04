@@ -32,10 +32,11 @@ const PAGES = {
   CERTIFICATE_DETAIL: '/autismtutor/certificate-detail/:id',
   STUDENT_CREATION: '/autismtutor/create-student-profile',
   APPROVE_STUDENT_PROFILE: '/approve-student-profile/:id',
-  EXERCISE_MANAGEMENT:'/autismtutor/exercise',
+  EXERCISE_MANAGEMENT: '/autismtutor/exercise',
   MY_TUTOR: '/my-tutor',
   MY_TUTOR_DETAIL: '/my-tutor/:id',
   TUTOR_REQUEST_HISTORY: '/request-history',
+  PROGRESS_REPORT_UPDATE: '/v1/ProgressReport'
 };
 
 export default PAGES;

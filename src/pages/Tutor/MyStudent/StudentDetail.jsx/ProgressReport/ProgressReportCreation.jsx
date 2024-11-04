@@ -12,7 +12,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-function ProgressReportCreation({ currentReport }) {
+function ProgressReportCreation({ studentProfile, currentReport, setCurrentReport, setPreReport,
+    progressReports, setProgressReports, currentPage, setSelectedItem, selectedItem, setSortType, setStartDate, setEndDate,
+    startDate, endDate, setCurrentPage, sortType
+}) {
     const [open, setOpen] = useState();
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -64,7 +67,6 @@ function ProgressReportCreation({ currentReport }) {
 
     const validate = (values) => {
         const errors = {};
-        console.log(values.achieved);
         if (!values.achieved) {
             errors.achieved = "Bắt buộc";
         }
@@ -100,6 +102,26 @@ function ProgressReportCreation({ currentReport }) {
                     assessmentResults: selectedAssessment
                 }, (res) => {
                     enqueueSnackbar("Tạo sổ liên lạc thành công!", { variant: "success" })
+                    setCurrentReport(res.result);
+                    setPreReport(currentReport);
+                    if (currentPage !== 1 || startDate !== "" || endDate !== "" || sortType !== "desc") {
+                        setStartDate("");
+                        setEndDate("");
+                        setSortType("desc");
+                        setCurrentPage(1);
+                    } else if (currentPage === 1) {
+                        let arr = [];
+                        if (progressReports.length === 10) {
+                            arr = [...progressReports.slice(0, 9)];
+                        } else {
+                            arr = [...progressReports]
+                        }
+                        setProgressReports([res.result, ...arr])
+                        if (!selectedItem) {
+                            setSelectedItem(res.result)
+                        }
+                    }
+
                     formik.resetForm();
                     handleClose();
                 }, (err) => {
@@ -132,6 +154,25 @@ function ProgressReportCreation({ currentReport }) {
         }
         return displayItem
     }
+
+    const getFromDate = () => {
+        if (currentReport) {
+            if (!currentReport.to) return "";
+            const minDate = new Date(currentReport.to);
+            minDate.setDate(minDate.getDate() + 1);
+            const year = minDate.getFullYear();
+            const month = String(minDate.getMonth() + 1).padStart(2, '0');
+            const day = String(minDate.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`
+        } else {
+            if (!studentProfile.createdDate) return "";
+            const minDate = new Date(studentProfile.createdDate);
+            const year = minDate.getFullYear();
+            const month = String(minDate.getMonth() + 1).padStart(2, '0');
+            const day = String(minDate.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`
+        }
+    }
     return (
         <Box>
             <Button variant='contained' onClick={handleOpen}>Tạo đánh giá mới</Button>
@@ -145,7 +186,7 @@ function ProgressReportCreation({ currentReport }) {
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        width: "90vw",
+                        width: currentReport ? "90vw" : '60vw',
                         bgcolor: 'background.paper',
                         boxShadow: 24,
                         p: 4,
@@ -153,7 +194,7 @@ function ProgressReportCreation({ currentReport }) {
                         overflow: 'auto'
                     }}>
                         <Stack direction='row' gap={2}>
-                            <form onSubmit={formik.handleSubmit} style={{ width: "60%" }}>
+                            <form onSubmit={formik.handleSubmit} style={{ width: currentReport ? "60%" : '100%', }}>
                                 <Typography id="modal-modal-title" variant="h5" component="h2">
                                     Tạo đánh giá mới
                                 </Typography>
@@ -164,6 +205,7 @@ function ProgressReportCreation({ currentReport }) {
                                             onChange={formik.handleChange}
                                             value={formik.values.from}
                                             inputProps={{
+                                                min: getFromDate(currentReport?.to),
                                                 max: new Date().toISOString().split('T')[0],
                                             }}
                                         />

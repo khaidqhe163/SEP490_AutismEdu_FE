@@ -20,6 +20,7 @@ function MyStudent() {
             }, (error) => {
                 console.log(error);
             }, {
+                status: "Teaching"
             })
         } catch (error) {
             console.log(error);
