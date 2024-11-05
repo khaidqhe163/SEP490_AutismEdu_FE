@@ -12,7 +12,7 @@ import StarIcon from '@mui/icons-material/Star';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { Avatar, Box, Button, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Button, Divider, Grid, Skeleton, Stack, Typography } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { format } from 'date-fns';
@@ -26,21 +26,42 @@ import { setUserInformation, userInfor } from '~/redux/features/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 function TutorProfile() {
+
     const { id } = useParams();
     const [timeData, setTimeData] = useState(1);
     const [availability, setAvailability] = useState([]);
     const [value, setValue] = useState('1');
     const [valueCurriculum, setValueCurriculum] = useState('1');
-    const [tutor, setTutor] = useState({});
+    const [tutor, setTutor] = useState(null);
     const [loading, setLoading] = useState(false);
-    const userInfo = useSelector(userInfor)
+    const [studyingList, setStudyingList] = useState([]);
+    const userInfo = useSelector(userInfor);
     console.log(tutor);
     console.log(userInfo);
 
 
     useEffect(() => {
         handleGetAllAvailableTime(1);
-    }, []);
+        handleGetStudyingList();
+    }, [id]);
+
+    const handleGetStudyingList = async () => {
+        try {
+            await services.StudentProfileAPI.getMyTutor((res) => {
+                if (res?.result) {
+                    const newData = res?.result?.filter((r) => r.tutorId === id);
+                    console.log(newData);
+                    setStudyingList(newData);
+                }
+            }, (error) => {
+                console.log(error);
+            }, {
+                status: 'teaching'
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const handleDateChange = async (weekday) => {
         setTimeData(weekday);
@@ -177,7 +198,7 @@ function TutorProfile() {
             <Grid item xs={2} />
             <Grid item xs={8}>
                 <Grid container sx={{ height: "auto", width: "100%" }}>
-                    <Grid item xs={12} px={2}>
+                    {tutor ? <Grid item xs={12} px={2}>
 
                         <Box sx={{ display: "flex", alignItems: 'center', mb: 5, width: "100%" }}>
                             <Box sx={{ overflow: 'hidden', width: "25%", height: "auto" }}>
@@ -203,10 +224,7 @@ function TutorProfile() {
                                 </Stack>
                             </Box>
                             <Box sx={{ width: "20%" }}>
-                                <TutorRequestModal rejectChildIds={tutor?.rejectChildIds} tutorId={id} calculateAge={calculateAge} />
-                                {/* <Button onClick={handleOpenHistory} startIcon={<ForwardToInboxIcon />} variant='contained' color='primary' size='large'>
-                                    Lịch sử gửi yêu cầu
-                                </Button> */}
+                                <TutorRequestModal rejectChildIds={tutor?.rejectChildIds} tutorId={id} calculateAge={calculateAge} studyingList={studyingList} />
                             </Box>
                         </Box>
 
@@ -216,7 +234,7 @@ function TutorProfile() {
                                     <TabList onChange={handleChange} aria-label="lab API tabs example">
                                         <Tab label="Giới thiệu" value="1" />
                                         {/* <Tab label="Item Two" value="2" />
-                                        <Tab label="Item Three" value="3" /> */}
+                <Tab label="Item Three" value="3" /> */}
                                     </TabList>
                                 </Box>
                                 <TabPanel value="1">
@@ -236,7 +254,7 @@ function TutorProfile() {
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}>
                                                     <CakeOutlinedIcon />
                                                     <Typography variant='subtitle1' sx={{ minWidth: '150px' }}>Độ tuổi học sinh, học viên: </Typography>
-                                                    <Typography variant='h6'>Từ {tutor.startAge} - {tutor.endAge} tuổi</Typography>
+                                                    <Typography variant='h6'>Từ {tutor?.startAge} - {tutor?.endAge} tuổi</Typography>
                                                 </Box>
 
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}>
@@ -252,7 +270,7 @@ function TutorProfile() {
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}>
                                                     <EmailOutlinedIcon />
                                                     <Typography variant='subtitle1' sx={{ minWidth: '50px' }}>Email: </Typography>
-                                                    <Typography variant='h6'>{tutor.email}</Typography>
+                                                    <Typography variant='h6'>{tutor?.email}</Typography>
                                                 </Box>
 
                                                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, p: 1 }}>
@@ -322,7 +340,7 @@ function TutorProfile() {
                                                                 value={valueCurriculum}
                                                                 onChange={handleChangeCurriculum}
                                                                 variant="scrollable"
-                                                                scrollButtons
+                                                                scrollButtons="auto"
                                                                 aria-label="icon position tabs example"
                                                             >
                                                                 {tutor?.curriculums?.map((cur, index) => (
@@ -330,8 +348,8 @@ function TutorProfile() {
                                                                 ))}
 
                                                                 {/* <Tab value="4" icon={<ElevatorIcon />} iconPosition="start" label="Từ 7 - 9 tuổi" />
-                                                            <Tab value="5" icon={<ElevatorIcon />} iconPosition="start" label="Từ 7 - 9 tuổi" />
-                                                            <Tab value="6" icon={<ElevatorIcon />} iconPosition="start" label="Từ 7 - 9 tuổi" /> */}
+                                    <Tab value="5" icon={<ElevatorIcon />} iconPosition="start" label="Từ 7 - 9 tuổi" />
+                                    <Tab value="6" icon={<ElevatorIcon />} iconPosition="start" label="Từ 7 - 9 tuổi" /> */}
                                                             </Tabs>
                                                         </Box>
                                                         {tutor?.curriculums?.map((cur, index) => (
@@ -363,7 +381,7 @@ function TutorProfile() {
                                                 mt: "20px",
                                                 gap: 2
                                             }}>
-                                                <Typography variant='h2' my={2}>Thiết lập thời gian rảnh</Typography>
+                                                <Typography variant='h5' my={2}>Thiết lập thời gian rảnh</Typography>
                                                 <Box>
                                                     <Stack direction={'column'} gap={1}>
                                                         <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -385,11 +403,35 @@ function TutorProfile() {
                                     </>
                                 </TabPanel>
                                 {/* <TabPanel value="2">Bài tập</TabPanel>
-                                <TabPanel value="3">Chứng chỉ</TabPanel> */}
+        <TabPanel value="3">Chứng chỉ</TabPanel> */}
                             </TabContext>
                         </Box>
 
-                    </Grid>
+                    </Grid> : <Grid item xs={12} px={2}>
+                        <Box sx={{ display: "flex", alignItems: 'center', mb: 5, width: "100%" }}>
+                            <Skeleton variant="circular" width={200} height={200} />
+                            <Box ml={1} sx={{ width: "55%" }}>
+                                <Skeleton variant="text" width="60%" height={40} />
+                                <Skeleton variant="text" width="40%" height={20} />
+                                <Skeleton variant="text" width="30%" height={20} />
+                                <Skeleton variant="text" width="70%" height={20} />
+                            </Box>
+                            <Box sx={{ width: "20%" }}>
+                                <Skeleton variant="rectangular" width={120} height={40} />
+                            </Box>
+                        </Box>
+
+                        <Box sx={{ width: '100%', typography: 'body1' }}>
+                            <Skeleton variant="text" width="20%" height={30} />
+                            <Skeleton variant="rectangular" width="100%" height={500} sx={{ my: 2, borderRadius: "10px" }} />
+                        </Box>
+
+                        <Skeleton variant="text" width="30%" height={30} />
+                        <Skeleton variant="rectangular" width="100%" height={200} sx={{ my: 2, borderRadius: "10px" }} />
+
+                        <Skeleton variant="text" width="30%" height={30} />
+                        <Skeleton variant="rectangular" width="100%" height={150} sx={{ my: 2, borderRadius: "10px" }} />
+                    </Grid>}
 
                 </Grid>
                 <LoadingComponent open={loading} setOpen={setLoading} />

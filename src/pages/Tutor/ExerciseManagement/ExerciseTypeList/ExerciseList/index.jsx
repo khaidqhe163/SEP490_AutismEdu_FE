@@ -41,9 +41,7 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
 
 
     useEffect(() => {
-        setTimeout(() => {
-            handleGetExerciseByTypeId();
-        }, 500);
+        handleGetExerciseByTypeId();
     }, [dataFilter, pagination.pageNumber]);
 
     const handleGetExerciseByTypeId = async () => {

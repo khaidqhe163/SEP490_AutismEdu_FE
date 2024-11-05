@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Button, Pagination, FormControl, InputLabel, Select, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Typography, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Button, Pagination, FormControl, InputLabel, Select, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Divider } from '@mui/material';
 import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
 
@@ -163,7 +163,7 @@ const TutorRequestHistory = () => {
                   <TableCell>{request?.childInformation?.name}</TableCell>
                   <TableCell>{request?.description}</TableCell>
                   <TableCell>{new Date(request.createdDate).toLocaleDateString()}</TableCell>
-                  <TableCell>{statusTypeReject(request?.rejectType) || 'N/A'}</TableCell>
+                  <TableCell sx={{ maxWidth: 200 }}>{statusTypeReject(request?.rejectType) || 'N/A'}</TableCell>
                   <TableCell>
 
                     {request?.rejectionReason ?
@@ -173,11 +173,11 @@ const TutorRequestHistory = () => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             whiteSpace: 'nowrap',
-                            maxWidth: 350
+                            maxWidth: 250
                           }}>
                             {request?.rejectionReason}
                           </Box>
-                          {request?.rejectionReason.length > 55 && (
+                          {request?.rejectionReason.length > 35 && (
                             <Button
                               variant="text"
                               size="small"
@@ -220,12 +220,13 @@ const TutorRequestHistory = () => {
         </Stack>
       </Box>
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-        <DialogTitle textAlign={'center'}>Nội dung bài tập</DialogTitle>
+        <DialogTitle textAlign={'center'}>Lý do từ chối</DialogTitle>
+        <Divider />
         <DialogContent>
           <Typography>{selectedContent}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">Đóng</Button>
+          <Button onClick={handleCloseDialog} variant='outlined' color="primary">Đóng</Button>
         </DialogActions>
       </Dialog>
       <LoadingComponent open={loading} setOpen={setLoading} />
