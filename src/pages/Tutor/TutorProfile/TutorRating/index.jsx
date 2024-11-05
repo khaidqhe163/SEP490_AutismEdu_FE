@@ -113,11 +113,13 @@ function TutorRating({ tutorId, userInfo }) {
     const handleSubmitRating = async () => {
         try {
             setLoading(true);
-            await services.ReviewManagementAPI.createReview(ratingData, (res) => {
+            await services.ReviewManagementAPI.createReview(ratingData, async (res) => {
                 if (res?.result) {
                     const addData = [res.result, ...dataReviewStats.reviews];
                     setDataReviewStats((prev) => ({ ...prev, reviews: addData }));
+                    setRatingData((prev) => ({ ...prev, rateScore: 0, description: '' }))
                     enqueueSnackbar("Đánh giá đã được đăng thành công!", { variant: 'success' });
+                    await handleGetDataReviewStats();
                 }
             }, (error) => {
                 console.log(error);
@@ -137,13 +139,14 @@ function TutorRating({ tutorId, userInfo }) {
                 description: tempContent
             };
             setLoading(true);
-            await services.ReviewManagementAPI.updateReview(selectedReview?.id, updateData, (res) => {
+            await services.ReviewManagementAPI.updateReview(selectedReview?.id, updateData, async (res) => {
                 if (res?.result) {
                     const updatedReviews = dataReviewStats?.reviews?.map((r) =>
                         r.id === res.result.id ? res.result : r
                     );
                     setDataReviewStats((prev) => ({ ...prev, reviews: updatedReviews }));
                     enqueueSnackbar('Cập nhật đánh giá thành công!', { variant: 'success' });
+                    await handleGetDataReviewStats();
                 }
             }, (error) => {
                 console.log(error);
@@ -381,7 +384,7 @@ function TutorRating({ tutorId, userInfo }) {
                     </Stack>
                 }
 
-                {open && <DeleteConfirmationModal id={idDelete} open={open} handleClose={handleClose} dataReviewStats={dataReviewStats} setDataReviewStats={setDataReviewStats} />}
+                {open && <DeleteConfirmationModal id={idDelete} open={open} handleClose={handleClose} dataReviewStats={dataReviewStats} setDataReviewStats={setDataReviewStats} handleGetDataReviewStats={handleGetDataReviewStats} />}
 
                 <LoadingComponent open={loading} setOpen={setLoading} />
             </Box >

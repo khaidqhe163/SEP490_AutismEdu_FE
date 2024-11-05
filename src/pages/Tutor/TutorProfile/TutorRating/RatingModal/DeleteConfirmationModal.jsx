@@ -3,18 +3,18 @@ import { enqueueSnackbar } from 'notistack';
 import React from 'react';
 import services from '~/plugins/services';
 
-function DeleteConfirmationModal({ id, open, handleClose, dataReviewStats, setDataReviewStats }) {
+function DeleteConfirmationModal({ id, open, handleClose, dataReviewStats, setDataReviewStats, handleGetDataReviewStats }) {
     console.log(id);
     const handleDelete = async () => {
         try {
-            await services.ReviewManagementAPI.deleteReview(id, {}, (res) => {
+            await services.ReviewManagementAPI.deleteReview(id, {}, async (res) => {
                 if (res?.result) {
                     const newData = dataReviewStats?.reviews?.filter((r) => r?.id !== id);
                     setDataReviewStats((prev) => ({ ...prev, reviews: newData }));
                     enqueueSnackbar(res.result, { variant: 'success' });
+                    await handleGetDataReviewStats();
                 }
             }, (error) => {
-                console.log('Tuoi l');
                 console.log(error);
             })
         } catch (error) {
