@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import {
     Box,
     Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
     Divider,
     FormControl,
     FormControlLabel,
@@ -29,6 +33,8 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
     const [notificationModalOpen, setNotificationModalOpen] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState('');
     const [isValidate, setValidate] = useState(true);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedContent, setSelectedContent] = useState('');
 
     useEffect(() => {
         if (schedule) {
@@ -69,6 +75,7 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
 
                     setFilterSchedule((prev) => ({ ...prev, [selectedKey]: updateData }));
                     enqueueSnackbar("Đánh giá thành công!", { variant: 'success' });
+                    onClose();
                 }
                 if (res?.errorMessages?.length !== 0) {
                     setNotificationMessage(res?.errorMessages[0] || '');
@@ -96,6 +103,16 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
         const [hours, minutes] = timeString.split(":");
         return `${hours}:${minutes}`;
     }
+
+    const handleOpenDialog = (content) => {
+        setSelectedContent(content);
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+        setSelectedContent('');
+    };
 
 
     return (
@@ -147,7 +164,12 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
                             <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Bài tập:</Typography>
                         </Grid>
                         <Grid item xs={7}>
-                            <Typography variant='subtitle1'>{schedule?.exercise?.exerciseName}</Typography>
+                            <Typography variant='subtitle1'>
+                                {schedule?.exercise?.exerciseName}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={5}>
+                            <Button variant='text' sx={{ padding: 0 }} onClick={() => handleOpenDialog(schedule?.exercise?.description)}>Xem chi tiết bài tập</Button>
                         </Grid>
                     </Grid>
 
@@ -198,7 +220,7 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
                         <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ px: 3 }} disabled={isValidate}>Lưu</Button>
                     </Stack>
                 </Box>
-            </Modal>
+            </Modal >
             <Modal open={notificationModalOpen} onClose={() => setNotificationModalOpen(false)}>
                 <Box sx={{
                     position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
@@ -211,6 +233,17 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
                     <Button variant="contained" onClick={() => setNotificationModalOpen(false)} >Xác nhận</Button>
                 </Box>
             </Modal>
+            {selectedContent && <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+                <DialogTitle textAlign={'center'}>Nội dung bài tập</DialogTitle>
+                <Divider />
+                <DialogContent>
+                    <Box mx={'auto'} width={'90%'} dangerouslySetInnerHTML={{ __html: selectedContent }} />
+                </DialogContent>
+                <Divider />
+                <DialogActions>
+                    <Button onClick={handleCloseDialog} variant='contained' color="primary">Đóng</Button>
+                </DialogActions>
+            </Dialog>}
         </>
     );
 }

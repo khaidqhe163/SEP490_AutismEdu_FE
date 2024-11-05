@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Card, CardActionArea, CardContent, Grid, InputAdornment, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, MenuItem, Select, FormControl, InputLabel, Dialog, DialogTitle, DialogContent, DialogActions, Pagination } from '@mui/material';
+import { Box, Button, Card, CardActionArea, CardContent, Grid, InputAdornment, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, MenuItem, Select, FormControl, InputLabel, Dialog, DialogTitle, DialogContent, DialogActions, Pagination, Divider } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -186,7 +186,7 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
                             <TableRow>
                                 <TableCell sx={{ fontWeight: 'bold' }}>STT</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }}>Tên bài tập</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Nội dung</TableCell>
+                                {/* <TableCell sx={{ fontWeight: 'bold' }}>Nội dung</TableCell> */}
                                 <TableCell sx={{ fontWeight: 'bold' }}>Ngày tạo</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }}>Hành động</TableCell>
                             </TableRow>
@@ -195,27 +195,22 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
                             {exercises.map((exercise, index) => (
                                 <TableRow key={exercise.id} hover>
                                     <TableCell>{index + 1}</TableCell>
-                                    <TableCell>{exercise.exerciseName}</TableCell>
-                                    <TableCell>
-                                        <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-                                            <Box sx={{
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap',
-                                                maxWidth: 350
-                                            }}>
-                                                {exercise.description}
-                                            </Box>
-                                            {exercise.description.length > 55 && (
-                                                <Button
-                                                    variant="text"
-                                                    size="small"
-                                                    onClick={() => handleOpenDialog(exercise.description)}
-                                                    sx={{ textTransform: 'none', color: 'primary.main' }}
-                                                >
-                                                    Xem thêm
-                                                </Button>
-                                            )}
+                                    <TableCell
+                                        onClick={() => handleOpenDialog(exercise.description)}
+                                        sx={{ width: '350px' }}
+                                    >
+                                        <Box sx={{
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            maxWidth: '100%',
+                                            color: 'primary.main', 
+                                            cursor:'pointer',
+                                            '&:hover': {
+                                                textDecoration: 'underline' 
+                                            }
+                                        }}>
+                                            {exercise.exerciseName}
                                         </Box>
                                     </TableCell>
                                     <TableCell>{formatDate(exercise?.createdDate)}</TableCell>
@@ -247,11 +242,14 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
 
             <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
                 <DialogTitle textAlign={'center'}>Nội dung bài tập</DialogTitle>
+                <Divider />
                 <DialogContent>
-                    <Typography>{selectedContent}</Typography>
+                    <Box width={'100%'} dangerouslySetInnerHTML={{ __html: selectedContent }} />
                 </DialogContent>
+                <Divider />
+
                 <DialogActions>
-                    <Button onClick={handleCloseDialog} color="primary">Đóng</Button>
+                    <Button onClick={handleCloseDialog} variant='contained' color="primary">Đóng</Button>
                 </DialogActions>
             </Dialog>
 

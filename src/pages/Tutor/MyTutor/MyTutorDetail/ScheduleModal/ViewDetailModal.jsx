@@ -19,6 +19,18 @@ function ViewDetailModal({ isOpen, setModalOpen, schedule, setSchedule, tutorNam
 
     const [selectedContent, setSelectedContent] = useState('');
     const [openDialog, setOpenDialog] = useState(false);
+    const [selectedContentE, setSelectedContentE] = useState('');
+    const [openDialogE, setOpenDialogE] = useState(false);
+
+    const handleOpenDialogE = (content) => {
+        setSelectedContentE(content);
+        setOpenDialogE(true);
+    };
+
+    const handleCloseDialogE = () => {
+        setOpenDialogE(false);
+        setSelectedContentE('');
+    };
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
@@ -154,6 +166,9 @@ function ViewDetailModal({ isOpen, setModalOpen, schedule, setSchedule, tutorNam
                                 </Box>
                             ) : '-'}
                         </Grid>
+                        <Grid item xs={5}>
+                            <Button variant='text' sx={{ padding: 0 }} onClick={() => handleOpenDialogE(schedule?.exercise?.description)}>Xem chi tiết bài tập</Button>
+                        </Grid>
 
                     </Grid>
 
@@ -169,9 +184,21 @@ function ViewDetailModal({ isOpen, setModalOpen, schedule, setSchedule, tutorNam
                     <Typography>{selectedContent}</Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseDialog} color="primary">Đóng</Button>
+                    <Button onClick={handleCloseDialog} variant='contained' color="primary">Đóng</Button>
                 </DialogActions>
             </Dialog>
+
+            {selectedContentE && <Dialog open={openDialogE} onClose={handleCloseDialogE} maxWidth="md" fullWidth>
+                <DialogTitle textAlign={'center'}>Nội dung bài tập</DialogTitle>
+                <Divider />
+                <DialogContent>
+                    <Box mx={'auto'} width={'90%'} dangerouslySetInnerHTML={{ __html: selectedContentE }} />
+                </DialogContent>
+                <Divider />
+                <DialogActions>
+                    <Button onClick={handleCloseDialogE} variant='contained' color="primary">Đóng</Button>
+                </DialogActions>
+            </Dialog>}
 
         </>
     );
