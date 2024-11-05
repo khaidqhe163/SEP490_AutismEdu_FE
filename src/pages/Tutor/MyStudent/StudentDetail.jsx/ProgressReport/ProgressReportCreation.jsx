@@ -12,6 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ConfirmDialog from '~/components/ConfirmDialog';
 function ProgressReportCreation({ studentProfile, currentReport, setCurrentReport, setPreReport,
     progressReports, setProgressReports, currentPage, setSelectedItem, selectedItem, setSortType, setStartDate, setEndDate,
     startDate, endDate, setCurrentPage, sortType
@@ -23,6 +24,7 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
     const [selectedAssessment, setSelectedAssessment] = useState([]);
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
+    const [openConfirm, setOpenConfirm] = useState(false);
     useEffect(() => {
         handleGetAsessment();
     }, [])
@@ -94,46 +96,51 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
         },
         validate,
         onSubmit: async (values) => {
-            try {
-                setLoading(true);
-                await services.ProgressReportAPI.createProgressReport({
-                    ...values,
-                    studentProfileId: id,
-                    assessmentResults: selectedAssessment
-                }, (res) => {
-                    enqueueSnackbar("Tạo sổ liên lạc thành công!", { variant: "success" })
-                    setCurrentReport(res.result);
-                    setPreReport(currentReport);
-                    if (currentPage !== 1 || startDate !== "" || endDate !== "" || sortType !== "desc") {
-                        setStartDate("");
-                        setEndDate("");
-                        setSortType("desc");
-                        setCurrentPage(1);
-                    } else if (currentPage === 1) {
-                        let arr = [];
-                        if (progressReports.length === 10) {
-                            arr = [...progressReports.slice(0, 9)];
-                        } else {
-                            arr = [...progressReports]
-                        }
-                        setProgressReports([res.result, ...arr])
-                        if (!selectedItem) {
-                            setSelectedItem(res.result)
-                        }
-                    }
-
-                    formik.resetForm();
-                    handleClose();
-                }, (err) => {
-                    console.log(err);
-                    enqueueSnackbar("Tạo sổ liên lạc thất bại!", { variant: "error" })
-                })
-                setLoading(false);
-            } catch (error) {
-                setLoading(false);
-            }
+            setOpenConfirm(true);
         }
     })
+
+    const handleSubmit = async () => {
+        try {
+            setLoading(true);
+            await services.ProgressReportAPI.createProgressReport({
+                ...formik.values,
+                studentProfileId: id,
+                assessmentResults: selectedAssessment
+            }, (res) => {
+                enqueueSnackbar("Tạo sổ liên lạc thành công!", { variant: "success" })
+                setCurrentReport(res.result);
+                setPreReport(currentReport);
+                if (currentPage !== 1 || startDate !== "" || endDate !== "" || sortType !== "desc") {
+                    setStartDate("");
+                    setEndDate("");
+                    setSortType("desc");
+                    setCurrentPage(1);
+                } else if (currentPage === 1) {
+                    let arr = [];
+                    if (progressReports.length === 10) {
+                        arr = [...progressReports.slice(0, 9)];
+                    } else {
+                        arr = [...progressReports]
+                    }
+                    setProgressReports([res.result, ...arr])
+                    if (!selectedItem) {
+                        setSelectedItem(res.result)
+                    }
+                }
+
+                formik.resetForm();
+                handleClose();
+                setOpenConfirm(false);
+            }, (err) => {
+                console.log(err);
+                enqueueSnackbar("Tạo sổ liên lạc thất bại!", { variant: "error" })
+            })
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+        }
+    }
     const formatDate = (date) => {
         if (!date) {
             return "";
@@ -142,18 +149,18 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
         return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
     }
 
-    const getDefaultValue = (assessment) => {
-        if (!assessment || !currentReport) {
-            return 1;
-        }
-        const displayItem = currentReport.assessmentResults.find((a) => {
-            return a.question === assessment.question;
-        })
-        if (!displayItem) {
-            return 1;
-        }
-        return displayItem
-    }
+    // const getDefaultValue = (assessment) => {
+    //     if (!assessment || !currentReport) {
+    //         return 1;
+    //     }
+    //     const displayItem = currentReport.assessmentResults.find((a) => {
+    //         return a.question === assessment.question;
+    //     })
+    //     if (!displayItem) {
+    //         return 1;
+    //     }
+    //     return displayItem
+    // }
 
     const getFromDate = () => {
         if (currentReport) {
@@ -373,6 +380,11 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
                         </Stack>
 
                         <LoadingComponent open={loading} />
+                        <ConfirmDialog openConfirm={openConfirm} setOpenConfirm={setOpenConfirm}
+                            title={'Tạo sổ liên lạc'}
+                            content={'Kiểm tra kỹ trước khi tạo! Bạn có muốn tạo sổ liên lạc này'}
+                            handleAction={handleSubmit}
+                        />
                     </Box>
                 </Modal>
             }

@@ -87,6 +87,7 @@ const API_CODE = {
   //Progress report 
   API_CREATE_PROGRESS_REPORT: '/v1/ProgressReport',
   API_GET_LIST_PROGRESS_REPORT: '/v1/ProgressReport',
+  API_UPDATE_PROGRESS_REPORT: '/v1/ProgressReport',
   //Exercuse management
   API_GET_ALL_EXERCISE_TYPE: '/v1/ExerciseType/getAllNoPaging',
   API_GET_EXERCISE_BY_TYPE: '/v1/Exercise/',

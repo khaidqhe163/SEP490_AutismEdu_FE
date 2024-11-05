@@ -15,6 +15,7 @@ import CompareReport from './CompareReport';
 import ProgressReportDetail from './ProgressReportDetail';
 import AssessmentGuild from '~/components/AssessmentGuild';
 import TablePagging from '~/components/TablePagging';
+import UpdateProgressReport from './UpdateProgressReport';
 const ASC = 1;
 const DESC = 2;
 const NOT_CHANGE = 3;
@@ -33,6 +34,8 @@ function ProgressReport({ studentProfile }) {
     const [sortType, setSortType] = useState('desc');
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [openUpdate, setOpenUpdate] = useState();
+    const handleOpenUpdate = () => setOpenUpdate(true);
     useEffect(() => {
         services.ProgressReportAPI.getListProgressReport((res) => {
             setProgressReports(res.result);
@@ -129,7 +132,6 @@ function ProgressReport({ studentProfile }) {
         setOpenDetail(true);
     }
 
-    console.log(currentReport);
     return (
         <Box px={5} pt={2} pb={3}>
             <Stack direction='row' justifyContent="space-between">
@@ -311,7 +313,9 @@ function ProgressReport({ studentProfile }) {
                                                             selectedItem.id === p.id ? <IconButton onClick={(e) => handleOpenDetail(e, index)}><SearchIcon /></IconButton>
                                                                 : <IconButton onClick={(e) => handleOpenCompare(e, index)}><FindReplaceIcon /></IconButton>
                                                         }
-                                                        <IconButton><Edit /></IconButton>
+                                                        <IconButton onClick={(e) => {
+                                                            handleOpenUpdate();
+                                                        }}><EditIcon /></IconButton>
                                                     </TableCell>
                                                 </TableRow>
                                             )
@@ -326,6 +330,10 @@ function ProgressReport({ studentProfile }) {
             </Box>
             <CompareReport open={openCompare} setOpen={setOpenCompare} selectedItem={selectedItem} compareItem={progressReports[compareItem]} />
             <ProgressReportDetail open={openDetail} setOpen={setOpenDetail} selectedItem={selectedItem} />
+            <UpdateProgressReport open={openUpdate} setOpen={setOpenUpdate} report={selectedItem} progressReports={progressReports}
+                setProgressReports={setProgressReports} setSelectedItem={setSelectedItem}
+                currentReport={currentReport} setCurrentReport={setCurrentReport}
+            />
         </Box >
     )
 }

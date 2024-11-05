@@ -12,6 +12,7 @@ import { useFormik } from 'formik';
 import axios from '~/plugins/axios';
 import { useNavigate } from 'react-router-dom';
 import PAGES from '~/utils/pages';
+import ConfirmDialog from '~/components/ConfirmDialog';
 
 function StudentCreation() {
     const email = useRef(null);
@@ -31,6 +32,7 @@ function StudentCreation() {
     const [sendRequest, setSendRequest] = useState("true")
     const [selectedRequest, setSelectedRequest] = useState("");
     const [listTutorRequest, setListTutorRequest] = useState([]);
+    const [openConfirm, setOpenConfirm] = useState(false);
     const nav = useNavigate();
     useEffect(() => {
         handleGetTutorRequest();
@@ -162,73 +164,75 @@ function StudentCreation() {
         },
         validate,
         onSubmit: async (values) => {
-            const selectedCommune = communes.find(p => p.idCommune === values.commune);
-            const selectedProvince = provinces.find(p => p.idProvince === values.province);
-            const selectedDistrict = districts.find(p => p.idDistrict === values.district);
-            if (initialCondition.trim() === "") {
-                enqueueSnackbar("Chưa nhập điều kiện ban đầu!", { variant: "error" });
-                return;
-            }
-            if (listSchedule.length === 0) {
-                enqueueSnackbar("Chưa nhập lịch học!", { variant: "error" });
-                return;
-            }
-            if (hasAccount === "true" && sendRequest === "true" && selectedRequest === "") {
-                enqueueSnackbar("Chưa chọn yêu cầu!", { variant: "error" });
-                return;
-            }
-            const formData = new FormData();
-            if (hasAccount === "false") {
-                formData.append("Email", values.email);
-                formData.append("ParentFullName", values.parentName);
-                formData.append("Address", `${selectedProvince.name}|${selectedDistrict.name}|${selectedCommune.name}|${values.homeNumber}`);
-                formData.append("PhoneNumber", values.phoneNumber);
-                formData.append("ChildName", values.childName);
-                formData.append("isMale", values.gender);
-                formData.append("BirthDate", values.dateOfBirth);
-                formData.append("Media", avatar);
-                formData.append("ChildId", 0);
-            }
-            else {
-                if (sendRequest === "true") {
-                    formData.append("TutorRequestId", listTutorRequest[selectedRequest].id)
-                } else {
-                    formData.append("TutorRequestId", 0)
-                }
-                formData.append("ChildId", children[currentChild].id);
-            }
-            formData.append("InitialCondition", initialCondition);
-            selectedAssessment.forEach((s, index) => {
-                formData.append(`InitialAssessmentResults[${index}].QuestionId`, s.questionId);
-                formData.append(`InitialAssessmentResults[${index}].OptionId`, s.optionId);
-            })
-            listSchedule.forEach((l, index) => {
-                formData.append(`ScheduleTimeSlots[${index}].Weekday`, l.weekday)
-                formData.append(`ScheduleTimeSlots[${index}].From`, l.from)
-                formData.append(`ScheduleTimeSlots[${index}].To`, l.to)
-            })
-            try {
-                setLoading(true);
-                axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
-                await services.StudentProfileAPI.createStudentProfile(formData,
-                    (res) => {
-                        enqueueSnackbar("Tạo hồ sơ học sinh thành công!", { variant: "success" });
-                        nav(PAGES.MY_STUDENT)
-                    }, (err) => {
-                        enqueueSnackbar("Tạo hồ sơ học sinh thất bại!", { variant: "error" });
-                    })
-                axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
-                setLoading(false);
-            } catch (error) {
-                console.log(error);
-            }
+            setOpenConfirm(true);
         }
     });
 
+    const handleSubmit = async () => {
+        const selectedCommune = communes.find(p => p.idCommune === formik.values.commune);
+        const selectedProvince = provinces.find(p => p.idProvince === formik.values.province);
+        const selectedDistrict = districts.find(p => p.idDistrict === formik.values.district);
+        if (initialCondition.trim() === "") {
+            enqueueSnackbar("Chưa nhập điều kiện ban đầu!", { variant: "error" });
+            return;
+        }
+        if (listSchedule.length === 0) {
+            enqueueSnackbar("Chưa nhập lịch học!", { variant: "error" });
+            return;
+        }
+        if (hasAccount === "true" && sendRequest === "true" && selectedRequest === "") {
+            enqueueSnackbar("Chưa chọn yêu cầu!", { variant: "error" });
+            return;
+        }
+        const formData = new FormData();
+        if (hasAccount === "false") {
+            formData.append("Email", formik.values.email);
+            formData.append("ParentFullName", formik.values.parentName);
+            formData.append("Address", `${selectedProvince.name}|${selectedDistrict.name}|${selectedCommune.name}|${formik.values.homeNumber}`);
+            formData.append("PhoneNumber", formik.values.phoneNumber);
+            formData.append("ChildName", formik.values.childName);
+            formData.append("isMale", formik.values.gender);
+            formData.append("BirthDate", formik.values.dateOfBirth);
+            formData.append("Media", avatar);
+            formData.append("ChildId", 0);
+        }
+        else {
+            if (sendRequest === "true") {
+                formData.append("TutorRequestId", listTutorRequest[selectedRequest].id)
+            } else {
+                formData.append("TutorRequestId", 0)
+            }
+            formData.append("ChildId", children[currentChild].id);
+        }
+        formData.append("InitialCondition", initialCondition);
+        selectedAssessment.forEach((s, index) => {
+            formData.append(`InitialAssessmentResults[${index}].QuestionId`, s.questionId);
+            formData.append(`InitialAssessmentResults[${index}].OptionId`, s.optionId);
+        })
+        listSchedule.forEach((l, index) => {
+            formData.append(`ScheduleTimeSlots[${index}].Weekday`, l.weekday)
+            formData.append(`ScheduleTimeSlots[${index}].From`, l.from)
+            formData.append(`ScheduleTimeSlots[${index}].To`, l.to)
+        })
+        try {
+            setLoading(true);
+            axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
+            await services.StudentProfileAPI.createStudentProfile(formData,
+                (res) => {
+                    enqueueSnackbar("Tạo hồ sơ học sinh thành công!", { variant: "success" });
+                    nav(PAGES.MY_STUDENT)
+                }, (err) => {
+                    enqueueSnackbar("Tạo hồ sơ học sinh thất bại!", { variant: "error" });
+                })
+            axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
+            setLoading(false);
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const handleGetTutorRequest = async () => {
         try {
             await services.TutorRequestAPI.getTutorRequestNoProfile((res) => {
-                console.log("request ==> ", res.result);
                 setListTutorRequest(res.result)
             }, (err) => {
                 console.log(err);
@@ -237,7 +241,6 @@ function StudentCreation() {
             console.log(error);
         }
     }
-    console.log(formik.errors);
     return (
         <Box p="20px" sx={{ height: "calc(100vh - 65px)", bgcolor: "#f8fafb", width: '100%' }} overflow="auto">
             <Typography variant='h4'>Tạo hồ sơ học sinh</Typography>
@@ -402,6 +405,9 @@ function StudentCreation() {
                 </Box>
             </Stack>
             <LoadingComponent open={loading} />
+            <ConfirmDialog openConfirm={openConfirm} setOpenConfirm={setOpenConfirm} handleAction={handleSubmit} title={'Tạo hồ sơ học sinh'}
+                content={'Kiểm tra kĩ thông tin học sinh trước khi tạo! Bạn có muốn tạo hồ sơ học sinh này?'}
+            />
         </Box>
     )
 }

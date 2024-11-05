@@ -13,6 +13,7 @@ import services from '~/plugins/services';
 import Calendar from '../../Calendar';
 import StudentSchedule from './StudentSchedule';
 import StudentProgressReport from './StudentProgressReport';
+import StudentChart from './StudentChart';
 const StyledTabs = styled((props) => (
     <Tabs
         {...props}
@@ -137,6 +138,7 @@ function MyTutorDetail() {
             </Box>
             {1 === Number(tab) && <StudentSchedule studentProfile={studentProfile} />}
             {2 === Number(tab) && <StudentProgressReport />}
+            {3 === Number(tab) && <StudentChart studentProfile={studentProfile} />}
             {4 === Number(tab) && <ChildInformation studentProfile={studentProfile} />}
             <Divider sx={{ width: "80%", margin: "auto", mt: "100px" }} />
         </Box >

@@ -51,7 +51,7 @@ function ProgressReportDetail({ open, setOpen, selectedItem }) {
                                 <EditNoteIcon sx={{ color: "blue" }} />
                                 <Typography>Ghi chú thêm</Typography>
                             </Stack>
-                            <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem.noteFromTutor}</Typography>
+                            <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem.noteFromTutor === "" ? "Không có ghi chú" : selectedItem.noteFromTutor}</Typography>
                             <Stack direction='row' gap={2} mt={2}>
                                 <ListAltIcon sx={{ color: "orange" }} />
                                 <Typography>Danh sách đánh giá</Typography>

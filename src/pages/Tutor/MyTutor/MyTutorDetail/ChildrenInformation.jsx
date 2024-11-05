@@ -49,13 +49,6 @@ function ChildInformation({ studentProfile }) {
                                         <TableCell align='right' sx={{ color: "red" }}>{assessment.point}</TableCell>
                                     </TableRow>
                                 ))}
-                                <TableRow
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell><b>TỔNG THỂ</b></TableCell>
-                                    <TableCell>Tự kỷ nặng</TableCell>
-                                    <TableCell align='right'>15</TableCell>
-                                </TableRow>
                             </TableBody>
                         </Table>
                     </TableContainer>

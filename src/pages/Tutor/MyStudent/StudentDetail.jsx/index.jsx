@@ -1,4 +1,4 @@
-import { Box, Divider, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Button, Divider, Tab, Tabs, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
@@ -11,6 +11,7 @@ import ProgressReport from './ProgressReport';
 import Calendar from '../../Calendar';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AssessmentChart from './AssessmentChart';
+import CompleteTutoring from './CompleteTutoring';
 function StudentDetail() {
     const [tab, setTabs] = useState(0);
     const { id } = useParams();
@@ -56,6 +57,7 @@ function StudentDetail() {
                     <Tab icon={<BarChartIcon />} iconPosition="end" label="Biểu đồ đánh giá" />
                     <Tab icon={<AccountBoxOutlinedIcon />} iconPosition="end" label="Thông tin học sinh" />
                 </Tabs>
+                <CompleteTutoring studentProfile={studentProfile} />
                 <Box>
                     <Typography sx={{ fontWeight: "bold", color: "#b660ec", fontSize: "20px" }}>{studentProfile?.name} - {studentProfile?.studentCode}</Typography>
                 </Box>

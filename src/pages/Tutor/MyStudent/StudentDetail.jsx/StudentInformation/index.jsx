@@ -55,16 +55,20 @@ function StudentInformation({ studentProfile }) {
                                 >
                                     <TableCell >{assessment.question}</TableCell>
                                     <TableCell >{assessment.optionText}</TableCell>
-                                    <TableCell align='right' sx={{ color: "red" }}>{assessment.point}</TableCell>
+                                    <TableCell
+                                        align="right"
+                                        sx={{
+                                            color:
+                                                assessment.point === 1 || assessment.point === 1.5 ? "red" :
+                                                    assessment.point === 2 || assessment.point === 2.5 ? "orange" :
+                                                        assessment.point === 3 || assessment.point === 3.5 ? "green" :
+                                                            assessment.point === 4 ? "blue" : "inherit"
+                                        }}
+                                    >
+                                        {assessment.point}
+                                    </TableCell>
                                 </TableRow>
                             ))}
-                            <TableRow
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell><b>TỔNG THỂ</b></TableCell>
-                                <TableCell>Tự kỷ nặng</TableCell>
-                                <TableCell align='right'>15</TableCell>
-                            </TableRow>
                         </TableBody>
                     </Table>
                 </TableContainer>
