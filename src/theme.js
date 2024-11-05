@@ -95,7 +95,7 @@ const theme = createTheme({
         },
         h6: {
             fontSize: "18px",
-            fontWeight: '700',
+            fontWeight: '600',
             color: '#192335',
             '@media (min-width:600px)': {
                 fontSize: "13px"

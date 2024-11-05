@@ -1,13 +1,37 @@
 import React, { useState } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Grid, TextField, Typography, Divider } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Grid, Typography, Divider, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCloseEditDialog, selectedExercise, setSelectedExercise, exerciseTypeName, selectedExerciseType }) {
     const [loading, setLoading] = useState(false);
+
+    const toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        ['link', 'image', 'video', 'formula'],
+        [{ 'header': 1 }, { 'header': 2 }],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+        [{ 'script': 'sub' }, { 'script': 'super' }],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'direction': 'rtl' }],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'font': [] }],
+        [{ 'align': [] }],
+        ['clean']
+    ];
+
+    const quillEditorStyle = {
+        height: '250px',
+        marginBottom: '100px'
+    };
 
     const validationSchema = Yup.object({
         exerciseName: Yup.string()
@@ -15,7 +39,14 @@ function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCl
             .min(3, "Tên bài tập phải có ít nhất 3 ký tự"),
         description: Yup.string()
             .required("Nội dung là bắt buộc")
-            .min(5, "Nội dung phải có ít nhất 5 ký tự"),
+            .test(
+                'is-not-empty',
+                'Nội dung phải có ít nhất 5 ký tự',
+                (value) => {
+                    const strippedContent = (value || '').replace(/<(.|\n)*?>/g, '').trim();
+                    return strippedContent.length >= 5;
+                }
+            ),
     });
 
     const formik = useFormik({
@@ -85,18 +116,19 @@ function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCl
                             <Typography variant="body1" fontWeight={600} textAlign={'right'}>Nội dung:</Typography>
                         </Grid>
                         <Grid item xs={8}>
-                            <TextField
-                                fullWidth
-                                name='description'
-                                size="small"
-                                multiline
-                                rows={4}
+                            <ReactQuill
+                                theme="snow"
+                                modules={{ toolbar: toolbarOptions }}
+                                style={quillEditorStyle}
                                 value={formik.values.description}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.description && Boolean(formik.errors.description)}
-                                helperText={formik.touched.description && formik.errors.description}
+                                onChange={(value) => formik.setFieldValue('description', value)}
+                                onBlur={() => formik.setFieldTouched('description', true)}
                             />
+                            {formik.touched.description && formik.errors.description && (
+                                <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                                    {formik.errors.description}
+                                </Typography>
+                            )}
                         </Grid>
                     </Grid>
                 </form>

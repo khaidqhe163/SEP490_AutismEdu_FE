@@ -20,16 +20,16 @@ function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList,
     useEffect(() => {
 
         if (exerciseTypes.length > 0 && !newData.exerciseTypeId) {
-            const exist = selectedList?.find((s) => s.exerciseTypeId === exerciseTypes[29].id);
+            const exist = selectedList?.find((s) => s.exerciseTypeId === exerciseTypes[exerciseTypes?.length - 1].id);
             if (exist) {
                 setNewData({
-                    exerciseTypeId: exerciseTypes[29].id,
+                    exerciseTypeId: exerciseTypes[exerciseTypes?.length - 1].id,
                     exerciseIds: exist.exerciseIds
                 });
             } else {
                 setNewData(prev => ({
                     ...prev,
-                    exerciseTypeId: exerciseTypes[29].id
+                    exerciseTypeId: exerciseTypes[exerciseTypes?.length - 1].id
                 }));
             }
 
@@ -138,7 +138,7 @@ function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList,
     return (
         <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
             <DialogTitle textAlign={'center'} variant='h5'>Thêm loại bài tập và bài tập</DialogTitle>
-            <Divider/>
+            <Divider />
             <DialogContent>
                 <Stack spacing={3} mt={2}>
                     <Box>

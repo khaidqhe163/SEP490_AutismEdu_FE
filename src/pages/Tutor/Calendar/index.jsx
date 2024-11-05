@@ -8,6 +8,7 @@ import { listStudent } from '~/redux/features/listStudent';
 import { tutorInfor } from '~/redux/features/tutorSlice';
 import AssignExercise from './CalendarModal/AssignExercise';
 import Evaluate from './CalendarModal/Evaluate';
+import CalenderButtons from './CalenderButtons/CalenderButtons';
 function Calendar() {
     const { id } = useParams();
     const [isModalOpen, setModalOpen] = useState(false);
@@ -174,11 +175,13 @@ function Calendar() {
     };
 
     const passStatus = (value) => {
-        return value === 2 ? 'Chưa có dữ liệu' : value === 1 ? "Đạt" : "Chưa đạt"
+        return value === 2 ? 'Chưa có' : value === 1 ? "Đạt" : "Chưa đạt"
     };
     const attendanceStatus = (value) => {
-        return value === 2 ? 'Chưa có dữ liệu' : value === 1 ? "Có mặt" : "Vắng"
+        return value === 2 ? 'Chưa có mặt' : value === 1 ? "Có mặt" : "Vắng"
     };
+
+    console.log(aSchedule);
 
     return (
         <>
@@ -261,7 +264,7 @@ function Calendar() {
                                         borderBottomLeftRadius: i === 0 ? "10px" : "0px",
                                         border: "2px solid #d8d8d8",
                                         borderLeft: i !== 0 && "none",
-                                        pt: 2,
+                                        py: 2,
                                         px: 1,
                                         borderTopRightRadius: i === 6 ? "10px" : "0px",
                                         borderBottomRightRadius: i === 6 ? "10px" : "0px"
@@ -270,7 +273,7 @@ function Calendar() {
                                         <Box sx={{
                                             width: "40px", height: "40px", margin: "auto",
                                             borderRadius: "50%",
-                                            backgroundColor: today.getDate() === day.getDate() && today.getMonth() === day.getMonth() && "#1a73e8",
+                                            backgroundColor: today.getDate() === day.getDate() && today.getMonth() === day.getMonth() && "#556cd6",
                                             color: today.getDate() === day.getDate() && today.getMonth() === day.getMonth() && "white"
                                         }}>
                                             <Typography sx={{ fontSize: "22px", textAlign: "center", lineHeight: "40px" }}>{day.getDate()}</Typography>
@@ -279,16 +282,27 @@ function Calendar() {
                                             filterSchedule && filterSchedule[keys].length !== 0 && filterSchedule[keys].map((f, index) => {
                                                 return (
                                                     <Box key={f.id} sx={{
-                                                        minHeight: "150px", width: "100%", bgcolor: "#eee9ff", p: 2,
+                                                        height: "auto", width: "100%", bgcolor: "#eee9ff", p: 2,
                                                         mb: 1, borderRadius: '10px',
                                                         mt: 2,
                                                     }}>
                                                         <Typography sx={{ color: "#7850d4" }}>Mã: {f.studentProfile?.studentCode}</Typography>
                                                         <Typography sx={{ color: "#7850d4", fontWeight: "bold" }}>({formatTime(f.start)} - {formatTime(f.end)})</Typography>
-                                                        <Typography sx={{ color: "#7850d4", fontSize: "12px" }}>Đánh giá: {passStatus(f.passingStatus)}</Typography>
-                                                        <Typography sx={{ color: "green", fontSize: "12px" }} >({attendanceStatus(f.attendanceStatus)})</Typography>
-                                                        <Button variant='contained' color='primary' sx={{ mt: 2, fontSize: "12px" }} onClick={() => handleAssign(f, keys)}>Gán bài tập</Button>
-                                                        <Button variant='contained' color='secondary' sx={{ mt: 2, fontSize: "12px" }} onClick={() => handleOpenEvaluate(f, keys)}>Đánh giá</Button>
+                                                        <Typography my={1} sx={{ color: "black", fontSize: "10px" }}>
+                                                            Đánh giá:
+                                                            <span style={{
+                                                                backgroundColor: f.passingStatus === 1 ? 'green' : f.passingStatus === 2 ? 'orange' : '#f55151',
+                                                                color: 'white',
+                                                                marginLeft: '4px',
+                                                                padding: '2px 4px',
+                                                                borderRadius: '4px'
+                                                            }}>
+                                                                {passStatus(f.passingStatus)}
+                                                            </span>
+                                                        </Typography>
+
+                                                        <Typography sx={{ color: f.attendanceStatus === 1 ? "green" : "red", fontSize: "12px", fontWeight: '500' }} >({attendanceStatus(f.attendanceStatus)})</Typography>
+                                                        <CalenderButtons f={f} keys={keys} handleAssign={handleAssign} handleOpenEvaluate={handleOpenEvaluate} />
                                                     </Box>
                                                 )
                                             })

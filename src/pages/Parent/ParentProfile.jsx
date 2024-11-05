@@ -88,7 +88,7 @@ function ParentProfile() {
     }, [userInformation]);
     const getDataProvince = async () => {
         try {
-            const data = await axios.get("https://vietnam-administrative-division-json-server-swart.vercel.app/province")
+            const data = await axios.get("https://vietnam-administrative-division-json-server-swart.vercel.app/province");
             const dataP = data.data;
             setProvinces(dataP);
             if (userInformation !== null && userInformation.address) {

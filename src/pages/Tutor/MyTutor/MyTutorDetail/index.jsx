@@ -50,6 +50,8 @@ function MyTutorDetail() {
 
     const { id } = useParams();
     const [studentProfile, setStudentProfile] = useState();
+    console.log(studentProfile);
+    
     const [tab, setTab] = useState('1');
     const handleChange = (event, newValue) => {
         setTab(newValue);

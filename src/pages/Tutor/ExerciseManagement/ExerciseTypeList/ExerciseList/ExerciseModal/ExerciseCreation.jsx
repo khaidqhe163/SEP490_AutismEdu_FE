@@ -1,22 +1,54 @@
 import React, { useState } from 'react';
-import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, Grid, TextField, Typography, Divider } from '@mui/material';
+import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, Grid, Typography, Divider, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 import LoadingComponent from '~/components/LoadingComponent';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 function ExerciseCreation({ setExercises, exerciseType, open, handleClose }) {
     const [loading, setLoading] = useState(false);
 
+    const toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        ['link', 'image', 'video', 'formula'],
+        [{ 'header': 1 }, { 'header': 2 }],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+        [{ 'script': 'sub' }, { 'script': 'super' }],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'direction': 'rtl' }],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'font': [] }],
+        [{ 'align': [] }],
+        ['clean']
+    ];
+
+    const quillEditorStyle = {
+        height: '250px',
+        marginBottom: '100px'
+    };
+
     const validationSchema = Yup.object({
         exerciseName: Yup.string()
-            .required("Tên bài tập là bắt buộc")
-            .min(3, "Tên bài tập phải có ít nhất 3 ký tự"),
+          .required("Tên bài tập là bắt buộc")
+          .min(3, "Tên bài tập phải có ít nhất 3 ký tự"),
+        
         description: Yup.string()
-            .required("Nội dung là bắt buộc")
-            .min(5, "Nội dung phải có ít nhất 5 ký tự"),
-    });
+          .required("Nội dung là bắt buộc")
+          .test(
+            'is-not-empty',
+            'Nội dung phải có ít nhất 5 ký tự',
+            (value) => {
+              const strippedContent = (value || '').replace(/<(.|\n)*?>/g, '').trim();
+              return strippedContent.length >= 5;
+            }
+          ),
+      });
 
     const formik = useFormik({
         initialValues: {
@@ -32,6 +64,8 @@ function ExerciseCreation({ setExercises, exerciseType, open, handleClose }) {
                     exerciseTypeId: exerciseType?.id,
                     originalId: 0
                 };
+                console.log(exerciseData);
+
                 await services.ExerciseManagementAPI.createExercise(exerciseData, (res) => {
                     if (res?.result) {
                         const newExercise = res.result;
@@ -39,7 +73,8 @@ function ExerciseCreation({ setExercises, exerciseType, open, handleClose }) {
                         enqueueSnackbar("Tạo bài tập thành công!", { variant: 'success' });
                         handleClose();
                     }
-                }, (error) => {
+                }
+                , (error) => {
                     console.log(error);
                 });
             } catch (error) {
@@ -54,7 +89,7 @@ function ExerciseCreation({ setExercises, exerciseType, open, handleClose }) {
         <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
             <DialogTitle variant='h5' textAlign={'center'}>Tạo bài tập</DialogTitle>
             <Divider />
-            <DialogContent>
+            <DialogContent sx={{ height: '500px' }}>
                 <form onSubmit={formik.handleSubmit}>
                     <Grid container spacing={3}>
                         <Grid item xs={4}>
@@ -84,25 +119,28 @@ function ExerciseCreation({ setExercises, exerciseType, open, handleClose }) {
                             <Typography variant="body1" fontWeight={600} textAlign={'right'}>Nội dung:</Typography>
                         </Grid>
                         <Grid item xs={8}>
-                            <TextField
-                                fullWidth
-                                size="small"
-                                multiline
-                                rows={4}
-                                name='description'
-                                value={formik.values.description}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.description && Boolean(formik.errors.description)}
-                                helperText={formik.touched.description && formik.errors.description}
-                            />
+                            <Box>
+                                <ReactQuill
+                                    theme="snow"
+                                    modules={{ toolbar: toolbarOptions }}
+                                    style={quillEditorStyle}
+                                    value={formik.values.description}
+                                    onChange={(value) => formik.setFieldValue('description', value)}
+                                    onBlur={() => formik.setFieldTouched('description', true)}
+                                />
+                                {formik.touched.description && formik.errors.description && (
+                                    <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                                        {formik.errors.description}
+                                    </Typography>
+                                )}
+                            </Box>
                         </Grid>
                     </Grid>
                 </form>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="primary">Hủy</Button>
-                <Button onClick={formik.handleSubmit} color="primary" variant="contained">Tạo</Button>
+                <Button onClick={formik.handleSubmit} color="primary" variant="contained" disabled={!formik.isValid || formik.isSubmitting}>Tạo</Button>
             </DialogActions>
             <LoadingComponent open={loading} setOpen={setLoading} />
         </Dialog>

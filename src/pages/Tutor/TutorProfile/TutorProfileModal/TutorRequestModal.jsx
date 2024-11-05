@@ -9,13 +9,19 @@ import { useNavigate } from 'react-router-dom';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 import { format } from 'date-fns';
+import PAGES from '~/utils/pages';
 
-function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
+function TutorRequestModal({ rejectChildIds, tutorId, calculateAge, studyingList }) {
     const [open, setOpen] = useState(false);
     const [childData, setChildData] = useState([]);
-    const [selectedChild, setSelectedChild] = useState({});
+    const [selectedChild, setSelectedChild] = useState(null);
     const userInf = useSelector(userInfor);
     const nav = useNavigate();
+
+    console.log(userInf);
+    console.log(childData);
+
+
 
     const menuProps = {
         PaperProps: {
@@ -29,9 +35,11 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
     const handleOpen = async () => {
         if (!userInf) {
             nav('/autismedu/login', { state: { tutorId } });
+        } else if (!userInf?.address || !userInf?.phoneNumber) {
+            enqueueSnackbar('Bạn cần cập nhật thêm thông tin cá nhân!', { variant: 'warning' });
+            nav(PAGES.ROOT + PAGES.PARENT_PROFILE);
         } else {
             await handleGetChildInformation();
-            setOpen(true);
         }
     };
     const handleClose = () => setOpen(false);
@@ -40,11 +48,24 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
         try {
             await services.ChildrenManagementAPI.listChildren(userInf?.id, (res) => {
                 if (res?.result?.length === 0) {
+                    enqueueSnackbar('Bạn cần tạo thêm thông tin trẻ!', { variant: 'warning' });
                     nav('/autismedu/my-childlren');
                 } else {
                     setChildData(res.result);
-                    const x = res?.result?.find((r) => (!rejectChildIds?.includes(r?.id)))
-                    setSelectedChild(x);
+                    const x = res?.result?.find((r) => (!rejectChildIds?.includes(r.id) && !studyingList.some(s => s.childId === r.id)));
+
+                    if (!x) {
+                        enqueueSnackbar(
+                            'Hiện tại không có trẻ nào của bạn phù hợp với gia sư này.'
+                            ,
+                            { variant: 'warning' }
+                        );
+
+                        setOpen(false);
+                    } else {
+                        setSelectedChild(x);
+                        setOpen(true);
+                    }
                 }
             }, (error) => {
                 console.log(error);
@@ -84,6 +105,19 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
         return format(new Date(dateString), 'dd/MM/yyyy');
     };
 
+    const isDisplayChild = (id) => {
+        const rejectCase = rejectChildIds?.includes(id);
+        const studyingCase = studyingList.some(s => s.childId === id);
+        return rejectCase || studyingCase;
+    };
+
+    const checkChildValidate = (id) => {
+        const rejectCase = rejectChildIds?.includes(id);
+        const studyingCase = studyingList.some(s => s.childId === id);
+        const resultStatus = rejectCase ? 'Từ chối' : studyingCase ? 'Đang học' : '';
+        return resultStatus;
+    };
+
     return (
         <>
             <Button onClick={handleOpen} startIcon={<ForwardToInboxIcon />} variant='contained' color='primary' size='large'>
@@ -111,13 +145,13 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                     <Grid container spacing={2} mt={2}>
                         <Grid item xs={12} container spacing={2} alignItems="center">
                             <Grid item xs={4}>
-                                <Typography>Chọn trẻ của bạn:</Typography>
+                                <Typography variant='subtitle1'>Chọn trẻ của bạn:</Typography>
                             </Grid>
                             <Grid item xs={8}>
                                 <FormControl fullWidth margin="dense">
                                     <Select
                                         MenuProps={menuProps}
-                                        value={selectedChild?.id}
+                                        value={selectedChild?.id || ''}
                                         onChange={(e) => {
                                             const selected = childData?.find(child => child?.id === e.target.value);
                                             setSelectedChild(selected);
@@ -127,9 +161,9 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                                             <MenuItem
                                                 key={child?.id}
                                                 value={child?.id}
-                                                disabled={rejectChildIds?.includes(child?.id)}
+                                                disabled={rejectChildIds?.includes(child?.id) || studyingList.some(s => s?.childId === child?.id)}
                                             >
-                                                {child?.name}
+                                                {child?.name} {isDisplayChild(child?.id) && <Typography ml={1} component={'span'} fontWeight={'bold'} color={checkChildValidate(child?.id) === 'Đang học' ? 'green' : 'red'}>({checkChildValidate(child?.id)})</Typography>}
                                             </MenuItem>
                                         ))}
                                     </Select>
@@ -138,67 +172,66 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                         </Grid>
                         <Grid item xs={12} container spacing={2} alignItems="center">
                             <Grid item xs={4}>
-                                <Typography>Số điện thoại:</Typography>
+                                <Typography variant='subtitle1'>Số điện thoại:</Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                <Typography>{userInf?.phoneNumber || '0338581585'}</Typography>
+                                <Typography variant='subtitle1'>{userInf?.phoneNumber || '0338581585'}</Typography>
                             </Grid>
                         </Grid>
 
                         <Grid item xs={12} container spacing={2} alignItems="center">
                             <Grid item xs={4}>
-                                <Typography>Tên trẻ:</Typography>
+                                <Typography variant='subtitle1'>Tên trẻ:</Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                <Typography>{selectedChild?.name}</Typography>
+                                <Typography variant='subtitle1'>{selectedChild?.name || 'K'}</Typography>
                             </Grid>
                         </Grid>
 
                         <Grid item xs={12} container spacing={2} alignItems="center">
                             <Grid item xs={4}>
-                                <Typography>Giới tính:</Typography>
+                                <Typography variant='subtitle1'>Giới tính:</Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                <Typography>{selectedChild?.gender && (selectedChild?.gender === 'Male' ? 'Nam' : 'Nữ')}</Typography>
+                                <Typography variant='subtitle1'>{selectedChild?.gender && (selectedChild?.gender === 'Male' ? 'Nam' : 'Nữ')}</Typography>
                             </Grid>
                         </Grid>
 
                         <Grid item xs={12} container spacing={2} alignItems="center">
                             <Grid item xs={4}>
-                                <Typography>Ngày sinh:</Typography>
+                                <Typography variant='subtitle1'>Ngày sinh:</Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                <Typography>{selectedChild?.birthDate && formatDate(selectedChild?.birthDate)}</Typography>
-                            </Grid>
-                        </Grid>
-
-                        {/* Tính tuổi */}
-                        <Grid item xs={12} container spacing={2} alignItems="center">
-                            <Grid item xs={4}>
-                                <Typography>Tuổi:</Typography>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <Typography>{selectedChild?.birthDate && calculateAge(new Date(selectedChild?.birthDate))}</Typography>
+                                <Typography variant='subtitle1'>{selectedChild?.birthDate && formatDate(selectedChild?.birthDate)}</Typography>
                             </Grid>
                         </Grid>
 
                         <Grid item xs={12} container spacing={2} alignItems="center">
                             <Grid item xs={4}>
-                                <Typography>Ghi chú tới gia sư:</Typography>
+                                <Typography variant='subtitle1'>Tuổi:</Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <Typography variant='subtitle1'>{selectedChild?.birthDate && calculateAge(new Date(selectedChild?.birthDate))}</Typography>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={12} container spacing={2}>
+                            <Grid item xs={4}>
+                                <Typography variant='subtitle1'>Tình trạng của trẻ hiện tại:</Typography>
                             </Grid>
                             <Grid item xs={8}>
                                 <Formik
                                     initialValues={{ note: '' }}
                                     validationSchema={validationSchema}
                                     onSubmit={(values) => {
-                                        handleSaveRequest(values.note); // Passing the note value here
+                                        handleSaveRequest(values.note);
                                     }}
                                 >
                                     {({ values, errors, touched, handleChange, handleBlur }) => (
                                         <Form>
                                             <TextField
                                                 name="note"
-                                                label="Ghi chú tới gia sư"
+                                                label="Tình trạng của trẻ hiện tại"
                                                 multiline
                                                 rows={6}
                                                 value={values.note}

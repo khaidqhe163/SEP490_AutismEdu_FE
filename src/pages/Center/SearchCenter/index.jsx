@@ -53,13 +53,13 @@ function Index() {
     };
 
     // Khi người dùng chọn đánh giá
-    const handleRatingChange = (event) => {
-        setSelectedRating(event.target.value);
-    };
+    // const handleRatingChange = (event) => {
+    //     setSelectedRating(event.target.value);
+    // };
     const breadcrumbs = [
         <Link underline="hover" key="1" color="inherit" href="/" onClick={handleClick}>
             Trang chủ
-        </Link>, ,
+        </Link>,
         <Typography key="3" sx={{ color: 'rgb(107, 115, 133)' }}>
             Danh sách trung tâm
         </Typography>,
@@ -76,7 +76,7 @@ function Index() {
                             <Grid container spacing={5}>
                                 {selected === "list" ?
                                     arrCenter.slice(0, visibleCards).map((c, index) =>
-                                    (<Grid item xs={4}>
+                                    (<Grid item xs={4} key={index}>
                                         <Card sx={{
                                             padding: "20px", minHeight: "670px",
                                             transition: "transform 0.3s ease, box-shadow 0.3s ease",
@@ -137,7 +137,7 @@ function Index() {
                                             </CardActions>
                                         </Card>
                                     </Grid>)
-                                    ) : arrCenter.slice(0, visibleCards).map((c, index) => (<Grid item xs={12}>
+                                    ) : arrCenter.slice(0, visibleCards).map((c, index) => (<Grid item xs={12} key={index}>
                                         <Card sx={{
                                             display: 'flex',
                                             padding: "20px",

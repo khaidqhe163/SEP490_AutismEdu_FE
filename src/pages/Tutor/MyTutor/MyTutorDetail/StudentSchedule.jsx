@@ -6,6 +6,7 @@ import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 import { listStudent } from '~/redux/features/listStudent';
 import { tutorInfor } from '~/redux/features/tutorSlice';
+import ViewDetailModal from './ScheduleModal/ViewDetailModal';
 function StudentSchedule({ studentProfile }) {
     const { id } = useParams();
     const [weekInYears, setWeekInYears] = useState([]);
@@ -17,6 +18,10 @@ function StudentSchedule({ studentProfile }) {
     const [loading, setLoading] = useState(false);
     const [currentStudent, setCurrentStudent] = useState(0);
     const listStudents = useSelector(listStudent);
+    const [selectedKey, setSelectedKey] = useState('');
+    const [aSchedule, setASchedule] = useState(null);
+    const [isDetailModalOpen, setDetailModalOpen] = useState(false);
+
     useEffect(() => {
         if (weekInYears.length !== 0) {
             getSchedule();
@@ -157,11 +162,18 @@ function StudentSchedule({ studentProfile }) {
     }
 
     const passStatus = (value) => {
-        return value === 2 ? 'Chưa có dữ liệu' : value === 1 ? "Đạt" : "Chưa đạt"
+        return value === 2 ? 'Chưa có' : value === 1 ? "Đạt" : "Chưa đạt"
     };
     const attendanceStatus = (value) => {
-        return value === 2 ? 'Chưa có dữ liệu' : value === 1 ? "Có mặt" : "Vắng"
+        return value === 2 ? 'Chưa có mặt' : value === 1 ? "Có mặt" : "Vắng"
     };
+
+    const handleViewDetail = (f, keys) => {
+        setSelectedKey(keys);
+        setASchedule(f);
+        setDetailModalOpen(true);
+    };
+
     return (
         <>
             <Box p="30px" sx={{ width: "80%", margin: "auto" }}>
@@ -252,7 +264,7 @@ function StudentSchedule({ studentProfile }) {
                                         <Box sx={{
                                             width: "40px", height: "40px", margin: "auto",
                                             borderRadius: "50%",
-                                            backgroundColor: today.getDate() === day.getDate() && today.getMonth() === day.getMonth() && "#1a73e8",
+                                            backgroundColor: today.getDate() === day.getDate() && today.getMonth() === day.getMonth() && "#556cd6",
                                             color: today.getDate() === day.getDate() && today.getMonth() === day.getMonth() && "white"
                                         }}>
                                             <Typography sx={{ fontSize: "22px", textAlign: "center", lineHeight: "40px" }}>{day.getDate()}</Typography>
@@ -261,14 +273,37 @@ function StudentSchedule({ studentProfile }) {
                                             filterSchedule && filterSchedule[keys].length !== 0 && filterSchedule[keys].map((f, index) => {
                                                 return (
                                                     <Box key={f.id} sx={{
-                                                        minHeight: "150px", width: "100%", bgcolor: "#eee9ff", p: 2,
+                                                        height: "auto", width: "100%", bgcolor: "#eee9ff", p: 2,
                                                         mb: 1, borderRadius: '10px',
                                                         mt: 2,
                                                     }}>
                                                         <Typography sx={{ color: "#7850d4" }}>Mã: {f.studentProfile?.studentCode}</Typography>
                                                         <Typography sx={{ color: "#7850d4", fontWeight: "bold" }}>({formatTime(f.start)} - {formatTime(f.end)})</Typography>
-                                                        <Typography sx={{ color: "#7850d4", fontSize: "12px" }}>Đánh giá: {passStatus(f.passingStatus)}</Typography>
-                                                        <Typography sx={{ color: "green", fontSize: "12px" }} >({attendanceStatus(f.attendanceStatus)})</Typography>
+                                                        <Typography my={1} sx={{ color: "black", fontSize: "10px" }}>
+                                                            Đánh giá:
+                                                            <span style={{
+                                                                backgroundColor: f.passingStatus === 1 ? 'green' : f.passingStatus === 2 ? 'orange' : '#f55151',
+                                                                color: 'white',
+                                                                marginLeft: '4px',
+                                                                padding: '2px 4px',
+                                                                borderRadius: '4px'
+                                                            }}>
+                                                                {passStatus(f.passingStatus)}
+                                                            </span>
+                                                        </Typography>
+
+                                                        <Typography sx={{ color: f.attendanceStatus === 1 ? "green" : "red", fontSize: "12px", fontWeight: '500' }} >({attendanceStatus(f.attendanceStatus)})</Typography>
+                                                        <Stack direction={'column'} justifyContent={'center'}>
+                                                            <Box>
+                                                                <Button size='small' variant='contained'
+                                                                    color='primary'
+                                                                    sx={{ mt: 2, fontSize: "12px" }}
+                                                                    onClick={() => handleViewDetail(f, keys)}
+                                                                >
+                                                                    Xem chi tiết
+                                                                </Button>
+                                                            </Box>
+                                                        </Stack>
                                                     </Box>
                                                 )
                                             })
@@ -280,6 +315,7 @@ function StudentSchedule({ studentProfile }) {
                     )}
 
                 </Stack>
+                {aSchedule && studentProfile?.tutor?.fullName && <ViewDetailModal isOpen={isDetailModalOpen} setModalOpen={setDetailModalOpen} schedule={aSchedule} setSchedule={setASchedule} tutorName={studentProfile?.tutor?.fullName} />}
                 <LoadingComponent open={loading} />
             </Box>
         </>

@@ -15,6 +15,108 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
     const [initialized, setInitialized] = useState(false);
     const [isValidate, setValidate] = useState(true);
 
+    // console.log(listSyllabus);
+    // console.log(schedule);
+
+    useEffect(() => {
+        if (listSyllabus?.length !== 0 && schedule?.syllabusId && schedule?.exerciseType && schedule?.exercise) {
+            const existSyllabus = listSyllabus.find((s) => s.id === schedule?.syllabusId);
+
+            if (!existSyllabus) {
+                const newSyllabus = {
+                    id: schedule.syllabusId, 
+                    ageFrom: schedule.ageFrom,
+                    ageEnd: schedule.ageEnd,
+                    exerciseTypes: [
+                        {
+                            id: schedule.exerciseType.id,
+                            exerciseTypeName: schedule.exerciseType.exerciseTypeName,
+                            exercises: [
+                                {
+                                    id: schedule.exercise.id,
+                                    exerciseName: schedule.exercise.exerciseName,
+                                    description: schedule.exercise.description,
+                                    createdDate: schedule.exercise.createdDate,
+                                    updatedDate: schedule.exercise.updatedDate,
+                                },
+                            ], 
+                        },
+                    ],
+                };
+
+                const newListSyllabus = [...listSyllabus, newSyllabus];
+
+                setListSyllabus(newListSyllabus);
+            } else {
+
+                const existExerciseType = existSyllabus.exerciseTypes.find((t) => t.id === schedule?.exerciseType?.id);
+
+                if (!existExerciseType) {
+                    const newExerciseType = {
+                        id: schedule.exerciseType.id,
+                        exerciseTypeName: schedule.exerciseType.exerciseTypeName,
+                        exercises: [
+                            {
+                                id: schedule.exercise.id,
+                                exerciseName: schedule.exercise.exerciseName,
+                                description: schedule.exercise.description,
+                                createdDate: schedule.exercise.createdDate,
+                                updatedDate: schedule.exercise.updatedDate,
+
+                            },
+                        ], 
+                    };
+
+                    const newListSyllabus = listSyllabus.map((s) => {
+                        if (s.id === schedule.syllabusId) {
+                            return {
+                                ...s,
+                                exerciseTypes: [...s.exerciseTypes, newExerciseType],
+                            };
+                        }
+                        return s;
+                    });
+
+                    setListSyllabus(newListSyllabus);
+                } else {
+                    const existExercise = existExerciseType.exercises.find((e) => e.id === schedule?.exercise?.id);
+
+                    if (!existExercise) {
+                        const newExercise = {
+                            id: schedule.exercise.id,
+                            exerciseName: schedule.exercise.exerciseName,
+                            description: schedule.exercise.description,
+                            createdDate: schedule.exercise.createdDate,
+                            updatedDate: schedule.exercise.updatedDate,
+
+                        };
+
+                        const newListSyllabus = listSyllabus.map((s) => {
+                            if (s.id === schedule.syllabusId) {
+                                return {
+                                    ...s,
+                                    exerciseTypes: s.exerciseTypes.map((et) => {
+                                        if (et.id === schedule.exerciseType.id) {
+                                            return {
+                                                ...et,
+                                                exercises: [...et.exercises, newExercise],
+                                            };
+                                        }
+                                        return et;
+                                    }),
+                                };
+                            }
+                            return s;
+                        });
+
+                        setListSyllabus(newListSyllabus);
+                    }
+                }
+            }
+        }
+    }, [listSyllabus, schedule]);
+
+
     useEffect(() => {
         handleGetAllSyllabus();
     }, []);
@@ -125,7 +227,7 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
         }
 
     };
-    console.log(schedule);
+    // console.log(schedule);
 
     useEffect(() => {
         if (schedule) {
