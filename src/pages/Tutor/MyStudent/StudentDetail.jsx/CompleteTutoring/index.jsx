@@ -5,11 +5,13 @@ import { Box, Button, FormControl, FormHelperText, MenuItem, Modal, Select, Stac
 import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import ConfirmDialog from '~/components/ConfirmDialog';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
-function CompleteTutoring({ studentProfile }) {
+import { listStudent, setListStudent } from '~/redux/features/listStudent';
+function CompleteTutoring({ studentProfile, setStudentProfile }) {
     const [open, setOpen] = useState();
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -19,6 +21,8 @@ function CompleteTutoring({ studentProfile }) {
     const [finalAssessment, setFinalAssessment] = useState(null);
     const { id } = useParams();
     const [openConfirm, setOpenConfirm] = useState(false);
+    const dispatch = useDispatch();
+    const listStudentProfiles = useSelector(listStudent);
     useEffect(() => {
         handleGetAsessment();
         handleGetProgressReport();
@@ -107,8 +111,15 @@ function CompleteTutoring({ studentProfile }) {
                 studentProfileId: id,
                 finalAssessmentResults: selectedAssessment
             }, (res) => {
+                console.log(res);
                 enqueueSnackbar("Kết thúc việc dạy thành công!", { variant: "success" })
+                const filterArr = listStudentProfiles.filter((a) => {
+                    return a.id !== res.result.id
+                })
+                dispatch(setListStudent(filterArr))
                 handleClose();
+                setOpenConfirm(false);
+                setStudentProfile(res.result);
             }, (err) => {
                 enqueueSnackbar("Kết thúc việc dạy thất bại!", { variant: "error" })
             })

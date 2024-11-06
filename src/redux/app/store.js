@@ -2,11 +2,13 @@ import { configureStore } from '@reduxjs/toolkit'
 import userSlice from '../features/userSlice'
 import tutorSlice from '../features/tutorSlice'
 import listStudentSlice from '../features/listStudent'
+import adminSlice from '../features/adminSlice'
 
 export default configureStore({
   reducer: {
     user: userSlice,
     tutor: tutorSlice,
-    listStudent: listStudentSlice
+    listStudent: listStudentSlice,
+    admin: adminSlice
   }
 })

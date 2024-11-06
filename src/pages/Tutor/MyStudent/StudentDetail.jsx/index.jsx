@@ -86,7 +86,7 @@ function StudentDetail() {
                 tab === 3 && studentProfile?.status !== 3 && <ScheduleSetting studentProfile={studentProfile} />
             }
             {
-                tab === 4 && <StudentInformation studentProfile={studentProfile} />
+                tab === 4 && <StudentInformation studentProfile={studentProfile} setStudentProfile={setStudentProfile} />
             }
         </Box>
     )

@@ -136,20 +136,24 @@ function ProgressReport({ studentProfile }) {
         <Box px={5} pt={2} pb={3}>
             <Stack direction='row' justifyContent="space-between">
                 <Typography variant='h4'>Tình trạng mới nhất</Typography>
-                <ProgressReportCreation studentProfile={studentProfile} currentReport={currentReport}
-                    setCurrentReport={setCurrentReport} setPreReport={setPreReport} progressReports={progressReports}
-                    setProgressReports={setProgressReports}
-                    currentPage={currentPage}
-                    setSelectedItem={setSelectedItem}
-                    selectedItem={selectedItem}
-                    setSortType={setSortType}
-                    setStartDate={setStartDate}
-                    setEndDate={setEndDate}
-                    setCurrentPage={setCurrentPage}
-                    sortType={sortType}
-                    startDate={startDate}
-                    endDate={endDate}
-                />
+                {
+                    studentProfile?.status !== 0 && (
+                        <ProgressReportCreation studentProfile={studentProfile} currentReport={currentReport}
+                            setCurrentReport={setCurrentReport} setPreReport={setPreReport} progressReports={progressReports}
+                            setProgressReports={setProgressReports}
+                            currentPage={currentPage}
+                            setSelectedItem={setSelectedItem}
+                            selectedItem={selectedItem}
+                            setSortType={setSortType}
+                            setStartDate={setStartDate}
+                            setEndDate={setEndDate}
+                            setCurrentPage={setCurrentPage}
+                            sortType={sortType}
+                            startDate={startDate}
+                            endDate={endDate}
+                        />
+                    )
+                }
             </Stack>
             {
                 !currentReport && (
@@ -313,9 +317,13 @@ function ProgressReport({ studentProfile }) {
                                                             selectedItem.id === p.id ? <IconButton onClick={(e) => handleOpenDetail(e, index)}><SearchIcon /></IconButton>
                                                                 : <IconButton onClick={(e) => handleOpenCompare(e, index)}><FindReplaceIcon /></IconButton>
                                                         }
-                                                        <IconButton onClick={(e) => {
-                                                            handleOpenUpdate();
-                                                        }}><EditIcon /></IconButton>
+                                                        {
+                                                            studentProfile?.status !== 0 && (
+                                                                <IconButton onClick={(e) => {
+                                                                    handleOpenUpdate();
+                                                                }}><EditIcon /></IconButton>
+                                                            )
+                                                        }
                                                     </TableCell>
                                                 </TableRow>
                                             )

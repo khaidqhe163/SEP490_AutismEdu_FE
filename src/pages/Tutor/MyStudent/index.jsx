@@ -1,9 +1,9 @@
-import { Avatar, Box, Button, Card, CardActions, CardContent, Chip, Stack, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import { Avatar, Box, Button, Card, CardActions, CardContent, Chip, Stack, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import services from '~/plugins/services';
-import { listStudent, setListStudent } from '~/redux/features/listStudent';
+import { setListStudent } from '~/redux/features/listStudent';
 
 function MyStudent() {
     const [status, setStatus] = useState(1);

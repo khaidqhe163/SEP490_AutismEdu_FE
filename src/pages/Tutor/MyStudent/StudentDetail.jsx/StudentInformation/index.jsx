@@ -1,9 +1,23 @@
 import { Avatar, Box, Chip, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import CompleteTutoring from '../CompleteTutoring';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-function StudentInformation({ studentProfile }) {
+function StudentInformation({ studentProfile, setStudentProfile }) {
     const [status, setStatus] = useState(1);
+    const [assessments, setAssessments] = useState([])
+    useEffect(() => {
+        if (studentProfile) {
+            setAssessments(studentProfile?.initialAssessmentResults.assessmentResults)
+        }
+    }, [studentProfile])
+
+    useEffect(() => {
+        if (status === 2) {
+            setAssessments(studentProfile?.finalAssessmentResults.assessmentResults)
+        } else {
+            setAssessments(studentProfile?.initialAssessmentResults.assessmentResults)
+        }
+    }, [status])
     const formatDate = (date) => {
         if (!date) return "";
         const d = new Date(date);
@@ -18,6 +32,7 @@ function StudentInformation({ studentProfile }) {
         const formattedAddress = `${addressParts[3]} - ${addressParts[2]} - ${addressParts[1]} - ${addressParts[0]}`;
         return formattedAddress;
     }
+    console.log(studentProfile);
     return (
         <Box sx={{ px: 5 }}>
             {
@@ -47,7 +62,7 @@ function StudentInformation({ studentProfile }) {
                         {status === 1 ? "Tình trạng ban đầu" : "Kết quả cuối cùng"}
                     </Typography>
                     <Typography mt={2} sx={{ whiteSpace: "break-spaces" }}>
-                        {studentProfile?.initialCondition}
+                        {status === 1 ? studentProfile?.initialAssessmentResults.condition : studentProfile?.finalAssessmentResults.condition}
                     </Typography>
                     <Typography variant='h4' mt={2}>
                         Bảng đánh giá
@@ -62,7 +77,7 @@ function StudentInformation({ studentProfile }) {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {studentProfile && studentProfile.initialAssessmentResults.map((assessment) => (
+                                {assessments.length !== 0 && assessments.map((assessment) => (
                                     <TableRow
                                         key={assessment.id}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -119,7 +134,7 @@ function StudentInformation({ studentProfile }) {
                     </Box>
                     {
                         studentProfile?.status === 1 && (
-                            <CompleteTutoring studentProfile={studentProfile} />
+                            <CompleteTutoring studentProfile={studentProfile} setStudentProfile={setStudentProfile}/>
                         )
                     }
                 </Box>
