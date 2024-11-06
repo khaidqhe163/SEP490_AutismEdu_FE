@@ -69,10 +69,10 @@ function Calendar() {
     useEffect(() => {
         const year = new Date().getFullYear();
         const weeks = generateMondaysAndSundays(year);
-        setWeekInYears(weeks);
         const today = resetTime(new Date());
         const index = weeks.findIndex(week => today >= resetTime(week.monday) && today <= resetTime(week.sunday));
         setCurrentWeek(index);
+        setWeekInYears(weeks.slice(0, index + 3));
         if (id) {
             setCurrentStudent(id);
         }

@@ -6,6 +6,7 @@ import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import ConfirmDialog from '~/components/ConfirmDialog';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 function CompleteTutoring({ studentProfile }) {
@@ -15,15 +16,50 @@ function CompleteTutoring({ studentProfile }) {
     const [assessment, setAssessment] = useState([]);
     const [selectedAssessment, setSelectedAssessment] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [finalAssessment, setFinalAssessment] = useState(null);
     const { id } = useParams();
+    const [openConfirm, setOpenConfirm] = useState(false);
     useEffect(() => {
         handleGetAsessment();
+        handleGetProgressReport();
     }, [])
     useEffect(() => {
         if (open) {
             formik.resetForm();
         }
     }, [open])
+
+    const handleGetProgressReport = async () => {
+        try {
+            setLoading(true);
+            await services.ProgressReportAPI.getListProgressReport((res) => {
+                setFinalAssessment(res.result[0]);
+            }, (err) => {
+                console.log(err);
+            }, {
+                studentProfileId: id,
+                pageNumber: 1,
+                orderBy: "dateFrom",
+                sort: "desc"
+            })
+            setLoading(false);
+        } catch (error) {
+            console.log(error);
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        if (assessment && finalAssessment) {
+            const preData = finalAssessment.assessmentResults.map((a) => {
+                return {
+                    questionId: a.questionId,
+                    optionId: a.optionId
+                }
+            })
+            setSelectedAssessment(preData)
+        }
+    }, [assessment, finalAssessment])
     const handleGetAsessment = async () => {
         try {
             setLoading(true);
@@ -48,53 +84,46 @@ function CompleteTutoring({ studentProfile }) {
 
     const validate = (values) => {
         const errors = {};
-        if (!values.achieved) {
-            errors.achieved = "Bắt buộc";
-        }
-        if (!values.failed) {
-            errors.failed = "Bắt buộc";
-        }
-
-        if (!values.from) {
-            errors.from = "Bắt buộc";
-        }
-        if (!values.to) {
-            errors.to = "Bắt buộc";
-        } else if (values.from >= values.to) {
-            errors.from = "Ngày không hợp lệ"
+        if (!values.finalCondition) {
+            errors.finalCondition = "Bắt buộc";
         }
         return errors;
     }
     const formik = useFormik({
         initialValues: {
-
+            finalCondition: ""
         },
         validate,
         onSubmit: async (values) => {
-            try {
-                setLoading(true);
-                await services.ProgressReportAPI.createProgressReport({
-                    ...values,
-                    studentProfileId: id,
-                    assessmentResults: selectedAssessment
-                }, (res) => {
-                    enqueueSnackbar("Tạo sổ liên lạc thành công!", { variant: "success" })
-                    handleClose();
-                }, (err) => {
-                    console.log(err);
-                    enqueueSnackbar("Tạo sổ liên lạc thất bại!", { variant: "error" })
-                })
-                setLoading(false);
-            } catch (error) {
-                setLoading(false);
-            }
+            setOpenConfirm(true);
         }
     })
 
-
+    const handleSubmit = async () => {
+        try {
+            setLoading(true);
+            await services.StudentProfileAPI.closeTutoring({
+                ...formik.values,
+                studentProfileId: id,
+                finalAssessmentResults: selectedAssessment
+            }, (res) => {
+                enqueueSnackbar("Kết thúc việc dạy thành công!", { variant: "success" })
+                handleClose();
+            }, (err) => {
+                enqueueSnackbar("Kết thúc việc dạy thất bại!", { variant: "error" })
+            })
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+        }
+    }
     return (
         <>
-            <Button variant='contained' color='success' onClick={handleOpen}>Kết thúc dạy</Button>
+            <Button variant='contained' color='success' onClick={handleOpen}
+                sx={{ width: "200px", height: "80px", fontSize: "20px" }}
+            >
+                Kết thúc dạy
+            </Button>
             {
                 open && <Modal
                     open={open}
@@ -123,15 +152,15 @@ function CompleteTutoring({ studentProfile }) {
                                     <Typography>Đánh giá cuối cùng</Typography>
                                 </Stack>
                                 <TextField multiline fullWidth minRows={5} maxRows={10}
-                                    name='achieved'
+                                    name='finalCondition'
                                     onChange={formik.handleChange}
-                                    value={formik.values.achieved}
+                                    value={formik.values.finalCondition}
                                     sx={{ mt: 1 }}
                                 />
                                 {
-                                    formik.errors.achieved && (
+                                    formik.errors.finalCondition && (
                                         <FormHelperText error>
-                                            {formik.errors.achieved}
+                                            {formik.errors.finalCondition}
                                         </FormHelperText>
                                     )
                                 }
@@ -175,8 +204,9 @@ function CompleteTutoring({ studentProfile }) {
                                 </Box>
                             </form>
                         </Stack>
-
                         <LoadingComponent open={loading} />
+                        <ConfirmDialog openConfirm={openConfirm} setOpenConfirm={setOpenConfirm} handleAction={handleSubmit}
+                            title={"Kết thúc lớp học"} content={`Bạn có muốn kết thúc việc dạy học ${studentProfile?.name}`} />
                     </Box>
                 </Modal>
             }

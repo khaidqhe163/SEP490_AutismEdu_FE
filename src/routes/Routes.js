@@ -35,16 +35,20 @@ import MyTutor from '~/pages/Tutor/MyTutor'
 import MyTutorDetail from '~/pages/Tutor/MyTutor/MyTutorDetail'
 import StudentProfileApprove from '~/pages/StudentProfile/StudentProfileApprove'
 import TutorRequestHistory from '~/pages/Parent/TutorRequestHistory/TutorRequestHistory'
+import LoginAdmin from '~/pages/Admin/LoginAdmin'
 
 const UnLayoutRoutes = [
     {
         path: PAGES.TUTOR_LOGIN,
         element: TutorLogin
     },
-
     {
         path: PAGES.TUTORREGISTRATION,
         element: TutorRegistration
+    },
+    {
+        path: PAGES.LOGIN_ADMIN,
+        element: LoginAdmin
     }
 ]
 

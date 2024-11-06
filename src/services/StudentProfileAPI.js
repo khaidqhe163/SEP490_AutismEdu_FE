@@ -22,11 +22,15 @@ const getStudentProfileById = async (endpoint, success, error) => {
 const changeStudentProfileStatus = async (params, success, error) => {
     await put(API_CODE.API_CHANGE_STUDENT_PROFILE_STATUS, params, success, error)
 }
+const closeTutoring = async (params, success, error) => {
+    await put(API_CODE.API_CLOSE_TUTORING, params, success, error)
+}
 export const StudentProfileAPI = {
     createStudentProfile,
     getListStudent,
     getTutorSchedule,
     getStudentProfileById,
     changeStudentProfileStatus,
-    getMyTutor
+    getMyTutor,
+    closeTutoring
 }

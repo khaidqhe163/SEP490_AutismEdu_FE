@@ -36,7 +36,7 @@ const PAGES = {
   MY_TUTOR: '/my-tutor',
   MY_TUTOR_DETAIL: '/my-tutor/:id',
   TUTOR_REQUEST_HISTORY: '/request-history',
-  PROGRESS_REPORT_UPDATE: '/v1/ProgressReport'
+  LOGIN_ADMIN: '/admin/login'
 };
 
 export default PAGES;

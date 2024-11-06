@@ -92,6 +92,8 @@ function MyChildren() {
             formik.setFieldValue("gender", gender)
             const formattedDate = children[currentChild].birthDate.split('T')[0];
             formik.setFieldValue("dateOfBirth", formattedDate)
+            formik.setFieldError("fullName", "");
+            formik.setFieldError('dateOfBirth', "");
             setChildAvatar(children[currentChild].imageUrlPath)
             setAvatar(null)
         }
@@ -126,7 +128,7 @@ function MyChildren() {
     }
     console.log(childAvatar);
     return (
-        <Stack direction='row' justifyContent="center" pt={5}>
+        <Stack direction='row' justifyContent="center" py={5}>
             <Stack sx={{ width: "80%" }} direction="row" justifyContent="center">
                 <Box sx={{ width: "60%" }}>
                     <Box sx={{ width: "100%", mb: 5 }}>

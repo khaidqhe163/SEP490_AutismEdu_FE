@@ -83,6 +83,7 @@ const API_CODE = {
   API_GET_TUTOR_SCHEDULE: '/v1/StudentProfile/GetAllScheduleTimeSlot',
   API_GET_STUDENT_ID: '/v1/StudentProfile/',
   API_CHANGE_STUDENT_PROFILE_STATUS: '/v1/StudentProfile/changeStatus',
+  API_CLOSE_TUTORING: '/v1/StudentProfile/CloseTutoring',
 
   //Progress report 
   API_CREATE_PROGRESS_REPORT: '/v1/ProgressReport',

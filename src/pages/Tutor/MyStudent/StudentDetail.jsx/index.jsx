@@ -1,21 +1,21 @@
-import { Box, Button, Divider, Tab, Tabs, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
-import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
-import { TabPanel } from '@mui/lab';
-import StudentInformation from './StudentInformation';
-import services from '~/plugins/services';
+import { Box, Divider, Tab, Tabs, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import ProgressReport from './ProgressReport';
+import services from '~/plugins/services';
 import Calendar from '../../Calendar';
-import BarChartIcon from '@mui/icons-material/BarChart';
 import AssessmentChart from './AssessmentChart';
-import CompleteTutoring from './CompleteTutoring';
+import ProgressReport from './ProgressReport';
+import StudentInformation from './StudentInformation';
+import ScheduleSetting from './ScheduleSetting';
+import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
 function StudentDetail() {
     const [tab, setTabs] = useState(0);
     const { id } = useParams();
-    const [studentProfile, setStudentProfile] = useState();
+    const [studentProfile, setStudentProfile] = useState(null);
     const handleChange = (event, newValue) => {
         setTabs(newValue);
     };
@@ -55,25 +55,38 @@ function StudentDetail() {
                     <Tab icon={<CalendarMonthOutlinedIcon />} iconPosition="end" label="Lịch học" />
                     <Tab icon={<NoteAltOutlinedIcon />} iconPosition="end" label="Sổ liên lạc" />
                     <Tab icon={<BarChartIcon />} iconPosition="end" label="Biểu đồ đánh giá" />
+                    <Tab icon={<ManageHistoryIcon />} iconPosition="end" label="Cài đặt lịch học" />
                     <Tab icon={<AccountBoxOutlinedIcon />} iconPosition="end" label="Thông tin học sinh" />
                 </Tabs>
-                <CompleteTutoring studentProfile={studentProfile} />
                 <Box>
                     <Typography sx={{ fontWeight: "bold", color: "#b660ec", fontSize: "20px" }}>{studentProfile?.name} - {studentProfile?.studentCode}</Typography>
+                    {
+                        studentProfile?.status === 1 && (
+                            <Typography sx={{ color: "blue" }}>Đang học</Typography>
+                        )
+                    }
+                    {
+                        studentProfile?.status === 0 && (
+                            <Typography>Đã kết thúc</Typography>
+                        )
+                    }
                 </Box>
             </Box>
             <Divider sx={{ width: "100%" }} />
             {
-                tab === 0 && <Calendar />
+                tab === 0 && studentProfile?.status !== 3 && <Calendar />
             }
             {
-                tab === 1 && <ProgressReport studentProfile={studentProfile} />
+                tab === 1 && studentProfile?.status !== 3 && <ProgressReport studentProfile={studentProfile} />
             }
             {
-                tab === 2 && <AssessmentChart studentProfile={studentProfile} />
+                tab === 2 && studentProfile?.status !== 3 && <AssessmentChart studentProfile={studentProfile} />
             }
             {
-                tab === 3 && <StudentInformation studentProfile={studentProfile} />
+                tab === 3 && studentProfile?.status !== 3 && <ScheduleSetting studentProfile={studentProfile} />
+            }
+            {
+                tab === 4 && <StudentInformation studentProfile={studentProfile} />
             }
         </Box>
     )
