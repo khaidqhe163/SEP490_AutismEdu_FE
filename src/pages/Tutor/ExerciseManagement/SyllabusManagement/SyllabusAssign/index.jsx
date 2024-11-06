@@ -19,6 +19,8 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
     const [ageFrom, setAgeFrom] = useState(selectedAssign?.ageFrom || '');
     const [ageEnd, setAgeEnd] = useState(selectedAssign?.ageEnd || '');
 
+    console.log(selectedList);
+
     useEffect(() => {
         handleGetAllExerciseType();
     }, []);
@@ -44,6 +46,11 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
     const handleOpenModal = () => setOpenModal(true);
     const handleCloseModal = () => setOpenModal(false);
 
+
+    useEffect(() => {
+        formik.setFieldValue("syllabusExercises", selectedList);
+    }, [selectedList]);
+
     const formik = useFormik({
         initialValues: {
             ageFrom: ageFrom,
@@ -56,7 +63,14 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
                 .min(0, 'Tuổi phải lớn hơn 0'),
             ageEnd: Yup.number()
                 .required('Bắt buộc phải nhập')
-                .min(Yup.ref('ageFrom'), 'Tuổi kết thúc phải lớn hơn tuổi bắt đầu'),
+                .test(
+                    'greater-than-ageFrom',
+                    'Tuổi kết thúc phải lớn hơn tuổi bắt đầu',
+                    function (value) {
+                        const { ageFrom } = this.parent;
+                        return value > ageFrom;
+                    }
+                ),
             syllabusExercises: Yup.array()
                 .min(1, 'Phải có ít nhất 1 loại bài tập và bài tập'),
         }),
@@ -76,7 +90,6 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
                         setListSyllabus((prev) => {
                             const updateData = prev.map((p) => {
                                 if (p.id === res.result?.id) {
-                                    // p.exerciseTypes = res.result?.exerciseTypes;
                                     p = res.result;
                                     return p;
                                 } else {
@@ -135,9 +148,6 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
                                     error={formik.touched.ageFrom && Boolean(formik.errors.ageFrom)}
                                     helperText={formik.touched.ageFrom && formik.errors.ageFrom}
                                     fullWidth
-                                // InputLabelProps={{
-                                //     shrink: !!formik.values.ageFrom,
-                                // }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -155,9 +165,6 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
                                     error={formik.touched.ageEnd && Boolean(formik.errors.ageEnd)}
                                     helperText={formik.touched.ageEnd && formik.errors.ageEnd}
                                     fullWidth
-                                // InputLabelProps={{
-                                //     shrink: !!formik.values.ageEnd,
-                                // }}
                                 />
                             </Grid>
                         </Grid>
@@ -170,6 +177,11 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
                         <IconButton onClick={handleOpenModal} color="primary" sx={{ backgroundColor: '#f5f7f8', borderRadius: '50%', padding: 1 }}>
                             <AddIcon />
                         </IconButton>
+                        {formik.errors.syllabusExercises && (
+                            <Typography color="error" variant="body2">
+                                {formik.errors.syllabusExercises}
+                            </Typography>
+                        )}
                     </Grid>
                     <Grid item xs={12}>
                         {selectedClone.length !== 0 && (
@@ -206,14 +218,24 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
 
                 <Stack direction="row" justifyContent="end" mt={2}>
                     <Button variant="outlined" color="inherit" sx={{ mr: 2 }} onClick={handleBack}>Trở về</Button>
-                    <Button type="submit" variant="contained" color="primary" disabled={loading}>
+                    <Button type="submit" variant="contained" color="primary" disabled={loading || !formik.isValid}>
                         {loading ? <LoadingComponent /> : "Lưu"}
                     </Button>
 
                 </Stack>
             </form>
 
-            {openModal && <ExerciseAdd openModal={openModal} handleCloseModal={handleCloseModal} exerciseTypes={exerciseTypes} selectedList={selectedList} setSelectedList={setSelectedList} selectedClone={selectedClone} setSelectedClone={setSelectedClone} />}
+            {openModal && (
+                <ExerciseAdd
+                    openModal={openModal}
+                    handleCloseModal={handleCloseModal}
+                    exerciseTypes={exerciseTypes}
+                    selectedList={selectedList}
+                    setSelectedList={setSelectedList}
+                    selectedClone={selectedClone}
+                    setSelectedClone={setSelectedClone}
+                />
+            )}
         </Stack>
     );
 }
