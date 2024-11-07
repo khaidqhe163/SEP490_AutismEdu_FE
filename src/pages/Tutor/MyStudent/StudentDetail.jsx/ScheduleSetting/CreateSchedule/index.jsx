@@ -43,7 +43,7 @@ const MenuProps = {
         },
     },
 };
-function CreateSchedule() {
+function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
     const [open, setOpen] = useState(false);
     const [dayOfWeek, setDayOfWeek] = useState([]);
     const [startTime, setStartTime] = useState("");
@@ -57,7 +57,16 @@ function CreateSchedule() {
     const handleClose = () => setOpen(false);
     useEffect(() => {
         getExistSchedule();
+    }, [listTimeSlots])
+    useEffect(() => {
+        getExistSchedule();
     }, [])
+    useEffect(() => {
+        if (!open) {
+            setStartTime("");
+            setEndTime("");
+        }
+    }, [open])
     useEffect(() => {
         const disableArr = [];
         existSchedule.forEach((l) => {
@@ -130,8 +139,26 @@ function CreateSchedule() {
         })
         setListSchedule([...filter]);
     }
-    console.log(existSchedule);
-    console.log(disableDate);
+
+    const handleCreateTimeSlot = async () => {
+        try {
+            await services.TimeSlotAPI.createTimeSlot(id, listSchedule,
+                (res) => {
+                    const updateTimeSlot = [...listTimeSlots, ...res.result]
+                    const sortedItem = updateTimeSlot.sort((a, b) => {
+                        return a.weekday - b.weekday
+                    })
+                    setOpen(false);
+                    setListTimeSlots(sortedItem);
+                    setListSchedule([]);
+                }, (error) => {
+                    console.log(error);
+                }
+            )
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <>
             <Button variant='contained' onClick={handleOpen}>Thêm khung giờ mới</Button>
@@ -215,7 +242,7 @@ function CreateSchedule() {
                             })
                         }
                     </Box>
-                    <Button variant='contained' sx={{ mt: 5 }}>Thêm khung giờ</Button>
+                    <Button variant='contained' sx={{ mt: 5 }} onClick={handleCreateTimeSlot}>Thêm khung giờ</Button>
                 </Box>
             </Modal>
         </>

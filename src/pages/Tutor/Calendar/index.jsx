@@ -9,6 +9,7 @@ import { tutorInfor } from '~/redux/features/tutorSlice';
 import AssignExercise from './CalendarModal/AssignExercise';
 import Evaluate from './CalendarModal/Evaluate';
 import CalenderButtons from './CalenderButtons/CalenderButtons';
+import ChangeSlotModal from './ChangeSlotModal';
 function Calendar() {
     const { id } = useParams();
     const [isModalOpen, setModalOpen] = useState(false);
@@ -24,11 +25,12 @@ function Calendar() {
     const [loading, setLoading] = useState(false);
     const [currentStudent, setCurrentStudent] = useState(0);
     const listStudents = useSelector(listStudent);
+    const [isChange, setIsChange] = useState(true);
     useEffect(() => {
         if (weekInYears.length !== 0) {
             getSchedule();
         }
-    }, [weekInYears])
+    }, [weekInYears, isChange])
 
     const getSchedule = async () => {
         try {
@@ -72,7 +74,7 @@ function Calendar() {
         const today = resetTime(new Date());
         const index = weeks.findIndex(week => today >= resetTime(week.monday) && today <= resetTime(week.sunday));
         setCurrentWeek(index);
-        setWeekInYears(weeks.slice(0, index + 3));
+        setWeekInYears(weeks);
         if (id) {
             setCurrentStudent(id);
         }
@@ -181,7 +183,26 @@ function Calendar() {
         return value === 2 ? 'Chưa có mặt' : value === 1 ? "Có mặt" : "Vắng"
     };
 
-    console.log(aSchedule);
+    const checkTime = (time) => {
+        if (!time) {
+            return false;
+        }
+        const startTime = new Date(time.scheduleDate);
+        const endTime = new Date(time.scheduleDate);
+        const [startHour, startMinute, startSecond] = time.start.split(":").map(Number);
+        const [endHour, endMinute, endSecond] = time.end.split(":").map(Number);
+
+        startTime.setHours(startHour, startMinute, startSecond);
+        endTime.setHours(endHour, endMinute, endSecond);
+        const now = new Date();
+        if (now >= startTime && now <= endTime) {
+            return true;
+        } else if (now > endTime) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     return (
         <>
@@ -300,8 +321,10 @@ function Calendar() {
                                                                 {passStatus(f.passingStatus)}
                                                             </span>
                                                         </Typography>
-
                                                         <Typography sx={{ color: f.attendanceStatus === 1 ? "green" : "red", fontSize: "12px", fontWeight: '500' }} >({attendanceStatus(f.attendanceStatus)})</Typography>
+                                                        {
+                                                            !checkTime(f) && <ChangeSlotModal schedule={f} setIsChange={setIsChange} />
+                                                        }
                                                         <CalenderButtons f={f} keys={keys} handleAssign={handleAssign} handleOpenEvaluate={handleOpenEvaluate} />
                                                     </Box>
                                                 )
