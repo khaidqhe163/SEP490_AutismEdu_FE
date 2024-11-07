@@ -13,6 +13,7 @@ import PAGES from '~/utils/pages';
 import FeedIcon from '@mui/icons-material/Feed';
 import TocIcon from '@mui/icons-material/Toc';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import QuizIcon from '@mui/icons-material/Quiz';
 function AdminLeftBar() {
     const [open, setOpen] = useState(false);
     const location = useLocation();
@@ -119,7 +120,18 @@ function AdminLeftBar() {
                                 </ListItemButton>
                             </List>
                         </Link>
+                        
                     </Collapse>
+                    <Link to="/admin/test-management">
+                        <ListItemButton
+                            selected={selectedIndex === 6}
+                            onClick={(event) => handleListItemClick(event, 6)}>
+                            <ListItemIcon>
+                                <QuizIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Bài kiểm tra" />
+                        </ListItemButton>
+                    </Link>
                 </List>
             </Box>
         </>

@@ -36,7 +36,8 @@ const PAGES = {
   MY_TUTOR: '/my-tutor',
   MY_TUTOR_DETAIL: '/my-tutor/:id',
   TUTOR_REQUEST_HISTORY: '/request-history',
-  LOGIN_ADMIN: '/admin/login'
+  LOGIN_ADMIN: '/admin/login',
+  TEST_MANAGEMENT: '/admin/test-management',
 };
 
 export default PAGES;

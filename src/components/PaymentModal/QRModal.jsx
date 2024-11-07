@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box } from '@mui/material';
 import Thank from './Thank';
-// import { baseUrl } from '../../../utils/service';
 import { useDispatch } from 'react-redux';
 import { enqueueSnackbar } from 'notistack';
-// import { setUserInformation } from '../../../features/userSlice';
-// import api from '../../../utils/axiosConfig';
+
 
 const QrModal = (props) => {
     const {
