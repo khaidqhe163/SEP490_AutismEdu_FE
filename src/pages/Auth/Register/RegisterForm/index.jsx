@@ -71,7 +71,11 @@ function RegisterForm({ setVerify, setEmailVerify }) {
         }
         if (!values.password) {
             errors.password = 'Bắt buộc';
-        } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$?_-]).+$/.test(values.password)) {
+        }
+        else if (values.password.length < 8 || values.password.length > 15) {
+            errors.password = "Độ dài của mật khẩu từ 8 - 15 kí tự!"
+        }
+        else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$?_-]).+$/.test(values.password)) {
             errors.password = 'Mật khẩu không hợp lệ'
         }
         if (!values.cfPassword) {

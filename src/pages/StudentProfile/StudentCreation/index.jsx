@@ -172,16 +172,24 @@ function StudentCreation() {
         const selectedCommune = communes.find(p => p.idCommune === formik.values.commune);
         const selectedProvince = provinces.find(p => p.idProvince === formik.values.province);
         const selectedDistrict = districts.find(p => p.idDistrict === formik.values.district);
+        if (hasAccount === "true" && sendRequest === "false" && !parent) {
+            enqueueSnackbar("Chưa nhập tài khoản!", { variant: "error" });
+            return;
+        }
+        if (hasAccount === "true" && sendRequest === "false" && children.length === 0) {
+            enqueueSnackbar("Tài khoản không có trẻ nào!", { variant: "error" });
+            return;
+        }
+        if (hasAccount === "true" && sendRequest === "true" && selectedRequest === "") {
+            enqueueSnackbar("Chưa chọn yêu cầu!", { variant: "error" });
+            return;
+        }
         if (initialCondition.trim() === "") {
             enqueueSnackbar("Chưa nhập điều kiện ban đầu!", { variant: "error" });
             return;
         }
         if (listSchedule.length === 0) {
             enqueueSnackbar("Chưa nhập lịch học!", { variant: "error" });
-            return;
-        }
-        if (hasAccount === "true" && sendRequest === "true" && selectedRequest === "") {
-            enqueueSnackbar("Chưa chọn yêu cầu!", { variant: "error" });
             return;
         }
         const formData = new FormData();
@@ -302,12 +310,6 @@ function StudentCreation() {
                                         name='selectedRequest'
                                         onChange={(event) => {
                                             setSelectedRequest(event.target.value)
-                                        }}
-                                        renderValue={(selected) => {
-                                            if (!selected || selected === "") {
-                                                return <em>Yêu cầu</em>;
-                                            }
-                                            return selectedRequest ? selectedRequest : "";
                                         }}
                                         displayEmpty={true}
                                         size='small'
