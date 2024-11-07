@@ -19,7 +19,7 @@ import PAGES from '~/utils/pages';
 import services from '~/plugins/services';
 import { useDispatch, useSelector } from 'react-redux';
 import { listStudent, setListStudent } from '~/redux/features/listStudent';
-
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 export default function TutorSideBar({ openMenu }) {
     const [openStudent, setOpenStudent] = React.useState(true);
     const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -126,8 +126,22 @@ export default function TutorSideBar({ openMenu }) {
                     </ListItemButton>
                 </Link>
                 <Divider />
+                <Link to={PAGES.STUDENT_CREATION}>
+                    <ListItemButton
+                        selected={selectedIndex === 3}
+                        onClick={(event) => handleListItemClick(event, 3)}
+                    >
+                        <ListItemIcon sx={listIconStyle}>
+                            <PersonAddIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                            primary="Tạo hồ sơ học sinh"
+                            sx={textStyle}
+                        />
+                    </ListItemButton>
+                </Link>
                 <ListItemButton onClick={handleOpenStudent}
-                    selected={selectedIndex === 3}
+                    selected={selectedIndex === 4}
                 >
                     <ListItemIcon sx={listIconStyle}>
                         <GroupOutlinedIcon />
@@ -143,7 +157,7 @@ export default function TutorSideBar({ openMenu }) {
                                     <List component="div" disablePadding>
                                         <ListItemButton
                                             onClick={(event) => { setCurrentStudent(index); handleListItemClick(event, 3) }}
-                                            selected={selectedIndex === 3 && currentStudent === index}
+                                            selected={selectedIndex === 4 && currentStudent === index}
                                         >
                                             <ListItemIcon sx={listIconStyle}>
                                                 <Avatar alt={l.studentCode} src={'/'} sx={{ background: "black", width: "30px", height: "30px" }} />
@@ -158,8 +172,8 @@ export default function TutorSideBar({ openMenu }) {
                 </Collapse>
                 <Divider />
                 <Link to={PAGES.EXERCISE_MANAGEMENT}>
-                    <ListItemButton selected={selectedIndex === 4}
-                        onClick={(event) => handleListItemClick(event, 4)}
+                    <ListItemButton selected={selectedIndex === 5}
+                        onClick={(event) => handleListItemClick(event, 5)}
                     >
                         <ListItemIcon sx={listIconStyle}>
                             <MenuBookOutlinedIcon />
@@ -170,8 +184,8 @@ export default function TutorSideBar({ openMenu }) {
 
                 <Divider />
                 <Link to={PAGES.TUTOR_SETTING} >
-                    <ListItemButton selected={selectedIndex === 5}
-                        onClick={(event) => handleListItemClick(event, 5)}>
+                    <ListItemButton selected={selectedIndex === 6}
+                        onClick={(event) => handleListItemClick(event, 6)}>
                         <ListItemIcon sx={listIconStyle}>
                             <SettingsOutlinedIcon />
                         </ListItemIcon>

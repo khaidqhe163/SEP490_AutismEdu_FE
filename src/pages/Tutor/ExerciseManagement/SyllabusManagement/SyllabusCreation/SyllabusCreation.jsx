@@ -64,7 +64,14 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
                 .min(0, 'Tuổi phải lớn hơn 0'),
             ageEnd: Yup.number()
                 .required('Bắt buộc phải nhập')
-                .min(Yup.ref('ageFrom'), 'Tuổi kết thúc phải lớn hơn tuổi bắt đầu'),
+                .test(
+                    'greater-than-ageFrom',
+                    'Tuổi kết thúc phải lớn hơn tuổi bắt đầu',
+                    function (value) {
+                        const { ageFrom } = this.parent;
+                        return value > ageFrom;
+                    }
+                ),
             syllabusExercises: Yup.array()
                 .min(1, 'Phải có ít nhất 1 loại bài tập và bài tập'),
         }),
@@ -103,11 +110,11 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
 
     const handleDeleteItem = (id) => {
         console.log(id);
-        
+
         const newList = selectedList.filter((s) => s.exerciseTypeId !== id);
         const newListClone = selectedClone.filter((s) => s.eType.id !== id);
         console.table(newListClone);
-        
+
         setSelectedList(newList);
         setSelectedClone(newListClone);
     };

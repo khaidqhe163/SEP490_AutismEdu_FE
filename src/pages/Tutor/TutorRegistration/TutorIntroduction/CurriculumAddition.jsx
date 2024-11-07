@@ -38,9 +38,10 @@ export default function Curriculum({ curriculum, setCurriculum, endAge, startAge
     }
     const validate = values => {
         const errors = {};
+        console.log(values);
         if (!values.startAge || !values.endAge) {
             errors.rangeAge = 'Vui lòng nhập độ tuổi';
-        } else if (values.startAge > values.endAge) {
+        } else if (Number(values.startAge) >= Number(values.endAge)) {
             errors.rangeAge = 'Độ tuổi không hợp lệ';
         }
         return errors;
