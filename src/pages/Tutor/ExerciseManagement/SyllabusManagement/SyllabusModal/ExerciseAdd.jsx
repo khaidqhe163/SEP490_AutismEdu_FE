@@ -83,8 +83,19 @@ function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList,
             });
         }
     };
+    
 
     const handleAdd = () => {
+        if (newData.exerciseIds.length === 0) {
+
+            const updatedSelectedList = selectedList?.filter(s => s.exerciseTypeId !== newData.exerciseTypeId);
+            const updatedSelectedClone = selectedClone?.filter(s => s.eType.id !== newData.exerciseTypeId);
+    
+            setSelectedList(updatedSelectedList);
+            setSelectedClone(updatedSelectedClone);
+            handleCloseModal();
+            return;
+        }
         const checkExist = selectedList.some((s) => s.exerciseTypeId === newData.exerciseTypeId);
         if (checkExist) {
             const indexOfExist = selectedList.findIndex((s) => s.exerciseTypeId === newData.exerciseTypeId);
@@ -134,6 +145,9 @@ function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList,
         });
         handleCloseModal();
     };
+
+    console.log(selectedClone);
+
 
     return (
         <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
