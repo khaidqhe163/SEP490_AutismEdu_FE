@@ -2,7 +2,7 @@ import { Logout } from '@mui/icons-material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import { Avatar, Badge, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack } from '@mui/material';
+import { Avatar, Badge, Box, Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
 import Cookies from "js-cookie";
 import { useEffect, useState } from 'react';
@@ -11,12 +11,17 @@ import { useNavigate } from 'react-router-dom';
 import { setTutorInformation, tutorInfor } from '~/redux/features/tutorSlice';
 import PAGES from '~/utils/pages';
 import Logo from '../Logo';
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+
+import RechargeModal from '../PaymentModal/RechargeModal';
 function TutorHeader({ openMenu, setOpenMenu }) {
     const nav = useNavigate();
     const tutorInfo = useSelector(tutorInfor);
     const [accountMenu, setAccountMenu] = useState();
     const dispatch = useDispatch();
     const openAccountMenu = Boolean(accountMenu);
+    const [openModalPayment, setOpenModalPayment] = useState(false);
+
     useEffect(() => {
         // const refreshToken = Cookies.get("refresh_token");
         // const accessToken = Cookies.get("access_Token");
@@ -50,8 +55,8 @@ function TutorHeader({ openMenu, setOpenMenu }) {
             position: "fixed",
             top: "0",
             width: "100vw",
-            zIndex:100,
-            bgcolor:'white'
+            zIndex: 100,
+            bgcolor: 'white'
         }}>
             <Stack direction='row' sx={{
                 justifyContent: "space-between",
@@ -74,6 +79,14 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                             <NotificationsActiveIcon />
                         </Badge>
                     </IconButton>
+                    <Button startIcon={<KeyboardDoubleArrowUpIcon />} onClick={() => setOpenModalPayment(true)} variant='contained' size='small' sx={{
+                        width: "130px", bgcolor: '#16ab65',
+                        '&:hover': {
+                            bgcolor: '#128a51', 
+                        },
+                    }}>
+                        Nâng cấp
+                    </Button>
                     <Avatar alt='Khai Dao' src={tutorInfo?.imageUrl ? tutorInfo.imageUrl : '/'} sx={{
                         bgcolor: deepPurple[500], width: "30px",
                         height: "30px",
@@ -127,6 +140,10 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                 </Box>
             </Stack>
             <Divider />
+            <RechargeModal
+                show={openModalPayment}
+                handleClose={() => setOpenModalPayment(false)}
+            />
         </Box>
     )
 }
