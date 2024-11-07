@@ -99,7 +99,11 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
         if (startTime === "" || endTime === "" || dayOfWeek.length === 0) {
             setTimeError("Nhập đầy đủ thông tin!");
             return;
-        } else {
+        }
+        else if (startTime >= endTime) {
+            setTimeError("Thời gian không hợp lệ")
+        }
+        else {
             const scheduleItem = dayOfWeek.map((d) => {
                 return {
                     weekday: days.find((day) => day.day === d).id,

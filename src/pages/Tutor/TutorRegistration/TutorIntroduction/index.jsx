@@ -52,7 +52,7 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
         const errors = {};
         if (!values.startAge || !values.endAge) {
             errors.rangeAge = 'Vui lòng nhập độ tuổi';
-        } else if (Number(values.startAge) > Number(values.endAge)) {
+        } else if (Number(values.startAge) >= Number(values.endAge)) {
             errors.rangeAge = 'Độ tuổi không hợp lệ';
         }
 
@@ -78,6 +78,7 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
         if (!values.sessionHours) {
             errors.sessionHours = "Bắt buộc"
         }
+        console.log(errors);
         return errors
     }
     const formik = useFormik({
@@ -217,7 +218,7 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                                 }} />
                         </Stack>
                         {
-                            (!formik.values.startAge || !formik.values.endAge) && (
+                            (!formik.values.startAge || !formik.values.endAge || formik.errors.rangeAge) && (
                                 <FormHelperText error>
                                     {formik.errors.rangeAge}
                                 </FormHelperText>
