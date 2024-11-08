@@ -62,10 +62,8 @@ function UserContent() {
     }, [loading])
     return (
         <Box sx={{
-            height: (theme) => `calc(100vh - ${theme.myapp.adminHeaderHeight})`,
-            width: "100%",
-            position: "relative",
-            marginTop: (theme) => theme.myapp.adminHeaderHeight
+            p: 2,
+            position: "relative"
         }}>
             <Box sx={{
                 width: "100%", bgcolor: "white", p: "20px",

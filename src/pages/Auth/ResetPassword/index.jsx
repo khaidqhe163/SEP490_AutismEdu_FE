@@ -65,10 +65,7 @@ function ResetPassword() {
                     enqueueSnackbar("Đặt lại mật khẩu thành công!", { variant: "success" });
                     nav(PAGES.ROOT + PAGES.LOGIN_OPTION);
                 }, (err) => {
-                    if (err.code === 500) {
-                        enqueueSnackbar("Đặt lại mật khẩu thất bại!", { variant: "error" });
-                    }
-                    else enqueueSnackbar(err.error[0], { variant: "error" });
+                    enqueueSnackbar(err.error[0], { variant: "error" });
                 })
                 setLoading(false)
             }

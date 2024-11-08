@@ -1,14 +1,12 @@
-import { Box, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import tutorLogin from '~/assets/images/tutorlogin.png'
-import parentLogin from '~/assets/images/parentlogin.png'
-import { Link, useNavigate } from 'react-router-dom';
+import { Box, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import parentLogin from '~/assets/images/parentlogin.png';
+import tutorLogin from '~/assets/images/tutorlogin.png';
 import PAGES from '~/utils/pages';
 function LoginOption() {
     const [isVisible, setIsVisible] = useState(false);
-    const nav = useNavigate();
     useEffect(() => {
-        // Delay to ensure animation starts after render
         setTimeout(() => setIsVisible(true), 100);
     }, []);
 

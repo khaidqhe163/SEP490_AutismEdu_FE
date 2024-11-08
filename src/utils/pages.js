@@ -38,6 +38,7 @@ const PAGES = {
   TUTOR_REQUEST_HISTORY: '/request-history',
   LOGIN_ADMIN: '/admin/login',
   TEST_MANAGEMENT: '/admin/test-management',
+  PAYMENT_PACKAGE_MANAGEMENT: '/admin/payment-package-management'
 };
 
 export default PAGES;

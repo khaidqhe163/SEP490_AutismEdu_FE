@@ -71,7 +71,7 @@ function LoginAdmin() {
     const handleSubmit = async () => {
         setLoading(true);
         await service.AuthenticationAPI.login({
-            email: formik.values.username,
+            email: formik.values.email,
             password: formik.values.password,
             authenticationRole: "Admin"
         }, (res) => {

@@ -14,8 +14,11 @@ import FeedIcon from '@mui/icons-material/Feed';
 import TocIcon from '@mui/icons-material/Toc';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import QuizIcon from '@mui/icons-material/Quiz';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 function AdminLeftBar() {
     const [open, setOpen] = useState(false);
+    const [openPayment, setOpenPayment] = useState(false);
     const location = useLocation();
     const handleClick = () => {
         setOpen(!open);
@@ -31,6 +34,9 @@ function AdminLeftBar() {
         else if (location.pathname.includes("/role-claim-management")) {
             setSelectedIndex(2);
         }
+        else if (location.pathname.includes("/payment-package-management")) {
+            setSelectedIndex(2);
+        }
     }, [])
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
@@ -38,11 +44,7 @@ function AdminLeftBar() {
 
     return (
         <>
-            <Box sx={{ bgcolor: "#f7f7f9", width: "260px", height: "100vh", px: "15px", pt: "20px" }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <SvgIcon component={TrelloIcon} inheritViewBox sx={{ color: 'blue' }} />
-                    <Typography variant='h5' sx={{ color: "text.secondary", fontWeight: "bold" }}>My App</Typography>
-                </Box>
+            <Box sx={{ bgcolor: "white", height: "100vh", px: "15px", pt: "20px" }}>
                 <List
                     sx={{ width: '100%' }}
                     component="nav"
@@ -132,6 +134,39 @@ function AdminLeftBar() {
                             <ListItemText primary="Bài kiểm tra" />
                         </ListItemButton>
                     </Link>
+                    <ListItemButton onClick={() => setOpenPayment(!openPayment)}>
+                        <ListItemIcon>
+                            <AttachMoneyIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Thanh Toán" />
+                        {openPayment ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openPayment} timeout="auto" unmountOnExit>
+                        <Link to={PAGES.PAYMENT_PACKAGE_MANAGEMENT}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 6}
+                                    onClick={(event) => handleListItemClick(event, 6)}>
+                                    <ListItemIcon>
+                                        <PointOfSaleIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Gói Thanh Toán" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                        <Link to={PAGES.ASSESSMENT_CREATION}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 5}
+                                    onClick={(event) => handleListItemClick(event, 5)}>
+                                    <ListItemIcon>
+                                        <PlaylistAddIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Thêm đánh giá" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                    </Collapse>
                 </List>
             </Box>
         </>

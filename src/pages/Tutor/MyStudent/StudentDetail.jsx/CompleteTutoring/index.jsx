@@ -121,7 +121,7 @@ function CompleteTutoring({ studentProfile, setStudentProfile }) {
                 setOpenConfirm(false);
                 setStudentProfile(res.result);
             }, (err) => {
-                enqueueSnackbar("Kết thúc việc dạy thất bại!", { variant: "error" })
+                enqueueSnackbar(err.error[0], { variant: "error" })
             })
             setLoading(false);
         } catch (error) {

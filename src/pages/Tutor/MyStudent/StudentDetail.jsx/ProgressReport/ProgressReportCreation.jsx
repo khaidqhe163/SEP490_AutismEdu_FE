@@ -134,7 +134,7 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
                 setOpenConfirm(false);
             }, (err) => {
                 console.log(err);
-                enqueueSnackbar("Tạo sổ liên lạc thất bại!", { variant: "error" })
+                enqueueSnackbar(err.error[0], { variant: "error" })
             })
             setLoading(false);
         } catch (error) {

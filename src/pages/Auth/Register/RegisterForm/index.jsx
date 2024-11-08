@@ -115,10 +115,7 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                 setVerify(true);
                 setEmailVerify(values.email);
             }, (err) => {
-                if (err.code === 500) {
-                    enqueueSnackbar("Đăng ký thật bại!", { variant: "error" });
-                }
-                else enqueueSnackbar(err.error[0], { variant: "error" });
+                enqueueSnackbar(err.error[0], { variant: "error" });
             })
             setLoading(false)
         }

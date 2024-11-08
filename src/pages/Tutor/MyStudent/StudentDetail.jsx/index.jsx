@@ -6,12 +6,12 @@ import { Box, Divider, Tab, Tabs, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import services from '~/plugins/services';
-import Calendar from '../../Calendar';
 import AssessmentChart from './AssessmentChart';
 import ProgressReport from './ProgressReport';
 import StudentInformation from './StudentInformation';
 import ScheduleSetting from './ScheduleSetting';
 import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
+import Calendar from '../../Calendar';
 function StudentDetail() {
     const [tab, setTabs] = useState(0);
     const { id } = useParams();

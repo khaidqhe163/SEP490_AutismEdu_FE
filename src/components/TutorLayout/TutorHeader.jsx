@@ -23,12 +23,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     const [openModalPayment, setOpenModalPayment] = useState(false);
 
     useEffect(() => {
-        // const refreshToken = Cookies.get("refresh_token");
-        // const accessToken = Cookies.get("access_Token");
-        // if (!refreshToken && !accessToken) {
-        //     nav(PAGES.TUTOR_LOGIN)
-        // }
-        console.log(tutorInfo);
         if (tutorInfo === undefined) {
             nav(PAGES.TUTOR_LOGIN)
         }

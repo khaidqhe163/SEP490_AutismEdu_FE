@@ -86,10 +86,8 @@ function AssessmentCreation() {
     }
     return (
         <Box sx={{
-            height: (theme) => `calc(100vh - ${theme.myapp.adminHeaderHeight})`,
-            width: "100%",
             position: "relative",
-            marginTop: (theme) => theme.myapp.adminHeaderHeight
+            p: 2
         }}>
             <Typography variant='h4'>Thêm đánh giá</Typography>
             <Grid container mt={3} rowSpacing={4}>

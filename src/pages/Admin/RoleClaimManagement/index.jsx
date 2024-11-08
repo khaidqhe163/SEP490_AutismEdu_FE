@@ -5,9 +5,8 @@ import RoleManagement from './RoleManagement';
 function RoleClaimManagement() {
     return (
         <Box sx={{
-            height: (theme) => `calc(100vh - ${theme.myapp.adminHeaderHeight})`,
-            width: "100%",
-            marginTop: (theme) => theme.myapp.adminHeaderHeight,
+            px: 2,
+            py: 2,
             position: 'relative'
         }}>
             <ClaimManagement />

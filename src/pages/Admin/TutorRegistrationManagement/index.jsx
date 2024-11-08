@@ -11,10 +11,8 @@ function TutorRegistrationManagement() {
     const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
     return (
         <Box sx={{
-            height: (theme) => `calc(100vh - ${theme.myapp.adminHeaderHeight})`,
-            width: "100%",
             position: "relative",
-            marginTop: (theme) => theme.myapp.adminHeaderHeight
+            p: 2
         }}>
             <Box sx={{
                 width: "100%", bgcolor: "white", p: "20px",

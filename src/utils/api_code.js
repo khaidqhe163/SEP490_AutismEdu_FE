@@ -117,6 +117,11 @@ const API_CODE = {
   API_UPDATE_ASSIGN_EXERCISES: '/v1/Schedule/AssignExercises/',
   API_UPDATE_SCHEDULE_CHANGE_STATUS: '/v1/Schedule/changeStatus/',
 
+  //time slot
+  API_GET_STUDENT_TIME_SLOT: '/v1/StudentProfile/GetStudentProfileScheduleTimeSlot/',
+  API_CREATE_SCHEDULE: '/v1/ScheduleTimeSlot/',
+  API_DELETE_SCHEDULE: '/v1/ScheduleTimeSlot/',
+  API_UPDATE_SCHEDULE: '/v1/Schedule/ChangeScheduleDateTime'
 };
 
 export default API_CODE;

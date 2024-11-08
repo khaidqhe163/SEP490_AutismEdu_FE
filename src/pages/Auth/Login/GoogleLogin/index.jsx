@@ -21,8 +21,7 @@ function GoogleLogin() {
                 enqueueSnackbar("Đăng nhập thành công!", { variant: "success" });
                 nav(`${PAGES.ROOT}`)
             }, (error) => {
-                enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
-                console.log(error);
+                enqueueSnackbar(error.error[0], { variant: "error" });
             })
         }
     }, [userId])
@@ -36,9 +35,8 @@ function GoogleLogin() {
                 const decodedToken = jwtDecode(res.result.accessToken);
                 setUserId(decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
             }, (err) => {
-                enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
-                console.log(err);
-            },
+                enqueueSnackbar(err.error, { variant: "error" });
+            }
             )
         },
         onError: () => console.log('Login Failed'),
