@@ -41,7 +41,7 @@ const QrModal = (props) => {
                 }
             });
             const jsonData = await res.json();
-            // console.log(jsonData.data);
+            console.log(jsonData.data);
 
             setData(jsonData);
 

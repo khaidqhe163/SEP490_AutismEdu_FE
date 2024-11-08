@@ -74,11 +74,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                     <IconButton onClick={() => { nav(PAGES.STUDENT_CREATION) }}>
                         <AddOutlinedIcon />
                     </IconButton>
-                    <IconButton>
-                        <Badge badgeContent={4} color="primary">
-                            <NotificationsActiveIcon />
-                        </Badge>
-                    </IconButton>
                     <Button startIcon={<KeyboardDoubleArrowUpIcon />} onClick={() => setOpenModalPayment(true)} variant='contained' size='small' sx={{
                         width: "130px", bgcolor: '#16ab65',
                         '&:hover': {
@@ -87,6 +82,12 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                     }}>
                         Nâng cấp
                     </Button>
+                    <IconButton>
+                        <Badge badgeContent={4} color="primary">
+                            <NotificationsActiveIcon />
+                        </Badge>
+                    </IconButton>
+                    
                     <Avatar alt='Khai Dao' src={tutorInfo?.imageUrl ? tutorInfo.imageUrl : '/'} sx={{
                         bgcolor: deepPurple[500], width: "30px",
                         height: "30px",

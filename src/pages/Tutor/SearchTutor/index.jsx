@@ -200,8 +200,8 @@ function SearchTutor() {
                                 ))
                             ) : (
                                 tutors.map((t, index) => (
-                                    <Box key={index} sx={{ width: '100%', maxWidth: '900px', padding: "20px", borderRadius: "5px", transition: "transform 0.3s ease, box-shadow 0.3s ease", '&:hover': { transform: "scale(1.05) translateY(-10px)", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)" } }}>
-                                        <Card sx={{ display: 'flex', justifyContent: 'center', minHeight: "500px" }}>
+                                    <Box key={index} sx={{ width: 'auto', padding: "20px", borderRadius: "5px", transition: "transform 0.3s ease, box-shadow 0.3s ease", '&:hover': { transform: "scale(1.05) translateY(-10px)", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)" } }}>
+                                        <Card sx={{ display: 'flex', justifyContent: 'center', minHeight: "500px", width:"1200px"}}>
                                             <CardMedia sx={{ width: '40%', height: 'auto', borderRadius: '8px' }} image={t.imageUrl} title="Hanoi" />
                                             <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', padding: "20px" }}>
                                                 <CardContent sx={{ flexGrow: 1 }}>
@@ -217,7 +217,6 @@ function SearchTutor() {
                                                         <LocationOnOutlinedIcon />
                                                         <Typography>{t?.address ? getCity(t.address) : 'Hồ Chí Minh'}</Typography>
                                                     </Box>
-                                                    <Typography mt={2} sx={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis', width: '1000px' }}>{t.aboutMe}</Typography>
                                                     <Box sx={{ display: "flex", gap: "15px" }}>
                                                         <Box sx={{ display: "flex", alignItems: "center", gap: "10px", mt: 2, '&:hover': { color: "blue" } }}>
                                                             <LocalPhoneOutlinedIcon />
