@@ -32,10 +32,8 @@ function AssessmentManagement() {
     }
     return (
         <Box sx={{
-            height: (theme) => `calc(100vh - ${theme.myapp.adminHeaderHeight})`,
-            width: "100%",
+            p: 2,
             position: "relative",
-            marginTop: (theme) => theme.myapp.adminHeaderHeight
         }}>
             <Typography variant='h4'>Bảng danh sách đánh giá</Typography>
             {

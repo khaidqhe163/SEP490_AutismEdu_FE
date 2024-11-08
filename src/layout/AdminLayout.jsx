@@ -1,21 +1,22 @@
-import { Box } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import { Outlet } from 'react-router-dom';
 import AdminHeader from '~/components/AdminHeader';
 import AdminLeftBar from '~/components/AdminLeftBar';
 function AdminLayout() {
     return (
-        <Box sx={{ bgcolor: "#f7f7f9", height: "100vh", display: "flex", gap: "2" }}>
-            <AdminLeftBar />
-            <Box sx={{
-                width: (theme) => `calc(100vw - ${theme.myapp.adminSideBarWidth})`,
-                height: "100vh",
-                px: "20px",
-                overflow: "auto"
-            }}>
-                <AdminHeader />
-                <Outlet />
-            </Box>
-        </Box>
+        <Box>
+            <AdminHeader />
+            <Box marginTop={"65px"} component="main">
+                <Stack direction="row" sx={{ bgcolor: "#f5f5f9" }}>
+                    <Box width={"17%"} >
+                        <AdminLeftBar />
+                    </Box>
+                    <Box width={"83%"}>
+                        <Outlet />
+                    </Box>
+                </Stack>
+            </Box >
+        </Box >
     )
 }
 
