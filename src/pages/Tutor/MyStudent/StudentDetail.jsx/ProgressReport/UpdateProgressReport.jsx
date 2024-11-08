@@ -105,10 +105,9 @@ function UpdateProgressReport({ open, setOpen, report, progressReports, setProgr
                 handleClose();
                 setOpenConfirm(false);
                 setSelectedItem(res.result);
-                console.log(res);
                 enqueueSnackbar("Cập nhật thành công", { variant: "success" })
             }, (err) => {
-                console.log(err);
+                enqueueSnackbar(err.error[0], { variant: "error" })
             })
         } catch (error) {
             setLoading(false);

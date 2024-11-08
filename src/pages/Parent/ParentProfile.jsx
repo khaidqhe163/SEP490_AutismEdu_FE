@@ -1,13 +1,13 @@
-import { Avatar, Box, Button, FormHelperText, Grid, MenuItem, Select, Stack, TextField } from '@mui/material'
+import { Avatar, Box, Button, FormHelperText, Grid, MenuItem, Select, TextField } from '@mui/material';
 import axios from 'axios';
 import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react'
+import { enqueueSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import axiosInstance from "~/plugins/axios";
+import services from '~/plugins/services';
 import { setUserInformation, userInfor } from '~/redux/features/userSlice';
 import ModalUploadAvatar from '../Tutor/TutorRegistration/TutorInformation/ModalUploadAvatar';
-import services from '~/plugins/services';
-import { enqueueSnackbar } from 'notistack';
-import axiosInstance from "~/plugins/axios";
 function ParentProfile() {
     const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
@@ -65,12 +65,10 @@ function ParentProfile() {
             }
             axiosInstance.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
             await services.UserManagementAPI.updateUser(userInformation.id, formData, (res) => {
-                console.log(res);
                 enqueueSnackbar("Cập nhật thành công", { variant: "success" });
                 dispatch(setUserInformation(res.result))
             }, (err) => {
-                console.log(err);
-                enqueueSnackbar("Cập nhật thất bại!", { variant: "error" });
+                enqueueSnackbar(err.error[0], { variant: "error" });
             })
             axiosInstance.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
         }
@@ -189,7 +187,6 @@ function ParentProfile() {
             setChange(true);
         }
     }, [formik])
-    console.log(userInformation);
     return (
         <Box sx={{ bgcolor: "#efefef", width: "100%", py: "20px" }}>
             <Box sx={{

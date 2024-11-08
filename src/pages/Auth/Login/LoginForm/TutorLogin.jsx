@@ -2,24 +2,21 @@ import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { LoadingButton } from '@mui/lab';
-import { Box, Divider, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
+import { Box, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
 import { enqueueSnackbar } from 'notistack';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from 'react-router-dom';
-import service from '~/plugins/services';
+import { default as service, default as services } from '~/plugins/services';
+import { setTutorInformation } from '~/redux/features/tutorSlice';
 import checkValid from '~/utils/auth_form_verify';
 import PAGES from '~/utils/pages';
-import GoogleLogin from '../GoogleLogin';
-import { useDispatch, useSelector } from "react-redux";
-import { setUserInformation } from '~/redux/features/userSlice';
-import { jwtDecode } from 'jwt-decode';
-import services from '~/plugins/services';
-import { setTutorInformation } from '~/redux/features/tutorSlice';
-function TutorLogin({ setVerify, setEmailVerify }) {
+function TutorLogin() {
     const [showPassword, setShowPassword] = useState(false);
     const [emailError, setEmailError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
@@ -49,7 +46,7 @@ function TutorLogin({ setVerify, setEmailVerify }) {
                 enqueueSnackbar("Đăng nhập thành công!", { variant: "success" });
                 nav(`${PAGES.MY_STUDENT}`)
             }, (error) => {
-                enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
+                enqueueSnackbar(error.error[0], { variant: "error" });
                 setLoading(false);
             })
             setLoading(false)
@@ -79,13 +76,7 @@ function TutorLogin({ setVerify, setEmailVerify }) {
                         console.log(decodedToken);
                         setUserId(decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
                     }, (err) => {
-                        if (err.code === 500) {
-                            enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
-                        } else if (err.code === 406) {
-                            enqueueSnackbar("Tài khoản này chưa được kích hoạt!", { variant: "warning" });
-                            setEmailVerify(email);
-                        }
-                        else enqueueSnackbar("Tài khoản hoặc mật khẩu không đúng!", { variant: "error" });
+                        enqueueSnackbar(err.error[0], { variant: "error" });
                     })
                     setLoading(false)
                 }

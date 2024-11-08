@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import ConfirmDialog from '~/components/ConfirmDialog';
 import services from '~/plugins/services';
 import CreateSchedule from './CreateSchedule';
+import { enqueueSnackbar } from 'notistack';
 const days = [
     {
         id: 1,
@@ -69,14 +70,13 @@ function ScheduleSetting({ studentProfile }) {
         try {
             await services.TimeSlotAPI.deleteTimeSlot(selectedTimeSlot.id,
                 (res) => {
-                    console.log(res);
                     const filterTimeSlot = listTimeSlots.filter((l) => {
                         return l.id !== selectedTimeSlot.id;
                     })
                     setListTimeSlots(filterTimeSlot);
                     setOpenConfirm(false);
                 }, (error) => {
-                    console.log(error);
+                    enqueueSnackbar(error.error[0], { variant: "error" })
                 }
             )
         } catch (error) {

@@ -230,7 +230,7 @@ function StudentCreation() {
                     enqueueSnackbar("Tạo hồ sơ học sinh thành công!", { variant: "success" });
                     nav(PAGES.MY_STUDENT)
                 }, (err) => {
-                    enqueueSnackbar("Tạo hồ sơ học sinh thất bại!", { variant: "error" });
+                    enqueueSnackbar(err.error[0], { variant: "error" });
                 })
             axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
             setLoading(false);

@@ -2,6 +2,7 @@ import { Box, Button, Checkbox, Divider, FormControl, FormHelperText, IconButton
 import React, { useEffect, useState } from 'react'
 import services from '~/plugins/services';
 import CloseIcon from '@mui/icons-material/Close';
+import { enqueueSnackbar } from 'notistack';
 const days = [
     {
         id: 1,
@@ -152,7 +153,7 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
                     setListTimeSlots(sortedItem);
                     setListSchedule([]);
                 }, (error) => {
-                    console.log(error);
+                    enqueueSnackbar(error.error[0], { variant: "error" })
                 }
             )
         } catch (error) {

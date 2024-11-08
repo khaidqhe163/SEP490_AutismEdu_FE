@@ -1,12 +1,12 @@
-import { Box, Button, FormHelperText, Grid, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
-import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add';
-import services from '~/plugins/services';
+import { Box, Button, FormHelperText, Grid, MenuItem, Modal, Select, TextField, Typography } from '@mui/material';
+import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
 import ModalUploadAvatar from '~/pages/Tutor/TutorRegistration/TutorInformation/ModalUploadAvatar';
 import axios from '~/plugins/axios';
+import services from '~/plugins/services';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -68,13 +68,11 @@ function ChildCreation({ setChildren }) {
                 formData.append("Media", avatar);
                 axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
                 await services.ChildrenManagementAPI.createChild(formData, (res) => {
-                    console.log(res);
                     setChildren((pre) => [...pre, res.result])
                     enqueueSnackbar("Tạo thành công!", { variant: "success" });
                     handleClose();
                 }, (err) => {
-                    console.log(err);
-                    enqueueSnackbar("Tạo thất bại!", { variant: "error" })
+                    enqueueSnackbar(err.error[0], { variant: "error" })
                 })
                 axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
                 setLoading(false)

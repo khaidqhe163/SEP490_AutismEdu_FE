@@ -1,38 +1,8 @@
-import { Box, Button, Checkbox, Divider, FormControl, FormHelperText, IconButton, ListItemText, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import services from '~/plugins/services';
-import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, FormControl, FormHelperText, Modal, TextField, Typography } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
-const days = [
-    {
-        id: 1,
-        day: "Thứ 2"
-    },
-    {
-        id: 2,
-        day: "Thứ 3"
-    },
-    {
-        id: 3,
-        day: "Thứ 4"
-    },
-    {
-        id: 4,
-        day: "Thứ 5"
-    },
-    {
-        id: 5,
-        day: "Thứ 6"
-    },
-    {
-        id: 6,
-        day: "Thứ 7"
-    },
-    {
-        id: 0,
-        day: "Chủ nhật"
-    }
-];
+import services from '~/plugins/services';
 
 function ChangeSlotModal({ schedule, setIsChange }) {
     const [open, setOpen] = useState(false);
@@ -207,7 +177,7 @@ function ChangeSlotModal({ schedule, setIsChange }) {
                 handleClose();
                 setIsChange(pre => !pre)
             }, (err) => {
-                console.log(err);
+                enqueueSnackbar(err.error[0], { variant: "error" })
             })
         } catch (error) {
             console.log(error);

@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUserInformation } from '~/redux/features/userSlice';
 import { jwtDecode } from 'jwt-decode';
 import services from '~/plugins/services';
-function LoginForm({ setVerify, setEmailVerify , onLoginSuccess}) {
+function LoginForm({ setVerify, setEmailVerify, onLoginSuccess }) {
     const [showPassword, setShowPassword] = useState(false);
     const [emailError, setEmailError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
@@ -43,14 +43,12 @@ function LoginForm({ setVerify, setEmailVerify , onLoginSuccess}) {
 
     useEffect(() => {
         if (userId) {
-            console.log("zoday");
             services.UserManagementAPI.getUserById(userId, (res) => {
                 dispatch(setUserInformation(res.result))
                 enqueueSnackbar("Đăng nhập thành công!", { variant: "success" });
                 onLoginSuccess();
             }, (error) => {
-                enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
-                console.log(error);
+                enqueueSnackbar(error.error[0], { variant: "error" });
             })
             setLoading(false)
         }
