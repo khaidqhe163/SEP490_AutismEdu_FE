@@ -15,10 +15,14 @@ import TocIcon from '@mui/icons-material/Toc';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import { useSelector } from 'react-redux';
+import { adminInfor } from '~/redux/features/adminSlice';
 function AdminLeftBar() {
     const [open, setOpen] = useState(false);
     const [openPayment, setOpenPayment] = useState(false);
     const location = useLocation();
+    const adminInformation = useSelector(adminInfor);
     const handleClick = () => {
         setOpen(!open);
     };
@@ -34,6 +38,9 @@ function AdminLeftBar() {
             setSelectedIndex(2);
         }
         else if (location.pathname.includes("/payment-package-management")) {
+            setSelectedIndex(2);
+        }
+        else if (location.pathname.includes("/assessment_score_range")) {
             setSelectedIndex(2);
         }
     }, [])
@@ -118,6 +125,18 @@ function AdminLeftBar() {
                                         <PlaylistAddIcon />
                                     </ListItemIcon>
                                     <ListItemText primary="Thêm đánh giá" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                        <Link to={PAGES.SCORE_RANGE}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 7}
+                                    onClick={(event) => handleListItemClick(event, 7)}>
+                                    <ListItemIcon>
+                                        <AssignmentIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Đánh giá chung" />
                                 </ListItemButton>
                             </List>
                         </Link>

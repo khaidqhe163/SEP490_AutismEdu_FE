@@ -27,6 +27,7 @@ function AdminHeader() {
         Cookies.remove("access_token");
         Cookies.remove("refresh_token");
         dispatch(setAdminInformation(null));
+        nav(PAGES.LOGIN_ADMIN)
     }
 
     return (

@@ -7,7 +7,7 @@ import services from '~/plugins/services';
 import UserProfileModal from '../UserProfileModal';
 import ActionMenu from './ActionMenu';
 import ConfirmLockDialog from './ConfirmLockDialog';
-function UserTable({ users, setPagination, setUsers, pagination }) {
+function UserTable({ users, setPagination, setUsers, pagination, change }) {
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1)
     const handleChangeUserStatus = async (id, status) => {
@@ -48,17 +48,19 @@ function UserTable({ users, setPagination, setUsers, pagination }) {
     useEffect(() => {
         handleGetData();
     }, [currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [change])
     const handleGetData = async () => {
         try {
             setLoading(true);
-            console.log(currentPage);
             await services.UserManagementAPI.getUsers((res) => {
                 const updatedResult = res.result.map((r) => {
                     let splitedRole = r.role.split(",");
                     r.role = splitedRole;
                     return r;
                 })
-                console.log(res);
                 setUsers(updatedResult);
                 res.pagination.currentSize = updatedResult.length
                 setPagination(res.pagination);
@@ -69,7 +71,6 @@ function UserTable({ users, setPagination, setUsers, pagination }) {
                 pageNumber: currentPage || 1
             });
         } catch (error) {
-            console.log(error);
             setLoading(false);
         }
     }
@@ -78,11 +79,11 @@ function UserTable({ users, setPagination, setUsers, pagination }) {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>No</TableCell>
-                        <TableCell>User</TableCell>
-                        <TableCell>Role</TableCell>
-                        <TableCell>Status</TableCell>
-                        <TableCell>Actions</TableCell>
+                        <TableCell>STT</TableCell>
+                        <TableCell>Người dùng</TableCell>
+                        <TableCell>Vai trò</TableCell>
+                        <TableCell>Trạng thái</TableCell>
+                        <TableCell>Hành động</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

@@ -121,7 +121,13 @@ const API_CODE = {
   API_GET_STUDENT_TIME_SLOT: '/v1/StudentProfile/GetStudentProfileScheduleTimeSlot/',
   API_CREATE_SCHEDULE: '/v1/ScheduleTimeSlot/',
   API_DELETE_SCHEDULE: '/v1/ScheduleTimeSlot/',
-  API_UPDATE_SCHEDULE: '/v1/Schedule/ChangeScheduleDateTime'
+  API_UPDATE_SCHEDULE: '/v1/Schedule/ChangeScheduleDateTime',
+
+  //Score range
+  API_CREATE_SCORE_RANGE: '/v1/AssessmentScoreRange',
+  API_EDIT_SCORE_RANGE: '/v1/AssessmentScoreRange',
+  API_DELETE_SCORE_RANGE: '/v1/AssessmentScoreRange/',
+  API_GET_SCORE_RANGE: '/v1/AssessmentScoreRange',
 };
 
 export default API_CODE;

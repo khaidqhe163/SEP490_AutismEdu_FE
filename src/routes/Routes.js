@@ -37,6 +37,7 @@ import StudentProfileApprove from '~/pages/StudentProfile/StudentProfileApprove'
 import TutorRequestHistory from '~/pages/Parent/TutorRequestHistory/TutorRequestHistory'
 import LoginAdmin from '~/pages/Admin/LoginAdmin'
 import PaymentPackage from '~/pages/Admin/PaymentManagement/PaymentPackage'
+import AssessmentScoreRange from '~/pages/Admin/AssessmentManagement/AssessmentScoreRange'
 
 const UnLayoutRoutes = [
     {
@@ -193,6 +194,10 @@ const adminRoutes = [
     {
         path: PAGES.PAYMENT_PACKAGE_MANAGEMENT,
         element: PaymentPackage
+    },
+    {
+        path: PAGES.SCORE_RANGE,
+        element: AssessmentScoreRange
     },
 
 ]

@@ -64,6 +64,9 @@ function AssessmentCreation() {
             setTitleError(true);
             enqueueSnackbar("Bạn chưa nhập tên đánh giá", { variant: "error" })
             return;
+        } else if (listAss.length < 7) {
+            enqueueSnackbar("Bạn chưa nhập đủ đánh giá", { variant: "error" })
+            return;
         }
         try {
             setLoading(true);
@@ -71,12 +74,12 @@ function AssessmentCreation() {
                 question: assessmentName.current.value.trim(),
                 assessmentOptions: listAss
             }, (res) => {
-                console.log(res);
                 setListAss([]);
                 setSelectedPoint([]);
                 assessmentName.current.value = ""
+                enqueueSnackbar("Tạo đánh giá thành công!", { variant: "success" })
             }, (err) => {
-                console.log(err);
+                enqueueSnackbar(err.error[0], { variant: "error" })
             })
             setTitleError(false);
             setLoading(false);
@@ -163,8 +166,9 @@ function AssessmentCreation() {
                                 <Grid item xs={10}>
                                     <Stack direction='row' alignItems="center">
                                         <Typography sx={{ width: "60%" }}>{l.optionText}</Typography>
-                                        <IconButton onClick={() => { handleDelete(index) }}><DeleteIcon /></IconButton>
-                                        <IconButton><EditIcon /></IconButton>
+                                        <IconButton onClick={() => { handleDelete(index) }}
+                                            sx={{ color: '#ff3e1d' }}
+                                        ><DeleteIcon /></IconButton>
                                     </Stack>
                                 </Grid>
                             </React.Fragment>

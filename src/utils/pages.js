@@ -37,7 +37,8 @@ const PAGES = {
   MY_TUTOR_DETAIL: '/my-tutor/:id',
   TUTOR_REQUEST_HISTORY: '/request-history',
   LOGIN_ADMIN: '/admin/login',
-  PAYMENT_PACKAGE_MANAGEMENT: '/admin/payment-package-management'
+  PAYMENT_PACKAGE_MANAGEMENT: '/admin/payment-package-management',
+  SCORE_RANGE: '/admin/assessment_score_range'
 };
 
 export default PAGES;

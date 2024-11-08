@@ -1,4 +1,4 @@
-import { IconButton, Tooltip } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import { alpha } from '@mui/material/styles';
@@ -10,14 +10,13 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { enqueueSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
 import TablePagging from '~/components/TablePagging';
 import services from '~/plugins/services';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AddClaimDialog from './AddClaimDialog';
-import { enqueueSnackbar } from 'notistack';
 function EnhancedTableHead(props) {
     const { onSelectAllClick, numSelected, rowCount } =
         props;
