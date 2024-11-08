@@ -6,9 +6,7 @@ function TestManagement() {
     return (
         <Box sx={{
             height: (theme) => `calc(100vh - ${theme.myapp.adminHeaderHeight})`,
-            width: "100%",
-            marginTop: (theme) => theme.myapp.adminHeaderHeight,
-            position: 'relative'
+            p:2
         }}>
             <Box sx={{
                 width: "100%", bgcolor: "white", p: "20px",

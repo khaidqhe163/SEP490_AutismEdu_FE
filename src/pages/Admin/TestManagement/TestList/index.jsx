@@ -9,12 +9,12 @@ function TestList() {
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState('');
     const [testList, setTestList] = useState([
-        { id: 1, testName: 'Tập phát âm thuở ban đầu - nhưng âm thanh của trẻ nhỏ', description: 'Mô tả về bài kiểm tra tập phát âm cho trẻ nhỏ.' },
-        { id: 2, testName: 'Tập phát âm thuở ban đầu - lời nói đầu tiên', description: 'Mô tả bài kiểm tra về phát âm những từ đầu tiên của trẻ.' },
-        { id: 3, testName: 'Nghe: Chú ý - nhận biết các âm', description: 'Bài kiểm tra về khả năng nhận biết âm thanh của trẻ.' },
-        { id: 4, testName: 'Nghe: Chú ý - tìm kiếm và dõi theo các âm thanh', description: 'Bài kiểm tra chú ý và tìm kiếm âm thanh.' },
-        { id: 5, testName: 'Nghe: Chú ý - đáp lại sự chú ý bằng cách mỉm cười và phát ra âm thanh', description: 'Kiểm tra khả năng đáp lại sự chú ý qua âm thanh và cử chỉ.' },
-        { id: 6, testName: 'Nghe: Chú ý - làm cho người khác phải chú ý đến mình', description: 'Kiểm tra khả năng thu hút sự chú ý của người khác qua âm thanh và hành động.người khác qua âm thanh và hành động.' }
+        { id: 1, testName: 'Tập phát âm thuở ban đầu - nhưng âm thanh của trẻ nhỏ', testDescription: 'Mô tả về bài kiểm tra tập phát âm cho trẻ nhỏ.' },
+        { id: 2, testName: 'Tập phát âm thuở ban đầu - lời nói đầu tiên', testDescription: 'Mô tả bài kiểm tra về phát âm những từ đầu tiên của trẻ.' },
+        { id: 3, testName: 'Nghe: Chú ý - nhận biết các âm', testDescription: 'Bài kiểm tra về khả năng nhận biết âm thanh của trẻ.' },
+        { id: 4, testName: 'Nghe: Chú ý - tìm kiếm và dõi theo các âm thanh', testDescription: 'Bài kiểm tra chú ý và tìm kiếm âm thanh.' },
+        { id: 5, testName: 'Nghe: Chú ý - đáp lại sự chú ý bằng cách mỉm cười và phát ra âm thanh', testDescription: 'Kiểm tra khả năng đáp lại sự chú ý qua âm thanh và cử chỉ.' },
+        { id: 6, testName: 'Nghe: Chú ý - làm cho người khác phải chú ý đến mình', testDescription: 'Kiểm tra khả năng thu hút sự chú ý của người khác qua âm thanh và hành động.người khác qua âm thanh và hành động.' }
     ]);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [pagination, setPagination] = useState({
@@ -86,8 +86,8 @@ function TestList() {
             </Stack>
 
             <Grid container spacing={3} sx={{ flexWrap: 'wrap' }}>
-                {testList.map(test => (
-                    <Grid item key={test.id} xs={12} sm={6} md={4}>
+                {testList.map((test, index) => (
+                    <Grid item key={index} xs={12} sm={6} md={4}>
                         <Card
                             sx={{
                                 maxWidth: 345,
@@ -132,13 +132,13 @@ function TestList() {
                                         height: '40px',
                                     }}
                                 >
-                                    {test.description}
+                                    {test.testDescription}
                                 </Typography>
                                 {test?.description?.length > 100 ? (
                                     <Button variant="text" size="small" color="primary" onClick={() => handleOpenModal(test.description)}>
                                         Xem thêm nội dung
                                     </Button>
-                                ):<Button></Button>}
+                                ) : <Button></Button>}
                             </CardContent>
                         </Card>
                     </Grid>

@@ -11,7 +11,7 @@ function AdminLayout() {
                     <Box width={"17%"} >
                         <AdminLeftBar />
                     </Box>
-                    <Box width={"83%"}>
+                    <Box width={"83%"} padding={5}>
                         <Outlet />
                     </Box>
                 </Stack>

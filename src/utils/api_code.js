@@ -121,7 +121,13 @@ const API_CODE = {
   API_GET_STUDENT_TIME_SLOT: '/v1/StudentProfile/GetStudentProfileScheduleTimeSlot/',
   API_CREATE_SCHEDULE: '/v1/ScheduleTimeSlot/',
   API_DELETE_SCHEDULE: '/v1/ScheduleTimeSlot/',
-  API_UPDATE_SCHEDULE: '/v1/Schedule/ChangeScheduleDateTime'
+  API_UPDATE_SCHEDULE: '/v1/Schedule/ChangeScheduleDateTime',
+
+  //Test
+  API_CREATE_TEST: '/v1/Test',
+  API_GET_LIST_TEST: '/v1/Test',
+
+  
 };
 
 export default API_CODE;
