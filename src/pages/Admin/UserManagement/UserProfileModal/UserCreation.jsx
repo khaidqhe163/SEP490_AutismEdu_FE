@@ -23,24 +23,13 @@ const style = {
     p: 4,
     borderRadius: "10px"
 };
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        }
-    }
-};
-function UserCreation({ setUsers }) {
+function UserCreation({ setChange }) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [showPassword, setShowPassword] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [roles, setRoles] = useState([]);
-    const [selectedRoles, setSelectedRoles] = useState([]);
     const validate = values => {
         const errors = {};
         if (!values.fullName) {
@@ -53,26 +42,44 @@ function UserCreation({ setUsers }) {
         } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(values.email)) {
             errors.email = 'Unvalid email';
         }
+        if (!values.password) {
+            errors.password = 'Bắt buộc';
+        }
+        else if (values.password.length < 8 || values.password.length > 15) {
+            errors.password = "Độ dài của mật khẩu từ 8 - 15 kí tự!"
+        }
+        else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$?_-]).+$/.test(values.password)) {
+            errors.password = 'Mật khẩu không hợp lệ'
+        }
+        if (!values.cfPassword) {
+            errors.cfPassword = 'Bắt buộc';
+        } else if (values.password !== values.cfPassword) {
+            errors.cfPassword = 'Không giống mật khẩu';
+        }
+        if (!values.role) {
+            errors.role = "Bắt buộc";
+        }
         return errors;
     };
 
     useEffect(() => {
         if (open) {
             getRoles();
-        } else {
-            formik.values.fullName = "";
-            formik.values.email = '';
-            formik.values.phoneNumber = '';
-            formik.values.password = '';
-            formik.values.cfPassword = ''
-            setSelectedRoles([])
+        }
+        if (!open) {
+            formik.resetForm();
         }
     }, [open]);
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
     const getRoles = async () => {
         try {
+            setLoading(true);
             await services.RoleManagementAPI.getRoles((res) => {
                 const returnRole = res.result.filter((r) => {
-                    return r.name !== "User"
+                    return r.name === "Manager" || r.name === 'Staff'
                 })
                 setRoles(returnRole);
             },
@@ -85,18 +92,6 @@ function UserCreation({ setUsers }) {
             setLoading(false);
         }
     }
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
-
-    const handleChange = (event) => {
-        const {
-            target: { value },
-        } = event;
-        setSelectedRoles(
-            typeof value === 'string' ? value.split(',') : value
-        );
-    };
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const formik = useFormik({
         initialValues: {
@@ -104,16 +99,13 @@ function UserCreation({ setUsers }) {
             email: '',
             phoneNumber: '',
             password: '',
-            cfPassword: ''
+            cfPassword: '',
+            role: ''
         },
         validate,
         onSubmit: async (values) => {
             try {
                 setLoading(true);
-                const submitRoles = selectedRoles.map((role) => {
-                    const selectedRole = roles.find((r) => r.name === role);
-                    return selectedRole.id;
-                })
                 setOpen(false);
                 await services.UserManagementAPI.createUser(
                     {
@@ -122,33 +114,24 @@ function UserCreation({ setUsers }) {
                         PhoneNumber: values.phoneNumber,
                         Password: values.password,
                         ConfirmPassword: values.cfPassword,
-                        RoleIds: submitRoles,
+                        RoleId: values.role,
                         IsLockedOut: false
                     }
                     , (res) => {
-                        console.log(res);
-                        let splitedRole = res.result.role.split(",");
-                        res.result.role = splitedRole;
-                        setUsers(preState => [res.result, ...preState]);
-                        enqueueSnackbar("Create account successfully!", { variant: "success" });
+                        setChange(pre => !pre)
+                        enqueueSnackbar("Tạo tài khoản thành công!", { variant: "success" });
                     }, (error) => {
-                        console.log(error);
-                        if (error.code === 400)
-                            enqueueSnackbar("Email has already exist!", { variant: "error" });
-                        else
-                            enqueueSnackbar("Failed to create account!", { variant: "error" });
+                        enqueueSnackbar(error.error[0], { variant: "error" });
                     })
                 setLoading(false);
             } catch (error) {
-                console.log(error);
-                setLoading(false);
+                enqueueSnackbar("Tạo tài khoản thất bại!", { variant: "error" });
             }
-        },
+        }
     });
-    console.log(open);
     return (
         <div>
-            <Button variant="contained" onClick={handleOpen}>Add new user</Button>
+            <Button variant="contained" onClick={handleOpen}>Tạo tài khoản mới</Button>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -157,13 +140,13 @@ function UserCreation({ setUsers }) {
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" sx={{ color: "black", fontWeight: "bold" }}>
-                        Create New Account
+                        Tạo tài khoản mới
                     </Typography>
                     <Divider />
                     <form onSubmit={formik.handleSubmit}>
                         <Box sx={{ display: "flex", gap: "10px", mt: "20px" }}>
                             <FormControl sx={{ width: '50%' }} variant="outlined">
-                                <label style={{ fontWeight: "bold", color: "black", fontSize: "14px" }} htmlFor="fullName">Full name</label>
+                                <label style={{ fontWeight: "bold", color: "black", fontSize: "14px" }} htmlFor="fullName">Họ và tên</label>
                                 <OutlinedInput
                                     error={formik.errors.fullName}
                                     name='fullName'
@@ -200,7 +183,7 @@ function UserCreation({ setUsers }) {
                             </FormControl>
                         </Box>
                         <FormControl sx={{ width: '100%', marginTop: "10px" }} variant="outlined">
-                            <label style={{ fontWeight: "bold", color: "black", fontSize: "14px" }} htmlFor="phone">Phone Number</label>
+                            <label style={{ fontWeight: "bold", color: "black", fontSize: "14px" }} htmlFor="phone">Số điện thoại</label>
                             <OutlinedInput
                                 error={formik.errors.phoneNumber}
                                 name='phoneNumber'
@@ -218,7 +201,7 @@ function UserCreation({ setUsers }) {
                             }
                         </FormControl>
                         <FormControl sx={{ width: '100%', marginTop: "10px" }} variant="outlined">
-                            <label style={{ fontWeight: "bold", color: "black", fontSize: "14px" }} htmlFor="password">Password</label>
+                            <label style={{ fontWeight: "bold", color: "black", fontSize: "14px" }} htmlFor="password">Mật khẩu</label>
                             <OutlinedInput
                                 error={formik.errors.password}
                                 name='password'
@@ -249,7 +232,7 @@ function UserCreation({ setUsers }) {
                             }
                         </FormControl>
                         <FormControl sx={{ width: '100%', marginTop: "10px" }} variant="outlined">
-                            <label style={{ fontWeight: "bold", color: "black", fontSize: "14px" }} htmlFor="cfPassword">Confirm Password</label>
+                            <label style={{ fontWeight: "bold", color: "black", fontSize: "14px" }} htmlFor="cfPassword">Nhập lại mật khẩu</label>
                             <OutlinedInput
                                 error={formik.errors.password}
                                 name='cfPassword'
@@ -281,29 +264,22 @@ function UserCreation({ setUsers }) {
                         </FormControl>
                         <Box sx={{ display: "flex", gap: "10px", mt: "20px" }}>
                             <FormControl sx={{ width: "50%" }} size='small'>
-                                <label style={{ fontWeight: "bold", color: "black", fontSize: "14px" }} htmlFor="role">Roles</label>
+                                <label style={{ fontWeight: "bold", color: "black", fontSize: "14px" }} htmlFor="role">Vai trò</label>
                                 <Select
                                     labelId="roles"
-                                    id="multiple-roles"
-                                    multiple
-                                    value={selectedRoles}
-                                    onChange={handleChange}
-                                    input={<OutlinedInput label="" />}
-                                    renderValue={(selected) => selected.join(', ')}
-                                    MenuProps={MenuProps}
+                                    value={formik.values.role}
+                                    name='role'
+                                    onChange={formik.handleChange}
                                 >
                                     {roles?.map((role) => (
-                                        <MenuItem key={role.id} value={role.name}>
-                                            <Checkbox checked={selectedRoles.indexOf(role.name) > -1} />
-                                            <ListItemText primary={role.name} />
-                                        </MenuItem>
+                                        <MenuItem key={role.id} value={role.id}>{role.name}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
                         </Box>
                         <Box sx={{ display: "flex", gap: "10px", mt: "20px" }}>
-                            <Button variant='outlined' color='inherit' sx={{ width: "50%" }} onClick={() => setOpen(false)}>Close</Button>
-                            <Button type="submit" variant='contained' sx={{ width: "50%" }}>Create</Button>
+                            <Button variant='outlined' color='inherit' sx={{ width: "50%" }} onClick={() => setOpen(false)}>Huỷ bỏ</Button>
+                            <Button type="submit" variant='contained' sx={{ width: "50%" }}>Tạo</Button>
                         </Box>
                     </form>
                     <LoadingComponent open={loading} setLoading={setLoading} />

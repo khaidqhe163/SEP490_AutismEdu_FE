@@ -9,6 +9,7 @@ function UserContent() {
     const [pagination, setPagination] = useState(null);
     const [loading, setLoading] = useState(true);
     const [searchValue, setSearchValue] = useState("");
+    const [change, setChange] = useState(false);
     useEffect(() => {
         services.UserManagementAPI.getUsers((res) => {
             const updatedResult = res.result.map((r) => {
@@ -16,7 +17,6 @@ function UserContent() {
                 r.role = splitedRole;
                 return r;
             })
-            console.log(res);
             setUsers(updatedResult);
             res.pagination.currentSize = updatedResult.length
             setPagination(res.pagination);
@@ -28,6 +28,9 @@ function UserContent() {
         })
     }, []);
 
+    useEffect(() => {
+        setSearchValue("");
+    }, [change])
     useEffect(() => {
         if (searchValue.trim() !== "") {
             const handler = setTimeout(() => {
@@ -70,23 +73,25 @@ function UserContent() {
                 borderRadius: "10px",
                 boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px"
             }}>
-                <Typography variant='h6'>Search</Typography>
+                <Typography variant='h4'>Quản lý nhân viên</Typography>
                 <Box sx={{
                     width: "100%",
                     display: "flex",
-                    justifyContent: "end",
-                    gap: 2
+                    justifyContent: "space-between",
+                    gap: 2,
+                    mt: 4
                 }}>
-                    <TextField id="outlined-basic" label="Search user" variant="outlined"
+                    <TextField id="outlined-basic" label="Tìm tài khoản" variant="outlined"
                         onChange={handleSearch}
                         sx={{
                             padding: "0",
                             width: "300px"
                         }} size='small' />
-                    <UserCreation setUsers={setUsers} />
+                    <UserCreation setChange={setChange} />
                 </Box>
                 <Box>
-                    <UserTable users={users} pagination={pagination} setPagination={setPagination} setUsers={setUsers} />
+                    <UserTable users={users} pagination={pagination} setPagination={setPagination} setUsers={setUsers}
+                        change={change} />
                 </Box>
             </Box>
             <LoadingComponent open={loading} setLoading={setLoading} />
