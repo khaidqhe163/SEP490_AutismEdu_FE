@@ -44,7 +44,7 @@ function AdminLeftBar() {
 
     return (
         <>
-            <Box sx={{ bgcolor: "white", height: "100vh", px: "15px", pt: "20px" }}>
+            <Box sx={{ bgcolor: "white", height: "100%", px: "15px", pt: "20px" }}>
                 <List
                     sx={{ width: '100%' }}
                     component="nav"

@@ -6,12 +6,12 @@ function AdminLayout() {
     return (
         <Box>
             <AdminHeader />
-            <Box marginTop={"65px"} component="main">
-                <Stack direction="row" sx={{ bgcolor: "#f5f5f9" }}>
-                    <Box width={"17%"} >
+            <Box marginTop={"65px"} sx={{ height: "calc(100vh - 65px)" }} component="main">
+                <Stack direction="row" sx={{ bgcolor: "#f5f5f9", height: "100%" }}>
+                    <Box width={"17%"} sx={{ height: "100%", overflow: "auto" }}>
                         <AdminLeftBar />
                     </Box>
-                    <Box width={"83%"} padding={5}>
+                    <Box width={"83%"} padding={5} sx={{ height: "100%", overflow: "auto" }}>
                         <Outlet />
                     </Box>
                 </Stack>

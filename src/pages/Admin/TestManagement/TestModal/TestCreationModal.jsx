@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 
-function TestCreationModal({ dialogOpen, handleCloseDialog, setTestList }) {
+function TestCreationModal({ dialogOpen, handleCloseDialog, setTestList, pagination, setPagination, setFilters }) {
     const [testName, setTestName] = useState('');
     const [testContent, setTestContent] = useState('');
     const [loading, setLoading] = useState(false);
@@ -12,12 +12,12 @@ function TestCreationModal({ dialogOpen, handleCloseDialog, setTestList }) {
         e.preventDefault();
         try {
             setLoading(true);
-            const newData = { testName: testName.trim(), testDescription: testContent };
+            const newData = { testName: testName.trim(), testDescription: testContent.trim() };
             await services.TestManagementAPI.createTest(newData, (res) => {
                 if (res?.result) {
-                    console.log(res.result);
-                    setTestList((prev) => [res.result, ...prev]);
                     enqueueSnackbar("Tạo bài kiểm tra thành công!", { variant: 'success' });
+                    setPagination((prev) => ({ ...prev, pageNumber: 1 }));
+                    setFilters((prev) => ({ ...prev, search: '', sort: 'desc' }));
                 }
             }, (error) => {
                 console.log(error);

@@ -127,7 +127,11 @@ const API_CODE = {
   API_CREATE_TEST: '/v1/Test',
   API_GET_LIST_TEST: '/v1/Test',
 
-  
+  //Test question
+  API_CREATE_TEST_QUESTION: '/v1/TestQuestion',
+  API_GET_LIST_TEST_QUESTION_BY_TEST_ID: '/v1/TestQuestion/',
+
+
 };
 
 export default API_CODE;

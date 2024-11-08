@@ -20,6 +20,8 @@ import { ReviewManagementAPI } from "~/services/ReviewManagementAPI";
 import { ScheduleAPI } from "~/services/ScheduleAPI";
 import { TimeSlotAPI } from "~/services/TimeSlotAPI";
 import {TestManagementAPI} from "~/services/TestManagementAPI";
+import {TestQuestionManagementAPI} from "~/services/TestQuestionManagementAPI";
+
 // Initialize the BaseService with the axios instance and API prefix
 (function () {
   initializeService(axios, "/api");
@@ -46,6 +48,7 @@ const services = {
   ScheduleAPI,
   TimeSlotAPI,
   TestManagementAPI,
+  TestQuestionManagementAPI,
 };
 
 export default services;
