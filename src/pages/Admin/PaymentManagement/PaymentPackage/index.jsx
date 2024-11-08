@@ -1,11 +1,11 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Paper, Typography } from '@mui/material'
 import React from 'react'
 
 function PaymentPackage() {
     return (
-        <Box>
+        <Paper variant='elevation' sx={{ p: 3 }}>
             <Typography variant='h4'>Quản lý gói thanh toán</Typography>
-        </Box>
+        </Paper>
     )
 }
 

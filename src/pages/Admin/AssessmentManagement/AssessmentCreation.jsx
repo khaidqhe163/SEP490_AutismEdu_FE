@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormHelperText, Grid, IconButton, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material'
+import { Box, Button, FormControl, FormHelperText, Grid, IconButton, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from '@mui/material'
 import React, { useRef, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -85,9 +85,8 @@ function AssessmentCreation() {
         }
     }
     return (
-        <Box sx={{
-            position: "relative",
-            p: 2
+        <Paper variant="elevation" sx={{
+            p: 3
         }}>
             <Typography variant='h4'>Thêm đánh giá</Typography>
             <Grid container mt={3} rowSpacing={4}>
@@ -175,7 +174,7 @@ function AssessmentCreation() {
                 <Button variant='contained' sx={{ mt: 5, mb: 3 }} onClick={handleSubmit}>Tạo đánh giá</Button>
             </Grid>
             <LoadingComponent open={loading} />
-        </Box>
+        </Paper>
     )
 }
 

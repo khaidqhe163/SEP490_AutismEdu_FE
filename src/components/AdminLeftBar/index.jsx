@@ -43,7 +43,7 @@ function AdminLeftBar() {
 
     return (
         <>
-            <Box sx={{ bgcolor: "white", height: "100vh", px: "15px", pt: "20px" }}>
+            <Box sx={{ bgcolor: "white", height: "100%", px: "15px", pt: "20px" }}>
                 <List
                     sx={{ width: '100%' }}
                     component="nav"
@@ -106,6 +106,72 @@ function AdminLeftBar() {
                                         <TocIcon />
                                     </ListItemIcon>
                                     <ListItemText primary="Danh sách" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                        <Link to={PAGES.ASSESSMENT_CREATION}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 5}
+                                    onClick={(event) => handleListItemClick(event, 5)}>
+                                    <ListItemIcon>
+                                        <PlaylistAddIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Thêm đánh giá" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                    </Collapse>
+                    <ListItemButton onClick={() => setOpenPayment(!openPayment)}>
+                        <ListItemIcon>
+                            <AttachMoneyIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Thanh Toán" />
+                        {openPayment ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openPayment} timeout="auto" unmountOnExit>
+                        <Link to={PAGES.PAYMENT_PACKAGE_MANAGEMENT}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 6}
+                                    onClick={(event) => handleListItemClick(event, 6)}>
+                                    <ListItemIcon>
+                                        <PointOfSaleIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Gói Thanh Toán" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                        <Link to={PAGES.ASSESSMENT_CREATION}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 5}
+                                    onClick={(event) => handleListItemClick(event, 5)}>
+                                    <ListItemIcon>
+                                        <PlaylistAddIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Thêm đánh giá" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                    </Collapse>
+                    <ListItemButton onClick={() => setOpenPayment(!openPayment)}>
+                        <ListItemIcon>
+                            <AttachMoneyIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Thanh Toán" />
+                        {openPayment ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openPayment} timeout="auto" unmountOnExit>
+                        <Link to={PAGES.PAYMENT_PACKAGE_MANAGEMENT}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 6}
+                                    onClick={(event) => handleListItemClick(event, 6)}>
+                                    <ListItemIcon>
+                                        <PointOfSaleIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Gói Thanh Toán" />
                                 </ListItemButton>
                             </List>
                         </Link>
