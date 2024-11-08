@@ -36,9 +36,11 @@ import MyTutorDetail from '~/pages/Tutor/MyTutor/MyTutorDetail'
 import StudentProfileApprove from '~/pages/StudentProfile/StudentProfileApprove'
 import TutorRequestHistory from '~/pages/Parent/TutorRequestHistory/TutorRequestHistory'
 import LoginAdmin from '~/pages/Admin/LoginAdmin'
+import TestManage from '~/pages/Parent/TestManage'
 import TestManagement from '~/pages/Admin/TestManagement'
 import PaymentPackage from '~/pages/Admin/PaymentManagement/PaymentPackage'
 import AssessmentScoreRange from '~/pages/Admin/AssessmentManagement/AssessmentScoreRange'
+import DoTest from '~/pages/Parent/TestManage/DoTest'
 
 const UnLayoutRoutes = [
     {
@@ -135,6 +137,14 @@ const publicRoutes = [
     {
         path: PAGES.ROOT + PAGES.TUTOR_REQUEST_HISTORY,
         element: TutorRequestHistory
+    },
+    {
+        path: PAGES.ROOT + PAGES.TEST,
+        element: TestManage
+    },
+    {
+        path: PAGES.ROOT + PAGES.DO_TEST,
+        element: DoTest
     }
 ]
 

@@ -39,7 +39,9 @@ const PAGES = {
   LOGIN_ADMIN: '/admin/login',
   TEST_MANAGEMENT: '/admin/test-management',
   PAYMENT_PACKAGE_MANAGEMENT: '/admin/payment-package-management',
-  SCORE_RANGE: '/admin/assessment_score_range'
+  SCORE_RANGE: '/admin/assessment_score_range',
+  TEST: '/test',
+  DO_TEST: '/do-test'
 };
 
 export default PAGES;

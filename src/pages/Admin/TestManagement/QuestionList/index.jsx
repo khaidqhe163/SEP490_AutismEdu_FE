@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     Box,
     Button,
@@ -18,13 +18,12 @@ import LoadingComponent from '~/components/LoadingComponent';
 import { enqueueSnackbar } from 'notistack';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-function QuestionList({ selectedTest, setSelectedTest}) {
+function QuestionList({ selectedTest, setSelectedTest }) {
     const [loading, setLoading] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedQuestion, setSelectedQuestion] = useState(null);
     const [openQuizCreation, setQuizCreation] = useState(false);
     const [questions, setQuestions] = useState([]);
-
     const testTitle = "Sample Test Title";
     const testDescription = "This is a brief description of the test.";
 
@@ -53,6 +52,7 @@ function QuestionList({ selectedTest, setSelectedTest}) {
 
 
     useEffect(() => {
+       
         handleGetQuestions();
     }, [selectedTest]);
 
@@ -91,7 +91,7 @@ function QuestionList({ selectedTest, setSelectedTest}) {
 
     return (
         <Stack direction="column" sx={{ width: "90%", margin: "auto", gap: 2 }}>
-            <Button onClick={()=>setSelectedTest(null)} variant='outlined' sx={{ width:"15%"}} startIcon={<ArrowBackIcon/>}>Quay lại</Button>
+            <Button onClick={() => setSelectedTest(null)} variant='outlined' sx={{ width: "15%" }} startIcon={<ArrowBackIcon />}>Quay lại</Button>
             <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Bài kiểm tra: {selectedTest?.testName}</Typography>
             <Typography variant="body1" sx={{ mb: 2 }}>Nội dung: {selectedTest?.testDescription}</Typography>
 
@@ -99,7 +99,7 @@ function QuestionList({ selectedTest, setSelectedTest}) {
                 Tạo câu hỏi
             </Button>
 
-            {questions.map((question,index) => (
+            {questions.map((question, index) => (
                 <Box
                     key={index}
                     sx={{
@@ -110,13 +110,13 @@ function QuestionList({ selectedTest, setSelectedTest}) {
                         position: 'relative'
                     }}
                 >
-                    <Typography variant="h6" sx={{ mb: 1 }}>{index+1}. {question.question}</Typography>
+                    <Typography variant="h6" sx={{ mb: 1 }}>{index + 1}. {question.question}</Typography>
 
                     <Stack direction="column" spacing={1}>
                         <Typography variant='subtitle1'>Câu trả lời:</Typography>
                         {question.assessmentOptions.map((option, index) => (
                             <Typography key={index} variant="subtitle2" sx={{ pl: 2 }}>
-                                {index+1}, {option.optionText} - {`(${option.point} Điểm)`}
+                                {index + 1}, {option.optionText} - {`(${option.point} Điểm)`}
                             </Typography>
                         ))}
                     </Stack>
@@ -142,7 +142,7 @@ function QuestionList({ selectedTest, setSelectedTest}) {
                 </Box>
             ))}
             <LoadingComponent open={loading} setOpen={setLoading} />
-            {openQuizCreation && <TestQuestionCreationModal open={openQuizCreation} handleClose={handleCloseQuizCreation} testId={selectedTest?.id} setQuestions={setQuestions}/>}
+            {openQuizCreation && <TestQuestionCreationModal open={openQuizCreation} handleClose={handleCloseQuizCreation} testId={selectedTest?.id} setQuestions={setQuestions} />}
         </Stack>
     );
 }

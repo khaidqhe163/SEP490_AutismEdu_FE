@@ -43,6 +43,8 @@ function AdminLeftBar() {
         }
         else if (location.pathname.includes("/assessment_score_range")) {
             setSelectedIndex(2);
+        }else if (location.pathname.includes("/test-management")) {
+            setSelectedIndex(8);
         }
     }, [])
     const handleListItemClick = (event, index) => {
@@ -97,6 +99,16 @@ function AdminLeftBar() {
                             <ListItemText primary="Đơn Đăng Ký" />
                         </ListItemButton>
                     </Link>
+                    <Link to="/admin/test-management">
+                        <ListItemButton
+                            selected={selectedIndex === 8}
+                            onClick={(event) => handleListItemClick(event, 8)}>
+                            <ListItemIcon>
+                                <QuizIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Bài kiểm tra" />
+                        </ListItemButton>
+                    </Link>
                     <ListItemButton onClick={handleClick}>
                         <ListItemIcon>
                             <AssessmentIcon />
@@ -104,6 +116,7 @@ function AdminLeftBar() {
                         <ListItemText primary="Đánh giá" />
                         {open ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
+                   
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Link to={PAGES.ASSESSMENT_MANAGEMENT}>
                             <List component="div" disablePadding>
@@ -143,16 +156,7 @@ function AdminLeftBar() {
                             </List>
                         </Link>
                     </Collapse>
-                    <Link to="/admin/test-management">
-                        <ListItemButton
-                            selected={selectedIndex === 6}
-                            onClick={(event) => handleListItemClick(event, 6)}>
-                            <ListItemIcon>
-                                <QuizIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Bài kiểm tra" />
-                        </ListItemButton>
-                    </Link>
+                    
                     <ListItemButton onClick={() => setOpenPayment(!openPayment)}>
                         <ListItemIcon>
                             <AttachMoneyIcon />
@@ -160,7 +164,8 @@ function AdminLeftBar() {
                         <ListItemText primary="Thanh Toán" />
                         {openPayment ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
-                    <Collapse in={openPayment} timeout="auto" unmountOnExit>
+                    <Collapse 
+                    in={openPayment} timeout="auto" unmountOnExit>
                         <Link to={PAGES.PAYMENT_PACKAGE_MANAGEMENT}>
                             <List component="div" disablePadding>
                                 <ListItemButton sx={{ pl: 4 }}

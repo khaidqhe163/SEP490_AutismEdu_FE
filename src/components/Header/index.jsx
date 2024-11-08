@@ -39,6 +39,9 @@ function Header() {
         else if (location.pathname.includes("/my-childlren")) {
             setTab("3");
         }
+        else if (location.pathname.includes("/test")) {
+            setTab("5");
+        }
     }, [location])
     const handleOpenAccountMenu = (event) => {
         setAccountMenu(event.currentTarget);
@@ -96,6 +99,8 @@ function Header() {
                 <Tab sx={{ fontSize: "18px" }} value={"2"} label="Gia sư" icon={<ExpandMoreIcon />} iconPosition="end" onClick={handleClickListItem} />
                 <Tab sx={{ fontSize: "18px" }} value={"3"} label="Thông tin trẻ" onClick={() => { nav(PAGES.ROOT + PAGES.MY_CHILDREN) }} />
                 <Tab sx={{ fontSize: "18px" }} value={"4"} label="Blog" />
+                <Tab sx={{ fontSize: "18px" }} value={"5"} label="Kiểm tra" onClick={() => { nav(PAGES.ROOT + PAGES.TEST) }} />
+
             </Tabs>
             <Menu
                 id="lock-menu"

@@ -9,8 +9,6 @@ const getListTest = async (success, error, params) => {
     await get(API_CODE.API_GET_LIST_TEST, success, error, params);
 };
 
-
-
 export const TestManagementAPI = {
     createTest,
     getListTest,

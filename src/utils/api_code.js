@@ -131,6 +131,8 @@ const API_CODE = {
   API_CREATE_TEST_QUESTION: '/v1/TestQuestion',
   API_GET_LIST_TEST_QUESTION_BY_TEST_ID: '/v1/TestQuestion/',
 
+  //Test result
+  API_CREATE_TEST_RESULT: '/v1/TestResult/SubmitTest',
 
   //Score range
   API_CREATE_SCORE_RANGE: '/v1/AssessmentScoreRange',
