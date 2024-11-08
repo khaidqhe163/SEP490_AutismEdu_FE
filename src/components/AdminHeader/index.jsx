@@ -11,17 +11,12 @@ import { useNavigate } from 'react-router-dom';
 import { setTutorInformation, tutorInfor } from '~/redux/features/tutorSlice';
 import PAGES from '~/utils/pages';
 import Logo from '../Logo';
+import { setAdminInformation } from '~/redux/features/adminSlice';
 function AdminHeader() {
     const nav = useNavigate();
-    const tutorInfo = useSelector(tutorInfor);
     const [accountMenu, setAccountMenu] = useState();
     const dispatch = useDispatch();
     const openAccountMenu = Boolean(accountMenu);
-    useEffect(() => {
-        if (tutorInfo === undefined) {
-            nav(PAGES.TUTOR_LOGIN)
-        }
-    }, [tutorInfo])
     const handleOpenAccountMenu = (event) => {
         setAccountMenu(event.currentTarget);
     };
@@ -31,8 +26,7 @@ function AdminHeader() {
     const handleLogout = () => {
         Cookies.remove("access_token");
         Cookies.remove("refresh_token");
-        dispatch(setTutorInformation(null));
-        nav(PAGES.TUTOR_LOGIN)
+        dispatch(setAdminInformation(null));
     }
 
     return (
@@ -61,7 +55,7 @@ function AdminHeader() {
                             <NotificationsActiveIcon />
                         </Badge>
                     </IconButton>
-                    <Avatar alt='Khai Dao' src={tutorInfo?.imageUrl ? tutorInfo.imageUrl : '/'} sx={{
+                    <Avatar alt='Khai Dao' src={'/'} sx={{
                         bgcolor: deepPurple[500], width: "30px",
                         height: "30px",
                         cursor: "pointer"
