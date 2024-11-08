@@ -128,6 +128,12 @@ const API_CODE = {
   API_EDIT_SCORE_RANGE: '/v1/AssessmentScoreRange',
   API_DELETE_SCORE_RANGE: '/v1/AssessmentScoreRange/',
   API_GET_SCORE_RANGE: '/v1/AssessmentScoreRange',
+
+  //payment package
+  API_GET_PAYMENT_PACKAGE: '/PackagePayment',
+  API_POST_PAYMENT_PACKAGE: '/PackagePayment',
+  API_PUT_PAYMENT_PACKAGE: '/PackagePayment/changeStatus/',
+  API_DELETE_PAYMENT_PACKAGE: '/PackagePayment/'
 };
 
 export default API_CODE;

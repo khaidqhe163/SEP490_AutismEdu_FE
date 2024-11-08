@@ -20,6 +20,7 @@ import { ReviewManagementAPI } from "~/services/ReviewManagementAPI";
 import { ScheduleAPI } from "~/services/ScheduleAPI";
 import { TimeSlotAPI } from "~/services/TimeSlotAPI";
 import { ScoreRangeAPI } from "~/services/ScoreRangeAPI";
+import { PackagePaymentAPI } from "~/services/PaymentPackageAPI";
 // Initialize the BaseService with the axios instance and API prefix
 (function () {
   initializeService(axios, "/api");
@@ -45,7 +46,8 @@ const services = {
   ReviewManagementAPI,
   ScheduleAPI,
   TimeSlotAPI,
-  ScoreRangeAPI
+  ScoreRangeAPI,
+  PackagePaymentAPI
 };
 
 export default services;
