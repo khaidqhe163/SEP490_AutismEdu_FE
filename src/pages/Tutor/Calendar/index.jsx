@@ -36,7 +36,17 @@ function Calendar() {
         try {
             setLoading(true);
             await services.ScheduleAPI.getSchedule((res) => {
-                organizeSchedulesByDay(res.result)
+                if (listYears.length !== 0) {
+                    const startYear = new Date(tutorInformation.createdDate).getFullYear();
+                    const maxYear = new Date(res.result.maxDate).getFullYear();
+                    const years = [];
+                    for (let year = startYear; year <= maxYear; year++) {
+                        years.push(year);
+                    }
+                    years.reverse();
+                    setListYears(years);
+                }
+                organizeSchedulesByDay(res.result.schedules)
             }, (err) => {
                 console.log(err);
             }, {

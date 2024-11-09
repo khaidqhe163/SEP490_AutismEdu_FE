@@ -2,26 +2,75 @@ import { Logout } from '@mui/icons-material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import { Avatar, Badge, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack } from '@mui/material';
+import { Avatar, Badge, Box, Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Paper, Stack, Typography } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
 import Cookies from "js-cookie";
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { setTutorInformation, tutorInfor } from '~/redux/features/tutorSlice';
 import PAGES from '~/utils/pages';
 import Logo from '../Logo';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { SignalRContext } from '~/Context/SignalRContext';
+import services from '~/plugins/services';
 function TutorHeader({ openMenu, setOpenMenu }) {
+    dayjs.extend(relativeTime);
     const nav = useNavigate();
     const tutorInfo = useSelector(tutorInfor);
     const [accountMenu, setAccountMenu] = useState();
     const dispatch = useDispatch();
     const openAccountMenu = Boolean(accountMenu);
+    const [openNotification, setOpenNotification] = useState(false);
+    const { connection } = useContext(SignalRContext);
+    const [notifications, setNotifications] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const notificationRef = useRef(null);
+    const notificationIconRef = useRef(null);
+    const [unreadNoti, setUnreadNoti] = useState(0);
     useEffect(() => {
+        console.log(tutorInfo);
         if (tutorInfo === undefined) {
             nav(PAGES.TUTOR_LOGIN)
         }
+        if (tutorInfo) {
+            handleGetNotification();
+        }
     }, [tutorInfo])
+
+    useEffect(() => {
+        if (connection && tutorInfo) {
+            connection
+                .start()
+                .then(() => {
+                    console.log('Kết nối SignalR thành công!');
+
+                    connection.on(`Notifications-${tutorInfo.id}`, (notification) => {
+                        console.log(notification);
+                        setNotifications((preNotifications) => [notification, ...preNotifications]);
+                    });
+                })
+                .catch((error) => console.error('Kết nối SignalR thất bại:', error));
+            return () => {
+                connection.stop();
+            };
+        }
+    }, [connection, tutorInfo]);
+    const handleGetNotification = async () => {
+        try {
+            await services.NotificationAPI.getAllPaymentPackage((res) => {
+                setNotifications(res.result.result);
+                setUnreadNoti(res.result.totalUnRead)
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const handleOpenAccountMenu = (event) => {
         setAccountMenu(event.currentTarget);
     };
@@ -39,13 +88,65 @@ function TutorHeader({ openMenu, setOpenMenu }) {
         nav(PAGES.TUTOR_LOGIN)
     }
 
+    const handleClickOutside = (event) => {
+        if (
+            notificationRef.current &&
+            notificationIconRef.current &&
+            !notificationRef.current.contains(event.target) &&
+            !notificationIconRef.current.contains(event.target)
+        ) {
+            setOpenNotification(false);
+        }
+    };
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    const handleReadOne = async (id) => {
+        try {
+            await services.NotificationAPI.readAPaymentPackage(id, {}, (res) => {
+                const selectedNoti = notifications.find((n) => {
+                    return n.id === id;
+                })
+                selectedNoti.isRead = true;
+                setNotifications([...notifications]);
+                setUnreadNoti(unreadNoti - 1)
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const handleReadAll = async () => {
+        try {
+            await services.NotificationAPI.readAllPaymentPackage({}, (res) => {
+                notifications.forEach((n) => {
+                    n.isRead = true;
+                })
+                setNotifications([...notifications]);
+                setUnreadNoti(0)
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <Box sx={{
             position: "fixed",
             top: "0",
             width: "100vw",
-            zIndex:100,
-            bgcolor:'white'
+            zIndex: 100,
+            bgcolor: 'white'
         }}>
             <Stack direction='row' sx={{
                 justifyContent: "space-between",
@@ -63,11 +164,56 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                     <IconButton onClick={() => { nav(PAGES.STUDENT_CREATION) }}>
                         <AddOutlinedIcon />
                     </IconButton>
-                    <IconButton>
-                        <Badge badgeContent={4} color="primary">
-                            <NotificationsActiveIcon />
-                        </Badge>
-                    </IconButton>
+                    <Box sx={{ position: "relative" }}>
+                        <IconButton sx={{ color: "#ff7900" }}
+                            onClick={() => setOpenNotification(!openNotification)} ref={notificationIconRef}>
+                            <Badge badgeContent={unreadNoti} color="primary">
+                                <NotificationsActiveIcon />
+                            </Badge>
+                        </IconButton>
+                        {
+                            openNotification && (
+                                <Paper variant='elevation' sx={{
+                                    position: "absolute", top: "50px",
+                                    right: "0px", width: "400px", overflow: 'auto', maxHeight: "70vh", bgcolor: "#f1f1f1"
+                                }} ref={notificationRef}>
+                                    <Typography variant='h4' p={2}>Thông báo</Typography>
+                                    <Button sx={{ p: 2 }} onClick={handleReadAll}>Đánh dấu đọc tất cả</Button>
+                                    {
+                                        notifications.length !== 0 && notifications.map((n) => {
+                                            return (
+                                                <Link to={n.urlDetail} key={n.id}>
+                                                    <Box sx={{
+                                                        display: "flex", alignItems: "center", justifyContent: 'space-between',
+                                                        p: 2, cursor: "pointer",
+                                                        ":hover": {
+                                                            bgcolor: "white"
+                                                        }
+                                                    }} onClick={() => handleReadOne(n.id)}>
+                                                        <Box sx={{ width: "90%" }}>
+                                                            <Typography>
+                                                                {n.message}
+                                                            </Typography>
+                                                            <Typography color={"#556cd6"} fontSize={"12px"}>{dayjs(new Date(n.createdDate)).fromNow()}</Typography>
+                                                        </Box>
+                                                        {
+                                                            !n.isRead && (
+                                                                <Box sx={{ borderRadius: "50%", width: "15px", height: "15px", bgcolor: "#556cd6" }}>
+                                                                </Box>
+                                                            )
+                                                        }
+                                                    </Box>
+                                                </Link>
+                                            )
+                                        })
+                                    }
+                                    <Box textAlign="center">
+                                        <Button>Xem thêm</Button>
+                                    </Box>
+                                </Paper>
+                            )
+                        }
+                    </Box>
                     <Avatar alt='Khai Dao' src={tutorInfo?.imageUrl ? tutorInfo.imageUrl : '/'} sx={{
                         bgcolor: deepPurple[500], width: "30px",
                         height: "30px",

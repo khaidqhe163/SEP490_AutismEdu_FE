@@ -99,7 +99,7 @@ function ScheduleSetting({ studentProfile }) {
                                         p: 2,
                                         gap: 2, alignItems: "center",
                                         justifyContent: "space-between",
-                                        width: "400px",
+                                        width: "40%",
                                         mt: 3,
                                     }}>
                                         <Typography sx={{ fontSize: "24px" }}>{days.find((day) => day.id === l.weekday).day}</Typography>
