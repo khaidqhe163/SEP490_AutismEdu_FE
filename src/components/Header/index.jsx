@@ -54,7 +54,7 @@ function Header() {
 
     useEffect(() => {
         if (userInfo === undefined) {
-            nav(PAGES.TUTOR_LOGIN)
+            nav(PAGES.ROOT)
         }
         if (userInfo) {
             handleGetNotification();

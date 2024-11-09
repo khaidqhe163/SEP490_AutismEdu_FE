@@ -22,10 +22,15 @@ const logError = (e, error) => {
       if (e.response.status === 401) {
         Cookies.remove('access_token');
         Cookies.remove('refresh_token');
-        // window.location.href = '/autismedu/login';
+        window.location.href = '/autismedu/login-option';
         return;
       }
-      console.log(e);
+      if (e.response.status === 403) {
+        Cookies.remove('access_token');
+        Cookies.remove('refresh_token');
+        window.location.href = '/autismedu/login-option';
+        return;
+      }
       error({
         code: e.response.data.statusCode,
         error: e.response.data.errorMessages,

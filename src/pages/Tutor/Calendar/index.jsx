@@ -35,6 +35,8 @@ function Calendar() {
     const getSchedule = async () => {
         try {
             setLoading(true);
+            console.log(weekInYears[currentWeek]);
+            console.log(weekInYears[currentWeek].sunday);
             await services.ScheduleAPI.getSchedule((res) => {
                 if (listYears.length !== 0) {
                     const startYear = new Date(tutorInformation.createdDate).getFullYear();
@@ -51,8 +53,8 @@ function Calendar() {
                 console.log(err);
             }, {
                 studentProfileId: currentStudent,
-                startDate: weekInYears[currentWeek].monday,
-                endDate: weekInYears[currentWeek].sunday
+                startDate: formatDate(weekInYears[currentWeek].monday),
+                endDate: formatDate(weekInYears[currentWeek].sunday)
             })
             setLoading(false);
         } catch (error) {
@@ -122,6 +124,14 @@ function Calendar() {
         return new Date(date.getFullYear(), date.getMonth(), date.getDate());
     }
 
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate
+    }
 
     function organizeSchedulesByDay(listSchedule) {
         const days = {
