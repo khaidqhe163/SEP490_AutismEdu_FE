@@ -99,7 +99,7 @@ function ChangeSlotModal({ schedule, setIsChange }) {
         try {
             setLoading(true);
             await services.ScheduleAPI.getSchedule((res) => {
-                setSchedules(res.result)
+                setSchedules(res.result.schedules)
             }, (err) => {
                 console.log(err);
             }, {

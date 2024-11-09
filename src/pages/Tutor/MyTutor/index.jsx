@@ -44,7 +44,7 @@ function MyTutor() {
                 </Box>
                 <Stack direction='row' mt={5}>
                     {
-                        listTutor.map((l) => {
+                        listTutor && listTutor.length !== 0 && listTutor.map((l) => {
                             return (
                                 <Card sx={{
                                     display: 'flex',
