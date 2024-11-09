@@ -215,9 +215,9 @@ function Calendar() {
         startTime.setHours(startHour, startMinute, startSecond);
         endTime.setHours(endHour, endMinute, endSecond);
         const now = new Date();
-        if (now >= startTime && now <= endTime) {
+        if (now.getTime() >= startTime.getTime() && now.getTime() <= endTime.getTime()) {
             return true;
-        } else if (now > endTime) {
+        } else if (now.getTime() > endTime.getTime()) {
             return true;
         } else {
             return false;
