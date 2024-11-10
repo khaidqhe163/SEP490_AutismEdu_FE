@@ -26,7 +26,6 @@ function LoginForm({ setVerify, setEmailVerify, onLoginSuccess }) {
     const [loading, setLoading] = useState(false);
     const [password, setPassword] = useState("");
     const [userId, setUserId] = useState(null);
-    const nav = useNavigate();
     const dispatch = useDispatch();
     const INPUT_CSS = {
         width: "100%",
@@ -53,7 +52,6 @@ function LoginForm({ setVerify, setEmailVerify, onLoginSuccess }) {
             setLoading(false)
         }
     }, [userId])
-    console.log(userId);
     const handleSubmit = async () => {
         setLoading(true);
         if (passwordError !== null || emailError !== null) {

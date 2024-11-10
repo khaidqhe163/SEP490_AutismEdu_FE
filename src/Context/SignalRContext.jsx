@@ -11,21 +11,25 @@ export const SignalRProvider = ({ children }) => {
     const tutorInfo = useSelector(tutorInfor);
     const parentInfo = useSelector(userInfor);
     useEffect(() => {
+        let userId = "";
         if (tutorInfo) {
-            const newConnection = new signalR.HubConnectionBuilder()
-                .withUrl(`https://localhost:5000/hub/notifications?userId=${tutorInfo.id}`)
-                .withAutomaticReconnect()
-                .configureLogging(signalR.LogLevel.Information)
-                .build();
-            setConnection(newConnection);
+            userId = tutorInfo.id;
         }
         if (parentInfo) {
+            userId = parentInfo.id;
+        }
+        if (userInfor) {
             const newConnection = new signalR.HubConnectionBuilder()
-                .withUrl(`https://localhost:5000/hub/notifications?userId=${parentInfo.id}`)
+                .withUrl(`https://localhost:5000/hub/notifications?userId=${userId}`)
                 .withAutomaticReconnect()
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
             setConnection(newConnection);
+            newConnection.start().then(() => {
+                console.log("Kết nối SignalR thành công!");
+            }).catch(error => {
+                console.error("Lỗi khi bắt đầu kết nối SignalR:", error);
+            });
         }
     }, [tutorInfo, parentInfo]);
     return (

@@ -1,21 +1,19 @@
 import Cookies from 'js-cookie';
+import { enqueueSnackbar } from 'notistack';
 
 let api = null;
 let prefix = '';
 
-// Initializes the service with an axios instance and prefix
 const initializeService = (axiosInstance, prefixValue) => {
   api = axiosInstance.axiosInstance;
   prefix = prefixValue;
 };
 
-// Processes the response, returning the 'data' property if it exists
 const processResponse = (response) => {
   const data = response.data;
   return data?.data ? data.data : data;
 };
 
-// Logs and handles errors, specifically handling 401 unauthorized status
 const logError = (e, error) => {
   if (error && e.response) {
     if (e.response?.status) {
@@ -31,6 +29,12 @@ const logError = (e, error) => {
         window.location.href = '/autismedu/login-option';
         return;
       }
+      if (e.response.status === 402) {
+        window.location.href = '/autismedu';
+        enqueueSnackbar("DDcu th hung", { variant: "error" })
+        return;
+      }
+
       error({
         code: e.response.data.statusCode,
         error: e.response.data.errorMessages,

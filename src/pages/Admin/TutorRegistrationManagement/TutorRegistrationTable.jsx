@@ -57,7 +57,6 @@ function TutorRegistrationTable({ status, searchValue, submit, startDate, endDat
             console.log(error);
         }
     }
-    console.log(listTutor);
     return (
         <TutorContext.Provider value={{ listTutor, setListTutor }}>
             <TableContainer component={Paper} sx={{ mt: "20px" }}>

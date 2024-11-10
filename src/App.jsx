@@ -34,6 +34,7 @@ function App() {
   const getUserInformation = async (userId, role) => {
     try {
       services.UserManagementAPI.getUserById(userId, (res) => {
+        console.log(res);
         if (role === "Parent") {
           dispatch(setUserInformation(res.result))
           dispatch(setTutorInformation(undefined))

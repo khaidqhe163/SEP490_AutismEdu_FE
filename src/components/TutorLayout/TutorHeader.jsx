@@ -15,6 +15,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { SignalRContext } from '~/Context/SignalRContext';
 import services from '~/plugins/services';
+import * as signalR from '@microsoft/signalr';
 function TutorHeader({ openMenu, setOpenMenu }) {
     dayjs.extend(relativeTime);
     const nav = useNavigate();
@@ -30,7 +31,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     const notificationIconRef = useRef(null);
     const [unreadNoti, setUnreadNoti] = useState(0);
     useEffect(() => {
-        console.log(tutorInfo);
         if (tutorInfo === undefined) {
             nav(PAGES.TUTOR_LOGIN)
         }
@@ -41,31 +41,42 @@ function TutorHeader({ openMenu, setOpenMenu }) {
 
     useEffect(() => {
         if (connection && tutorInfo) {
-            connection
-                .start()
-                .then(() => {
+            const startConnection = async () => {
+                if (connection.state !== signalR.HubConnectionState.Disconnected) {
+                    await connection.stop();
+                }
+                try {
                     console.log('Kết nối SignalR thành công!');
-
                     connection.on(`Notifications-${tutorInfo.id}`, (notification) => {
-                        console.log(notification);
                         setNotifications((preNotifications) => [notification, ...preNotifications]);
+                        setUnreadNoti(pre => pre + 1);
                     });
-                })
-                .catch((error) => console.error('Kết nối SignalR thất bại:', error));
+                } catch (error) {
+                    console.error('Kết nối SignalR thất bại:', error.message);
+                }
+            };
+
+            startConnection();
             return () => {
-                connection.stop();
+                if (connection.state !== signalR.HubConnectionState.Disconnected) {
+                    connection.stop();
+                }
             };
         }
     }, [connection, tutorInfo]);
     const handleGetNotification = async () => {
         try {
             await services.NotificationAPI.getAllPaymentPackage((res) => {
-                setNotifications(res.result.result);
-                setUnreadNoti(res.result.totalUnRead)
+                const filterArr = res.result.result.filter((r, index) => {
+                    return index <= 10
+                })
+                setNotifications([...notifications, ...filterArr]);
+                setUnreadNoti(res.result.totalUnRead);
             }, (error) => {
                 console.log(error);
             }, {
-                pageNumber: currentPage
+                pageNumber: notifications.length === 0 ? 1 : 2,
+                pageSize: notifications.length <= 10 ? 10 : notifications.length
             })
         } catch (error) {
             console.log(error);
@@ -113,7 +124,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                 })
                 selectedNoti.isRead = true;
                 setNotifications([...notifications]);
-                setUnreadNoti(unreadNoti - 1)
+                setUnreadNoti(unreadNoti - 1);
             }, (error) => {
                 console.log(error);
             }, {
@@ -208,7 +219,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                         })
                                     }
                                     <Box textAlign="center">
-                                        <Button>Xem thêm</Button>
+                                        <Button onClick={handleGetNotification}>Xem thêm</Button>
                                     </Box>
                                 </Paper>
                             )
