@@ -10,10 +10,12 @@ import { formatter } from '~/utils/service';
 import ButtonIcon from '~/components/ButtonComponent/ButtonIcon';
 import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
+import { useNavigate } from 'react-router-dom';
 function Tutor() {
     const [listTutor, setListTutor] = useState([]);
     const [currentTutor, setCurrentTutor] = useState(0);
     const [loading, setLoading] = useState(false);
+    const nav = useNavigate();
     useEffect(() => {
         getListTutor();
     }, [])
@@ -30,7 +32,10 @@ function Tutor() {
         } catch (error) {
             console.log(error);
         }
-    }
+    };
+    const handleClickToProfile = (id) => {
+        nav(`/autismedu/tutor-profile/${id}`);
+    };
 
     const formatAddress = (address) => {
         const splitedAdd = address?.split("|");
@@ -114,7 +119,7 @@ function Tutor() {
 
                                             </CardContent>
                                             <CardActions>
-                                                <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />}>Tìm hiểu thêm </Button>
+                                                <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />} onClick={()=>handleClickToProfile(listTutor[currentTutor]?.userId)}>Tìm hiểu thêm</Button>
                                             </CardActions>
                                         </Box>
 

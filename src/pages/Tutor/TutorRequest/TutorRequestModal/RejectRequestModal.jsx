@@ -4,12 +4,11 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 
 const RejectRequestModal = ({ open, onClose, onConfirm }) => {
-    // Định nghĩa schema xác thực
     const validationSchema = Yup.object().shape({
         reason: Yup.string()
             .required('Lý do không được để trống')
             .min(5, 'Lý do phải có ít nhất 5 ký tự'),
-        rejectType: Yup.string().required('Loại từ chối không được để trống'), // Validation cho loại từ chối
+        rejectType: Yup.string().required('Loại từ chối không được để trống'), 
     });
 
     return (

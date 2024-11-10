@@ -41,7 +41,9 @@ const PAGES = {
   PAYMENT_PACKAGE_MANAGEMENT: '/admin/payment-package-management',
   SCORE_RANGE: '/admin/assessment_score_range',
   TEST: '/test',
-  DO_TEST: '/do-test'
+  DO_TEST: '/do-test',
+  TEST_HISTORY: '/test-history',
+  TEST_DETAIL_HISTORY: '/test-detail/:id',
 };
 
 export default PAGES;

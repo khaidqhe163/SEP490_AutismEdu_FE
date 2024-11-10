@@ -130,7 +130,7 @@ function TestManagement() {
                 {testList.map((test, index) => (
                     <Grid item key={index} xs={12} sm={6} md={4}>
                         <Card
-                            onClick={() => handleConfirm(test)}
+                            
                             sx={{
                                 maxWidth: "100%",
                                 transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
@@ -146,6 +146,7 @@ function TestManagement() {
                                 height="240"
                                 image="https://vntesters.com/wp-content/uploads/2019/06/test.jpg"
                                 alt="Exercise Icon"
+                                onClick={() => handleConfirm(test)}
                             />
                             <CardContent>
                                 <Typography
@@ -159,6 +160,7 @@ function TestManagement() {
                                         textOverflow: 'ellipsis',
                                         height: '52px',
                                     }}
+                                    onClick={() => handleConfirm(test)}
                                 >
                                     {test.testName}
                                 </Typography>

@@ -41,6 +41,8 @@ import TestManagement from '~/pages/Admin/TestManagement'
 import PaymentPackage from '~/pages/Admin/PaymentManagement/PaymentPackage'
 import AssessmentScoreRange from '~/pages/Admin/AssessmentManagement/AssessmentScoreRange'
 import DoTest from '~/pages/Parent/TestManage/DoTest'
+import TestHistory from '~/pages/Parent/TestManage/TestHistory'
+import TestResultDetail from '~/pages/Parent/TestManage/TestResultDetail'
 
 const UnLayoutRoutes = [
     {
@@ -145,6 +147,14 @@ const publicRoutes = [
     {
         path: PAGES.ROOT + PAGES.DO_TEST,
         element: DoTest
+    },
+    {
+        path: PAGES.ROOT + PAGES.TEST_HISTORY,
+        element: TestHistory
+    },
+    {
+        path: PAGES.ROOT + PAGES.TEST_DETAIL_HISTORY,
+        element: TestResultDetail
     }
 ]
 

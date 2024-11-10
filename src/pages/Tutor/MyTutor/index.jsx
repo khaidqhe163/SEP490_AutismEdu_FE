@@ -12,6 +12,8 @@ import PAGES from '~/utils/pages';
 function MyTutor() {
     const [status, setStatus] = React.useState(1);
     const [listTutor, setListTutor] = React.useState([]);
+    console.log(listTutor);
+    
     const nav = useNavigate();
     React.useEffect(() => {
         getStudentProfile();
@@ -44,7 +46,7 @@ function MyTutor() {
                 </Box>
                 <Stack direction='row' mt={5}>
                     {
-                        listTutor.map((l) => {
+                        listTutor && listTutor.length !== 0 && listTutor.map((l) => {
                             return (
                                 <Card sx={{
                                     display: 'flex',

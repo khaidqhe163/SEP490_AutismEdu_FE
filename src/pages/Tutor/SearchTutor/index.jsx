@@ -66,7 +66,6 @@ function SearchTutor() {
     //     }
     // }, [location.state?.searchVal, location.state?.city]);
 
-    // Run handleGetTutor whenever searchCriteria changes
     useEffect(() => {
         window.scrollTo(0, 0);
         handleGetTutor();
@@ -164,7 +163,7 @@ function SearchTutor() {
                         <>
                             {selected !== "list" ? (
                                 tutors.map((t, index) => (
-                                    <Box key={index} sx={{ width: '400px', height: 'auto', padding: "20px", borderRadius: "5px", transition: "transform 0.3s ease, box-shadow 0.3s ease", '&:hover': { transform: "scale(1.05) translateY(-10px)", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)" } }}>
+                                    <Box key={index} sx={{ display:'flex', flexWrap:'wrap',width: '380px', height: 'auto', padding: "20px", borderRadius: "5px", transition: "transform 0.3s ease, box-shadow 0.3s ease", '&:hover': { transform: "scale(1.05) translateY(-10px)", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)" } }}>
                                         <Card sx={{ height: "620px", width: '100%' }}>
                                             <CardMedia sx={{ height: 240, objectPosition: "top", objectFit: "cover" }} image={t.imageUrl} title="apeople" />
                                             <CardContent>

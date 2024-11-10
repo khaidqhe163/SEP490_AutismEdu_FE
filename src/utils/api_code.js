@@ -133,6 +133,8 @@ const API_CODE = {
 
   //Test result
   API_CREATE_TEST_RESULT: '/v1/TestResult/SubmitTest',
+  API_GET_TEST_RESULT_HISTORY: '/v1/TestResult',
+  API_GET_TEST_RESULT_DETAIL_HISTORY: '/v1/TestResult/GetTestResultDetail/',
 
   //Score range
   API_CREATE_SCORE_RANGE: '/v1/AssessmentScoreRange',

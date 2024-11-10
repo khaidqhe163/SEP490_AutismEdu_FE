@@ -18,6 +18,7 @@ function Header() {
     const [tab, setTab] = useState("1");
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [accountMenu, setAccountMenu] = React.useState(null);
+    const [anchorEl1, setAnchorEl1] = React.useState(null);
     const nav = useNavigate();
     const userInfo = useSelector(userInfor);
 
@@ -64,6 +65,20 @@ function Header() {
         setAnchorEl(null);
     };
 
+    const open1 = Boolean(anchorEl1);
+    const handleClickListItem1 = (event) => {
+        setAnchorEl1(event.currentTarget);
+    };
+
+    const handleMenuItemClick1 = (event, link) => {
+        nav(link)
+        setAnchorEl1(null);
+    };
+
+    const handleClose1 = () => {
+        setAnchorEl1(null);
+    };
+
     const handleLogout = () => {
         Cookies.remove("access_token");
         Cookies.remove("refresh_token");
@@ -99,7 +114,8 @@ function Header() {
                 <Tab sx={{ fontSize: "18px" }} value={"2"} label="Gia sư" icon={<ExpandMoreIcon />} iconPosition="end" onClick={handleClickListItem} />
                 <Tab sx={{ fontSize: "18px" }} value={"3"} label="Thông tin trẻ" onClick={() => { nav(PAGES.ROOT + PAGES.MY_CHILDREN) }} />
                 <Tab sx={{ fontSize: "18px" }} value={"4"} label="Blog" />
-                <Tab sx={{ fontSize: "18px" }} value={"5"} label="Kiểm tra" onClick={() => { nav(PAGES.ROOT + PAGES.TEST) }} />
+                {/* <Tab sx={{ fontSize: "18px" }} value={"5"} label="Kiểm tra" onClick={() => { nav(PAGES.ROOT + PAGES.TEST) }} /> */}
+                {userInfo && <Tab sx={{ fontSize: "18px" }} value={"5"} label="Kiểm tra" icon={<ExpandMoreIcon />} iconPosition="end" onClick={handleClickListItem1} />}
 
             </Tabs>
             <Menu
@@ -126,6 +142,32 @@ function Header() {
                     Lịch sử yêu cầu
                 </MenuItem>)}
             </Menu>
+
+            <Menu
+                id="lock-menu"
+                anchorEl={anchorEl1}
+                open={open1}
+                onClose={handleClose1}
+                MenuListProps={{
+                    'aria-labelledby': 'lock-button',
+                    role: 'listbox',
+                }}
+            >
+                {/* <MenuItem onClick={(event) => handleMenuItemClick(event, PAGES.ROOT + PAGES.MY_TUTOR)}>
+                    Gia sư của tôi
+                </MenuItem> */}
+                <MenuItem
+                    onClick={(event) => handleMenuItemClick1(event, PAGES.ROOT + PAGES.TEST)}
+                >
+                    Danh sách bài kiểm tra
+                </MenuItem>
+                {(<MenuItem
+                    onClick={(event) => handleMenuItemClick1(event, PAGES.ROOT + PAGES.TEST_HISTORY)}
+                >
+                    Lịch sử bài kiểm tra
+                </MenuItem>)}
+            </Menu>
+
             <Stack direction="row" sx={{ alignItems: "center" }} spacing={2}>
                 <TextField
                     variant="outlined"

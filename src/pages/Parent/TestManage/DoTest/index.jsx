@@ -18,13 +18,20 @@ import {
 import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
 import { enqueueSnackbar } from 'notistack';
+import { setUserInformation, userInfor } from '~/redux/features/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function DoTest() {
+    const userInfo = useSelector(userInfor);
+    console.log(userInfo);
     const location = useLocation();
     const [test, setTest] = useState(location.state?.selectedTest ?? null);
     const [loading, setLoading] = useState(false);
     const [questions, setQuestions] = useState([]);
-    const [testResults, setTestResults] = useState([]);
+    const [testResults, setTestResults] = useState(() => {
+        const savedResults = localStorage.getItem(`testResults-${userInfo?.id}-${test?.id}`);
+        return savedResults ? JSON.parse(savedResults) : [];
+    });
     const [openDialog, setOpenDialog] = useState(false);
     const [score, setScore] = useState(null);
     const [noAnswer, setNoAnswer] = useState(false);
@@ -66,6 +73,8 @@ function DoTest() {
                 } else {
                     updatedResults.push(answer);
                 }
+
+                localStorage.setItem(`testResults-${userInfo?.id}-${test?.id}`, JSON.stringify(updatedResults));
                 return updatedResults;
             });
         }
@@ -83,10 +92,8 @@ function DoTest() {
             setOpenDialog(true);
         } else {
             const totalScore = testResults.reduce((sum, result) => sum + result.point, 0);
-            console.log(totalScore);
-            console.log(testResults);
-
             setScore(totalScore);
+
             try {
                 setLoading(true);
                 const newData = {
@@ -98,7 +105,8 @@ function DoTest() {
                     enqueueSnackbar("Nộp bài thành công!", { variant: 'success' });
                 }, (error) => {
                     console.log(error);
-                })
+                });
+                localStorage.removeItem(`testResults-${userInfo?.id}-${test?.id}`);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -111,14 +119,13 @@ function DoTest() {
         setOpenDialog(false);
         const totalScore = testResults.reduce((sum, result) => sum + result.point, 0);
         setScore(totalScore);
-        console.log("Test Results:", testResults);
-        console.log("Total Score:", totalScore);
+
         try {
             setLoading(true);
             const newData = {
                 "testId": test?.id,
                 "totalPoint": totalScore,
-                "testResults": testResults.map((r) => { r.questionId, r.optionId })
+                "testResults": testResults.map((r) => ({ questionId: r.questionId, optionId: r.optionId }))
             };
             await services.TestResultManagementAPI.createSubmitTest(newData, (res) => {
                 if (res?.result) {
@@ -126,7 +133,9 @@ function DoTest() {
                 }
             }, (error) => {
                 console.log(error);
-            })
+            });
+
+            localStorage.removeItem(`testResults-${userInfo?.id}-${test?.id}`);
         } catch (error) {
             console.log(error);
         } finally {
@@ -169,7 +178,6 @@ function DoTest() {
                     </RadioGroup>
                 </Box>
             ))}
-
 
             <Box display={'flex'} justifyContent={'right'}>
                 <Button variant="contained" color="primary" onClick={handleSubmit} disabled={score}>
