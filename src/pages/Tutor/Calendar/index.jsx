@@ -35,14 +35,26 @@ function Calendar() {
     const getSchedule = async () => {
         try {
             setLoading(true);
+            console.log(weekInYears[currentWeek]);
+            console.log(weekInYears[currentWeek].sunday);
             await services.ScheduleAPI.getSchedule((res) => {
-                organizeSchedulesByDay(res.result)
+                if (listYears.length !== 0) {
+                    const startYear = new Date(tutorInformation.createdDate).getFullYear();
+                    const maxYear = new Date(res.result.maxDate).getFullYear();
+                    const years = [];
+                    for (let year = startYear; year <= maxYear; year++) {
+                        years.push(year);
+                    }
+                    years.reverse();
+                    setListYears(years);
+                }
+                organizeSchedulesByDay(res.result.schedules)
             }, (err) => {
                 console.log(err);
             }, {
                 studentProfileId: currentStudent,
-                startDate: weekInYears[currentWeek].monday,
-                endDate: weekInYears[currentWeek].sunday
+                startDate: formatDate(weekInYears[currentWeek].monday),
+                endDate: formatDate(weekInYears[currentWeek].sunday)
             })
             setLoading(false);
         } catch (error) {
@@ -112,6 +124,14 @@ function Calendar() {
         return new Date(date.getFullYear(), date.getMonth(), date.getDate());
     }
 
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate
+    }
 
     function organizeSchedulesByDay(listSchedule) {
         const days = {
@@ -195,9 +215,9 @@ function Calendar() {
         startTime.setHours(startHour, startMinute, startSecond);
         endTime.setHours(endHour, endMinute, endSecond);
         const now = new Date();
-        if (now >= startTime && now <= endTime) {
+        if (now.getTime() >= startTime.getTime() && now.getTime() <= endTime.getTime()) {
             return true;
-        } else if (now > endTime) {
+        } else if (now.getTime() > endTime.getTime()) {
             return true;
         } else {
             return false;

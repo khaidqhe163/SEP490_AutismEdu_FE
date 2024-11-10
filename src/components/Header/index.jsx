@@ -4,8 +4,8 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import SearchIcon from '@mui/icons-material/Search';
 import Settings from '@mui/icons-material/Settings';
-import { Avatar, Badge, Box, Button, Divider, IconButton, InputAdornment, InputBase, ListItemIcon, Menu, MenuItem, Stack, Tab, Tabs, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Avatar, Badge, Box, Button, Divider, IconButton, InputAdornment, InputBase, ListItemIcon, Menu, MenuItem, Paper, Stack, Tab, Tabs, TextField, Typography } from '@mui/material';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { setUserInformation, userInfor } from '~/redux/features/userSlice';
@@ -14,6 +14,10 @@ import ButtonComponent from '../ButtonComponent';
 import Logo from '../Logo';
 import NavigationMobile from './NavigationMobile';
 import Cookies from 'js-cookie';
+import { SignalRContext } from '~/Context/SignalRContext';
+import services from '~/plugins/services';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime'
 function Header() {
     const [tab, setTab] = useState("1");
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -26,7 +30,14 @@ function Header() {
     const [searchVal, setSearchVal] = useState('');
     const dispatch = useDispatch();
     const location = useLocation();
-
+    const [openNotification, setOpenNotification] = useState(false);
+    const { connection } = useContext(SignalRContext);
+    const [notifications, setNotifications] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const notificationRef = useRef(null);
+    const notificationIconRef = useRef(null);
+    const [unreadNoti, setUnreadNoti] = useState(0);
+    dayjs.extend(relativeTime);
     useEffect(() => {
         if (location.pathname === "/autismedu") {
             setTab("1");
@@ -44,6 +55,48 @@ function Header() {
             setTab("5");
         }
     }, [location])
+
+    useEffect(() => {
+        if (userInfo === undefined) {
+            nav(PAGES.ROOT)
+        }
+        if (userInfo) {
+            handleGetNotification();
+        }
+    }, [userInfo])
+
+    useEffect(() => {
+        if (connection && userInfo) {
+            connection
+                .start()
+                .then(() => {
+                    console.log('Kết nối SignalR thành công!');
+
+                    connection.on(`Notifications-${userInfo.id}`, (notification) => {
+                        console.log(notification);
+                        setNotifications((preNotifications) => [notification, ...preNotifications]);
+                    });
+                })
+                .catch((error) => console.error('Kết nối SignalR thất bại:', error));
+            return () => {
+                connection.stop();
+            };
+        }
+    }, [connection, userInfo]);
+    const handleGetNotification = async () => {
+        try {
+            await services.NotificationAPI.getAllPaymentPackage((res) => {
+                setNotifications(res.result.result);
+                setUnreadNoti(res.result.totalUnRead)
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const handleOpenAccountMenu = (event) => {
         setAccountMenu(event.currentTarget);
     };
@@ -90,8 +143,58 @@ function Header() {
         nav('/autismedu/list-tutor', { state: { searchVal } });
         setSearchVal('');
     };
+    const handleClickOutside = (event) => {
+        if (
+            notificationRef.current &&
+            notificationIconRef.current &&
+            !notificationRef.current.contains(event.target) &&
+            !notificationIconRef.current.contains(event.target)
+        ) {
+            setOpenNotification(false);
+        }
+    };
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
-
+    const handleReadOne = async (id) => {
+        try {
+            await services.NotificationAPI.readAPaymentPackage(id, {}, (res) => {
+                const selectedNoti = notifications.find((n) => {
+                    return n.id === id;
+                })
+                selectedNoti.isRead = true;
+                setNotifications([...notifications]);
+                setUnreadNoti(unreadNoti - 1)
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const handleReadAll = async () => {
+        try {
+            await services.NotificationAPI.readAllPaymentPackage({}, (res) => {
+                notifications.forEach((n) => {
+                    n.isRead = true;
+                })
+                setNotifications([...notifications]);
+                setUnreadNoti(0)
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <Stack
             direction="row"
@@ -194,11 +297,56 @@ function Header() {
 
                 {
                     userInfo && (
-                        <IconButton>
-                            <Badge badgeContent={4} color="primary">
-                                <NotificationsActiveIcon />
-                            </Badge>
-                        </IconButton>
+                        <Box sx={{ position: "relative" }}>
+                            <IconButton sx={{ color: "#ff7900" }}
+                                onClick={() => setOpenNotification(!openNotification)} ref={notificationIconRef}>
+                                <Badge badgeContent={unreadNoti} color="primary">
+                                    <NotificationsActiveIcon />
+                                </Badge>
+                            </IconButton>
+                            {
+                                openNotification && (
+                                    <Paper variant='elevation' sx={{
+                                        position: "absolute", top: "50px",
+                                        right: "0px", width: "400px", overflow: 'auto', maxHeight: "70vh", bgcolor: "#f1f1f1"
+                                    }} ref={notificationRef}>
+                                        <Typography variant='h4' p={2}>Thông báo</Typography>
+                                        <Button sx={{ p: 2 }} onClick={handleReadAll}>Đánh dấu đọc tất cả</Button>
+                                        {
+                                            notifications.length !== 0 && notifications.map((n) => {
+                                                return (
+                                                    <Link to={n.urlDetail} key={n.id}>
+                                                        <Box sx={{
+                                                            display: "flex", alignItems: "center", justifyContent: 'space-between',
+                                                            p: 2, cursor: "pointer",
+                                                            ":hover": {
+                                                                bgcolor: "white"
+                                                            }
+                                                        }} onClick={() => handleReadOne(n.id)}>
+                                                            <Box sx={{ width: "90%" }}>
+                                                                <Typography>
+                                                                    {n.message}
+                                                                </Typography>
+                                                                <Typography color={"#556cd6"} fontSize={"12px"}>{dayjs(new Date(n.createdDate)).fromNow()}</Typography>
+                                                            </Box>
+                                                            {
+                                                                !n.isRead && (
+                                                                    <Box sx={{ borderRadius: "50%", width: "15px", height: "15px", bgcolor: "#556cd6" }}>
+                                                                    </Box>
+                                                                )
+                                                            }
+                                                        </Box>
+                                                    </Link>
+                                                )
+                                            })
+                                        }
+                                        <Box textAlign="center">
+                                            <Button>Xem thêm</Button>
+                                        </Box>
+                                    </Paper>
+                                )
+                            }
+                        </Box>
                     )
                 }
                 {

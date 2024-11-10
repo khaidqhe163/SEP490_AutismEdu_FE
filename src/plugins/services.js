@@ -22,6 +22,9 @@ import { TimeSlotAPI } from "~/services/TimeSlotAPI";
 import {TestManagementAPI} from "~/services/TestManagementAPI";
 import {TestQuestionManagementAPI} from "~/services/TestQuestionManagementAPI"
 import {TestResultManagementAPI} from "~/services/TestResultManagementAPI"
+import { ScoreRangeAPI } from "~/services/ScoreRangeAPI";
+import { PackagePaymentAPI } from "~/services/PaymentPackageAPI";
+import { NotificationAPI } from "~/services/NotificationAPI";
 // Initialize the BaseService with the axios instance and API prefix
 (function () {
   initializeService(axios, "/api");
@@ -50,6 +53,9 @@ const services = {
   TestManagementAPI,
   TestQuestionManagementAPI,
   TestResultManagementAPI,
+  ScoreRangeAPI,
+  PackagePaymentAPI,
+  NotificationAPI
 };
 
 export default services;

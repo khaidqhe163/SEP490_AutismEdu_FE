@@ -12,6 +12,9 @@ import { setTutorInformation } from "./redux/features/tutorSlice";
 import { setUserInformation } from "./redux/features/userSlice";
 import { adminRoutes, publicRoutes, tutorRoutes, UnLayoutRoutes } from "./routes/Routes";
 import PAGES from "./utils/pages";
+import { SignalRProvider } from "./Context/SignalRContext";
+import { setAdminInformation } from "./redux/features/adminSlice";
+import { enqueueSnackbar } from "notistack";
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -22,20 +25,27 @@ function App() {
     }
     const decodedToken = jwtDecode(accessToken);
     const userId = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
-    const roles = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+    const role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
     if (userId) {
-      getUserInformation(userId, roles);
+      getUserInformation(userId, role);
     }
   }, [])
 
-  const getUserInformation = async (userId, roles) => {
+  const getUserInformation = async (userId, role) => {
     try {
       services.UserManagementAPI.getUserById(userId, (res) => {
-        if (roles.includes("Parent")) {
+        console.log(res);
+        if (role === "Parent") {
           dispatch(setUserInformation(res.result))
           dispatch(setTutorInformation(undefined))
-        } else if (roles.includes("Tutor")) {
+          dispatch(setAdminInformation(undefined))
+        } else if (role === "Tutor") {
           dispatch(setTutorInformation(res.result))
+          dispatch(setUserInformation(undefined))
+          dispatch(setAdminInformation(undefined))
+        } else if (role === "Admin" || role === "Staff" || role === "Manager") {
+          dispatch(setAdminInformation(res.result))
+          dispatch(setTutorInformation(undefined))
           dispatch(setUserInformation(undefined))
         }
       }, (error) => {
@@ -48,46 +58,49 @@ function App() {
   }
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to={PAGES.ROOT + PAGES.HOME} />} />
+      <SignalRProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Navigate to={PAGES.ROOT + PAGES.HOME} />} />
 
-          {UnLayoutRoutes.map((route) => (
-            <Route
-              key={route.path}
-              path={route.path}
-              element={<route.element />}
-            />
-          ))}
-          <Route path="/autismedu" element={<ClientLayout />}>
-            {publicRoutes.map((route) => (
+            {UnLayoutRoutes.map((route) => (
               <Route
                 key={route.path}
                 path={route.path}
                 element={<route.element />}
               />
             ))}
-          </Route>
-          <Route path="/autismtutor" element={<TutorLayout />}>
-            {tutorRoutes.map((route) => (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={<route.element />}
-              />
-            ))}
-          </Route>
-          <Route path="/admin" element={<AdminLayout />}>
-            {adminRoutes.map((route) => (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={<route.element />}
-              />
-            ))}
-          </Route>
-        </Routes>
-      </BrowserRouter>
+
+            <Route path="/autismedu" element={<ClientLayout />}>
+              {publicRoutes.map((route) => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={<route.element />}
+                />
+              ))}
+            </Route>
+            <Route path="/autismtutor" element={<TutorLayout />}>
+              {tutorRoutes.map((route) => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={<route.element />}
+                />
+              ))}
+            </Route>
+            <Route path="/admin" element={<AdminLayout />}>
+              {adminRoutes.map((route) => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={<route.element />}
+                />
+              ))}
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </SignalRProvider>
     </>
   )
 }
