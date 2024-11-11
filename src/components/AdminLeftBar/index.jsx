@@ -18,9 +18,13 @@ import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useSelector } from 'react-redux';
 import { adminInfor } from '~/redux/features/adminSlice';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
+import SortIcon from '@mui/icons-material/Sort';
+import PostAddIcon from '@mui/icons-material/PostAdd';
 function AdminLeftBar() {
     const [open, setOpen] = useState(false);
     const [openPayment, setOpenPayment] = useState(false);
+    const [openArtical, setOpenArtical] = useState(false);
     const location = useLocation();
     const adminInformation = useSelector(adminInfor);
     const handleClick = () => {
@@ -170,6 +174,39 @@ function AdminLeftBar() {
                                         <PlaylistAddIcon />
                                     </ListItemIcon>
                                     <ListItemText primary="Thêm đánh giá" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                    </Collapse>
+                    <ListItemButton onClick={() => setOpenArtical(!openArtical)}>
+                        <ListItemIcon>
+                            <NewspaperIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Bài viết" />
+                        {openArtical ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openArtical} timeout="auto" unmountOnExit>
+                        <Link to={PAGES.BLOG_MANAGEMENT}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 6}
+                                    onClick={(event) => handleListItemClick(event, 6)}>
+                                    <ListItemIcon>
+                                        <SortIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Danh sách bài viết" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                        <Link to={PAGES.BLOG_CREATION}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 5}
+                                    onClick={(event) => handleListItemClick(event, 5)}>
+                                    <ListItemIcon>
+                                        <PostAddIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Tạo bài viết" />
                                 </ListItemButton>
                             </List>
                         </Link>

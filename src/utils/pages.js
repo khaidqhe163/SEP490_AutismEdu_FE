@@ -38,7 +38,11 @@ const PAGES = {
   TUTOR_REQUEST_HISTORY: '/request-history',
   LOGIN_ADMIN: '/admin/login',
   PAYMENT_PACKAGE_MANAGEMENT: '/admin/payment-package-management',
-  SCORE_RANGE: '/admin/assessment_score_range'
+  SCORE_RANGE: '/admin/assessment_score_range',
+  BLOG_MANAGEMENT: '/admin/blog-management',
+  BLOG_CREATION: '/admin/blog-creation',
+  BLOG_LIST: '/list-blogs',
+  BLOG_DETAIL: '/list-blogs/:id'
 };
 
 export default PAGES;

@@ -135,10 +135,16 @@ const API_CODE = {
   API_PUT_PAYMENT_PACKAGE: '/PackagePayment/changeStatus/',
   API_DELETE_PAYMENT_PACKAGE: '/PackagePayment/',
 
-  //Notification package
+  //Notification
   API_GET_NOTIFICATION: '/Notification',
   API_READ_ALL_NOTIFICATION: '/Notification/ReadAll',
-  API_READ_A_NOTIFICATION: '/Notification/read/'
+  API_READ_A_NOTIFICATION: '/Notification/read/',
+
+  //Blog
+  API_CREATE_BLOG: '/v1/Blog',
+  API_GET_BLOGS: '/v1/Blog',
+  API_GET_BLOG_DETAIL: '/v1/Blog/',
+  API_GET_EDIT_DETAIL: '/api/v1/Blog/',
 };
 
 export default API_CODE;

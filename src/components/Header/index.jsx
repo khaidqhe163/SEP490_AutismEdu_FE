@@ -50,6 +50,9 @@ function Header() {
         else if (location.pathname.includes("/my-childlren")) {
             setTab("3");
         }
+        else if (location.pathname.includes("/list-blogs")) {
+            setTab("3");
+        }
     }, [location])
 
     useEffect(() => {
@@ -197,8 +200,12 @@ function Header() {
             }}>
                 <Tab sx={{ fontSize: "18px" }} value={"1"} label="Trang chủ" onClick={() => { nav(PAGES.ROOT) }} />
                 <Tab sx={{ fontSize: "18px" }} value={"2"} label="Gia sư" icon={<ExpandMoreIcon />} iconPosition="end" onClick={handleClickListItem} />
-                <Tab sx={{ fontSize: "18px" }} value={"3"} label="Thông tin trẻ" onClick={() => { nav(PAGES.ROOT + PAGES.MY_CHILDREN) }} />
-                <Tab sx={{ fontSize: "18px" }} value={"4"} label="Blog" />
+                {
+                    userInfo && (
+                        <Tab sx={{ fontSize: "18px" }} value={"3"} label="Thông tin trẻ" onClick={() => { nav(PAGES.ROOT + PAGES.MY_CHILDREN) }} />
+                    )
+                }
+                <Tab sx={{ fontSize: "18px" }} value={"4"} label="Blog" onClick={() => { nav(PAGES.ROOT + PAGES.BLOG_LIST) }} />
             </Tabs>
             <Menu
                 id="lock-menu"
@@ -210,9 +217,13 @@ function Header() {
                     role: 'listbox',
                 }}
             >
-                <MenuItem onClick={(event) => handleMenuItemClick(event, PAGES.ROOT + PAGES.MY_TUTOR)}>
-                    Gia sư của tôi
-                </MenuItem>
+                {
+                    userInfo && (
+                        <MenuItem onClick={(event) => handleMenuItemClick(event, PAGES.ROOT + PAGES.MY_TUTOR)}>
+                            Gia sư của tôi
+                        </MenuItem>
+                    )
+                }
                 <MenuItem
                     onClick={(event) => handleMenuItemClick(event, PAGES.ROOT + PAGES.LISTTUTOR)}
                 >

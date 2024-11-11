@@ -75,6 +75,7 @@ function ScheduleSetting({ studentProfile }) {
                     })
                     setListTimeSlots(filterTimeSlot);
                     setOpenConfirm(false);
+                    enqueueSnackbar("Xoá lịch thành công", { variant: 'success' })
                 }, (error) => {
                     enqueueSnackbar(error.error[0], { variant: "error" })
                 }

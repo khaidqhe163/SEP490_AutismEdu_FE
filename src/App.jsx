@@ -62,7 +62,6 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Navigate to={PAGES.ROOT + PAGES.HOME} />} />
-
             {UnLayoutRoutes.map((route) => (
               <Route
                 key={route.path}

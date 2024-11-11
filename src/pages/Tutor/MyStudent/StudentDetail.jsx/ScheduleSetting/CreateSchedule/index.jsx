@@ -113,7 +113,14 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
         if (startTime === "" || endTime === "" || dayOfWeek.length === 0) {
             setTimeError("Nhập đầy đủ thông tin!");
             return;
-        } else {
+        } else if (toMinutes(startTime) >= toMinutes(endTime)) {
+            setTimeError("Thời gina không hợp lệ");
+            return;
+        } else if (toMinutes(endTime) - toMinutes(startTime) < 30) {
+            setTimeError("1 buổi học dài ít nhất 30 phút");
+            return;
+        }
+        else {
             const scheduleItem = dayOfWeek.map((d) => {
                 return {
                     weekday: days.find((day) => day.day === d).id,

@@ -38,6 +38,10 @@ import TutorRequestHistory from '~/pages/Parent/TutorRequestHistory/TutorRequest
 import LoginAdmin from '~/pages/Admin/LoginAdmin'
 import PaymentPackage from '~/pages/Admin/PaymentManagement/PaymentPackage'
 import AssessmentScoreRange from '~/pages/Admin/AssessmentManagement/AssessmentScoreRange'
+import BlogManagement from '~/pages/Admin/BlogManagement'
+import BlogCreation from '~/pages/Admin/BlogManagement/BlogCreation'
+import Blog from '~/pages/Blog'
+import BlogDetail from '~/pages/Blog/BlogDetail'
 
 const UnLayoutRoutes = [
     {
@@ -134,6 +138,14 @@ const publicRoutes = [
     {
         path: PAGES.ROOT + PAGES.TUTOR_REQUEST_HISTORY,
         element: TutorRequestHistory
+    },
+    {
+        path: PAGES.ROOT + PAGES.BLOG_LIST,
+        element: Blog
+    },
+    {
+        path: PAGES.ROOT + PAGES.BLOG_DETAIL,
+        element: BlogDetail
     }
 ]
 
@@ -198,6 +210,14 @@ const adminRoutes = [
     {
         path: PAGES.SCORE_RANGE,
         element: AssessmentScoreRange
+    },
+    {
+        path: PAGES.BLOG_MANAGEMENT,
+        element: BlogManagement
+    },
+    {
+        path: PAGES.BLOG_CREATION,
+        element: BlogCreation
     },
 
 ]
