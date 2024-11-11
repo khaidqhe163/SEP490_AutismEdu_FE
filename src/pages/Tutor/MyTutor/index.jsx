@@ -12,6 +12,8 @@ import PAGES from '~/utils/pages';
 function MyTutor() {
     const [status, setStatus] = React.useState(1);
     const [listTutor, setListTutor] = React.useState([]);
+    console.log(listTutor);
+    
     const nav = useNavigate();
     React.useEffect(() => {
         getStudentProfile();

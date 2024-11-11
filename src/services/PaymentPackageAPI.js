@@ -8,10 +8,11 @@ const createPaymentPackage = async (params, success, error) => {
 
 const getListPaymentPackage = async (success, error, params) => {
     await get(API_CODE.API_GET_PAYMENT_PACKAGE, success, error, params)
-}
+};
 const updatePaymentPackage = async (endpoint, params, success, error) => {
     await put(API_CODE.API_PUT_PAYMENT_PACKAGE + endpoint, params, success, error)
-}
+};
+
 
 export const PackagePaymentAPI = {
     createPaymentPackage,

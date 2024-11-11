@@ -9,20 +9,32 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { setTutorInformation, tutorInfor } from '~/redux/features/tutorSlice';
+import { setPackagePayment, packagePayment} from '~/redux/features/packagePaymentSlice';
+
 import PAGES from '~/utils/pages';
 import Logo from '../Logo';
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+
+import RechargeModal from '../PaymentModal/RechargeModal';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { SignalRContext } from '~/Context/SignalRContext';
 import services from '~/plugins/services';
 import * as signalR from '@microsoft/signalr';
+
 function TutorHeader({ openMenu, setOpenMenu }) {
     dayjs.extend(relativeTime);
     const nav = useNavigate();
     const tutorInfo = useSelector(tutorInfor);
+    const aPackagePayment = useSelector(packagePayment);
+    console.log(aPackagePayment);
+    console.log(tutorInfo);
+
     const [accountMenu, setAccountMenu] = useState();
     const dispatch = useDispatch();
     const openAccountMenu = Boolean(accountMenu);
+    const [openModalPayment, setOpenModalPayment] = useState(false);
+
     const [openNotification, setOpenNotification] = useState(false);
     const { connection } = useContext(SignalRContext);
     const [notifications, setNotifications] = useState([]);
@@ -30,6 +42,52 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     const notificationRef = useRef(null);
     const notificationIconRef = useRef(null);
     const [unreadNoti, setUnreadNoti] = useState(0);
+
+    const [daysLeft, setDaysLeft] = useState(0);
+
+    // const [currentUserPayment, setCurrentUserPayment] = useState(null);
+
+    // console.log(currentUserPayment);
+
+    // const handleGetCurrentUserPaymentHistory = async () => {
+    //     try {
+    //         await services.PaymentHistoryAPI.getListPaymentHistoryCurrent((res) => {
+    //             dispatch(setPackagePayment(res.result));
+    //             // setCurrentUserPayment(res.result);
+    //         }, (error) => {
+    //             console.log(error);
+    //         });
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
+
+    // useEffect(() => {
+    //     handleGetCurrentUserPaymentHistory();
+    // }, []);
+
+    useEffect(() => {
+        // if(currentUserPayment){
+
+        // }
+        if (tutorInfo?.createdDate) {
+            const createdDate = new Date(tutorInfo.createdDate);
+            console.log(createdDate);
+
+            const trialEndDate = new Date(createdDate);
+            trialEndDate.setDate(trialEndDate.getDate() + 30);
+
+            const currentDate = new Date();
+
+            const timeDiff = trialEndDate - currentDate;
+
+            const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+            setDaysLeft(daysRemaining > 0 ? daysRemaining : 0);
+        }
+    // }, [tutorInfo, currentUserPayment]);
+    }, [tutorInfo]);
+
     useEffect(() => {
         if (tutorInfo === undefined) {
             nav(PAGES.TUTOR_LOGIN)
@@ -172,9 +230,41 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                     <Logo sizeLogo={30} sizeName={25} />
                 </Box>
                 <Box sx={{ display: "flex", gap: 2 }}>
+                    {(
+                        <Box display={'flex'} alignItems={'center'}>
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    color: daysLeft < 10 ? 'red' : 'green',
+                                    animation: daysLeft < 10 ? 'blink 1s step-start infinite' : 'none',
+                                    '@keyframes blink': {
+                                        '50%': { opacity: 0 },
+                                    },
+                                }}
+                            >
+                                Dùng thử: {daysLeft} ngày
+                            </Typography>
+                        </Box>
+
+
+                    )}
                     <IconButton onClick={() => { nav(PAGES.STUDENT_CREATION) }}>
                         <AddOutlinedIcon />
                     </IconButton>
+                    <Button startIcon={<KeyboardDoubleArrowUpIcon />} onClick={() => nav(PAGES.PAYMENT_PACKAGE)} variant='contained' size='small' sx={{
+                        width: "130px", bgcolor: '#16ab65',
+                        '&:hover': {
+                            bgcolor: '#128a51',
+                        },
+                    }}>
+                        Nâng cấp
+                    </Button>
+                    <IconButton>
+                        <Badge badgeContent={4} color="primary">
+                            <NotificationsActiveIcon />
+                        </Badge>
+                    </IconButton>
+
                     <Box sx={{ position: "relative" }}>
                         <IconButton sx={{ color: "#ff7900" }}
                             onClick={() => setOpenNotification(!openNotification)} ref={notificationIconRef}>
@@ -276,9 +366,13 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                         </MenuItem>
                     </Menu>
                 </Box>
-            </Stack>
+            </Stack >
             <Divider />
-        </Box>
+            {/* <RechargeModal
+                show={openModalPayment}
+                handleClose={() => setOpenModalPayment(false)}
+            /> */}
+        </Box >
     )
 }
 

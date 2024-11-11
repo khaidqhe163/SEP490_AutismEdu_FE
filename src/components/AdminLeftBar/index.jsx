@@ -13,6 +13,7 @@ import PAGES from '~/utils/pages';
 import FeedIcon from '@mui/icons-material/Feed';
 import TocIcon from '@mui/icons-material/Toc';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import QuizIcon from '@mui/icons-material/Quiz';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -46,6 +47,8 @@ function AdminLeftBar() {
         }
         else if (location.pathname.includes("/assessment_score_range")) {
             setSelectedIndex(2);
+        }else if (location.pathname.includes("/test-management")) {
+            setSelectedIndex(8);
         }
     }, [])
     const handleListItemClick = (event, index) => {
@@ -100,6 +103,16 @@ function AdminLeftBar() {
                             <ListItemText primary="Đơn Đăng Ký" />
                         </ListItemButton>
                     </Link>
+                    <Link to="/admin/test-management">
+                        <ListItemButton
+                            selected={selectedIndex === 8}
+                            onClick={(event) => handleListItemClick(event, 8)}>
+                            <ListItemIcon>
+                                <QuizIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Bài kiểm tra" />
+                        </ListItemButton>
+                    </Link>
                     <ListItemButton onClick={handleClick}>
                         <ListItemIcon>
                             <AssessmentIcon />
@@ -107,6 +120,7 @@ function AdminLeftBar() {
                         <ListItemText primary="Đánh giá" />
                         {open ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
+                   
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Link to={PAGES.ASSESSMENT_MANAGEMENT}>
                             <List component="div" disablePadding>
@@ -132,6 +146,7 @@ function AdminLeftBar() {
                                 </ListItemButton>
                             </List>
                         </Link>
+                        
                         <Link to={PAGES.SCORE_RANGE}>
                             <List component="div" disablePadding>
                                 <ListItemButton sx={{ pl: 4 }}
@@ -145,6 +160,7 @@ function AdminLeftBar() {
                             </List>
                         </Link>
                     </Collapse>
+                    
                     <ListItemButton onClick={() => setOpenPayment(!openPayment)}>
                         <ListItemIcon>
                             <AttachMoneyIcon />
@@ -152,7 +168,8 @@ function AdminLeftBar() {
                         <ListItemText primary="Thanh Toán" />
                         {openPayment ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
-                    <Collapse in={openPayment} timeout="auto" unmountOnExit>
+                    <Collapse 
+                    in={openPayment} timeout="auto" unmountOnExit>
                         <Link to={PAGES.PAYMENT_PACKAGE_MANAGEMENT}>
                             <List component="div" disablePadding>
                                 <ListItemButton sx={{ pl: 4 }}

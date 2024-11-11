@@ -37,12 +37,18 @@ const PAGES = {
   MY_TUTOR_DETAIL: '/my-tutor/:id',
   TUTOR_REQUEST_HISTORY: '/request-history',
   LOGIN_ADMIN: '/admin/login',
+  TEST_MANAGEMENT: '/admin/test-management',
   PAYMENT_PACKAGE_MANAGEMENT: '/admin/payment-package-management',
   SCORE_RANGE: '/admin/assessment_score_range',
   BLOG_MANAGEMENT: '/admin/blog-management',
   BLOG_CREATION: '/admin/blog-creation',
   BLOG_LIST: '/list-blogs',
-  BLOG_DETAIL: '/list-blogs/:id'
+  BLOG_DETAIL: '/list-blogs/:id',
+  TEST: '/test',
+  DO_TEST: '/do-test',
+  TEST_HISTORY: '/test-history',
+  TEST_DETAIL_HISTORY: '/test-detail/:id',
+  PAYMENT_PACKAGE: '/autismtutor/payment-package',
 };
 
 export default PAGES;

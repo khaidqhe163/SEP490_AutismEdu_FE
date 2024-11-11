@@ -89,7 +89,10 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge, studyingList
                 enqueueSnackbar("Gửi yêu cầu tới gia sư thành công!", { variant: "success" });
                 handleClose();
             }, (error) => {
-                enqueueSnackbar("Gửi yêu cầu tới gia sư thất bại!", { variant: "error" });
+                if (error?.code === 400) {
+                    enqueueSnackbar(error.error[0], { variant: "error" });
+                    handleClose();
+                }
                 console.log(error);
             });
         } catch (error) {

@@ -159,8 +159,6 @@ function ExerciseTypeList() {
             <LoadingComponent open={loading} setOpen={setLoading} />
 
         </Stack>
-
-
     );
 }
 

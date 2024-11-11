@@ -15,7 +15,10 @@ const processResponse = (response) => {
 };
 
 const logError = (e, error) => {
+  console.log(e.response);
+
   if (error && e.response) {
+
     if (e.response?.status) {
       if (e.response.status === 401) {
         Cookies.remove('access_token');
@@ -34,8 +37,8 @@ const logError = (e, error) => {
         return;
       }
       if (e.response.status === 402) {
-        window.location.href = '/autismedu';
-        enqueueSnackbar("DDcu th hung", { variant: "error" })
+        window.location.href = '/autismtutor/payment-package';
+        enqueueSnackbar("Hết hạn gói đăng ký!", { variant: "error" })
         return;
       }
 

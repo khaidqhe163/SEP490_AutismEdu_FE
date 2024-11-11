@@ -48,9 +48,11 @@ function TutorRequest() {
         });
     };
 
+    //handleAccepRequest()
     const handleOpenModal = async (request) => {
         // nav('/autismtutor/create-student-profile', { state: { request } });
         try {
+            
             setLoading(true);
             const body = {
                 id: request?.id,
@@ -58,7 +60,7 @@ function TutorRequest() {
                 rejectType: 0,
                 rejectionReason: ""
             };
-            await services.TutorRequestAPI.changeStatusTutorRequest(selectedRequest?.id, body, (res) => {
+            await services.TutorRequestAPI.changeStatusTutorRequest(request?.id, body, (res) => {
                 const newListRequest = listRequest.map((r, index) => {
                     if (r.id == request?.id) {
                         return { ...r, requestStatus: 1 };
@@ -469,9 +471,9 @@ function TutorRequest() {
                 }
             </Box>
 
-            {selectedRequest && openModal && (
+            {/* {selectedRequest && openModal && (
                 <CreateStudentProfileModal open={openModal} onClose={handleCloseModal} request={selectedRequest} />
-            )}
+            )} */}
 
             {selectedRequest && openRejectModal && (
                 <RejectRequestModal open={openRejectModal} onClose={handleCloseRejectModal} onConfirm={handleConfirmReject} />

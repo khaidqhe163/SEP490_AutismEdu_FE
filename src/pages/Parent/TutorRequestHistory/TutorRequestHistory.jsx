@@ -45,6 +45,7 @@ const TutorRequestHistory = () => {
   });
 
   useEffect(() => {
+    window.scrollTo(0,0);
     handleGetRequestList();
   }, [filters, pagination.pageNumber]);
 

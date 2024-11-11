@@ -36,12 +36,18 @@ import MyTutorDetail from '~/pages/Tutor/MyTutor/MyTutorDetail'
 import StudentProfileApprove from '~/pages/StudentProfile/StudentProfileApprove'
 import TutorRequestHistory from '~/pages/Parent/TutorRequestHistory/TutorRequestHistory'
 import LoginAdmin from '~/pages/Admin/LoginAdmin'
+import TestManage from '~/pages/Parent/TestManage'
+import TestManagement from '~/pages/Admin/TestManagement'
 import PaymentPackage from '~/pages/Admin/PaymentManagement/PaymentPackage'
 import AssessmentScoreRange from '~/pages/Admin/AssessmentManagement/AssessmentScoreRange'
 import BlogManagement from '~/pages/Admin/BlogManagement'
 import BlogCreation from '~/pages/Admin/BlogManagement/BlogCreation'
 import Blog from '~/pages/Blog'
 import BlogDetail from '~/pages/Blog/BlogDetail'
+import DoTest from '~/pages/Parent/TestManage/DoTest'
+import TestHistory from '~/pages/Parent/TestManage/TestHistory'
+import TestResultDetail from '~/pages/Parent/TestManage/TestResultDetail'
+import RechargeModal from '~/components/PaymentModal/RechargeModal'
 
 const UnLayoutRoutes = [
     {
@@ -146,6 +152,22 @@ const publicRoutes = [
     {
         path: PAGES.ROOT + PAGES.BLOG_DETAIL,
         element: BlogDetail
+    },
+    {
+        path: PAGES.ROOT + PAGES.TEST,
+        element: TestManage
+    },
+    {
+        path: PAGES.ROOT + PAGES.DO_TEST,
+        element: DoTest
+    },
+    {
+        path: PAGES.ROOT + PAGES.TEST_HISTORY,
+        element: TestHistory
+    },
+    {
+        path: PAGES.ROOT + PAGES.TEST_DETAIL_HISTORY,
+        element: TestResultDetail
     }
 ]
 
@@ -176,6 +198,9 @@ const tutorRoutes = [
     }, {
         path: PAGES.EXERCISE_MANAGEMENT,
         element: ExerciseManagement
+    }, {
+        path: PAGES.PAYMENT_PACKAGE,
+        element: RechargeModal
     }
 ]
 const adminRoutes = [
@@ -202,6 +227,10 @@ const adminRoutes = [
     {
         path: PAGES.ASSESSMENT_CREATION,
         element: AssessmentCreation
+    },
+    {
+        path: PAGES.TEST_MANAGEMENT,
+        element: TestManagement
     },
     {
         path: PAGES.PAYMENT_PACKAGE_MANAGEMENT,
