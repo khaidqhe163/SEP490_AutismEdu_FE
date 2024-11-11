@@ -87,9 +87,10 @@ function BlogCreation() {
             return;
         }
         try {
+            console.log(typeof content);
             const form = new FormData();
             form.append("Title", title);
-            form.append("Content ", content);
+            form.append("Content", content);
             form.append("ImageDisplay", image);
             form.append("IsPublished", status);
             axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
@@ -125,8 +126,8 @@ function BlogCreation() {
                 </Stack>
             </Stack>
             <Box px="100px">
-                <TextField fullWidth sx={{ mt: 3, bgcolor: "white" }} placeholder='Thêm tiêu đề tại đây' 
-                value={title} onChange={(e) => setTitle(e.target.value)}/>
+                <TextField fullWidth sx={{ mt: 3, bgcolor: "white" }} placeholder='Thêm tiêu đề tại đây'
+                    value={title} onChange={(e) => setTitle(e.target.value)} />
                 <Stack direction='row' gap={4} alignItems='center' mt={3}>
                     <Typography fontSize="20px" color='black'>Ảnh bìa</Typography>
                     <UploadImage setImage={setImage} aspectRatio={16 / 9} minDimension={250} />

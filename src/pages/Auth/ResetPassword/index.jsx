@@ -33,12 +33,6 @@ function ResetPassword() {
         borderRadius: "15px"
     };
 
-    useEffect(() => {
-        if (loading) {
-            handleSubmit();
-        }
-    }, [loading])
-
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
@@ -55,6 +49,7 @@ function ResetPassword() {
                 setLoading(false);
                 return;
             } else {
+                setLoading(true);
                 await service.AuthenticationAPI.resetPassword({
                     code,
                     security,
@@ -180,7 +175,7 @@ function ResetPassword() {
                             }
                         </FormControl>
                     </Box>
-                    <LoadingButton variant='contained' sx={{ width: "100%", marginTop: "20px" }} onClick={() => setLoading(true)}
+                    <LoadingButton variant='contained' sx={{ width: "100%", marginTop: "20px" }} onClick={handleSubmit}
                         loading={loading} loadingIndicator="Loading...">
                         Đặt lại mật khẩu
                     </LoadingButton>

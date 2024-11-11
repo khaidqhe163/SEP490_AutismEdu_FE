@@ -18,7 +18,7 @@ export const SignalRProvider = ({ children }) => {
         if (parentInfo) {
             userId = parentInfo.id;
         }
-        if (userInfor) {
+        if (userId) {
             const newConnection = new signalR.HubConnectionBuilder()
                 .withUrl(`https://localhost:5000/hub/notifications?userId=${userId}`)
                 .withAutomaticReconnect()

@@ -6,12 +6,14 @@ import PaymentCreation from './PaymentCreation';
 import services from '~/plugins/services';
 import ConfirmDialog from '~/components/ConfirmDialog';
 import { enqueueSnackbar } from 'notistack';
+import EditIcon from '@mui/icons-material/Edit';
+import PaymentUpdate from './PaymentUpdate';
 function PaymentPackage() {
     const [paymentPackages, setPaymetPackages] = useState([]);
     const [change, setChange] = useState(true);
     const [openConfirm, setOpenConfirm] = useState(false);
     const [currentPackage, setCurrentPackage] = useState(null);
-    const [status, setStatus] = useState(0);
+    const [status, setStatus] = useState("all");
     const formatDate = (date) => {
         if (!date) return "";
         const d = new Date(date);
@@ -20,16 +22,25 @@ function PaymentPackage() {
     useEffect(() => {
         getPaymentPackages()
     }, [])
+    useEffect(() => {
+        if (status !== "all") {
+            setStatus("all")
+        } else {
+            getPaymentPackages();
+        }
+    }, [change])
+    useEffect(() => {
+        getPaymentPackages()
+    }, [status])
 
     const getPaymentPackages = async () => {
         try {
             await services.PackagePaymentAPI.getListPaymentPackage((res) => {
-                console.log(res);
                 setPaymetPackages(res.result)
             }, (error) => {
                 console.log(error);
             }, {
-
+                status: status
             })
         } catch (error) {
             console.log(error);
@@ -47,21 +58,31 @@ function PaymentPackage() {
         try {
             await services.PackagePaymentAPI.updatePaymentPackage(currentPackage.id, {
                 id: currentPackage.id,
-                isActive: currentPackage.isActive ? false : true
+                isActive: currentPackage.isHide ? false : true
             },
                 (res) => {
-                    const filterUpdate = paymentPackages.map((p) => {
-                        if (p.id !== currentPackage.id) {
-                            return p;
-                        } else return res.result;
-                    })
-                    setPaymetPackages(filterUpdate);
+                    if (status !== "all") {
+                        const filterUpdate = paymentPackages.filter((p) => {
+                            return p.id !== currentPackage.id;
+                        })
+                        setPaymetPackages(filterUpdate);
+                    }
+                    else {
+                        const filterUpdate = paymentPackages.map((p) => {
+                            if (p.id !== currentPackage.id) {
+                                return p;
+                            } else return res.result;
+                        })
+                        setPaymetPackages(filterUpdate);
+                    }
                     enqueueSnackbar("Cập nhật thành công", { variant: "success" })
                 }, (error) => {
                     enqueueSnackbar(error.error[0], { variant: "error" })
                 })
+            setOpenConfirm(false);
         } catch (error) {
             enqueueSnackbar("Cập nhật thất bại", { variant: "error" })
+            setOpenConfirm(false);
         }
     }
     return (
@@ -69,9 +90,9 @@ function PaymentPackage() {
             <Typography variant='h4'>Quản lý gói thanh toán</Typography>
             <Box sx={{ display: "flex", justifyContent: "space-between" }} mt={5}>
                 <Select value={status} onChange={(e) => setStatus(e.target.value)}>
-                    <MenuItem value={0}>Tất cả</MenuItem>
-                    <MenuItem value={1}>Đang hiện</MenuItem>
-                    <MenuItem value={2}>Đang ẩn</MenuItem>
+                    <MenuItem value="all">Tất cả</MenuItem>
+                    <MenuItem value="Hide">Đang hiện</MenuItem>
+                    <MenuItem value="Show">Đang ẩn</MenuItem>
                 </Select>
                 <PaymentCreation change={change} setChange={setChange} />
             </Box>
@@ -113,12 +134,13 @@ function PaymentPackage() {
                                         </TableCell>
                                         <TableCell>
                                             {
-                                                s.isActive ? <Button variant='outlined' sx={{ color: "#ffab00", borderColor: "#ffab00" }}
+                                                s.isHide ? <Button variant='outlined' sx={{ color: "#ffab00", borderColor: "#ffab00" }}
                                                     onClick={() => { setOpenConfirm(true); setCurrentPackage(s) }}>Hide</Button> :
                                                     <Button variant='outlined' sx={{ color: "#ff3e1d", borderColor: "#ff3e1d" }}
                                                         onClick={() => { setOpenConfirm(true); setCurrentPackage(s) }}
                                                     >Show</Button>
                                             }
+                                            <PaymentUpdate paymentPackages={paymentPackages} paymentPackage={s} setStatus={setStatus} status={status} setPaymetPackages={paymentPackages} />
                                         </TableCell>
                                     </TableRow>
                                 )
@@ -131,7 +153,7 @@ function PaymentPackage() {
                 setOpenConfirm={setOpenConfirm}
                 title="Đổi trạng thái"
                 handleAction={changeStatus}
-                content={`Bạn có chắc muốn ${currentPackage && currentPackage.isActive ? "ẩn" : "hiện"} gói thanh toán này không`} />
+                content={`Bạn có chắc muốn ${currentPackage && currentPackage.isHide ? "ẩn" : "hiện"} gói thanh toán này không`} />
         </Paper>
     )
 }

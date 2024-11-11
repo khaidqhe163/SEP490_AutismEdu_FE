@@ -110,7 +110,7 @@ export default function PaymentCreation({ change, setChange }) {
         });
     };
     return (
-        <div>
+        <>
             <Button onClick={handleOpen} variant='contained'>Tạo gói thanh toán mới</Button>
             <Modal
                 open={open}
@@ -197,7 +197,7 @@ export default function PaymentCreation({ change, setChange }) {
                                 }
                             </Box>
                         </Stack>
-                        <Typography>Bạn có muốn hiển thị gói này luông không?</Typography>
+                        <Typography>Bạn có muốn hiển thị gói này luôn không?</Typography>
                         <FormControl sx={{ width: "100px" }}>
                             <Select name='isActive' value={formik.values.isActive} onChange={formik.handleChange} >
                                 <MenuItem value={true}>Có</MenuItem>
@@ -210,6 +210,6 @@ export default function PaymentCreation({ change, setChange }) {
                     </form>
                 </Box>
             </Modal>
-        </div>
+        </>
     );
 }

@@ -22,10 +22,9 @@ function MyChildren() {
     const [avatar, setAvatar] = useState(null);
     const [childAvatar, setChildAvatar] = useState(null);
     useEffect(() => {
-        if (userInfo) {
-            handleGetChildren();
-        }
-    }, [userInfo])
+        console.log("zoday");
+        handleGetChildren();
+    }, [])
 
     const validate = values => {
         const errors = {};
@@ -116,17 +115,19 @@ function MyChildren() {
     }, [formik])
     const handleGetChildren = async () => {
         try {
-            await services.ChildrenManagementAPI.listChildren(userInfo.id, (res) => {
+            setLoading(true);
+            await services.ChildrenManagementAPI.listChildren(userInfo?.id, (res) => {
                 console.log(res);
                 setChildren(res.result);
             }, (err) => {
                 console.log("data child ==> ", err);
             })
+            setLoading(false);
         } catch (error) {
             console.log(error);
+            setLoading(false);
         }
     }
-    console.log(childAvatar);
     return (
         <Stack direction='row' justifyContent="center" py={5}>
             <Stack sx={{ width: "80%" }} direction="row" justifyContent="center">
