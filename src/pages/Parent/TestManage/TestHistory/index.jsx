@@ -208,7 +208,7 @@ function TestHistory() {
                 </TableContainer>
 
                 <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-                    <DialogTitle textAlign={'center'}>Lý do từ chối</DialogTitle>
+                    <DialogTitle textAlign={'center'}>Mô tả chi tiết</DialogTitle>
                     <Divider />
                     <DialogContent>
                         <Typography>{selectedContent}</Typography>

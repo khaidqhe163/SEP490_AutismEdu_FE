@@ -151,7 +151,12 @@ const API_CODE = {
   //Notification package
   API_GET_NOTIFICATION: '/Notification',
   API_READ_ALL_NOTIFICATION: '/Notification/ReadAll',
-  API_READ_A_NOTIFICATION: '/Notification/read/'
+  API_READ_A_NOTIFICATION: '/Notification/read/',
+
+  //payment history
+  API_POST_PAYMENT_HISTORY: '/PaymentHistory',
+  API_GET_PAYMENT_HISTORY: '/PaymentHistory',
+  API_GET_PAYMENT_HISTORY_CURRENT: '/PaymentHistory/currentUserPaymentHistory',
 };
 
 export default API_CODE;

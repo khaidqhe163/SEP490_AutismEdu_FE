@@ -44,6 +44,7 @@ const PAGES = {
   DO_TEST: '/do-test',
   TEST_HISTORY: '/test-history',
   TEST_DETAIL_HISTORY: '/test-detail/:id',
+  PAYMENT_PACKAGE: '/autismtutor/payment-package',
 };
 
 export default PAGES;

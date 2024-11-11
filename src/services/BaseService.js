@@ -15,23 +15,27 @@ const processResponse = (response) => {
 };
 
 const logError = (e, error) => {
+  console.log(e.response);
+
   if (error && e.response) {
+    
     if (e.response?.status) {
-      if (e.response.status === 401) {
-        Cookies.remove('access_token');
-        Cookies.remove('refresh_token');
-        window.location.href = '/autismedu/login-option';
-        return;
-      }
-      if (e.response.status === 403) {
-        Cookies.remove('access_token');
-        Cookies.remove('refresh_token');
-        window.location.href = '/autismedu/login-option';
-        return;
-      }
+        if (e.response.status === 401) {
+          Cookies.remove('access_token');
+          Cookies.remove('refresh_token');
+          window.location.href = '/autismedu/login-option';
+          return;
+        }
+      // if (e.response.status === 403) {
+      //   Cookies.remove('access_token');
+      //   Cookies.remove('refresh_token');
+      //   window.location.href = '/autismedu/admin/login';
+      //   return;
+      // }
+      
       if (e.response.status === 402) {
-        window.location.href = '/autismedu';
-        enqueueSnackbar("DDcu th hung", { variant: "error" })
+        window.location.href = '/autismtutor/payment-package';
+        enqueueSnackbar("Hết hạn gói đăng ký!", { variant: "error" })
         return;
       }
 

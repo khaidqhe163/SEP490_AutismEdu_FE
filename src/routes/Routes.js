@@ -43,6 +43,7 @@ import AssessmentScoreRange from '~/pages/Admin/AssessmentManagement/AssessmentS
 import DoTest from '~/pages/Parent/TestManage/DoTest'
 import TestHistory from '~/pages/Parent/TestManage/TestHistory'
 import TestResultDetail from '~/pages/Parent/TestManage/TestResultDetail'
+import RechargeModal from '~/components/PaymentModal/RechargeModal'
 
 const UnLayoutRoutes = [
     {
@@ -185,6 +186,9 @@ const tutorRoutes = [
     }, {
         path: PAGES.EXERCISE_MANAGEMENT,
         element: ExerciseManagement
+    }, {
+        path: PAGES.PAYMENT_PACKAGE,
+        element: RechargeModal
     }
 ]
 const adminRoutes = [

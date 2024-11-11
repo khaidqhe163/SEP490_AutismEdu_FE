@@ -3,6 +3,8 @@ import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, 
 import Thank from './Thank';
 import { useDispatch } from 'react-redux';
 import { enqueueSnackbar } from 'notistack';
+import services from '~/plugins/services';
+import LoadingComponent from '../LoadingComponent';
 
 
 const QrModal = (props) => {
@@ -11,7 +13,7 @@ const QrModal = (props) => {
         setShow,
         total,
         randomCode,
-        postData,
+        id,
         ...rest
     } = props;
 
@@ -32,6 +34,8 @@ const QrModal = (props) => {
     const [data, setData] = useState({});
     const [isPaid, setIsPaid] = useState(false);
 
+    const [loading, setLoading] = useState(false);
+
     const fetchData = async () => {
         try {
             const res = await fetch(api_get, {
@@ -41,7 +45,7 @@ const QrModal = (props) => {
                 }
             });
             const jsonData = await res.json();
-            console.log(jsonData.data);
+            console.log(jsonData.data.records);
 
             setData(jsonData);
 
@@ -49,7 +53,7 @@ const QrModal = (props) => {
                 if (Math.floor(trans.amount) === Math.floor(total) && trans.description.includes(randomCode.replace(/-/g, ""))) {
                     setShow(false);
                     setIsPaid(true);
-                    // savePayment();
+                    // savePayment(trans);
                     return;
                 }
             });
@@ -69,19 +73,33 @@ const QrModal = (props) => {
         }
     }, [show, isPaid]);
 
-    const savePayment = async () => {
-        try {
-            const res = await api.post(`${baseUrl}api/payment`, { total });
-            dispatch(setUserInformation(res.data.restUser));
-            enqueueSnackbar(res.data.message);
-        } catch (error) {
-            if (error.response?.status === 400) {
-                enqueueSnackbar(error.response.data.error);
-            } else {
-                enqueueSnackbar('Có lỗi!');
-            }
-        }
-    };
+    // const savePayment = async (trans) => {
+    //     try {
+    //         console.log('This pay:');
+    //         console.log(trans);
+    //         const newData = {
+    //             "transactionId": trans.id,
+    //             "description": trans.description,
+    //             "amount": trans.amount,
+    //             "paymentDate": trans.when,
+    //             "bankTransactionId": trans.tid,
+    //             "bankAccount": trans.corresponsiveAccount,
+    //             "packagePaymentId": id
+    //         }
+    //         await services.PaymentHistoryAPI.createPaymentHistory(newData, (res) => {
+    //             console.log(res?.result);
+    //             enqueueSnackbar("Tạo lịch sử giao dịch thành công!", { variant: 'success' });
+    //         }, (error) => {
+    //             enqueueSnackbar(error.error[0], { variant: 'error' });
+    //             console.log(error);
+    //         });
+    //     } catch (error) {
+    //         console.log(error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+       
+    // };
 
     const [showT, setShowT] = useState(false);
 
@@ -114,6 +132,7 @@ const QrModal = (props) => {
                     </DialogActions>
                 </Dialog>
             )}
+            <LoadingComponent open={loading} setOpen={setLoading} />
         </Box>
     );
 };

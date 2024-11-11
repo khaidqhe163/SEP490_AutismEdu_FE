@@ -25,6 +25,7 @@ import {TestResultManagementAPI} from "~/services/TestResultManagementAPI"
 import { ScoreRangeAPI } from "~/services/ScoreRangeAPI";
 import { PackagePaymentAPI } from "~/services/PaymentPackageAPI";
 import { NotificationAPI } from "~/services/NotificationAPI";
+import { PaymentHistoryAPI } from "~/services/PaymentHistoryAPI";
 // Initialize the BaseService with the axios instance and API prefix
 (function () {
   initializeService(axios, "/api");
@@ -55,7 +56,8 @@ const services = {
   TestResultManagementAPI,
   ScoreRangeAPI,
   PackagePaymentAPI,
-  NotificationAPI
+  NotificationAPI,
+  PaymentHistoryAPI,
 };
 
 export default services;
