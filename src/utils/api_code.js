@@ -157,7 +157,8 @@ const API_CODE = {
   API_CREATE_BLOG: '/v1/Blog',
   API_GET_BLOGS: '/v1/Blog',
   API_GET_BLOG_DETAIL: '/v1/Blog/',
-  API_GET_EDIT_DETAIL: '/api/v1/Blog/',
+  API_GET_EDIT_DETAIL: '/v1/Blog/',
+  API_UPDATE_BLOG_STATUS: '/v1/Blog/',
   //payment history
   API_POST_PAYMENT_HISTORY: '/v1/PaymentHistory',
   API_GET_PAYMENT_HISTORY: '/v1/PaymentHistory',

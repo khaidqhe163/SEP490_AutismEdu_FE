@@ -1,10 +1,11 @@
-import { Box, Button, IconButton, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Button, IconButton, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import TablePagging from '~/components/TablePagging';
 import services from '~/plugins/services';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { ConfirmDialog } from '@toolpad/core';
+import ConfirmDialog from '~/components/ConfirmDialog';
+import LoadingComponent from '~/components/LoadingComponent';
 function BlogManagement() {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -14,13 +15,34 @@ function BlogManagement() {
     const [currentPage, setCurrentPage] = useState(1);
     const [currentBlog, setCurrentBlog] = useState(null)
     const [openConfirm, setOpenConfirm] = useState(false);
+    const [orderBy, setOrderBy] = useState("publishDate");
+    const [sort, setSort] = useState("desc");
     useEffect(() => {
         handleGetBlogs();
     }, [])
     useEffect(() => {
         handleGetBlogs();
-    }, [currentPage, status])
+    }, [currentPage])
+    useEffect(() => {
+        if (currentPage === 1) {
+            handleGetBlogs();
+        } else {
+            setCurrentPage(1)
+        }
+    }, [status, orderBy, sort])
 
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            if (currentPage === 1) {
+                handleGetBlogs();
+            } else {
+                setCurrentPage(1)
+            }
+        }, 1000)
+        return () => {
+            clearTimeout(handler)
+        }
+    }, [searchName])
     const formatDate = (date) => {
         if (!date) return "";
         const d = new Date(date);
@@ -37,7 +59,10 @@ function BlogManagement() {
                 console.log(err);
             }, {
                 pageNumber: currentPage,
-                isPublishe: status
+                isPublished: status,
+                orderBy: orderBy,
+                sort: sort,
+                search: searchName
             })
             setLoading(false);
         } catch (error) {
@@ -46,46 +71,60 @@ function BlogManagement() {
         }
     }
 
-    // const changeStatus = async () => {
-    //     try {
-    //         await services.PackagePaymentAPI.updatePaymentPackage(currentPackage.id, {
-    //             id: currentPackage.id,
-    //             isActive: currentPackage.isHide ? false : true
-    //         },
-    //             (res) => {
-    //                 if (status !== "all") {
-    //                     const filterUpdate = paymentPackages.filter((p) => {
-    //                         return p.id !== currentPackage.id;
-    //                     })
-    //                     setPaymetPackages(filterUpdate);
-    //                 }
-    //                 else {
-    //                     const filterUpdate = paymentPackages.map((p) => {
-    //                         if (p.id !== currentPackage.id) {
-    //                             return p;
-    //                         } else return res.result;
-    //                     })
-    //                     setPaymetPackages(filterUpdate);
-    //                 }
-    //                 enqueueSnackbar("Cập nhật thành công", { variant: "success" })
-    //             }, (error) => {
-    //                 enqueueSnackbar(error.error[0], { variant: "error" })
-    //             })
-    //         setOpenConfirm(false);
-    //     } catch (error) {
-    //         enqueueSnackbar("Cập nhật thất bại", { variant: "error" })
-    //         setOpenConfirm(false);
-    //     }
-    // }
+    const changeStatus = async () => {
+        try {
+            await services.BlogAPI.updateBlogStatus(currentBlog.id, {
+                id: currentBlog.id,
+                isActive: currentBlog.isPublished ? false : true
+            },
+                (res) => {
+                    if (status !== "all") {
+                        const filterUpdate = blogs.filter((p) => {
+                            return p.id !== currentBlog.id;
+                        })
+                        setBlogs(filterUpdate);
+                    }
+                    else {
+                        const filterUpdate = blogs.map((p) => {
+                            if (p.id !== currentBlog.id) {
+                                return p;
+                            } else return res.result;
+                        })
+                        setBlogs(filterUpdate);
+                    }
+                    enqueueSnackbar("Cập nhật thành công", { variant: "success" })
+                }, (error) => {
+                    enqueueSnackbar(error.error[0], { variant: "error" })
+                })
+            setOpenConfirm(false);
+        } catch (error) {
+            enqueueSnackbar("Cập nhật thất bại", { variant: "error" })
+            setOpenConfirm(false);
+        }
+    }
     return (
         <Paper variant='elevation' sx={{ p: 3 }}>
             <Typography variant='h4'>Quản lý bài viết</Typography>
-            <Box sx={{ display: "flex", justifyContent: "space-between" }} mt={5}>
+            <Box sx={{ display: "flex", gap: 5 }} mt={5}>
                 <Select value={status} onChange={(e) => setStatus(e.target.value)}>
                     <MenuItem value="all">Tất cả</MenuItem>
                     <MenuItem value="true">Đang hiện</MenuItem>
                     <MenuItem value="false">Đang ẩn</MenuItem>
                 </Select>
+                <Select value={orderBy} onChange={(e) => setOrderBy(e.target.value)}>
+                    <MenuItem value="publishDate">Ngày đăng</MenuItem>
+                    <MenuItem value="createdDate">Ngày tạo</MenuItem>
+                    <MenuItem value="title">Tiêu đề</MenuItem>
+                </Select>
+                <Select value={sort} onChange={(e) => setSort(e.target.value)}>
+                    <MenuItem value="asc">Tăng dần</MenuItem>
+                    <MenuItem value="desc">Giảm dần</MenuItem>
+                </Select>
+                <TextField
+                    label="Tìm kiếm theo tiêu đề"
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                />
             </Box>
             <TableContainer component={Paper} sx={{ mt: 5 }}>
                 <Table sx={{ minWidth: 650 }}>
@@ -123,9 +162,13 @@ function BlogManagement() {
                                             <IconButton sx={{ color: "#5fc35f" }}><VisibilityIcon /></IconButton>
                                             {
                                                 b.isPublished ? (
-                                                    <Button variant='outlined' sx={{ color: "red", borderColor: "red", ml: 1 }}>Ẩn</Button>
+                                                    <Button variant='outlined' sx={{ color: "red", borderColor: "red", ml: 1 }}
+                                                        onClick={() => { setOpenConfirm(true); setCurrentBlog(b) }}
+                                                    >Ẩn</Button>
                                                 ) : (
-                                                    <Button variant='outlined' sx={{ color: "blue", borderColor: "blue", ml: 1 }}>Hiện</Button>
+                                                    <Button variant='outlined' sx={{ color: "blue", borderColor: "blue", ml: 1 }}
+                                                        onClick={() => { setOpenConfirm(true); setCurrentBlog(b) }}
+                                                    >Hiện</Button>
                                                 )
                                             }
 
@@ -138,13 +181,13 @@ function BlogManagement() {
                 </Table>
                 <TablePagging pagination={pagination} setPagination={setPagination} setCurrentPage={setCurrentPage} />
             </TableContainer>
+            <LoadingComponent open={loading} />
             {
-
-                // <ConfirmDialog openConfirm={openConfirm}
-                //     setOpenConfirm={setOpenConfirm}
-                //     title="Đổi trạng thái"
-                //     handleAction={changeStatus}
-                //     content={`Bạn có chắc muốn ${currentBlog && currentBlog.isPublished ? "ẩn" : "hiện"} bài viết này không`} />
+                <ConfirmDialog openConfirm={openConfirm}
+                    setOpenConfirm={setOpenConfirm}
+                    title="Đổi trạng thái"
+                    handleAction={changeStatus}
+                    content={`Bạn có chắc muốn ${currentBlog && currentBlog.isPublished ? "ẩn" : "hiện"} bài viết này không`} />
             }
         </Paper>
 

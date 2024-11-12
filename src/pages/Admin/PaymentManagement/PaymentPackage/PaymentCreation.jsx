@@ -78,7 +78,7 @@ export default function PaymentCreation({ change, setChange }) {
             duration: '',
             description: '',
             price: '',
-            isActive: true,
+            isHide: true,
             originalId: 0
         }, validate,
         onSubmit: async (values) => {
@@ -199,9 +199,9 @@ export default function PaymentCreation({ change, setChange }) {
                         </Stack>
                         <Typography>Bạn có muốn hiển thị gói này luôn không?</Typography>
                         <FormControl sx={{ width: "100px" }}>
-                            <Select name='isActive' value={formik.values.isActive} onChange={formik.handleChange} >
-                                <MenuItem value={true}>Có</MenuItem>
-                                <MenuItem value={false}>Không</MenuItem>
+                            <Select name='isHide' value={formik.values.isHide} onChange={formik.handleChange} >
+                                <MenuItem value={false}>Có</MenuItem>
+                                <MenuItem value={true}>Không</MenuItem>
                             </Select>
                         </FormControl>
                         <Box>
