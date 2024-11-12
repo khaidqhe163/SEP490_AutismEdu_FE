@@ -89,8 +89,8 @@ function PaymentPackage() {
             <Box sx={{ display: "flex", justifyContent: "space-between" }} mt={5}>
                 <Select value={status} onChange={(e) => setStatus(e.target.value)}>
                     <MenuItem value="all">Tất cả</MenuItem>
-                    <MenuItem value="Hide">Đang hiện</MenuItem>
-                    <MenuItem value="Show">Đang ẩn</MenuItem>
+                    <MenuItem value="Show">Đang hiện</MenuItem>
+                    <MenuItem value="Hide">Đang ẩn</MenuItem>
                 </Select>
                 <PaymentCreation change={change} setChange={setChange} />
             </Box>
@@ -132,7 +132,7 @@ function PaymentPackage() {
                                         </TableCell>
                                         <TableCell>
                                             {
-                                                s.isHide ? <Button variant='outlined' sx={{ color: "#ffab00", borderColor: "#ffab00" }}
+                                                !s.isHide ? <Button variant='outlined' sx={{ color: "#ffab00", borderColor: "#ffab00" }}
                                                     onClick={() => { setOpenConfirm(true); setCurrentPackage(s) }}>Hide</Button> :
                                                     <Button variant='outlined' sx={{ color: "#ff3e1d", borderColor: "#ff3e1d" }}
                                                         onClick={() => { setOpenConfirm(true); setCurrentPackage(s) }}
@@ -151,7 +151,7 @@ function PaymentPackage() {
                 setOpenConfirm={setOpenConfirm}
                 title="Đổi trạng thái"
                 handleAction={changeStatus}
-                content={`Bạn có chắc muốn ${currentPackage && currentPackage.isHide ? "ẩn" : "hiện"} gói thanh toán này không`} />
+                content={`Bạn có chắc muốn ${currentPackage && currentPackage.isHide ? "hiện" : "ẩn"} gói thanh toán này không`} />
         </Paper>
     )
 }

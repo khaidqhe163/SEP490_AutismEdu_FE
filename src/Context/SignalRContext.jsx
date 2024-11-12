@@ -25,11 +25,6 @@ export const SignalRProvider = ({ children }) => {
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
             setConnection(newConnection);
-            newConnection.start().then(() => {
-                console.log("Kết nối SignalR thành công!");
-            }).catch(error => {
-                console.error("Lỗi khi bắt đầu kết nối SignalR:", error);
-            });
         }
     }, [tutorInfo, parentInfo]);
     return (

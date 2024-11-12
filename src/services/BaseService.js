@@ -33,7 +33,7 @@ const logError = (e, error) => {
       if (e.response.status === 403) {
         Cookies.remove('access_token');
         Cookies.remove('refresh_token');
-        window.location.href = '/autismedu/login-option';
+        window.location.href = '/admin/login';
         return;
       }
       if (e.response.status === 402) {

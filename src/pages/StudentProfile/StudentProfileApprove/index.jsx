@@ -66,6 +66,7 @@ function StudentProfileApprove() {
             await services.StudentProfileAPI.getStudentProfileById(id, (res) => {
                 console.log(res);
                 setStudentProfile(res.result)
+                console.log(res.result);
             }, (error) => {
                 console.log(error);
             })
@@ -246,7 +247,7 @@ function StudentProfileApprove() {
                                 <Card sx={{ px: 2 }}>
                                     <CardContent sx={{ px: 0 }}>
                                         <Typography variant='h5'>Tình trạng ban đầu</Typography>
-                                        <Typography sx={{ whiteSpace: "break-spaces", mt: 3 }}>{studentProfile.initialCondition}</Typography>
+                                        <Typography sx={{ whiteSpace: "break-spaces", mt: 3 }}>{studentProfile.initialCondition?.assessmentResults}</Typography>
                                     </CardContent>
                                 </Card>
                                 <Card sx={{ px: 2, mt: 3 }}>
@@ -261,7 +262,7 @@ function StudentProfileApprove() {
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {studentProfile.initialAssessmentResults.map((assessment) => (
+                                                {studentProfile.initialAssessmentResults?.assessmentResults.map((assessment) => (
                                                     <TableRow
                                                         key={assessment.id}
                                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

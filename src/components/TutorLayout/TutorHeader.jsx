@@ -27,9 +27,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     const nav = useNavigate();
     const tutorInfo = useSelector(tutorInfor);
     const aPackagePayment = useSelector(packagePayment);
-    console.log(aPackagePayment);
-    console.log(tutorInfo);
-
     const [accountMenu, setAccountMenu] = useState();
     const dispatch = useDispatch();
     const openAccountMenu = Boolean(accountMenu);
@@ -101,26 +98,19 @@ function TutorHeader({ openMenu, setOpenMenu }) {
 
     useEffect(() => {
         if (connection && tutorInfo) {
-            const startConnection = async () => {
-                if (connection.state !== signalR.HubConnectionState.Disconnected) {
-                    await connection.stop();
-                }
-                try {
+            connection
+                .start()
+                .then(() => {
                     console.log('Kết nối SignalR thành công!');
-                    connection.on(`Notifications-${tutorInfo.id}`, (notification) => {
-                        setNotifications((preNotifications) => [notification, ...preNotifications]);
-                        setUnreadNoti(pre => pre + 1);
-                    });
-                } catch (error) {
-                    console.error('Kết nối SignalR thất bại:', error.message);
-                }
-            };
 
-            startConnection();
+                    connection.on(`Notifications-${tutorInfo.id}`, (notification) => {
+                        console.log(notification);
+                        setNotifications((preNotifications) => [notification, ...preNotifications]);
+                    });
+                })
+                .catch((error) => console.error('Kết nối SignalR thất bại:', error));
             return () => {
-                if (connection.state !== signalR.HubConnectionState.Disconnected) {
-                    connection.stop();
-                }
+                connection.stop();
             };
         }
     }, [connection, tutorInfo]);
@@ -262,12 +252,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                     }}>
                         Nâng cấp
                     </Button>
-                    <IconButton>
-                        <Badge badgeContent={4} color="primary">
-                            <NotificationsActiveIcon />
-                        </Badge>
-                    </IconButton>
-
                     <Box sx={{ position: "relative" }}>
                         <IconButton sx={{ color: "#ff7900" }}
                             onClick={() => setOpenNotification(!openNotification)} ref={notificationIconRef}>

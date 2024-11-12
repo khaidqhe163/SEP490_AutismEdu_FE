@@ -18,6 +18,7 @@ import { SignalRContext } from '~/Context/SignalRContext';
 import services from '~/plugins/services';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
+import * as signalR from '@microsoft/signalr';
 function Header() {
     const [tab, setTab] = useState("1");
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -73,8 +74,8 @@ function Header() {
                     console.log('Kết nối SignalR thành công!');
 
                     connection.on(`Notifications-${userInfo.id}`, (notification) => {
-                        console.log(notification);
                         setNotifications((preNotifications) => [notification, ...preNotifications]);
+
                     });
                 })
                 .catch((error) => console.error('Kết nối SignalR thất bại:', error));
