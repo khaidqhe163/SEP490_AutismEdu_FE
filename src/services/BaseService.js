@@ -36,11 +36,11 @@ const logError = (e, error) => {
         window.location.href = '/autismedu/login-option';
         return;
       }
-      if (e.response.status === 402) {
-        window.location.href = '/autismtutor/payment-package';
-        enqueueSnackbar("Hết hạn gói đăng ký!", { variant: "error" })
-        return;
-      }
+      // if (e.response.status === 402) {
+      //   window.location.href = '/autismtutor/payment-package';
+      //   enqueueSnackbar("Hết hạn gói đăng ký!", { variant: "error" })
+      //   return;
+      // }
 
       error({
         code: e.response.data.statusCode,
