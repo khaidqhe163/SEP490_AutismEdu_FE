@@ -60,9 +60,6 @@ function Header() {
     }, [location])
 
     useEffect(() => {
-        if (userInfo === undefined) {
-            nav(PAGES.ROOT)
-        }
         if (userInfo) {
             handleGetNotification();
         }

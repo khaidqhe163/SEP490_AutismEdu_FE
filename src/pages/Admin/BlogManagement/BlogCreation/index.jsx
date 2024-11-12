@@ -1,24 +1,30 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material'
-import { useFormik } from 'formik'
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import React, { useEffect, useState } from 'react'
+import { useRef, useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import { useNavigate } from 'react-router-dom';
-import '~/assets/css/texteditor.css'
+import '~/assets/css/texteditor.css';
 import UploadImage from '~/components/UploadImage';
 import axios from '~/plugins/axios';
 import services from '~/plugins/services';
 import PAGES from '~/utils/pages';
+import 'react-quill/dist/quill.snow.css'
+import ImageResize from 'quill-image-resize-module-react';
+Quill.register('modules/imageResize', ImageResize);
 function BlogCreation() {
     const [status, setStatus] = useState(true);
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
-    const fontSize = ['8px', '9px', '10px', '12px', '14px', '16px', '20px', '24px', '32px', '42px', '54px', '68px', '84px', '98px']
-    const Size = Quill.import('attributors/style/size');
     const [image, setImage] = useState(null);
     const nav = useNavigate();
-    Size.whitelist = fontSize;
-    Quill.register(Size, true);
+    const quillRef = useRef(null);
+    const handleMouseDown = () => {
+        const editor = quillRef.current.getEditor();
+        const range = editor.getSelection();
+        if (range) {
+            setTimeout(() => editor.setSelection(range), 0);
+        }
+    };
     const toolbarOptions = [
         ['bold', 'italic', 'underline', 'strike'],
         ['blockquote', 'code-block'],
@@ -28,14 +34,13 @@ function BlogCreation() {
         [{ 'script': 'sub' }, { 'script': 'super' }],
         [{ 'indent': '-1' }, { 'indent': '+1' }],
         [{ 'direction': 'rtl' }],
-        [{ 'size': fontSize }],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
         [{ 'color': [] }, { 'background': [] }],
         [{ 'font': [] }],
         [{ 'align': [] }],
         ['clean']
     ];
-    const [selectedFontSize, setSelectedFontSize] = useState("14px");
     const handleChangeEdit = (content, delta, source, editor) => {
         const plainText = editor.getText().trim();
         if (plainText === '') {
@@ -45,37 +50,13 @@ function BlogCreation() {
         }
     };
 
-    useEffect(() => {
-        const toolbar = document.querySelector('.ql-size');
-        const label = toolbar?.querySelector('.ql-picker-label');
-
-        if (label) {
-            label.innerText = selectedFontSize;
-        }
-
-        const updateFontSize = (event) => {
-            const selectedSize = event.target.getAttribute('data-value');
-            if (selectedSize && fontSize.includes(selectedSize)) {
-                setSelectedFontSize(selectedSize);
-                const quill = document.querySelector('.ql-editor');
-                if (quill) {
-                    quill.style.fontSize = selectedSize;
-                }
-            }
-        };
-
-        toolbar?.addEventListener('click', updateFontSize);
-
-        return () => {
-            if (toolbar) {
-                toolbar.removeEventListener('click', updateFontSize);
-            }
-        };
-    }, [selectedFontSize]);
-
     const handleSubmit = async () => {
         if (!title) {
             enqueueSnackbar("Bạn chưa nhập tiêu đề", { variant: "error" })
+            return;
+        }
+        if (title.length < 10) {
+            enqueueSnackbar("Tiêu đề quá ngắn", { variant: "error" })
             return;
         }
         if (!content) {
@@ -87,7 +68,6 @@ function BlogCreation() {
             return;
         }
         try {
-            console.log(typeof content);
             const form = new FormData();
             form.append("Title", title);
             form.append("Content", content);
@@ -102,6 +82,7 @@ function BlogCreation() {
             })
             axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
         } catch (error) {
+            console.log(error);
             enqueueSnackbar("Tạo bài viết thất bại", { variant: "error" })
         }
     }
@@ -144,10 +125,19 @@ function BlogCreation() {
                     onChange={handleChangeEdit}
                     theme="snow"
                     modules={{
-                        toolbar: toolbarOptions
+                        toolbar: toolbarOptions,
+                        clipboard: {
+                            matchVisual: false
+                        },
+                        imageResize: {
+                            parchment: Quill.import('parchment'),
+                            modules: ['Resize', 'DisplaySize']
+                        }
                     }}
                     placeholder='Nhập nội dung bài viết tại đây'
                     style={{ marginTop: "20px" }}
+                    onMouseDown={handleMouseDown}
+                    ref={quillRef}
                 />
             </Box>
         </Box>

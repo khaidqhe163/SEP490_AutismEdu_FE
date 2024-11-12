@@ -34,19 +34,12 @@ function App() {
   const getUserInformation = async (userId, role) => {
     try {
       services.UserManagementAPI.getUserById(userId, (res) => {
-        console.log(res);
         if (role === "Parent") {
           dispatch(setUserInformation(res.result))
-          dispatch(setTutorInformation(undefined))
-          dispatch(setAdminInformation(undefined))
         } else if (role === "Tutor") {
           dispatch(setTutorInformation(res.result))
-          dispatch(setUserInformation(undefined))
-          dispatch(setAdminInformation(undefined))
         } else if (role === "Admin" || role === "Staff" || role === "Manager") {
           dispatch(setAdminInformation(res.result))
-          dispatch(setTutorInformation(undefined))
-          dispatch(setUserInformation(undefined))
         }
       }, (error) => {
         console.log(error);

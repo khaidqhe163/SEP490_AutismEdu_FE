@@ -57,11 +57,6 @@ function StudentProfileApprove() {
         handleGetStudentProfile();
     }, []);
 
-    useEffect(() => {
-        if (parentInfor === undefined) {
-            nav(PAGES.ROOT);
-        }
-    }, [parentInfor])
     const formatAddress = (address) => {
         const addressArr = address.split("|");
         return `${addressArr[3]} - ${addressArr[2]} - ${addressArr[1]} - ${addressArr[0]}`
