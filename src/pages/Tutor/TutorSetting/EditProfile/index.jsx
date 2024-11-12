@@ -12,6 +12,7 @@ import { NumericFormat } from 'react-number-format';
 import CALL_API_ADDRESS from '~/utils/call_api_address';
 import { enqueueSnackbar } from 'notistack';
 import LoadingComponent from '~/components/LoadingComponent';
+import '../../../../assets/css/ql-editor.css';
 
 const NumericFormatCustom = React.forwardRef(function NumericFormatCustom(props, ref) {
     const { onChange, ...other } = props;
@@ -208,7 +209,7 @@ function EditProfile() {
                     setTutor(res.result);
                 }
                 enqueueSnackbar('Cập nhật đã được gửi thành công đến hệ thống!\n', { variant: 'success' });
-                setIsDisable(true);
+                // setIsDisable(true);
             }, (error) => {
                 console.log(error);
             });
@@ -219,6 +220,10 @@ function EditProfile() {
         }
     };
 
+    const quillEditorStyle = {
+        height: '250px',
+    };
+
     return (
         <Stack direction='column' sx={{ width: "90%", margin: "auto", mt: "20px", gap: 2 }}>
             <Stack direction={'row'} spacing={2} mb={5}>
@@ -226,20 +231,6 @@ function EditProfile() {
                     <Button size='small' variant='outlined' color='success'>Đã chấp nhận</Button>}
             </Stack>
             <Grid container spacing={3} component="form" onSubmit={(e) => e.preventDefault()}>
-                {/* <Grid item xs={12} md={6}>
-                    <TextField
-                        fullWidth
-                        required
-                        label="Học phí"
-                        variant="outlined"
-                        name="price"
-                        value={tutor?.price || ''}
-                        onChange={handleInputChange}
-                        InputProps={{
-                            inputComponent: NumericFormatCustom,
-                        }}
-                    />
-                </Grid> */}
 
                 <Grid item xs={6} md={3}>
                     <TextField
@@ -417,13 +408,15 @@ function EditProfile() {
                     />
                 </Grid>
 
-                <Grid item xs={12} mb={5}>
+                <Grid item xs={12} mb={8} sx={{ height: '300px' }}>
                     <Typography variant='h6' mb={2}>Giới thiệu về tôi</Typography>
-                    <ReactQuill
-                        value={tutor?.aboutMe || ''}
-                        onChange={handleQuillChange}
-                        style={{ height: '200px' }}
-                    />
+                    <Box mt={2} sx={{ height: "200px", width: "100%" }}>
+                        <ReactQuill
+                            style={quillEditorStyle}
+                            value={tutor?.aboutMe || ''}
+                            onChange={handleQuillChange}
+                        />
+                    </Box>
                 </Grid>
 
                 <Grid item xs={12}>

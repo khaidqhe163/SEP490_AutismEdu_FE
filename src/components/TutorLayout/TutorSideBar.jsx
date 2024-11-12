@@ -43,7 +43,7 @@ export default function TutorSideBar({ openMenu }) {
         } catch (error) {
             console.log(error);
         }
-    }
+    };
 
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);

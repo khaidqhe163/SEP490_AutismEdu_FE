@@ -37,7 +37,7 @@ const logError = (e, error) => {
         return;
       }
       if (e.response.status === 402) {
-        window.location.href = '/autismtutor/payment-package';
+        window.location.href = '/autismtutor/payment-package-focus';
         enqueueSnackbar("Hết hạn gói đăng ký!", { variant: "error" })
         return;
       }

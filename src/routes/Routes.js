@@ -48,6 +48,7 @@ import DoTest from '~/pages/Parent/TestManage/DoTest'
 import TestHistory from '~/pages/Parent/TestManage/TestHistory'
 import TestResultDetail from '~/pages/Parent/TestManage/TestResultDetail'
 import RechargeModal from '~/components/PaymentModal/RechargeModal'
+import PaymentPackageManagement from '~/pages/Tutor/PaymentPackageManagement/PaymentPackageManagement'
 
 const UnLayoutRoutes = [
     {
