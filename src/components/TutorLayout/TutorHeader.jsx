@@ -9,7 +9,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { setTutorInformation, tutorInfor } from '~/redux/features/tutorSlice';
-import { setPackagePayment, packagePayment} from '~/redux/features/packagePaymentSlice';
+import { setPackagePayment, packagePayment } from '~/redux/features/packagePaymentSlice';
 
 import PAGES from '~/utils/pages';
 import Logo from '../Logo';
@@ -41,6 +41,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     const [currentPage, setCurrentPage] = useState(1);
     const notificationRef = useRef(null);
     const notificationIconRef = useRef(null);
+    const [isTrial, setTrial] = useState(true);
     const [unreadNoti, setUnreadNoti] = useState(0);
 
     const [daysLeft, setDaysLeft] = useState(0);
@@ -49,44 +50,45 @@ function TutorHeader({ openMenu, setOpenMenu }) {
 
     // console.log(currentUserPayment);
 
-    // const handleGetCurrentUserPaymentHistory = async () => {
-    //     try {
-    //         await services.PaymentHistoryAPI.getListPaymentHistoryCurrent((res) => {
-    //             dispatch(setPackagePayment(res.result));
-    //             // setCurrentUserPayment(res.result);
-    //         }, (error) => {
-    //             console.log(error);
-    //         });
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     handleGetCurrentUserPaymentHistory();
-    // }, []);
+    const handleGetCurrentUserPaymentHistory = async () => {
+        try {
+            await services.PaymentHistoryAPI.getListPaymentHistoryCurrent((res) => {
+                dispatch(setPackagePayment(res.result));
+                // setCurrentUserPayment(res.result);
+            }, (error) => {
+                console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
-        // if(currentUserPayment){
+        handleGetCurrentUserPaymentHistory();
+    }, []);
 
-        // }
-        if (tutorInfo?.createdDate) {
+    useEffect(() => {
+        const calculateDaysLeft = (endDate) => {
+            const currentDate = new Date();
+            const end = new Date(endDate);
+            const timeDiff = end - currentDate;
+            return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+        };
+
+        if (aPackagePayment?.expirationDate) {
+            const expirationDaysLeft = calculateDaysLeft(aPackagePayment.expirationDate);
+            setTrial(false);
+            setDaysLeft(expirationDaysLeft > 0 ? expirationDaysLeft : 0);
+        } else if (tutorInfo?.createdDate) {
             const createdDate = new Date(tutorInfo.createdDate);
-            console.log(createdDate);
-
             const trialEndDate = new Date(createdDate);
             trialEndDate.setDate(trialEndDate.getDate() + 30);
 
-            const currentDate = new Date();
-
-            const timeDiff = trialEndDate - currentDate;
-
-            const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-            setDaysLeft(daysRemaining > 0 ? daysRemaining : 0);
+            const trialDaysLeft = calculateDaysLeft(trialEndDate);
+            setTrial(true);
+            setDaysLeft(trialDaysLeft > 0 ? trialDaysLeft : 0);
         }
-    // }, [tutorInfo, currentUserPayment]);
-    }, [tutorInfo]);
+    }, [tutorInfo, aPackagePayment]);
 
     useEffect(() => {
         if (tutorInfo === undefined) {
@@ -154,6 +156,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
         Cookies.remove("access_token");
         Cookies.remove("refresh_token");
         dispatch(setTutorInformation(null));
+        dispatch(setPackagePayment(null));
         nav(PAGES.TUTOR_LOGIN)
     }
 
@@ -242,7 +245,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                     },
                                 }}
                             >
-                                Dùng thử: {daysLeft} ngày
+                                {!isTrial ? 'Hạn còn lại:' : 'Dùng thử:'} {daysLeft} ngày
                             </Typography>
                         </Box>
 
@@ -368,10 +371,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                 </Box>
             </Stack >
             <Divider />
-            {/* <RechargeModal
-                show={openModalPayment}
-                handleClose={() => setOpenModalPayment(false)}
-            /> */}
         </Box >
     )
 }

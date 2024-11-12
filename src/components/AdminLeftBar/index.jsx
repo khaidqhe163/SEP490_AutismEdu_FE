@@ -22,10 +22,12 @@ import { adminInfor } from '~/redux/features/adminSlice';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
 import SortIcon from '@mui/icons-material/Sort';
 import PostAddIcon from '@mui/icons-material/PostAdd';
+import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 function AdminLeftBar() {
     const [open, setOpen] = useState(false);
     const [openPayment, setOpenPayment] = useState(false);
     const [openArtical, setOpenArtical] = useState(false);
+    const [openInformation, setOpenInformation] = useState(false);
     const location = useLocation();
     const adminInformation = useSelector(adminInfor);
     const handleClick = () => {
@@ -224,6 +226,63 @@ function AdminLeftBar() {
                                         <PostAddIcon />
                                     </ListItemIcon>
                                     <ListItemText primary="Tạo bài viết" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                    </Collapse>
+                    <ListItemButton onClick={() => setOpenInformation(!openInformation)}>
+                        <ListItemIcon>
+                            <PermContactCalendarIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Thông tin cá nhân" />
+                        {openInformation ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openInformation} timeout="auto" unmountOnExit>
+                        <Link to={PAGES.PERSONAL_INFORMATION}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 9}
+                                    onClick={(event) => handleListItemClick(event, 9)}>
+                                    <ListItemIcon>
+                                        <SortIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Cập nhật thông tin" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                        <Link to={PAGES.CERTIFICATE_MANAGEMENT}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 10}
+                                    onClick={(event) => handleListItemClick(event, 10)}>
+                                    <ListItemIcon>
+                                        <PostAddIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Chứng chỉ" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                        <Link to={PAGES.CURRICULUM_MANAGEMENT}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 11}
+                                    onClick={(event) => handleListItemClick(event, 11)}>
+                                    <ListItemIcon>
+                                        <PostAddIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Khung chương trình" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                        <Link to={PAGES.WORK_EXPERIENCE_MANAGEMENT}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 12}
+                                    onClick={(event) => handleListItemClick(event, 12)}>
+                                    <ListItemIcon>
+                                        <PostAddIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Kinh nghiệm làm việc" />
                                 </ListItemButton>
                             </List>
                         </Link>

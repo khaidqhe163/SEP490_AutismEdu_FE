@@ -22,7 +22,8 @@ function CurriculumManagement() {
     const [isEditing, setIsEditing] = useState(false);
     const [currentEditIndex, setCurrentEditIndex] = useState(null);
     const [showTable, setShowTable] = useState(false);
-
+    console.log(curriculumData);
+    
     useEffect(() => {
         handleGetCurriculums();
     }, []);

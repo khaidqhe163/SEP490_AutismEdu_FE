@@ -15,6 +15,7 @@ import PAGES from "./utils/pages";
 import { SignalRProvider } from "./Context/SignalRContext";
 import { setAdminInformation } from "./redux/features/adminSlice";
 import { enqueueSnackbar } from "notistack";
+import PaymentPackageManagement from "./pages/Tutor/PaymentPackageManagement/PaymentPackageManagement";
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -48,7 +49,8 @@ function App() {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
+
   return (
     <>
       <SignalRProvider>
@@ -72,6 +74,7 @@ function App() {
                 />
               ))}
             </Route>
+            <Route path="/autismtutor/payment-package-focus" element={<PaymentPackageManagement />} />
             <Route path="/autismtutor" element={<TutorLayout />}>
               {tutorRoutes.map((route) => (
                 <Route

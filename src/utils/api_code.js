@@ -143,15 +143,15 @@ const API_CODE = {
   API_GET_SCORE_RANGE: '/v1/AssessmentScoreRange',
 
   //payment package
-  API_GET_PAYMENT_PACKAGE: '/PackagePayment',
-  API_POST_PAYMENT_PACKAGE: '/PackagePayment',
-  API_PUT_PAYMENT_PACKAGE: '/PackagePayment/changeStatus/',
-  API_DELETE_PAYMENT_PACKAGE: '/PackagePayment/',
+  API_GET_PAYMENT_PACKAGE: '/v1/PackagePayment',
+  API_POST_PAYMENT_PACKAGE: '/v1/PackagePayment',
+  API_PUT_PAYMENT_PACKAGE: '/v1/PackagePayment/changeStatus/',
+  API_DELETE_PAYMENT_PACKAGE: '/v1/PackagePayment/',
 
   //Notification
-  API_GET_NOTIFICATION: '/Notification',
-  API_READ_ALL_NOTIFICATION: '/Notification/ReadAll',
-  API_READ_A_NOTIFICATION: '/Notification/read/',
+  API_GET_NOTIFICATION: '/v1/Notification',
+  API_READ_ALL_NOTIFICATION: '/v1/Notification/ReadAll',
+  API_READ_A_NOTIFICATION: '/v1/Notification/read/',
 
   //Blog
   API_CREATE_BLOG: '/v1/Blog',
@@ -159,9 +159,9 @@ const API_CODE = {
   API_GET_BLOG_DETAIL: '/v1/Blog/',
   API_GET_EDIT_DETAIL: '/api/v1/Blog/',
   //payment history
-  API_POST_PAYMENT_HISTORY: '/PaymentHistory',
-  API_GET_PAYMENT_HISTORY: '/PaymentHistory',
-  API_GET_PAYMENT_HISTORY_CURRENT: '/PaymentHistory/currentUserPaymentHistory',
+  API_POST_PAYMENT_HISTORY: '/v1/PaymentHistory',
+  API_GET_PAYMENT_HISTORY: '/v1/PaymentHistory',
+  API_GET_PAYMENT_HISTORY_CURRENT: '/v1/PaymentHistory/currentUserPaymentHistory',
 };
 
 export default API_CODE;

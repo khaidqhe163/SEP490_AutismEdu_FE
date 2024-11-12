@@ -49,6 +49,12 @@ const PAGES = {
   TEST_HISTORY: '/test-history',
   TEST_DETAIL_HISTORY: '/test-detail/:id',
   PAYMENT_PACKAGE: '/autismtutor/payment-package',
+  PAYMENT_PACKAGE_FOCUS: '/autismtutor/payment-package-focus',
+  PERSONAL_INFORMATION: '/admin/personal-information',
+  CERTIFICATE_MANAGEMENT:'/admin/certificate_management',
+  CURRICULUM_MANAGEMENT:'/admin/curriculum_management',
+  WORK_EXPERIENCE_MANAGEMENT: '/admin/work_experience_management',
+  
 };
 
 export default PAGES;
