@@ -82,7 +82,6 @@ function BlogCreation() {
             })
             axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
         } catch (error) {
-            console.log(error);
             enqueueSnackbar("Tạo bài viết thất bại", { variant: "error" })
         }
     }

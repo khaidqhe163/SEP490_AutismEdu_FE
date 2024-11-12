@@ -2,3 +2,12 @@
     height: 400px;
     background-color: white;
 }
+
+.ql-align-center {
+    text-align: center;
+}
+
+.ql-align-center img {
+    display: inline-block;
+    margin: auto;
+}

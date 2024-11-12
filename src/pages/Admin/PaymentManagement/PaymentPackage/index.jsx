@@ -1,12 +1,9 @@
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Box, Button, Grid, IconButton, MenuItem, Modal, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import LoadingComponent from '~/components/LoadingComponent';
-import PaymentCreation from './PaymentCreation';
-import services from '~/plugins/services';
-import ConfirmDialog from '~/components/ConfirmDialog';
+import { Box, Button, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import EditIcon from '@mui/icons-material/Edit';
+import { useEffect, useState } from 'react';
+import ConfirmDialog from '~/components/ConfirmDialog';
+import services from '~/plugins/services';
+import PaymentCreation from './PaymentCreation';
 import PaymentUpdate from './PaymentUpdate';
 function PaymentPackage() {
     const [paymentPackages, setPaymetPackages] = useState([]);
@@ -29,6 +26,7 @@ function PaymentPackage() {
             getPaymentPackages();
         }
     }, [change])
+
     useEffect(() => {
         getPaymentPackages()
     }, [status])

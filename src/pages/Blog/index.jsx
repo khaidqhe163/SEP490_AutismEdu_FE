@@ -1,12 +1,69 @@
-import { Box, Breadcrumbs, Button, Card, CardActions, CardContent, CardMedia, Divider, FormControl, IconButton, InputAdornment, InputBase, InputLabel, OutlinedInput, Paper, Stack, TextField, Typography } from '@mui/material'
-import React from 'react'
+import { Box, Breadcrumbs, Button, Card, CardActions, CardContent, CardMedia, Divider, FormControl, IconButton, InputAdornment, InputBase, InputLabel, OutlinedInput, Pagination, Paper, Stack, TextField, Typography } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SearchIcon from '@mui/icons-material/Search';
 import PAGES from '~/utils/pages';
+import services from '~/plugins/services';
+import { enqueueSnackbar } from 'notistack';
+import LoadingComponent from '~/components/LoadingComponent';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 function Blog() {
     const nav = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [blogs, setBlogs] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [recentBlog, setRecentBlog] = useState([]);
+    const [pagination, setPagination] = useState(null);
+    const [totalPage, setTotalPage] = useState(0);
+    useEffect(() => {
+        if (pagination?.total % 10 !== 0) {
+            setTotalPage(Math.floor(pagination?.total / 10) + 1);
+        } else setTotalPage(Math.floor(pagination?.total / 10));
+    }, [pagination])
+    useEffect(() => {
+        handleGetBlogs();
+    }, [])
+
+    useEffect(() => {
+        handleGetBlogs();
+    }, [currentPage])
+    const handleGetBlogs = async () => {
+        try {
+            setLoading(true);
+            await services.BlogAPI.getBlogs((res) => {
+                if (currentPage === 1) {
+                    const rb = res.result.filter((r, index) => {
+                        return index < 3;
+                    })
+                    setRecentBlog(rb);
+                    res.pagination.currentSize = res.result.length
+                    setPagination(res.pagination);
+                }
+                setBlogs(res.result);
+            }, (err) => {
+                console.log(err);
+            }, {
+                pageNumber: currentPage
+            })
+            setLoading(false);
+        } catch (error) {
+            enqueueSnackbar("Lỗi hệ thống", { variant: "error" });
+            setLoading(false);
+        }
+    }
+
+    const formatDate = (date) => {
+        if (!date) return "";
+        const d = new Date(date);
+        return `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`
+    }
+
+    const handleChangePage = (event, value) => {
+        console.log("zoday");
+        setCurrentPage(Number(value));
+    }
     return (
         <Box>
             <Box sx={{
@@ -27,61 +84,79 @@ function Blog() {
             </Box >
             <Stack direction='row' sx={{ width: "80%", margin: "auto", position: "relative", top: "-200px" }} justifyContent="space-between">
                 <Box sx={{ width: '60%' }}>
-                    <Card sx={{
-                        height: "700px",
-                        paddingBottom: '20px',
-                        transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                        '&:hover': {
-                            transform: "scale(1.02) translateY(-10px)",
-                            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-                            cursor: "pointer"
-                        }
-                    }}>
-                        <CardMedia
-                            component="img"
-                            sx={{ height: "70%" }}
-                            image="https://rainbowthemes.net/themes/histudy/wp-content/uploads/2023/12/girl-looking-laptop-1.webp"
-                            alt="Live from space album cover"
-                        />
-                        <CardContent sx={{ flex: '1 0 auto' }}>
-                            <Typography component="div" variant="h4">
-                                Difficult Things About Education.
-                            </Typography>
-                            <Stack direction='row' mt={2} gap={2}>
-                                <AccessTimeIcon /> <Typography>20-02-2025</Typography>
-                            </Stack>
-                        </CardContent>
-                        <CardActions>
-                            <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />}
-                                onClick={() => nav(PAGES.ROOT + PAGES.BLOG_LIST + "/1")}
-                            >Tìm hiểu thêm </Button>
-                        </CardActions>
-                    </Card>
-                    <Card sx={{
-                        display: 'flex', height: "200px",
-                        mt: 5,
-                        transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                        '&:hover': {
-                            cursor: "pointer",
-                            transform: "scale(1.02) translateY(-10px)",
-                            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)"
-                        }
-                    }}>
-                        <CardMedia
-                            component="img"
-                            sx={{ width: "40%" }}
-                            image="https://rainbowthemes.net/themes/histudy/wp-content/uploads/2023/12/image-1-1-150x150.webp"
-                            alt="Live from space album cover"
-                        />
-                        <Box sx={{ height: "100%", display: "flex", alignItems: "center" }}>
-                            <CardContent>
-                                <Typography component="div" variant="h5">
-                                    Live From Space
-                                </Typography>
-                                <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />}>Tìm hiểu thêm </Button>
-                            </CardContent>
-                        </Box>
-                    </Card>
+                    {
+                        blogs && blogs[0] && (
+                            <Card sx={{
+                                height: "700px",
+                                paddingBottom: '20px',
+                                transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                                '&:hover': {
+                                    transform: "scale(1.02) translateY(-10px)",
+                                    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+                                    cursor: "pointer"
+                                }
+                            }}>
+                                <CardMedia
+                                    component="img"
+                                    sx={{ height: "70%" }}
+                                    image={blogs[0].urlImageDisplay}
+                                    alt="Live from space album cover"
+                                />
+                                <CardContent sx={{ flex: '1 0 auto' }}>
+                                    <Typography component="div" variant="h4">
+                                        {blogs[0].title}
+                                    </Typography>
+                                    <Stack direction='row' gap={5}>
+                                        <Stack direction='row' mt={2} gap={1}>
+                                            <AccessTimeIcon /> <Typography>{formatDate(blogs[0].publishDate)}</Typography>
+                                        </Stack>
+                                        <Stack direction='row' mt={2} gap={1}>
+                                            <RemoveRedEyeIcon /> <Typography>{blogs[0].viewCount}</Typography>
+                                        </Stack>
+                                    </Stack>
+                                </CardContent>
+                                <CardActions>
+                                    <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />}
+                                        onClick={() => nav(PAGES.ROOT + PAGES.BLOG_LIST + `/${blogs[0].id}`)}
+                                    >Tìm hiểu thêm </Button>
+                                </CardActions>
+                            </Card>
+                        )
+                    }
+                    {
+                        blogs && blogs.length > 1 && blogs.map((b, index) => {
+                            if (index > 0) {
+                                return (
+                                    <Card key={b.id} sx={{
+                                        display: 'flex', height: "200px",
+                                        mt: 5,
+                                        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                                        '&:hover': {
+                                            cursor: "pointer",
+                                            transform: "scale(1.02) translateY(-10px)",
+                                            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)"
+                                        }
+                                    }}>
+                                        <CardMedia
+                                            component="img"
+                                            sx={{ width: "40%" }}
+                                            image={b.urlImageDisplay}
+                                            alt="Live from space album cover"
+                                        />
+                                        <Box sx={{ height: "100%", display: "flex", alignItems: "center" }}>
+                                            <CardContent>
+                                                <Typography component="div" variant="h5">
+                                                    {b.title}
+                                                </Typography>
+                                                <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />} onClick={() => nav(PAGES.ROOT + PAGES.BLOG_LIST + `/${b.id}`)}>Tìm hiểu thêm </Button>
+                                            </CardContent>
+                                        </Box>
+                                    </Card>
+                                )
+                            } else return null;
+                        })
+                    }
+                    <Pagination count={totalPage || 1} page={currentPage} color="secondary" sx={{ mt: 5 }} onChange={handleChangePage} />
                 </Box>
                 <Box sx={{
                     border: "5px solid #c09de8", width: "30%",
@@ -105,33 +180,48 @@ function Blog() {
                     </FormControl>
                     <Typography variant='h5' mt={5}>Bài viết gần đây</Typography>
                     <Divider sx={{ width: "100%", mt: 2, backgroundColor: "gray" }} />
-                    <Stack direction='row' gap={2} sx={{ cursor: "pointer", mt: 2 }}>
-                        <Box sx={{
-                            backgroundImage: "url('https://rainbowthemes.net/themes/histudy/wp-content/uploads/2023/12/girl-looking-laptop-1.webp')",
-                            width: "70px",
-                            height: "70px",
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                            borderRadius: "10px"
-                        }}>
-                        </Box>
-                        <Box sx={{ width: "70%" }}>
-                            <Typography sx={{
-                                fontSize: "16px", display: '-webkit-box',
-                                WebkitLineClamp: 1,
-                                WebkitBoxOrient: 'vertical',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                            }}>
-                                Understand The Background Of lms.dddddddddddddddddddđ
-                            </Typography>
-                            <Stack direction='row' mt={1} gap={2} alignItems="center" >
-                                <AccessTimeIcon sx={{ fontSize: "15px" }} /> <Typography sx={{ fontSize: "12px" }}>20-02-2025</Typography>
-                            </Stack>
-                        </Box>
-                    </Stack>
+                    {
+                        recentBlog && recentBlog.length !== 0 && recentBlog.map((r) => {
+                            return (
+                                <Link to={PAGES.ROOT + PAGES.BLOG_LIST + `/${r.id}`} key={r.id}>
+                                    <Stack direction='row' gap={2} sx={{ cursor: "pointer", mt: 2 }}>
+                                        <Box sx={{
+                                            backgroundImage: `url('${r.urlImageDisplay}')`,
+                                            width: "70px",
+                                            height: "70px",
+                                            backgroundSize: "cover",
+                                            backgroundPosition: "center",
+                                            borderRadius: "10px"
+                                        }}>
+                                        </Box>
+                                        <Box sx={{ width: "70%" }}>
+                                            <Typography sx={{
+                                                fontSize: "16px", display: '-webkit-box',
+                                                WebkitLineClamp: 1,
+                                                WebkitBoxOrient: 'vertical',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                            }}>
+                                                {r.title}
+                                            </Typography>
+                                            <Stack direction='row' gap={5}>
+                                                <Stack direction='row' mt={2} gap={1}>
+                                                    <AccessTimeIcon /> <Typography>{formatDate(formatDate(r.publishDate))}</Typography>
+                                                </Stack>
+                                                <Stack direction='row' mt={2} gap={1}>
+                                                    <RemoveRedEyeIcon /> <Typography>{r.viewCount}</Typography>
+                                                </Stack>
+                                            </Stack>
+                                        </Box>
+                                    </Stack>
+                                </Link>
+                            )
+                        })
+                    }
+
                 </Box>
             </Stack>
+            <LoadingComponent open={loading} />
         </Box>
     )
 }

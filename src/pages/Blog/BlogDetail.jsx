@@ -1,9 +1,39 @@
 import { Box, Breadcrumbs, Paper, Stack, Typography } from '@mui/material'
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import PAGES from '~/utils/pages'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import services from '~/plugins/services';
+import { enqueueSnackbar } from 'notistack';
+import LoadingComponent from '~/components/LoadingComponent';
+import '~/assets/css/texteditor.css';
 function BlogDetail() {
+    const { id } = useParams();
+    const [loading, setLoading] = useState(false);
+    const [blog, setBlog] = useState(null);
+    useEffect(() => {
+        handleGetBlog();
+    }, [])
+
+    const handleGetBlog = async () => {
+        try {
+            setLoading(true);
+            await services.BlogAPI.getBlogDetail(id, (res) => {
+                setBlog(res.result)
+            }, (err) => {
+                console.log(err);
+            })
+            setLoading(false);
+        } catch (error) {
+            enqueueSnackbar("Lỗi hệ thống", { variant: "error" });
+            setLoading(false);
+        }
+    }
+    const formatDate = (date) => {
+        if (!date) return "";
+        const d = new Date(date);
+        return `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`
+    }
     return (
         <Box>
             <Box sx={{
@@ -32,13 +62,15 @@ function BlogDetail() {
                 width: "70%", position: "relative", top: "-100px", margin: "auto",
                 py: "70px", px: 2
             }}>
-                <Typography sx={{ textAlign: "center" }} variant='h4'>Bộ trưởng Y tế: Có cán bộ chưa dám nghĩ, dám làm trong đấu thầu thuốc</Typography>
+                <Typography sx={{ textAlign: "center" }} variant='h4'>{blog?.title}</Typography>
                 <Stack direction='row' mt={2} gap={2} justifyContent="center">
-                    <AccessTimeIcon /> <Typography>20-02-2025</Typography>
+                    <AccessTimeIcon /> <Typography>{formatDate(blog?.publishDate)}</Typography>
                 </Stack>
-                <img src='https://cdnphoto.dantri.com.vn/2hjdwA-daDVJ6wjV1ziw00UFwYw=/zoom/1692_1128/2024/11/11/009d8c3cab5d1003494c-1731313407357.jpg'
+                <img src={blog?.urlImageDisplay}
                     style={{ width: "100%", marginTop: "30px" }} />
+                <Box sx={{ mt: 5 }} dangerouslySetInnerHTML={{ __html: blog?.content }} />
             </Paper>
+            <LoadingComponent open={loading} />
         </Box>
     )
 }
