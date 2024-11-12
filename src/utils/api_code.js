@@ -143,10 +143,10 @@ const API_CODE = {
   API_GET_SCORE_RANGE: '/v1/AssessmentScoreRange',
 
   //payment package
-  API_GET_PAYMENT_PACKAGE: '/PackagePayment',
-  API_POST_PAYMENT_PACKAGE: '/PackagePayment',
-  API_PUT_PAYMENT_PACKAGE: '/PackagePayment/changeStatus/',
-  API_DELETE_PAYMENT_PACKAGE: '/PackagePayment/',
+  API_GET_PAYMENT_PACKAGE: '/v1/PackagePayment',
+  API_POST_PAYMENT_PACKAGE: '/v1/PackagePayment',
+  API_PUT_PAYMENT_PACKAGE: '/v1/PackagePayment/changeStatus/',
+  API_DELETE_PAYMENT_PACKAGE: '/v1/PackagePayment/',
 
   //Notification
   API_GET_NOTIFICATION: '/Notification',
