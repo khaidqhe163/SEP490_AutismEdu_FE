@@ -44,43 +44,46 @@ const MenuProps = {
         },
     },
 };
-function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
-    const [open, setOpen] = useState(false);
-    const [dayOfWeek, setDayOfWeek] = useState([]);
+function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, open, setOpen }) {
+    const [dayOfWeek, setDayOfWeek] = useState(0);
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
     const [timeError, setTimeError] = useState("");
     const [disableDate, setDisableDate] = useState([]);
     const [existSchedule, setExistSchedule] = useState([]);
-    const [listSchedule, setListSchedule] = useState([]);
     const [overlapSchedules, setOverlapSchedules] = useState([]);
     const [existSlots, setExistSlots] = useState([]);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const [change, setChange] = useState(true);
+    useEffect(() => {
+        if (open) {
+            getExistSchedule();
+            getExistSlot();
+            setChange(true);
+        } else {
+            setExistSchedule([]);
+            setExistSlots([]);
+            setOverlapSchedules([]);
+        }
+    }, [open])
     useEffect(() => {
         getExistSchedule();
-        getExistSlot();
-    }, [listTimeSlots])
-    useEffect(() => {
-        getExistSchedule();
-    }, [])
+        if (selectedTimeSlot) {
+            const start = selectedTimeSlot.from.split(":");
+            const end = selectedTimeSlot.to.split(":");
+            setStartTime(start[0] + ":" + start[1]);
+            setEndTime(end[0] + ":" + end[1]);
+            const getDay = days.find((d) => {
+                return selectedTimeSlot.weekday === d.id
+            })
+            setDayOfWeek(getDay.day);
+        }
+    }, [selectedTimeSlot])
     useEffect(() => {
         if (!open) {
             setStartTime("");
             setEndTime("");
         }
     }, [open])
-    useEffect(() => {
-        const disableArr = [];
-        existSchedule.forEach((l) => {
-            if (toMinutes(l.from) < toMinutes(endTime) && toMinutes(startTime) < toMinutes(l.to)
-                && !disableArr.includes(l.weekday)) {
-                disableArr.push(l.weekday);
-            }
-        })
-        setDisableDate([...disableArr]);
-        setDayOfWeek([])
-    }, [startTime, endTime])
 
     useEffect(() => {
         const disableArr = [];
@@ -91,16 +94,34 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
             }
         })
         setDisableDate([...disableArr]);
-        setDayOfWeek([])
-    }, [existSchedule])
+    }, [startTime, endTime, existSchedule])
 
+    useEffect(() => {
+        if (dayOfWeek !== 0) {
+            const weekDay = days.find((day) => {
+                return day.day === dayOfWeek;
+            })
+            const overlapSchedule = existSlots.filter((e) => {
+                let scheduleDate = new Date(e.scheduleDate).getDay();
+
+                if (weekDay.id === scheduleDate && toMinutes(e.start) < toMinutes(endTime) && toMinutes(startTime) < toMinutes(e.end)) {
+                    return e;
+                }
+            })
+            setOverlapSchedules([...overlapSchedule])
+        } else {
+            setOverlapSchedules([]);
+        }
+    }, [dayOfWeek])
     const getExistSchedule = async () => {
         try {
             await services.StudentProfileAPI.getTutorSchedule((res) => {
                 const arr = [];
                 res.result.forEach((a) => {
                     a.scheduleTimeSlots.forEach((s) => {
-                        arr.push(s);
+                        if (selectedTimeSlot.id !== s.id) {
+                            arr.push(s);
+                        }
                     })
                 })
                 setExistSchedule(arr);
@@ -119,8 +140,10 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
         nextMonday.setDate(today.getDate() + daysUntilNextMonday);
         try {
             await services.ScheduleAPI.getSchedule((res) => {
-                console.log(res);
-                setExistSlots(res.result.schedules);
+                const filterSlot = res.result.schedules.filter((f) => {
+                    return f.scheduleTimeSlotId !== selectedTimeSlot.id
+                })
+                setExistSlots(filterSlot);
             }, (error) => {
                 console.log(error);
             }, {
@@ -135,15 +158,30 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
         const [hours, minutes] = time.split(':').map(Number);
         return hours * 60 + minutes;
     };
-    const handleChange = (event) => {
-        const {
-            target: { value },
-        } = event;
-        setDayOfWeek(
-            typeof value === 'string' ? value.split(',') : value,
-        );
-    };
-    const handleAddTime = () => {
+
+    const handleChange = (e) => {
+        if (e.target.value === 0) {
+            setDayOfWeek(0);
+            return;
+        }
+        const selectedDay = days.find((d) => {
+            return d.day === e.target.value;
+        })
+
+        const start = selectedTimeSlot.from.split(":");
+        const end = selectedTimeSlot.to.split(":");
+        const startString = start[0] + ":" + start[1];
+        const endString = end[0] + ":" + end[1]
+        if ((toMinutes(startString) === toMinutes(startTime)
+            && toMinutes(endString) === toMinutes(endTime) && selectedDay.id === selectedTimeSlot.weekday) ||
+            e.target.value === 0) {
+            setChange(true);
+        } else {
+            setChange(false);
+        }
+        setDayOfWeek(selectedDay.day)
+    }
+    const handleCreateTimeSlot = async () => {
         if (startTime === "" || endTime === "" || dayOfWeek.length === 0) {
             setTimeError("Nhập đầy đủ thông tin!");
             return;
@@ -154,85 +192,22 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
             setTimeError("1 buổi học dài ít nhất 30 phút");
             return;
         }
-        else {
-            let arrSchedule = [];
-            const scheduleItem = dayOfWeek.map((d) => {
-                const weekDay = days.find((day) => {
-                    return day.day === d;
-                })
-                const overlapSchedule = existSlots.filter((e) => {
-                    let scheduleDate = new Date(e.scheduleDate).getDay();
-
-                    if (weekDay.id === scheduleDate && toMinutes(e.start) < toMinutes(endTime) && toMinutes(startTime) < toMinutes(e.end)) {
-                        return e;
-                    }
-                })
-                console.log(overlapSchedule);
-                arrSchedule = [...overlapSchedule, ...arrSchedule];
-                return {
-                    weekday: days.find((day) => day.day === d).id,
-                    from: startTime,
-                    to: endTime,
-                    status: overlapSchedule.length > 0 ? true : false
-                }
-            })
-            setOverlapSchedules([...arrSchedule, ...overlapSchedules])
-            const updatedSchedule = [...scheduleItem, ...listSchedule];
-            const sortedItem = updatedSchedule.sort((a, b) => {
-                return a.weekday - b.weekday
-            })
-            setListSchedule(sortedItem);
-            setExistSchedule([...existSchedule, ...sortedItem])
-            setDayOfWeek([]);
-            setTimeError("");
-            setStartTime("");
-            setEndTime("")
-        }
-    }
-
-    const handleDeleteSchedule = (index) => {
-        const filter = listSchedule.filter((l, i) => {
-            return i !== index
-        })
-        if (overlapSchedules && overlapSchedules.length !== 0) {
-            const updateOverlapSchedule = overlapSchedules.filter((o) => {
-                const scheduleDate = new Date(o.scheduleDate).getDay();
-                if (listSchedule[index].weekday !== scheduleDate
-                    || toMinutes(o.start) > toMinutes(listSchedule[index].to)
-                    || toMinutes(listSchedule[index].from) > toMinutes(o.end)) {
-                    return o;
-                }
-            })
-            setOverlapSchedules([...updateOverlapSchedule]);
-        }
-        const updateExistSchedule = existSchedule.filter((e) => {
-            if (e.weekday !== listSchedule[index].weekday ||
-                e.from !== listSchedule[index].from ||
-                e.to !== listSchedule[index].to
-            ) {
-                return e;
-            }
-        })
-
-        setExistSchedule(updateExistSchedule)
-        setListSchedule([...filter]);
-    }
-
-    const handleCreateTimeSlot = async () => {
         if (overlapSchedules && overlapSchedules.length > 0) {
             enqueueSnackbar("Bạn đang có lịch bị trùng!", { variant: "warning" })
             return;
         }
         try {
-            await services.TimeSlotAPI.createTimeSlot(id, listSchedule,
+            await services.TimeSlotAPI.updateSlot({},
                 (res) => {
-                    const updateTimeSlot = [...listTimeSlots, ...res.result]
+                    const filterSlot = listTimeSlots.filter((l) => {
+                        return l.id !== selectedTimeSlot.id;
+                    })
+                    const updateTimeSlot = [...filterSlot, res.result]
                     const sortedItem = updateTimeSlot.sort((a, b) => {
                         return a.weekday - b.weekday
                     })
                     setOpen(false);
                     setListTimeSlots(sortedItem);
-                    setListSchedule([]);
                 }, (error) => {
                     enqueueSnackbar(error.error[0], { variant: "error" })
                 }
@@ -241,7 +216,6 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
             console.log(error);
         }
     }
-
     const formatDate = (d) => {
         if (!d) {
             return "";
@@ -253,10 +227,9 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
     }
     return (
         <>
-            <Button variant='contained' onClick={handleOpen}>Thêm khung giờ mới</Button>
             <Modal
                 open={open}
-                onClose={handleClose}
+                onClose={() => setOpen(false)}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -275,29 +248,28 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
                         <Box>
                             <Typography>Giờ bắt đầu</Typography>
                             <TextField type='time' value={startTime}
-                                onChange={(e) => setStartTime(e.target.value)} />
+                                onChange={(e) => { setStartTime(e.target.value); setDayOfWeek(0) }} />
                         </Box>
                         <Box>
                             <Typography>Giờ kết thúc</Typography>
                             <TextField type='time'
                                 value={endTime}
-                                onChange={(e) => setEndTime(e.target.value)}
+                                onChange={(e) => { setEndTime(e.target.value); setDayOfWeek(0) }}
                             />
                         </Box>
                         <Box>
                             <Typography>Thứ trong tuần</Typography>
                             <FormControl sx={{ width: "240px" }}>
                                 <Select
-                                    multiple
                                     value={dayOfWeek}
                                     onChange={handleChange}
-                                    renderValue={(selected) => selected.join(', ')}
-                                    MenuProps={MenuProps}
                                     disabled={startTime === "" || endTime === ""}
                                 >
+                                    <MenuItem value={0}>
+                                        <ListItemText primary={"Chọn thứ"} />
+                                    </MenuItem>
                                     {days.map((day) => (
                                         <MenuItem key={day.id} value={day.day} disabled={disableDate.includes(day.id)}>
-                                            <Checkbox checked={dayOfWeek.includes(day.day)} />
                                             <ListItemText primary={day.day} />
                                         </MenuItem>
                                     ))}
@@ -312,7 +284,6 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
                             </FormHelperText>
                         )
                     }
-                    <Button variant='contained' sx={{ mt: 2 }} disabled={startTime === "" || endTime === ""} onClick={handleAddTime}>Thêm</Button>
                     {
                         overlapSchedules && overlapSchedules.length !== 0 &&
                         <Typography mt={3} sx={{ color: "red" }}>Lịch của bạn bị trùng</Typography>
@@ -326,34 +297,11 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
                             })
                         }
                     </ul>
-                    <Box sx={{ display: "flex", mt: 3, flexWrap: "wrap", gap: 3 }}>
-                        {
-                            listSchedule.length !== 0 && listSchedule.map((schedule, index) => {
-                                return (
-                                    <Box sx={{
-                                        display: "flex",
-                                        boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-                                        p: 2,
-                                        gap: 2, alignItems: "center",
-                                        bgcolor: schedule.status ? "red" : "white",
-                                        color: schedule.status ? "white" : "",
-                                    }} key={index}>
-                                        <Typography sx={{ fontSize: "12px" }}>{days.find((day) => day.id === schedule.weekday).day}</Typography>
-                                        <Divider orientation='vertical' sx={{ bgcolor: "black" }} />
-                                        <Typography sx={{ fontSize: "12px" }}>{schedule.from} - {schedule.to}</Typography>
-                                        <IconButton onClick={() => handleDeleteSchedule(index)}>
-                                            <CloseIcon sx={{ fontSize: "14px" }} />
-                                        </IconButton>
-                                    </Box>
-                                )
-                            })
-                        }
-                    </Box>
-                    <Button variant='contained' sx={{ mt: 5 }} onClick={handleCreateTimeSlot}>Thêm khung giờ</Button>
+                    <Button variant='contained' sx={{ mt: 5 }} disabled={change}>Cập nhật khung giờ</Button>
                 </Box>
             </Modal>
         </>
     )
 }
 
-export default CreateSchedule
+export default UpdateSchedule

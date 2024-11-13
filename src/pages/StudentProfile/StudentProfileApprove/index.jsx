@@ -110,6 +110,8 @@ function StudentProfileApprove() {
             console.log(error);
         }
     }
+
+    console.log(studentProfile);
     return (
         <Stack direction="row" p="20px" sx={{
             bgcolor: "#f8fafb", width: '100%',
@@ -247,7 +249,7 @@ function StudentProfileApprove() {
                                 <Card sx={{ px: 2 }}>
                                     <CardContent sx={{ px: 0 }}>
                                         <Typography variant='h5'>Tình trạng ban đầu</Typography>
-                                        <Typography sx={{ whiteSpace: "break-spaces", mt: 3 }}>{studentProfile.initialCondition?.assessmentResults}</Typography>
+                                        <Typography sx={{ whiteSpace: "break-spaces", mt: 3 }}>{studentProfile.initialAssessmentResults?.condition}</Typography>
                                     </CardContent>
                                 </Card>
                                 <Card sx={{ px: 2, mt: 3 }}>

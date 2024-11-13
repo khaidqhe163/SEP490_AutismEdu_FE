@@ -17,6 +17,7 @@ function Blog() {
     const [recentBlog, setRecentBlog] = useState([]);
     const [pagination, setPagination] = useState(null);
     const [totalPage, setTotalPage] = useState(0);
+    const [searchName, setSearchName] = useState("");
     useEffect(() => {
         if (pagination?.total % 10 !== 0) {
             setTotalPage(Math.floor(pagination?.total / 10) + 1);
@@ -33,7 +34,7 @@ function Blog() {
         try {
             setLoading(true);
             await services.BlogAPI.getBlogs((res) => {
-                if (currentPage === 1) {
+                if (currentPage === 1 && searchName.trim() === "") {
                     const rb = res.result.filter((r, index) => {
                         return index < 3;
                     })
@@ -45,7 +46,9 @@ function Blog() {
             }, (err) => {
                 console.log(err);
             }, {
-                pageNumber: currentPage
+                pageNumber: currentPage,
+                search: searchName,
+                isPublished: true
             })
             setLoading(false);
         } catch (error) {
@@ -61,8 +64,15 @@ function Blog() {
     }
 
     const handleChangePage = (event, value) => {
-        console.log("zoday");
         setCurrentPage(Number(value));
+    }
+
+    const handleSearch = () => {
+        if (currentPage !== 1) {
+            setCurrentPage(1);
+        } else {
+            handleGetBlogs();
+        }
     }
     return (
         <Box>
@@ -167,10 +177,13 @@ function Blog() {
                     <FormControl sx={{ width: '100%' }} variant="outlined">
                         <OutlinedInput
                             placeholder='Tìm kiếm ...'
+                            value={searchName}
+                            onChange={(e) => setSearchName(e.target.value)}
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton
                                         edge="end"
+                                        onClick={handleSearch}
                                     >
                                         <SearchIcon />
                                     </IconButton>

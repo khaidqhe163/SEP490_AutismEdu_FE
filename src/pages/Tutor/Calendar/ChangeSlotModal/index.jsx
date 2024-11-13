@@ -134,7 +134,7 @@ function ChangeSlotModal({ schedule, setIsChange }) {
         const date = new Date(schedule.scheduleDate);
         const start = schedule.start.split(":");
         const end = schedule.end.split(":");
-        return `${start[0]}:${start[1]} - ${end[0]}:${end[1]}  ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+        return `(${start[0]}:${start[1]} - ${end[0]}:${end[1]})  ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
     }
 
     const toMinutes = (time) => {

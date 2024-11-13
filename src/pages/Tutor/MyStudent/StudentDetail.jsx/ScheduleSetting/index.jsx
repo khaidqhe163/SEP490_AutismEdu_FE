@@ -6,6 +6,8 @@ import ConfirmDialog from '~/components/ConfirmDialog';
 import services from '~/plugins/services';
 import CreateSchedule from './CreateSchedule';
 import { enqueueSnackbar } from 'notistack';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import UpdateSchedule from './UpdateSchedule';
 const days = [
     {
         id: 1,
@@ -40,6 +42,7 @@ function ScheduleSetting({ studentProfile }) {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [listTimeSlots, setListTimeSlots] = useState([]);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+    const [openEdit, setOpenEdit] = useState(false);
     useEffect(() => {
         handleGetTimeSLots();
     }, [])
@@ -105,8 +108,11 @@ function ScheduleSetting({ studentProfile }) {
                                     }}>
                                         <Typography sx={{ fontSize: "24px" }}>{days.find((day) => day.id === l.weekday).day}</Typography>
                                         <Typography sx={{ fontSize: "24px" }}>{formatTime(l.from)} - {formatTime(l.to)}</Typography>
+                                        <IconButton onClick={() => { setOpenEdit(true); setSelectedTimeSlot(l) }}>
+                                            <BorderColorIcon sx={{ fontSize: "26px", color: "orange" }} />
+                                        </IconButton>
                                         <IconButton onClick={() => { setOpenConfirm(true); setSelectedTimeSlot(l) }}>
-                                            <CloseIcon sx={{ fontSize: "26px" }} />
+                                            <CloseIcon sx={{ fontSize: "26px", color: "red" }} />
                                         </IconButton>
                                     </Box>
                                 )
@@ -130,6 +136,8 @@ function ScheduleSetting({ studentProfile }) {
                 handleAction={handleDelete}
                 content={`Bạn có muốn xoá khung giờ ${formatTime(selectedTimeSlot?.from)} - ${formatTime(selectedTimeSlot?.to)} ${days.find((day) => day.id === selectedTimeSlot?.weekday)?.day}?`}
             />
+            <UpdateSchedule listTimeSlots={listTimeSlots} selectedTimeSlot={selectedTimeSlot} setListTimeSlots={setListTimeSlots}
+                open={openEdit} setOpen={setOpenEdit} />
         </Box >
     )
 }

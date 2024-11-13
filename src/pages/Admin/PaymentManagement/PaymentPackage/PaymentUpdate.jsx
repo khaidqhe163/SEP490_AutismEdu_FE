@@ -10,6 +10,7 @@ import { enqueueSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import { NumericFormat } from 'react-number-format';
 import LoadingComponent from '~/components/LoadingComponent';
+import CircleIcon from '@mui/icons-material/Circle';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -72,6 +73,8 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
         }
         if (!values.price) {
             errors.price = "Bắt buộc";
+        } else if (Number(values.price) < 10000) {
+            errors.price = "Giá tiền nhỏ nhất là 10.000"
         }
         return errors
     }
@@ -81,26 +84,24 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
             duration: '',
             description: '',
             price: '',
-            isActive: true,
+            isHide: true,
             originalId: 0
         }, validate,
         onSubmit: async (values) => {
             try {
                 setLoading(true);
                 await services.PackagePaymentAPI.createPaymentPackage(values, (res) => {
-                    console.log(res);
-                    if (status === "hide") {
+                    if (status === "Hide") {
                         const filterArr = paymentPackages.map((r) => {
                             if (res.result.originalId === r.id) return res.result
                             return r.id !== values.originalId;
                         })
                         setPaymetPackages(filterArr);
                     }
-                    else setStatus("hide");
+                    else setStatus("Hide");
                     enqueueSnackbar("Tạo thành công", { variant: "success" });
                     handleClose();
                 }, (error) => {
-                    console.log(error);
                     enqueueSnackbar(error.error[0], { variant: "error" })
                 })
                 setLoading(false)
@@ -113,11 +114,16 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
 
     React.useEffect(() => {
         if (paymentPackage) {
-            formik.setFieldValue("title", paymentPackage?.title || "");
-            formik.setFieldValue("duration", paymentPackage?.duration || "");
-            formik.setFieldValue("description", paymentPackage?.description || "");
-            formik.setFieldValue("price", paymentPackage?.price || "");
-            formik.setFieldValue("originalId", paymentPackage?.id || "");
+            formik.resetForm({
+                values: {
+                    title: paymentPackage.title || '',
+                    duration: paymentPackage.duration || '',
+                    description: paymentPackage.description || '',
+                    price: paymentPackage.price || '',
+                    originalId: paymentPackage.id || 0,
+                    isHide: true
+                }
+            });
         }
     }, [paymentPackage]);
 
@@ -162,12 +168,22 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
                 onClose={handleClose}
             >
                 <Box sx={style}>
-                    <Typography variant="h6" component="h2" mb={3}>
+                    <Typography variant="h5" component="h2">
                         Cập nhật gói thanh toán
                     </Typography>
-                    <Typography sx={{ color: "red", fontSize: "12px" }}>Khi cập nhật gói thanh toán sẽ về chế độ ẩn</Typography>
+                    <Stack direction='row' alignItems="center" mt={2}>
+                        <CircleIcon sx={{ color: paymentPackage?.isHide ? "red" : "green" }} />
+                        <Typography sx={{ color: paymentPackage?.isHide ? "red" : "green" }}>
+                            {paymentPackage?.isHide ? "Đang ẩn" : "Đang công khai"}
+                        </Typography>
+                    </Stack>
+                    {
+                        paymentPackage?.isHide === false && (
+                            <Typography sx={{ color: "red", fontSize: "12px" }}>Khi cập nhật gói thanh toán sẽ về chế độ ẩn</Typography>
+                        )
+                    }
                     <form onSubmit={formik.handleSubmit}>
-                        <Typography>Tiêu đề</Typography>
+                        <Typography mt={3}>Tiêu đề</Typography>
                         <TextField
                             fullWidth
                             name='title'
@@ -175,9 +191,9 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
                             onChange={formik.handleChange}
                         />
                         {
-                            formik.errors.description && (
+                            formik.errors.title && (
                                 <FormHelperText error>
-                                    {formik.errors.description}
+                                    {formik.errors.title}
                                 </FormHelperText>
                             )
                         }
@@ -206,7 +222,8 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
                                     value={formik.values.duration}
                                     type='Number'
                                     inputProps={{
-                                        min: 1
+                                        min: 1,
+                                        max: 1000
                                     }}
                                 />
                             </Box>

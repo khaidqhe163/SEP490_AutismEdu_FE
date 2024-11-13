@@ -93,7 +93,7 @@ function UploadImage({ setImage, aspectRatio, minDimension }) {
                 unit: "%",
                 width: cropWidthInPercent,
             },
-            {},
+            aspectRatio,
             width,
             height
         );

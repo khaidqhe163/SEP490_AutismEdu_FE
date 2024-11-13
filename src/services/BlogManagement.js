@@ -13,10 +13,14 @@ const getBlogDetail = async (endpoint, success, error) => {
 const updateBlogStatus = async (endpoint, params, success, error) => {
     await put(API_CODE.API_UPDATE_BLOG_STATUS + endpoint, params, success, error)
 }
+const updateBlog = async (endpoint, params, success, error) => {
+    await put(API_CODE.API_UPDATE_BLOG + endpoint, params, success, error)
+}
 
 export const BlogAPI = {
     createBlog,
     getBlogs,
     getBlogDetail,
-    updateBlogStatus
+    updateBlogStatus,
+    updateBlog
 }

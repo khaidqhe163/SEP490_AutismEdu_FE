@@ -1,7 +1,32 @@
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, Grid, Stack, Typography } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ButtonIcon from '~/components/ButtonComponent/ButtonIcon';
+import services from '~/plugins/services';
+import PAGES from '~/utils/pages';
 function Blog() {
+    const [blogs, setBlogs] = useState([]);
+    const nav = useNavigate();
+    useEffect(() => {
+        handleGetBlogs();
+    }, [])
+    const handleGetBlogs = async () => {
+        try {
+            await services.BlogAPI.getBlogs((res) => {
+                const rb = res.result.filter((r, index) => {
+                    return index < 4;
+                })
+                setBlogs(rb);
+            }, (err) => {
+                console.log(err);
+            }, {
+            })
+        } catch (error) {
+            enqueueSnackbar("Lỗi hệ thống", { variant: "error" });
+        }
+    }
     return (
         <Box sx={{ width: "100vw", py: "100px", textAlign: 'center', bgcolor: "#b08fd8" }}>
             <Stack direction='row' sx={{ justifyContent: "center", width: "100vw" }}>
@@ -28,7 +53,7 @@ function Blog() {
                             </Typography>
                         </Grid>
                         <Grid item xs={12} md={6} textAlign={"right"}>
-                            <ButtonIcon text={"ĐỌC THÊM"} />
+                            <ButtonIcon text={"ĐỌC THÊM"} action={() => { nav(PAGES.ROOT + PAGES.BLOG_LIST) }} />
                         </Grid>
                     </Grid>
                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} textAlign={"left"}>
@@ -46,26 +71,19 @@ function Blog() {
                                 <CardMedia
                                     component="img"
                                     sx={{ height: "60%" }}
-                                    image="https://rainbowthemes.net/themes/histudy/wp-content/uploads/2023/12/girl-looking-laptop-1.webp"
+                                    image={blogs[0] ? blogs[0].urlImageDisplay : "/"}
                                     alt="Live from space album cover"
                                 />
                                 <Box sx={{ display: 'flex', flexDirection: 'column', height: "40%" }}>
                                     <CardContent sx={{ flex: '1 0 auto' }}>
                                         <Typography component="div" variant="h4">
-                                            Difficult Things About Education.
-                                        </Typography>
-                                        <Typography mt={2} sx={{
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 1,
-                                            WebkitBoxOrient: 'vertical',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                        }}>
-                                            HiStudy Education Theme của Rainbow là một công cụ WordPress thân thiện  được thiết kế cho HiStudy Education Theme của Rainbow là một công cụ WordPress thân thiện  được thiết kế cho
+                                            {blogs[0] ? blogs[0].title : ""}
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />}>Tìm hiểu thêm </Button>
+                                        <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />}
+                                            onClick={() => { if (blogs[0]) { nav(PAGES.ROOT + PAGES.BLOG_LIST + `/${blogs[0].id}`) } }}
+                                        >Tìm hiểu thêm </Button>
                                     </CardActions>
                                 </Box>
 
@@ -73,85 +91,42 @@ function Blog() {
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Grid container m={0} spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} textAlign={"left"} sx={{ height: "100%" }}>
-                                <Grid item xs={12} sx={{ height: "33%" }}>
-                                    <Card sx={{
-                                        display: 'flex', height: "100%",
-                                        transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                                        '&:hover': {
-                                            cursor: "pointer",
-                                            transform: "scale(1.02) translateY(-10px)",
-                                            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)"
+                                {
+                                    blogs && blogs.length > 1 && blogs.map((b, index) => {
+                                        if (index > 0) {
+                                            return (
+                                                <Grid item xs={12} sx={{ height: "33%" }} key={blogs.id}>
+                                                    <Card sx={{
+                                                        display: 'flex', height: "100%",
+                                                        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                                                        '&:hover': {
+                                                            cursor: "pointer",
+                                                            transform: "scale(1.02) translateY(-10px)",
+                                                            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)"
+                                                        }
+                                                    }}>
+                                                        <CardMedia
+                                                            component="img"
+                                                            sx={{ width: 151 }}
+                                                            image={b.urlImageDisplay}
+                                                            alt="Live from space album cover"
+                                                        />
+                                                        <Box sx={{ height: "100%", display: "flex", alignItems: "center" }}>
+                                                            <CardContent>
+                                                                <Typography component="div" variant="h5">
+                                                                    {b.title}
+                                                                </Typography>
+                                                                <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />}
+                                                                    onClick={() => { nav(PAGES.ROOT + PAGES.BLOG_LIST + `/${b.id}`) }}
+                                                                >Tìm hiểu thêm </Button>
+                                                            </CardContent>
+                                                        </Box>
+                                                    </Card>
+                                                </Grid>
+                                            )
                                         }
-                                    }}>
-                                        <CardMedia
-                                            component="img"
-                                            sx={{ width: 151 }}
-                                            image="https://rainbowthemes.net/themes/histudy/wp-content/uploads/2023/12/image-1-1-150x150.webp"
-                                            alt="Live from space album cover"
-                                        />
-                                        <Box sx={{ height: "100%", display: "flex", alignItems: "center" }}>
-                                            <CardContent>
-                                                <Typography component="div" variant="h5">
-                                                    Live From Space
-                                                </Typography>
-                                                <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />}>Tìm hiểu thêm </Button>
-                                            </CardContent>
-                                        </Box>
-                                    </Card>
-                                </Grid>
-                                <Grid item xs={12} sx={{ height: "33%" }}>
-                                    <Card sx={{
-                                        display: 'flex', height: "100%",
-                                        transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                                        '&:hover': {
-                                            cursor: "pointer",
-                                            transform: "scale(1.02) translateY(-10px)",
-                                            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)"
-                                        }
-                                    }}>
-                                        <CardMedia
-                                            component="img"
-                                            sx={{ width: 151 }}
-                                            image="https://rainbowthemes.net/themes/histudy/wp-content/uploads/2023/12/image-1-1-150x150.webp"
-                                            alt="Live from space album cover"
-                                        />
-                                        <Box sx={{ height: "100%", display: "flex", alignItems: "center" }}>
-                                            <CardContent>
-                                                <Typography component="div" variant="h5">
-                                                    Live From Space
-                                                </Typography>
-                                                <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />}>Tìm hiểu thêm </Button>
-                                            </CardContent>
-                                        </Box>
-                                    </Card>
-                                </Grid>
-                                <Grid item xs={12} sx={{ height: "33%" }}>
-                                    <Card sx={{
-                                        display: 'flex', height: "100%",
-                                        transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                                        '&:hover': {
-                                            transform: "scale(1.02) translateY(-10px)",
-                                            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-                                            cursor: "pointer"
-                                        }
-                                    }}>
-                                        <CardMedia
-                                            component="img"
-                                            sx={{ width: 151 }}
-                                            image="https://rainbowthemes.net/themes/histudy/wp-content/uploads/2023/12/image-1-1-150x150.webp"
-                                            alt="Live from space album cover"
-                                        />
-                                        <Box sx={{ height: "100%", display: "flex", alignItems: "center" }}>
-                                            <CardContent>
-                                                <Typography component="div" variant="h5">
-                                                    Live From Space
-                                                </Typography>
-                                                <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />}>Tìm hiểu thêm </Button>
-                                            </CardContent>
-                                        </Box>
-                                    </Card>
-                                </Grid>
-
+                                    })
+                                }
                             </Grid>
                         </Grid>
                     </Grid>

@@ -32,19 +32,23 @@ function StudentSchedule({ studentProfile }) {
         try {
             setLoading(true);
             await services.ScheduleAPI.getSchedule((res) => {
-                console.log(res);
-                organizeSchedulesByDay(res.result)
+                const startYear = new Date(studentProfile.createdDate).getFullYear();
+                const maxYear = new Date(res.result.maxDate).getFullYear();
+                const years = [];
+                for (let year = startYear; year <= maxYear; year++) {
+                    years.push(year);
+                }
+                organizeSchedulesByDay(res.result.schedules)
                 setSchedule(res.result)
             }, (err) => {
                 console.log(err);
             }, {
                 studentProfileId: currentStudent,
-                startDate: weekInYears[currentWeek].monday,
-                endDate: weekInYears[currentWeek].sunday
+                startDate: formatDate(weekInYears[currentWeek].monday),
+                endDate: formatDate(weekInYears[currentWeek].sunday)
             })
             setLoading(false);
         } catch (error) {
-            console.log(error);
             setLoading(false);
         }
     }
@@ -56,7 +60,6 @@ function StudentSchedule({ studentProfile }) {
     }, [id])
     useEffect(() => {
         if (studentProfile) {
-            console.log(studentProfile);
             const startYear = new Date(studentProfile.createdDate).getFullYear();
             const currentYear = new Date().getFullYear();
             const years = [];
@@ -66,10 +69,12 @@ function StudentSchedule({ studentProfile }) {
             years.reverse();
             setListYears(years);
         }
-    }, [studentProfile])
+    }, [])
     useEffect(() => {
+        console.log("zoday");
         const year = new Date().getFullYear();
         const weeks = generateMondaysAndSundays(year);
+        console.log(weeks);
         setWeekInYears(weeks);
         const today = resetTime(new Date());
         setCurrentWeek(weeks.findIndex(week => today >= resetTime(week.monday) && today <= resetTime(week.sunday)));
@@ -104,6 +109,16 @@ function StudentSchedule({ studentProfile }) {
             monday.setDate(monday.getDate() + 7);
         }
         return result;
+    }
+
+
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate
     }
 
     function organizeSchedulesByDay(listSchedule) {

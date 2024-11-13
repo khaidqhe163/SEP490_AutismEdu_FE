@@ -49,6 +49,7 @@ import TestHistory from '~/pages/Parent/TestManage/TestHistory'
 import TestResultDetail from '~/pages/Parent/TestManage/TestResultDetail'
 import RechargeModal from '~/components/PaymentModal/RechargeModal'
 import PaymentPackageManagement from '~/pages/Tutor/PaymentPackageManagement/PaymentPackageManagement'
+import BlogUpdate from '~/pages/Admin/BlogManagement/BlogUpdate'
 
 const UnLayoutRoutes = [
     {
@@ -248,6 +249,10 @@ const adminRoutes = [
     {
         path: PAGES.BLOG_CREATION,
         element: BlogCreation
+    },
+    {
+        path: PAGES.BLOG_EDIT,
+        element: BlogUpdate
     },
 
 ]

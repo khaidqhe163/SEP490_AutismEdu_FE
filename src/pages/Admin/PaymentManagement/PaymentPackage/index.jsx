@@ -132,11 +132,11 @@ function PaymentPackage() {
                                         </TableCell>
                                         <TableCell>
                                             {
-                                                !s.isHide ? <Button variant='outlined' sx={{ color: "#ffab00", borderColor: "#ffab00" }}
-                                                    onClick={() => { setOpenConfirm(true); setCurrentPackage(s) }}>Hide</Button> :
+                                                s.isHide ? <Button variant='outlined' sx={{ color: "#ffab00", borderColor: "#ffab00" }}
+                                                    onClick={() => { setOpenConfirm(true); setCurrentPackage(s) }}>Hiện</Button> :
                                                     <Button variant='outlined' sx={{ color: "#ff3e1d", borderColor: "#ff3e1d" }}
                                                         onClick={() => { setOpenConfirm(true); setCurrentPackage(s) }}
-                                                    >Show</Button>
+                                                    >Ẩn</Button>
                                             }
                                             <PaymentUpdate paymentPackages={paymentPackages} paymentPackage={s} setStatus={setStatus} status={status} setPaymetPackages={paymentPackages} />
                                         </TableCell>

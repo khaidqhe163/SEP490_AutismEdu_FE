@@ -6,6 +6,10 @@ import services from '~/plugins/services';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ConfirmDialog from '~/components/ConfirmDialog';
 import LoadingComponent from '~/components/LoadingComponent';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import { useNavigate } from 'react-router-dom';
+import PAGES from '~/utils/pages';
+import BlogDetail from './BlogDetail';
 function BlogManagement() {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -17,6 +21,8 @@ function BlogManagement() {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [orderBy, setOrderBy] = useState("publishDate");
     const [sort, setSort] = useState("desc");
+    const nav = useNavigate();
+    const [openDetail, setOpenDetail] = useState(false);
     useEffect(() => {
         handleGetBlogs();
     }, [])
@@ -159,7 +165,10 @@ function BlogManagement() {
                                             {b.author.email}
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton sx={{ color: "#5fc35f" }}><VisibilityIcon /></IconButton>
+                                            <IconButton sx={{ color: "#5fc35f" }}
+                                                onClick={() => { setOpenDetail(true); setCurrentBlog(b) }}
+                                            ><VisibilityIcon /></IconButton>
+                                            <IconButton sx={{ color: "#ffc427" }} onClick={() => { nav(PAGES.BLOG_MANAGEMENT + '/edit/' + b.id) }}><BorderColorIcon /></IconButton>
                                             {
                                                 b.isPublished ? (
                                                     <Button variant='outlined' sx={{ color: "red", borderColor: "red", ml: 1 }}
@@ -189,6 +198,7 @@ function BlogManagement() {
                     handleAction={changeStatus}
                     content={`Bạn có chắc muốn ${currentBlog && currentBlog.isPublished ? "ẩn" : "hiện"} bài viết này không`} />
             }
+            <BlogDetail openDetail={openDetail} setOpenDetail={setOpenDetail} blog={currentBlog} />
         </Paper>
 
     )

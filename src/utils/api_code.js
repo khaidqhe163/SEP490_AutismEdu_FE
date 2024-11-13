@@ -122,7 +122,7 @@ const API_CODE = {
   API_CREATE_SCHEDULE: '/v1/ScheduleTimeSlot/',
   API_DELETE_SCHEDULE: '/v1/ScheduleTimeSlot/',
   API_UPDATE_SCHEDULE: '/v1/Schedule/ChangeScheduleDateTime',
-
+  API_UPDATE_TIME_SLOT: '/v1/ScheduleTimeSlot',
   //Test
   API_CREATE_TEST: '/v1/Test',
   API_GET_LIST_TEST: '/v1/Test',
@@ -157,7 +157,7 @@ const API_CODE = {
   API_CREATE_BLOG: '/v1/Blog',
   API_GET_BLOGS: '/v1/Blog',
   API_GET_BLOG_DETAIL: '/v1/Blog/',
-  API_GET_EDIT_DETAIL: '/v1/Blog/',
+  API_UPDATE_BLOG: '/v1/Blog/UpdateStatus/',
   API_UPDATE_BLOG_STATUS: '/v1/Blog/',
   //payment history
   API_POST_PAYMENT_HISTORY: '/v1/PaymentHistory',

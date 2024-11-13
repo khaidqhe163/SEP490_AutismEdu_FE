@@ -35,8 +35,6 @@ function Calendar() {
     const getSchedule = async () => {
         try {
             setLoading(true);
-            console.log(weekInYears[currentWeek]);
-            console.log(weekInYears[currentWeek].sunday);
             await services.ScheduleAPI.getSchedule((res) => {
                 if (listYears.length !== 0) {
                     const startYear = new Date(tutorInformation.createdDate).getFullYear();
@@ -58,7 +56,6 @@ function Calendar() {
             })
             setLoading(false);
         } catch (error) {
-            console.log(error);
             setLoading(false);
         }
     }

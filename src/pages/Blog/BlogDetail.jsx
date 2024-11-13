@@ -1,16 +1,18 @@
 import { Box, Breadcrumbs, Paper, Stack, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import PAGES from '~/utils/pages'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 import LoadingComponent from '~/components/LoadingComponent';
 import '~/assets/css/texteditor.css';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 function BlogDetail() {
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [blog, setBlog] = useState(null);
+    const nav = useNavigate();
     useEffect(() => {
         handleGetBlog();
     }, [])
@@ -20,6 +22,9 @@ function BlogDetail() {
             setLoading(true);
             await services.BlogAPI.getBlogDetail(id, (res) => {
                 setBlog(res.result)
+                if (!res.result) {
+                    nav(PAGES.ROOT + PAGES.BLOG_LIST)
+                }
             }, (err) => {
                 console.log(err);
             })
@@ -63,8 +68,13 @@ function BlogDetail() {
                 py: "70px", px: 2
             }}>
                 <Typography sx={{ textAlign: "center" }} variant='h4'>{blog?.title}</Typography>
-                <Stack direction='row' mt={2} gap={2} justifyContent="center">
-                    <AccessTimeIcon /> <Typography>{formatDate(blog?.publishDate)}</Typography>
+                <Stack direction='row' gap={5} justifyContent="center">
+                    <Stack direction='row' mt={2} gap={1}>
+                        <AccessTimeIcon /> <Typography>{formatDate(blog?.publishDate)}</Typography>
+                    </Stack>
+                    <Stack direction='row' mt={2} gap={1}>
+                        <RemoveRedEyeIcon /> <Typography>{blog?.viewCount}</Typography>
+                    </Stack>
                 </Stack>
                 <img src={blog?.urlImageDisplay}
                     style={{ width: "100%", marginTop: "30px" }} />
