@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import CurriculumEditedTable from './EditedTable/CurriculumEditedTable'; 
+import CurriculumEditedTable from './EditedTable/CurriculumEditedTable';
 import CreateOrEditModal from './CurriculumModal/CreateOrEditModal';
 import DeleteConfirmationModal from './CurriculumModal/DeleteConfirmationModal';
 
@@ -23,7 +23,7 @@ function CurriculumManagement() {
     const [currentEditIndex, setCurrentEditIndex] = useState(null);
     const [showTable, setShowTable] = useState(false);
     console.log(curriculumData);
-    
+
     useEffect(() => {
         handleGetCurriculums();
     }, []);
@@ -32,13 +32,12 @@ function CurriculumManagement() {
         try {
             await services.CurriculumManagementAPI.getCurriculums((res) => {
                 if (res?.result) {
-                    const curriData = res?.result.filter(r => r.isActive == true);
-                    setCurriculumData(curriData);
+                    setCurriculumData(res.result);
                 }
             }, (error) => {
                 console.log(error);
             }, {
-                status: 'all',
+                status: 'approve',
                 orderBy: 'createdDate',
                 sort: 'asc',
                 pageNumber: 1

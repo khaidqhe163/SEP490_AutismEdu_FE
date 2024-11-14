@@ -192,7 +192,7 @@ function AdminLeftBar() {
                                     <ListItemIcon>
                                         <PlaylistAddIcon />
                                     </ListItemIcon>
-                                    <ListItemText primary="Thêm đánh giá" />
+                                    <ListItemText primary="Lịch sử thanh toán" />
                                 </ListItemButton>
                             </List>
                         </Link>

@@ -37,6 +37,7 @@ const QrModal = (props) => {
                 }
             });
             const jsonData = await res.json();
+            console.log(jsonData.data.records);
 
             jsonData.data.records.forEach(trans => {
                 if (Math.floor(trans.amount) === Math.floor(total) && trans.description.includes(randomCode.replace(/-/g, ""))) {
