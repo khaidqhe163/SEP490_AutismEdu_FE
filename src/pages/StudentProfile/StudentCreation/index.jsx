@@ -13,6 +13,7 @@ import axios from '~/plugins/axios';
 import { useNavigate } from 'react-router-dom';
 import PAGES from '~/utils/pages';
 import ConfirmDialog from '~/components/ConfirmDialog';
+import CompleteModal from './CompleteModal';
 
 function StudentCreation() {
     const email = useRef(null);
@@ -33,6 +34,7 @@ function StudentCreation() {
     const [selectedRequest, setSelectedRequest] = useState("");
     const [listTutorRequest, setListTutorRequest] = useState([]);
     const [openConfirm, setOpenConfirm] = useState(false);
+    const [openSuccess, setOpenSuccess] = useState(false);
     const nav = useNavigate();
     useEffect(() => {
         handleGetTutorRequest();
@@ -228,7 +230,8 @@ function StudentCreation() {
             await services.StudentProfileAPI.createStudentProfile(formData,
                 (res) => {
                     enqueueSnackbar("Tạo hồ sơ học sinh thành công!", { variant: "success" });
-                    nav(PAGES.MY_STUDENT)
+                    setOpenSuccess(true);
+                    // nav(PAGES.MY_STUDENT)
                 }, (err) => {
                     enqueueSnackbar(err.error[0], { variant: "error" });
                 })
@@ -252,6 +255,7 @@ function StudentCreation() {
     return (
         <Box p="20px" sx={{ height: "calc(100vh - 65px)", bgcolor: "#f8fafb", width: '100%' }} overflow="auto">
             <Typography variant='h4'>Tạo hồ sơ học sinh</Typography>
+            <CompleteModal hasAccount={hasAccount} open={openSuccess} setOpen={setOpenSuccess} />
             <Box sx={{
                 width: "100%",
                 display: "flex",

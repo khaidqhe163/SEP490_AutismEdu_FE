@@ -338,6 +338,11 @@ function Calendar() {
                                                                 {passStatus(f.passingStatus)}
                                                             </span>
                                                         </Typography>
+                                                        {
+                                                            f.isUpdatedSchedule === true && (
+                                                                <Typography sx={{ color: "green", fontSize: "12px" }}>Lịch đã thay đổi</Typography>
+                                                            )
+                                                        }
                                                         <Typography sx={{ color: f.attendanceStatus === 1 ? "green" : "red", fontSize: "12px", fontWeight: '500' }} >({attendanceStatus(f.attendanceStatus)})</Typography>
                                                         {
                                                             !checkTime(f) && <ChangeSlotModal schedule={f} setIsChange={setIsChange} />

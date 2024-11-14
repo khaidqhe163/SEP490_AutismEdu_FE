@@ -141,7 +141,8 @@ function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, ope
         try {
             await services.ScheduleAPI.getSchedule((res) => {
                 const filterSlot = res.result.schedules.filter((f) => {
-                    return f.scheduleTimeSlotId !== selectedTimeSlot.id
+                    return (f.scheduleTimeSlotId !== selectedTimeSlot.id && f.isUpdatedSchedule === false) ||
+                        (f.scheduleTimeSlotId === selectedTimeSlot.id && f.isUpdatedSchedule === true);
                 })
                 setExistSlots(filterSlot);
             }, (error) => {
@@ -176,12 +177,13 @@ function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, ope
             && toMinutes(endString) === toMinutes(endTime) && selectedDay.id === selectedTimeSlot.weekday) ||
             e.target.value === 0) {
             setChange(true);
+            setOverlapSchedules([])
         } else {
             setChange(false);
         }
         setDayOfWeek(selectedDay.day)
     }
-    const handleCreateTimeSlot = async () => {
+    const handleUpdateTimeSlot = async () => {
         if (startTime === "" || endTime === "" || dayOfWeek.length === 0) {
             setTimeError("Nhập đầy đủ thông tin!");
             return;
@@ -196,8 +198,16 @@ function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, ope
             enqueueSnackbar("Bạn đang có lịch bị trùng!", { variant: "warning" })
             return;
         }
+        const selectedDay = days.find((d) => {
+            return d.day === dayOfWeek;
+        })
         try {
-            await services.TimeSlotAPI.updateSlot({},
+            await services.TimeSlotAPI.updateSlot({
+                to: endTime,
+                from: startTime,
+                weekday: selectedDay.id,
+                timeSlotId: selectedTimeSlot.id
+            },
                 (res) => {
                     const filterSlot = listTimeSlots.filter((l) => {
                         return l.id !== selectedTimeSlot.id;
@@ -297,7 +307,7 @@ function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, ope
                             })
                         }
                     </ul>
-                    <Button variant='contained' sx={{ mt: 5 }} disabled={change}>Cập nhật khung giờ</Button>
+                    <Button variant='contained' sx={{ mt: 5 }} disabled={change} onClick={handleUpdateTimeSlot}>Cập nhật khung giờ</Button>
                 </Box>
             </Modal>
         </>

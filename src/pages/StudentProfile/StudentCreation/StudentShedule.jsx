@@ -1,7 +1,8 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Button, Card, CardContent, Checkbox, Divider, FormControl, FormHelperText, IconButton, ListItemText, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Checkbox, Divider, FormControl, FormHelperText, IconButton, ListItemText, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import services from '~/plugins/services';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 const days = [
     {
         id: 1,
@@ -43,16 +44,18 @@ const MenuProps = {
         },
     },
 };
-function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
+function StudentShedule({ listSchedule, setListSchedule }) {
     const [dayOfWeek, setDayOfWeek] = useState([]);
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
     const [timeError, setTimeError] = useState("");
     const [disableDate, setDisableDate] = useState([]);
     const [existSchedule, setExistSchedule] = useState([]);
-
+    const [overlapSchedules, setOverlapSchedules] = useState([]);
+    const [existSlots, setExistSlots] = useState([]);
     useEffect(() => {
         getExistSchedule();
+        getExistSlot();
     }, [])
     useEffect(() => {
         const disableArr = [];
@@ -83,6 +86,22 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
             console.log(error);
         }
     }
+
+    const getExistSlot = async () => {
+        const today = new Date();
+        try {
+            await services.ScheduleAPI.getSchedule((res) => {
+                setExistSlots(res.result.schedules);
+            }, (error) => {
+                console.log(error);
+            }, {
+                startDate: `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`,
+                studentProfileId: 0
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const toMinutes = (time) => {
         const [hours, minutes] = time.split(':').map(Number);
         return hours * 60 + minutes;
@@ -99,18 +118,35 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
         if (startTime === "" || endTime === "" || dayOfWeek.length === 0) {
             setTimeError("Nhập đầy đủ thông tin!");
             return;
-        }
-        else if (startTime >= endTime) {
-            setTimeError("Thời gian không hợp lệ")
+        } else if (toMinutes(startTime) >= toMinutes(endTime)) {
+            setTimeError("Thời gian không hợp lệ");
+            return;
+        } else if (toMinutes(endTime) - toMinutes(startTime) < 30) {
+            setTimeError("1 buổi học dài ít nhất 30 phút");
+            return;
         }
         else {
+            let arrSchedule = [];
             const scheduleItem = dayOfWeek.map((d) => {
+                const weekDay = days.find((day) => {
+                    return day.day === d;
+                })
+                const overlapSchedule = existSlots.filter((e) => {
+                    let scheduleDate = new Date(e.scheduleDate).getDay();
+
+                    if (weekDay.id === scheduleDate && toMinutes(e.start) < toMinutes(endTime) && toMinutes(startTime) < toMinutes(e.end)) {
+                        return e;
+                    }
+                })
+                arrSchedule = [...overlapSchedule, ...arrSchedule];
                 return {
                     weekday: days.find((day) => day.day === d).id,
                     from: startTime,
-                    to: endTime
+                    to: endTime,
+                    status: overlapSchedule.length > 0 ? true : false
                 }
             })
+            setOverlapSchedules([...arrSchedule, ...overlapSchedules])
             const updatedSchedule = [...scheduleItem, ...listSchedule];
             const sortedItem = updatedSchedule.sort((a, b) => {
                 return a.weekday - b.weekday
@@ -128,7 +164,37 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
         const filter = listSchedule.filter((l, i) => {
             return i !== index
         })
+        if (overlapSchedules && overlapSchedules.length !== 0) {
+            const updateOverlapSchedule = overlapSchedules.filter((o) => {
+                const scheduleDate = new Date(o.scheduleDate).getDay();
+                if (listSchedule[index].weekday !== scheduleDate
+                    || toMinutes(o.start) > toMinutes(listSchedule[index].to)
+                    || toMinutes(listSchedule[index].from) > toMinutes(o.end)) {
+                    return o;
+                }
+            })
+            setOverlapSchedules([...updateOverlapSchedule]);
+        }
+        const updateExistSchedule = existSchedule.filter((e) => {
+            if (e.weekday !== listSchedule[index].weekday ||
+                e.from !== listSchedule[index].from ||
+                e.to !== listSchedule[index].to
+            ) {
+                return e;
+            }
+        })
+
+        setExistSchedule(updateExistSchedule)
         setListSchedule([...filter]);
+    }
+    const formatDate = (d) => {
+        if (!d) {
+            return "";
+        }
+        const date = new Date(d.scheduleDate);
+        const start = d.start.split(":");
+        const end = d.end.split(":");
+        return `(${start[0]}:${start[1]} - ${end[0]}:${end[1]}) ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
     }
     return (
         <Card sx={{ px: 2, mt: 3 }}>
@@ -178,6 +244,22 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
                     )
                 }
                 <Button variant='contained' sx={{ mt: 2 }} disabled={startTime === "" || endTime === ""} onClick={handleAddTime}>Thêm</Button>
+                {
+                    overlapSchedules && overlapSchedules.length !== 0 &&
+                    <Stack direction='row' alignItems="center" mt={3}>
+                        <WarningAmberIcon sx={{ color: "orange" }} />
+                        <Typography sx={{ color: "orange" }}>Lịch của bạn bị trùng</Typography>
+                    </Stack>
+                }
+                <ul style={{ color: "orange" }}>
+                    {
+                        overlapSchedules && overlapSchedules.length !== 0 && overlapSchedules.map((o) => {
+                            return (
+                                <li key={o.id}>{formatDate(o)}</li>
+                            )
+                        })
+                    }
+                </ul>
                 <Box sx={{ display: "flex", mt: 3, flexWrap: "wrap", gap: 3 }}>
                     {
                         listSchedule.length !== 0 && listSchedule.map((schedule, index) => {
@@ -186,7 +268,9 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
                                     display: "flex",
                                     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
                                     p: 2,
-                                    gap: 2, alignItems: "center"
+                                    gap: 2, alignItems: "center",
+                                    bgcolor: schedule.status ? "orange" : "white",
+                                    color: schedule.status ? "white" : ""
                                 }} key={index}>
                                     <Typography sx={{ fontSize: "12px" }}>{days.find((day) => day.id === schedule.weekday).day}</Typography>
                                     <Divider orientation='vertical' sx={{ bgcolor: "black" }} />
@@ -200,7 +284,7 @@ function StudentShedule({ childrenInfor, listSchedule, setListSchedule }) {
                     }
                 </Box>
             </CardContent>
-        </Card>
+        </Card >
     )
 }
 

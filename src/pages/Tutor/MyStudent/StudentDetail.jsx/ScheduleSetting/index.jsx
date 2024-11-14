@@ -106,8 +106,8 @@ function ScheduleSetting({ studentProfile }) {
                                         width: "40%",
                                         mt: 3,
                                     }}>
-                                        <Typography sx={{ fontSize: "24px" }}>{days.find((day) => day.id === l.weekday).day}</Typography>
-                                        <Typography sx={{ fontSize: "24px" }}>{formatTime(l.from)} - {formatTime(l.to)}</Typography>
+                                        <Typography sx={{ fontSize: "22px" }}>{days.find((day) => day.id === l.weekday).day}</Typography>
+                                        <Typography sx={{ fontSize: "22px" }}>{formatTime(l.from)} - {formatTime(l.to)}</Typography>
                                         <IconButton onClick={() => { setOpenEdit(true); setSelectedTimeSlot(l) }}>
                                             <BorderColorIcon sx={{ fontSize: "26px", color: "orange" }} />
                                         </IconButton>
