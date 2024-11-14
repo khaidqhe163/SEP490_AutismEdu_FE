@@ -57,7 +57,7 @@ function CertificateManagement() {
     const [pagination, setPagination] = useState({
         pageNumber: 1,
         pageSize: 10,
-        totalPages: 10,
+        total: 10,
     });
 
     const [open, setOpen] = useState(false);
@@ -192,7 +192,7 @@ function CertificateManagement() {
         }
     };
 
-    const totalPages = Math.ceil(pagination.totalPages / pagination.pageSize);
+    const totalPages = Math.ceil(pagination.total / pagination.pageSize);
 
     return (
         <Box sx={{ width: "90%", margin: "auto", mt: "20px", gap: 2 }}>

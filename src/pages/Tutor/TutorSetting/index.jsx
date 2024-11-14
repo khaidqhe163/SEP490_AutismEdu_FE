@@ -6,10 +6,12 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import DescriptionIcon from '@mui/icons-material/Description';
+import WorkIcon from '@mui/icons-material/Work';
 import EditProfile from './EditProfile';
 import CurriculumManage from './CurriculumManagement';
 import AvailableTimeManagement from './AvailableTimeManagement';
 import CertificateManagement from './CertificateManagement';
+import WorkExperienceManagement from './WorkExperienceManagement';
 
 function TutorSetting() {
     const navigate = useNavigate();
@@ -32,6 +34,7 @@ function TutorSetting() {
                         <Tab iconPosition='start' icon={<AutoStoriesIcon />} label="Khung chương trình" value="2" />
                         <Tab iconPosition='start' icon={<EditCalendarIcon />} label="Thiết lập thời gian rảnh" value="3" />
                         <Tab iconPosition='start' icon={<DescriptionIcon />} label="Chứng chỉ" value="4" />
+                        <Tab iconPosition='start' icon={<WorkIcon />} label="Kinh nghiệm làm việc" value="5" />
                     </TabList>
                 </Box>
                 <TabPanel value="1">
@@ -40,6 +43,7 @@ function TutorSetting() {
                 <TabPanel value="2"><CurriculumManage /></TabPanel>
                 <TabPanel value="3"><AvailableTimeManagement /></TabPanel>
                 <TabPanel value="4"><CertificateManagement /></TabPanel>
+                <TabPanel value='5'><WorkExperienceManagement /></TabPanel>
             </TabContext>
         </Box>
     );
