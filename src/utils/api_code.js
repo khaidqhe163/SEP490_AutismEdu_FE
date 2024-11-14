@@ -75,6 +75,9 @@ const API_CODE = {
 
   //Work experiences management
   API_WORK_EXPERIENCE_STATUS: '/v1/WorkExperience/changeStatus/',
+  API_GET_WORK_EXPERIENCES: '/v1/WorkExperience',
+  API_CREATE_WORK_EXPERIENCE: '/v1/WorkExperience',
+  API_DELETE_WORK_EXPERIENCE: '/v1/WorkExperience/',
 
   //Student profile management
   API_CREATE_STUDENT_PROFILE: '/v1/StudentProfile',
