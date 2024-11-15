@@ -27,7 +27,8 @@ import { PackagePaymentAPI } from "~/services/PaymentPackageAPI";
 import { NotificationAPI } from "~/services/NotificationAPI";
 import { BlogAPI } from "~/services/BlogManagement";
 import { PaymentHistoryAPI } from "~/services/PaymentHistoryAPI"
-// Initialize the BaseService with the axios instance and API prefix
+import { ReportManagementAPI } from "~/services/ReportManagementAPI";
+
 (function () {
   initializeService(axios, "/api");
 })();
@@ -60,6 +61,7 @@ const services = {
   BlogAPI,
   NotificationAPI,
   PaymentHistoryAPI,
+  ReportManagementAPI
 };
 
 export default services;

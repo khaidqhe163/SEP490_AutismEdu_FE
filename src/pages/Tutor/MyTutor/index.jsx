@@ -12,8 +12,6 @@ import PAGES from '~/utils/pages';
 function MyTutor() {
     const [status, setStatus] = React.useState(1);
     const [listTutor, setListTutor] = React.useState([]);
-    console.log(listTutor);
-    
     const nav = useNavigate();
     React.useEffect(() => {
         getStudentProfile();
@@ -44,7 +42,7 @@ function MyTutor() {
                         onClick={() => setStatus(2)}
                         sx={{ cursor: "pointer" }} />
                 </Box>
-                <Stack direction='row' mt={5}>
+                <Stack direction='row' mt={5} gap={5}>
                     {
                         listTutor && listTutor.length !== 0 && listTutor.map((l) => {
                             return (

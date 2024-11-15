@@ -166,6 +166,12 @@ const API_CODE = {
   API_POST_PAYMENT_HISTORY: '/v1/PaymentHistory',
   API_GET_PAYMENT_HISTORY: '/v1/PaymentHistory',
   API_GET_PAYMENT_HISTORY_CURRENT: '/v1/PaymentHistory/currentUserPaymentHistory',
+
+  //Report Management
+  API_CREATE_REPORT_TUTOR: '/v1/Report/tutor',
+  API_GET_LIST_REPORT: '/v1/Report',
+  API_GET_REPORT_DETAIL: '/v1/Report/',
+  API_CHANGE_REPORT_STATUS: '/v1/Report/changeStatus/'
 };
 
 export default API_CODE;

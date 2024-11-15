@@ -23,11 +23,13 @@ import NewspaperIcon from '@mui/icons-material/Newspaper';
 import SortIcon from '@mui/icons-material/Sort';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
+import ReportIcon from '@mui/icons-material/Report';
 function AdminLeftBar() {
     const [open, setOpen] = useState(false);
     const [openPayment, setOpenPayment] = useState(false);
     const [openArtical, setOpenArtical] = useState(false);
     const [openInformation, setOpenInformation] = useState(false);
+    const [openReport, setOpenReport] = useState(false);
     const location = useLocation();
     const adminInformation = useSelector(adminInfor);
     const handleClick = () => {
@@ -49,7 +51,7 @@ function AdminLeftBar() {
         }
         else if (location.pathname.includes("/assessment_score_range")) {
             setSelectedIndex(2);
-        }else if (location.pathname.includes("/test-management")) {
+        } else if (location.pathname.includes("/test-management")) {
             setSelectedIndex(8);
         }
     }, [])
@@ -122,7 +124,7 @@ function AdminLeftBar() {
                         <ListItemText primary="Đánh giá" />
                         {open ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
-                   
+
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Link to={PAGES.ASSESSMENT_MANAGEMENT}>
                             <List component="div" disablePadding>
@@ -148,7 +150,7 @@ function AdminLeftBar() {
                                 </ListItemButton>
                             </List>
                         </Link>
-                        
+
                         <Link to={PAGES.SCORE_RANGE}>
                             <List component="div" disablePadding>
                                 <ListItemButton sx={{ pl: 4 }}
@@ -162,7 +164,7 @@ function AdminLeftBar() {
                             </List>
                         </Link>
                     </Collapse>
-                    
+
                     <ListItemButton onClick={() => setOpenPayment(!openPayment)}>
                         <ListItemIcon>
                             <AttachMoneyIcon />
@@ -170,8 +172,8 @@ function AdminLeftBar() {
                         <ListItemText primary="Thanh Toán" />
                         {openPayment ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
-                    <Collapse 
-                    in={openPayment} timeout="auto" unmountOnExit>
+                    <Collapse
+                        in={openPayment} timeout="auto" unmountOnExit>
                         <Link to={PAGES.PAYMENT_PACKAGE_MANAGEMENT}>
                             <List component="div" disablePadding>
                                 <ListItemButton sx={{ pl: 4 }}
@@ -226,6 +228,33 @@ function AdminLeftBar() {
                                         <PostAddIcon />
                                     </ListItemIcon>
                                     <ListItemText primary="Tạo bài viết" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                    </Collapse>
+                    <ListItemButton onClick={() => setOpenReport(!openReport)}>
+                        <ListItemIcon>
+                            <ReportIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Đơn tố cáo" />
+                        {openReport ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openReport} timeout="auto" unmountOnExit>
+                        <Link to={PAGES.REPORT_TUTOR_MANAGEMENT}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 6}
+                                    onClick={(event) => handleListItemClick(event, 6)}>
+                                    <ListItemText primary="Tố cáo gia sư" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                        <Link to={PAGES.BLOG_CREATION}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 5}
+                                    onClick={(event) => handleListItemClick(event, 5)}>
+                                    <ListItemText primary="Tố cáo đánh giá" />
                                 </ListItemButton>
                             </List>
                         </Link>

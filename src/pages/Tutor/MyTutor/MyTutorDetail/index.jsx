@@ -14,6 +14,7 @@ import Calendar from '../../Calendar';
 import StudentSchedule from './StudentSchedule';
 import StudentProgressReport from './StudentProgressReport';
 import StudentChart from './StudentChart';
+import ReportTutor from './ReportTutor';
 const StyledTabs = styled((props) => (
     <Tabs
         {...props}
@@ -51,7 +52,7 @@ function MyTutorDetail() {
     const { id } = useParams();
     const [studentProfile, setStudentProfile] = useState();
     console.log(studentProfile);
-    
+
     const [tab, setTab] = useState('1');
     const handleChange = (event, newValue) => {
         setTab(newValue);
@@ -121,9 +122,7 @@ function MyTutorDetail() {
                             </Stack>
                         </Box>
                     </Stack>
-                    <Button variant='contained' sx={{ height: "50px" }}
-                        startIcon={<PriorityHighIcon />} color="warning"
-                    >Tố cáo</Button>
+                    <ReportTutor studentProfile={studentProfile} />
                 </Stack>
                 <Box mt={5} px="100px">
                     <StyledTabs

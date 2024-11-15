@@ -55,6 +55,8 @@ const PAGES = {
   CURRICULUM_MANAGEMENT: '/admin/curriculum_management',
   WORK_EXPERIENCE_MANAGEMENT: '/admin/work_experience_management',
   BLOG_EDIT: '/admin/blog-management/edit/:id',
+  REPORT_TUTOR_MANAGEMENT: '/admin/report-tutor-management',
+  REPORT_TUTOR_DETAIL: '/admin/report-tutor-management/detail/:id'
 
 };
 

@@ -50,6 +50,8 @@ import TestResultDetail from '~/pages/Parent/TestManage/TestResultDetail'
 import RechargeModal from '~/components/PaymentModal/RechargeModal'
 import PaymentPackageManagement from '~/pages/Tutor/PaymentPackageManagement/PaymentPackageManagement'
 import BlogUpdate from '~/pages/Admin/BlogManagement/BlogUpdate'
+import ReportTutorManagement from '~/pages/Admin/ReportManagement/ReportTutorManagement'
+import ReportDetail from '~/pages/Admin/ReportManagement/ReportTutorManagement/ReportDetail'
 
 const UnLayoutRoutes = [
     {
@@ -253,6 +255,14 @@ const adminRoutes = [
     {
         path: PAGES.BLOG_EDIT,
         element: BlogUpdate
+    },
+    {
+        path: PAGES.REPORT_TUTOR_MANAGEMENT,
+        element: ReportTutorManagement
+    },
+    {
+        path: PAGES.REPORT_TUTOR_DETAIL,
+        element: ReportDetail
     },
 
 ]
