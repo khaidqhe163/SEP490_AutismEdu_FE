@@ -1,27 +1,25 @@
 import { Logout } from '@mui/icons-material';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import { Avatar, Badge, Box, Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Paper, Stack, Typography } from '@mui/material';
+import { Avatar, Badge, Box, Button, Divider, FormControl, IconButton, InputAdornment, ListItemIcon, Menu, MenuItem, OutlinedInput, Paper, Stack, TextField, Typography } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
 import Cookies from "js-cookie";
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { packagePayment, setPackagePayment } from '~/redux/features/packagePaymentSlice';
 import { setTutorInformation, tutorInfor } from '~/redux/features/tutorSlice';
-import { setPackagePayment, packagePayment } from '~/redux/features/packagePaymentSlice';
-
+import SearchIcon from '@mui/icons-material/Search';
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import PAGES from '~/utils/pages';
 import Logo from '../Logo';
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
-
-import RechargeModal from '../PaymentModal/RechargeModal';
+import ChatIcon from '@mui/icons-material/Chat';
 import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime'
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { SignalRContext } from '~/Context/SignalRContext';
 import services from '~/plugins/services';
-import * as signalR from '@microsoft/signalr';
-
+import InputEmoji from "react-input-emoji";
+import SendIcon from '@mui/icons-material/Send';
 function TutorHeader({ openMenu, setOpenMenu }) {
     dayjs.extend(relativeTime);
     const nav = useNavigate();
@@ -31,18 +29,21 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     const dispatch = useDispatch();
     const openAccountMenu = Boolean(accountMenu);
     const [openModalPayment, setOpenModalPayment] = useState(false);
-
     const [openNotification, setOpenNotification] = useState(false);
-    const { connection } = useContext(SignalRContext);
+    const { connection, openMessage, setOpenMessage, setCurrentChat, currentChat } = useContext(SignalRContext);
     const [notifications, setNotifications] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const notificationRef = useRef(null);
     const notificationIconRef = useRef(null);
     const [isTrial, setTrial] = useState(true);
     const [unreadNoti, setUnreadNoti] = useState(0);
-
     const [daysLeft, setDaysLeft] = useState(0);
-
+    const messageIconRef = useRef(null);
+    const [text, setText] = useState("");
+    const [messages, setMessages] = useState([]);
+    const [chatBox, setChatBox] = useState(null);
+    const [conversations, setConversations] = useState([]);
+    const [currentChatObject, setCurrentChatObject] = useState(null);
     // const [currentUserPayment, setCurrentUserPayment] = useState(null);
 
     // console.log(currentUserPayment);
@@ -62,6 +63,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
 
     useEffect(() => {
         handleGetCurrentUserPaymentHistory();
+        setMessages([1, 2]);
     }, []);
 
     useEffect(() => {
@@ -93,26 +95,27 @@ function TutorHeader({ openMenu, setOpenMenu }) {
         }
         if (tutorInfo) {
             handleGetNotification();
+            handleGetConversation();
         }
     }, [tutorInfo])
 
     useEffect(() => {
-        if (connection && tutorInfo) {
-            connection
-                .start()
-                .then(() => {
-                    console.log('Kết nối SignalR thành công!');
-
-                    connection.on(`Notifications-${tutorInfo.id}`, (notification) => {
-                        console.log(notification);
-                        setNotifications((preNotifications) => [notification, ...preNotifications]);
-                    });
-                })
-                .catch((error) => console.error('Kết nối SignalR thất bại:', error));
-            return () => {
-                connection.stop();
-            };
+        if (currentChat !== 0) {
+            handleGetMessage();
         }
+    }, [currentChat])
+    useEffect(() => {
+        if (!connection || !tutorInfo) return;
+        connection.on(`Notifications-${tutorInfo.id}`, (notification) => {
+            setNotifications((preNotifications) => [notification, ...preNotifications]);
+        });
+        connection.on(`Messages-${tutorInfo.id}`, (notification) => {
+            setNotifications((preNotifications) => [notification, ...preNotifications]);
+        });
+        return () => {
+            connection.off(`Notifications-${tutorInfo.id}`);
+            connection.off(`Messages-${tutorInfo.id}`);
+        };
     }, [connection, tutorInfo]);
     const handleGetNotification = async () => {
         try {
@@ -132,6 +135,57 @@ function TutorHeader({ openMenu, setOpenMenu }) {
             console.log(error);
         }
     }
+
+    const handleGetConversation = async () => {
+        try {
+            await services.ConversationAPI.getConversations((res) => {
+                setConversations(res.result);
+                if (res.result.length !== 0) {
+                    setCurrentChat(res.result[0])
+                }
+                console.log(res.result);
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const handleGetMessage = async () => {
+        try {
+            await services.MessageAPI.getMessages(currentChat?.id || 0, (res) => {
+                console.log(res.result);
+                setMessages(res.result.reverse());
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const sendMessages = async () => {
+        if (text.trim() === "") return;
+        try {
+            await services.MessageAPI.sendMessages({
+                conversationId: currentChat.id,
+                content: text.trim(),
+            }, (res) => {
+                setMessages([...messages, res.result]);
+                setText("");
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const handleOpenAccountMenu = (event) => {
         setAccountMenu(event.currentTarget);
     };
@@ -152,10 +206,17 @@ function TutorHeader({ openMenu, setOpenMenu }) {
 
     const handleClickOutside = (event) => {
         if (
+            messageIconRef.current &&
+            !messageIconRef.current.contains(event.target) &&
+            !event.target.closest(".MuiIconButton-root")
+        ) {
+            setOpenMessage(false);
+        }
+        if (
             notificationRef.current &&
-            notificationIconRef.current &&
             !notificationRef.current.contains(event.target) &&
-            !notificationIconRef.current.contains(event.target)
+            !notificationIconRef.current.contains(event.target) &&
+            !event.target.closest(".MuiIconButton-root")
         ) {
             setOpenNotification(false);
         }
@@ -202,6 +263,12 @@ function TutorHeader({ openMenu, setOpenMenu }) {
             console.log(error);
         }
     }
+
+    useEffect(() => {
+        if (chatBox) {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }, [messages, chatBox]);
     return (
         <Box sx={{
             position: "fixed",
@@ -214,7 +281,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                 justifyContent: "space-between",
                 height: "64px",
                 alignItems: "center",
-                px: "20px",
+                px: "20px"
             }}>
                 <Box sx={{ display: "flex", gap: 2 }}>
                     <IconButton onClick={handleOpenMenu}>
@@ -238,12 +305,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                 {!isTrial ? 'Hạn còn lại:' : 'Dùng thử:'} {daysLeft} ngày
                             </Typography>
                         </Box>
-
-
                     )}
-                    <IconButton onClick={() => { nav(PAGES.STUDENT_CREATION) }}>
-                        <AddOutlinedIcon />
-                    </IconButton>
                     <Button startIcon={<KeyboardDoubleArrowUpIcon />} onClick={() => nav(PAGES.PAYMENT_PACKAGE)} variant='contained' size='small' sx={{
                         width: "130px", bgcolor: '#16ab65',
                         '&:hover': {
@@ -253,8 +315,210 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                         Nâng cấp
                     </Button>
                     <Box sx={{ position: "relative" }}>
+                        <IconButton sx={{ color: "#c58ee5" }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenMessage(!openMessage);
+                                setOpenNotification(false);
+                            }}>
+                            <Badge badgeContent={unreadNoti} color="primary">
+                                <ChatIcon />
+                            </Badge>
+                        </IconButton>
+                        {
+                            openMessage && (
+                                <Paper variant='elevation' sx={{
+                                    position: "absolute", top: "50px",
+                                    right: "0px", width: "1000px", bgcolor: "#F3E8FF",
+                                    p: 2,
+                                    height: "85vh"
+                                }} ref={messageIconRef}>
+                                    {
+                                        conversations.length !== 0 ? (
+                                            <Stack direction='row' sx={{ height: "100%" }} gap={1}>
+                                                <Box sx={{ width: "35%" }}>
+                                                    <Typography variant='h4'>Đoạn chat</Typography>
+                                                    <FormControl
+                                                        sx={{
+                                                            mt: 4,
+                                                            "& .MuiOutlinedInput-root": {
+                                                                bgcolor: "#FFFFFF",
+                                                                borderRadius: "10px",
+                                                                border: "1px solid #B388FF",
+                                                                "&:hover": {
+                                                                    borderColor: "#7C4DFF"
+                                                                },
+                                                                "&.Mui-focused": {
+                                                                    borderColor: "#6200EA",
+                                                                    boxShadow: "0 0 5px #B388FF"
+                                                                }
+                                                            },
+                                                            "& .MuiOutlinedInput-input": {
+                                                                color: "#6200EA"
+                                                            },
+                                                        }}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        size="small"
+                                                    >
+                                                        <OutlinedInput
+                                                            startAdornment={<InputAdornment><SearchIcon /></InputAdornment>}
+                                                            inputProps={{
+                                                                "aria-label": "Tìm kiếm phụ huynh"
+                                                            }}
+                                                            placeholder='Tìm kiếm phụ huynh'
+                                                        />
+                                                    </FormControl>
+                                                    <Box sx={{
+                                                        overflow: "hidden", height: "80%",
+                                                        "&:hover": {
+                                                            overflow: "auto"
+                                                        },
+                                                        mt: 1
+                                                    }}>
+                                                        {
+                                                            conversations && conversations.length !== 0 && conversations.map((c) => {
+                                                                return (
+                                                                    <Stack key={c.id} direction='row' gap={1} alignItems="center" sx={{
+                                                                        py: 2, justifyContent: "space-between",
+                                                                        cursor: "pointer",
+                                                                        px: 2,
+                                                                        bgcolor: c.id === currentChat.id ? "#F8F0FF" : "",
+                                                                        borderRadius: "10px",
+                                                                        ":hover": {
+                                                                            bgcolor: "#F8F0FF"
+                                                                        }
+                                                                    }}>
+                                                                        <Stack direction='row' gap={2} alignItems="center" sx={{ width: "80%" }}>
+                                                                            <Avatar alt="Remy Sharp" src={c.user.imageUrl} />
+                                                                            <Box sx={{ overflow: "hidden" }}>
+                                                                                <Typography fontWeight="bold" color="black">{c.user.fullName}</Typography>
+                                                                                <Typography sx={{
+                                                                                    display: '-webkit-box',
+                                                                                    WebkitLineClamp: 1,
+                                                                                    WebkitBoxOrient: 'vertical',
+                                                                                    overflow: 'hidden',
+                                                                                    textOverflow: 'ellipsis'
+                                                                                }}>{c.messages[0].content}</Typography>
+                                                                            </Box>
+                                                                        </Stack>
+                                                                        {
+                                                                            !c.messages[0].isRead && (
+                                                                                <Box sx={{ width: "15px", height: "15px", bgcolor: "blue", borderRadius: "50%" }}>
+                                                                                </Box>
+                                                                            )
+                                                                        }
+                                                                    </Stack>
+                                                                )
+                                                            })
+                                                        }
+                                                    </Box>
+                                                </Box>
+                                                <Divider orientation="vertical" flexItem />
+
+                                                <Stack direction='column' sx={{ width: "65%", height: "100%" }}>
+                                                    <Stack direction='row' sx={{
+                                                        px: 1, alignItems: "center",
+                                                        justifyContent: "space-between"
+                                                    }}>
+                                                        <Stack direction='row' sx={{ gap: 2, alignItems: "center" }}>
+                                                            <Avatar alt="Remy Sharp" src={currentChat ? currentChat.user?.imageUrl : "/"} sx={{
+                                                                width: "50px",
+                                                                height: "50px"
+                                                            }} />
+                                                            <Typography variant='h5' sx={{}}>{currentChat ? currentChat.user?.fullName : "Mất kết nối"}</Typography>
+                                                        </Stack>
+                                                        <Button sx={{ color: "red" }}>CHẶN</Button>
+                                                    </Stack>
+                                                    <Divider sx={{ mt: 1 }} />
+                                                    <Box style={{
+                                                        width: "100%",
+                                                        flexGrow: 2,
+                                                        overflow: "auto"
+                                                    }} ref={setChatBox}>
+                                                        {
+                                                            messages && messages.length !== 0 && messages.map((m) => {
+                                                                if (m.sender?.id === tutorInfo?.id) {
+                                                                    return (
+                                                                        <Stack key={m.id} direction='row' sx={{
+                                                                            justifyContent: "flex-end",
+                                                                            mt: 1
+                                                                        }}>
+                                                                            <Box sx={{
+                                                                                bgcolor: "#E0D1FF",
+                                                                                p: 2,
+                                                                                borderRadius: "15px",
+                                                                                maxWidth: "70%",
+                                                                            }}>
+                                                                                <Typography>{m.content}</Typography>
+                                                                            </Box>
+                                                                        </Stack>
+                                                                    )
+                                                                } else {
+                                                                    return (
+                                                                        <Stack direction="row" key={m.id} sx={{ mt: 1 }}>
+                                                                            <Box sx={{
+                                                                                bgcolor: "#FBF8FF",
+                                                                                p: 2,
+                                                                                borderRadius: "15px",
+                                                                                maxWidth: "70%",
+                                                                                flexShrink: 0
+                                                                            }}>
+                                                                                <Typography>{m.content}</Typography>
+                                                                            </Box>
+                                                                        </Stack>
+                                                                    )
+                                                                }
+                                                            })
+                                                        }
+                                                    </Box>
+                                                    <Divider sx={{ mt: 1 }} />
+                                                    <Stack direction='row' justifyContent='space-between' alignItems="center"
+                                                        sx={{
+                                                            maxHeight: "110px"
+                                                        }}>
+                                                        <Box flexGrow={2}>
+                                                            <InputEmoji
+                                                                value={text}
+                                                                onChange={setText}
+                                                                cleanOnEnter
+                                                                placeholder="Type a message"
+                                                            />
+                                                        </Box>
+                                                        <IconButton onClick={() => sendMessages()} sx={{
+                                                            bgcolor: "#c079ea", color: "white",
+                                                            ":hover": {
+                                                                bgcolor: "#c58ee5"
+                                                            }
+                                                        }}>
+                                                            <SendIcon />
+                                                        </IconButton>
+                                                    </Stack>
+                                                </Stack>
+                                            </Stack>
+                                        ) : (
+                                            <Box sx={{
+                                                width: "100%",
+                                                height: "100%",
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center"
+                                            }}>
+                                                <Typography sx={{ fontSize: "30px" }}>Bạn chưa có cuộc hội thoại nào</Typography>
+                                            </Box>
+                                        )
+                                    }
+                                </Paper>
+                            )
+                        }
+                    </Box>
+                    <Box sx={{ position: "relative" }}>
                         <IconButton sx={{ color: "#ff7900" }}
-                            onClick={() => setOpenNotification(!openNotification)} ref={notificationIconRef}>
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenMessage(false);
+                                setOpenNotification(!openNotification);
+                            }}>
                             <Badge badgeContent={unreadNoti} color="primary">
                                 <NotificationsActiveIcon />
                             </Badge>
