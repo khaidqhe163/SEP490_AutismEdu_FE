@@ -45,6 +45,7 @@ const API_CODE = {
   API_GET_CURRICULUMS: '/v1/Curriculum',
   API_GET_UPDATE_REQUEST: '/v1/Curriculum/updateRequest',
   API_CHANGE_STATUS_CURRICULUM: '/v1/Curriculum/changeStatus/',
+  API_DELETE_CURRICULUM: '/v1/Curriculum/',
 
   //Certificate management
   API_CERTIFICATE_STATUS: '/v1/Certificate/changeStatus/',
@@ -99,6 +100,8 @@ const API_CODE = {
   API_GET_EXERCISE_BY_TYPE_ID: '/v1/ExerciseType/exercise/',
   API_CREATE_EXERCISE: '/v1/Exercise',
   API_DELETE_EXERCISE: '/v1/Exercise/',
+  API_CHANGE_STATUS_ETYPE: '/v1/ExerciseType/changeStatus/',
+  API_CREATE_EXERICSE_TYPE: '/v1/ExerciseType',
 
   //Syllabus management
   API_CREATE_SYLLABUS: '/v1/Syllabus',

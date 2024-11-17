@@ -139,41 +139,6 @@ function WorkExperienceManagement() {
         setWorkExperienceData({ ...workExperienceData, [name]: value });
     };
 
-    // const handleImageUpload = (e) => {
-    //     const files = Array.from(e.target.files);
-    //     if (files.length + certificateData.images.length > 5) {
-    //         enqueueSnackbar("Chỉ được tải lên tối đa 5 ảnh.", { variant: "error" });
-    //         return;
-    //     }
-    //     const imageUrls = files.map(file => ({
-    //         url: URL.createObjectURL(file),
-    //         file
-    //     }));
-    //     setCertificateData({ ...certificateData, images: [...certificateData.images, ...imageUrls] });
-    // };
-
-    // const handleImageRemove = (index) => {
-    //     const newImages = [...certificateData.images];
-    //     newImages.splice(index, 1);
-    //     setCertificateData({ ...certificateData, images: newImages });
-    // };
-
-    // const handleSubmitCertificate = async () => {
-    //     try {
-    //         setLoading(true);
-
-    //         await services.CertificateAPI.createCertificate({}, (res) => {
-    //             setWorkExperienceList([res.result, ...workExperienceList]);
-    //             enqueueSnackbar('Kinh nghiệm làm việc của bạn đã được tạo thành công!', { variant: 'success' })
-    //         }, (error) => {
-    //             console.log(error);
-    //         })
-    //     } catch (error) {
-    //         console.log(error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
 
     const statusText = (status) => {
         switch (status) {
@@ -265,7 +230,7 @@ function WorkExperienceManagement() {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Số thứ tự</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>STT</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Tên công ty/doanh nghiệp</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Vị trí</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Thời gian bắt đầu</TableCell>
@@ -285,7 +250,7 @@ function WorkExperienceManagement() {
                                                     overflow: 'hidden',
                                                     textOverflow: 'ellipsis',
                                                     whiteSpace: 'nowrap',
-                                                    maxWidth: '200px',
+                                                    maxWidth: '100px',
                                                 }} >
                                                     {certificate?.companyName}
                                                 </Box>
@@ -331,9 +296,10 @@ function WorkExperienceManagement() {
                                             </Box>
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton color="error" aria-label="xoá" onClick={() => handleClickOpen(certificate.id)}>
+                                            {certificate?.requestStatus !== 2 && (<IconButton color="error" aria-label="xoá" onClick={() => handleClickOpen(certificate.id)}>
                                                 <DeleteIcon />
-                                            </IconButton>
+                                            </IconButton>)}
+
                                         </TableCell>
                                     </TableRow>
                                 ))}

@@ -14,14 +14,16 @@ import {
     IconButton,
     TextField,
     Typography,
-    Grid
+    Grid,
+    Divider
 } from '@mui/material';
+import LoadingComponent from '~/components/LoadingComponent';
 
 export default function CreateCertificateDialog({ open, onClose, certificateData, setCertificateData, handleSubmitCertificate }) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [openImageDialog, setOpenImageDialog] = useState(false);
     const [listImg, setListImg] = useState([]);
-
+    const [loading, setLoading] = useState(false);
     const handleImageClick = (image) => {
         setSelectedImage(image);
         setOpenImageDialog(true);
@@ -87,9 +89,9 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <form onSubmit={formik.handleSubmit}>
-                <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>Tạo chứng chỉ</DialogTitle>
+                <DialogTitle sx={{ textAlign: 'center' }} variant='h5'>Tạo chứng chỉ</DialogTitle>
+                <Divider/>
                 <DialogContent>
-                    {/* Input fields */}
                     <Grid container spacing={2} mb={2}>
                         <Grid item xs={4}>
                             <Typography sx={{ mt: 1, fontWeight: '500', textAlign: 'right' }}>Tên chứng chỉ:</Typography>
@@ -183,7 +185,6 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
                             </Button>
                         </Grid>
                     </Grid>
-                    {/* Display images */}
                     <Grid container>
                         <Grid item xs={4}></Grid>
                         <Grid item xs={8}>
@@ -228,6 +229,7 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
                     <Button onClick={handleCloseImageDialog} color="inherit" variant='outlined'>Đóng</Button>
                 </DialogActions>
             </Dialog>
+            <LoadingComponent open={loading} setOpen={setLoading} />
         </Dialog>
     );
 }

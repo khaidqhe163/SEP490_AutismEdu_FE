@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Dialog, DialogContent, Typography, Paper, Box, Stack, FormControl, InputLabel, Select, MenuItem, Pagination } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Dialog, DialogContent, Typography, Paper, Box, Stack, FormControl, InputLabel, Select, MenuItem, Pagination, DialogTitle, Divider, DialogActions } from '@mui/material';
 import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function CurriculumEditedTable({ setShowTable }) {
+    const [selectedContent, setSelectedContent] = useState('');
+    const [openDialogR, setOpenDialogR] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const [currentContent, setCurrentContent] = useState('');
     const [curriculums, setCurriculums] = useState([]);
@@ -17,19 +19,31 @@ function CurriculumEditedTable({ setShowTable }) {
     const [pagination, setPagination] = useState({
         pageNumber: 1,
         pageSize: 5,
-        totalPages: 5,
+        total: 5,
     });
 
     useEffect(() => {
         handleGetCurriculums();
     }, [filters, pagination.pageNumber]);
 
+
+    const handleOpenDialogR = (content) => {
+        setSelectedContent(content);
+        setOpenDialogR(true);
+    };
+
+    const handleCloseDialogR = () => {
+        setOpenDialogR(false);
+        setSelectedContent('');
+    };
+
+
     const handleGetCurriculums = async () => {
         try {
             setLoading(true);
-            await services.CurriculumManagementAPI.getUpdateRequest((res) => {
+            await services.CurriculumManagementAPI.getCurriculums((res) => {
                 if (res?.result) {
-                    setCurriculums(res?.result);
+                    setCurriculums(res.result);
                     setPagination(res?.pagination);
                 }
             }, (error) => {
@@ -38,8 +52,23 @@ function CurriculumEditedTable({ setShowTable }) {
                 status: filters.status,
                 orderBy: filters.orderBy,
                 sort: filters.sort,
+                pageSize: pagination?.pageSize,
                 pageNumber: pagination?.pageNumber
-            })
+            });
+
+            // await services.CurriculumManagementAPI.getUpdateRequest((res) => {
+            //     if (res?.result) {
+            //         setCurriculums(res?.result);
+            //         setPagination(res?.pagination);
+            //     }
+            // }, (error) => {
+            //     console.log(error);
+            // }, {
+            //     status: filters.status,
+            //     orderBy: filters.orderBy,
+            //     sort: filters.sort,
+            //     pageNumber: pagination?.pageNumber
+            // })
         } catch (error) {
             console.log(error);
         } finally {
@@ -76,7 +105,7 @@ function CurriculumEditedTable({ setShowTable }) {
         });
     };
 
-    const totalPages = Math.ceil(pagination.totalPages / pagination.pageSize);
+    const totalPages = Math.ceil(pagination.total / pagination.pageSize);
 
     const handlePageChange = (event, value) => {
         setPagination({ ...pagination, pageNumber: value });
@@ -145,21 +174,43 @@ function CurriculumEditedTable({ setShowTable }) {
                                 {curriculums.map((curriculum, index) => (
                                     <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#f9f9f9' } }}>
                                         <TableCell>{index + 1}</TableCell>
-                                        <TableCell>{curriculum.ageFrom} - {curriculum.ageEnd} tuổi</TableCell>
+                                        <TableCell>{curriculum?.ageFrom} - {curriculum?.ageEnd} tuổi</TableCell>
                                         <TableCell sx={{ maxWidth: 300, whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                                            {curriculum.description.length > 150 ? (
+                                            {curriculum?.description?.length > 150 ? (
                                                 <>
-                                                    <div dangerouslySetInnerHTML={{ __html: curriculum.description.slice(0, 150) + '...' }} />
-                                                    <Button onClick={() => handleOpenDialog(curriculum.description)} sx={{ textTransform: 'none', fontSize: '14px', color: '#1976d2', padding: 0 }}>
+                                                    <div dangerouslySetInnerHTML={{ __html: curriculum?.description?.slice(0, 150) + '...' }} />
+                                                    <Button onClick={() => handleOpenDialog(curriculum?.description)} sx={{ textTransform: 'none', fontSize: '14px', color: '#1976d2', padding: 0 }}>
                                                         Xem thêm
                                                     </Button>
                                                 </>
                                             ) : (
-                                                <div dangerouslySetInnerHTML={{ __html: curriculum.description }} />
+                                                <div dangerouslySetInnerHTML={{ __html: curriculum?.description }} />
                                             )}
                                         </TableCell>
-                                        <TableCell>{curriculum.rejectionReason || '-'}</TableCell>
-                                        <TableCell>{new Date().toLocaleDateString()}</TableCell>
+                                        <TableCell>
+                                            <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
+                                                <Box sx={{
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    whiteSpace: 'nowrap',
+                                                    maxWidth: 250
+                                                }}>
+                                                    {curriculum?.rejectionReason || 'Chưa có phản hồi'}
+                                                </Box>
+                                                {curriculum?.rejectionReason?.length > 35 && (
+                                                    <Button
+                                                        variant="text"
+                                                        size="small"
+                                                        onClick={() => handleOpenDialogR(curriculum?.rejectionReason)}
+                                                        sx={{ textTransform: 'none', color: 'primary.main' }}
+                                                    >
+                                                        Xem thêm
+                                                    </Button>
+                                                )}
+                                            </Box>
+
+                                        </TableCell>
+                                        <TableCell>{curriculum?.createdDate && new Date(curriculum.createdDate).toLocaleDateString()}</TableCell>
                                         <TableCell>
                                             <Button
                                                 variant="outlined"
@@ -185,6 +236,17 @@ function CurriculumEditedTable({ setShowTable }) {
                             </DialogContent>
                         </Dialog>
                     </TableContainer>
+
+                    <Dialog open={openDialogR} onClose={handleCloseDialogR} maxWidth="md" fullWidth>
+                        <DialogTitle textAlign={'center'}>Mô tả chi tiết</DialogTitle>
+                        <Divider />
+                        <DialogContent>
+                            <Typography>{selectedContent}</Typography>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseDialogR} variant='outlined' color="primary">Đóng</Button>
+                        </DialogActions>
+                    </Dialog>
 
                     <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
                         <Pagination

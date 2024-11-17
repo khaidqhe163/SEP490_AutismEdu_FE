@@ -21,6 +21,8 @@ function CurriculumManagement() {
     const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [currentEditIndex, setCurrentEditIndex] = useState(null);
+    const [idDelete, setIdDelete] = useState(0);
+    const [index, setIndex] = useState(0);
     const [showTable, setShowTable] = useState(false);
     console.log(curriculumData);
 
@@ -41,7 +43,7 @@ function CurriculumManagement() {
                 orderBy: 'createdDate',
                 sort: 'asc',
                 pageNumber: 1
-            })
+            });
         } catch (error) {
             console.log(error);
         }
@@ -66,8 +68,6 @@ function CurriculumManagement() {
 
     const handleSubmitCreate = async (formData) => {
         try {
-            console.log(formData);
-
             await services.CurriculumManagementAPI.createCurriculum({
                 ageFrom: formData.ageFrom,
                 ageEnd: formData.ageEnd,
@@ -76,9 +76,9 @@ function CurriculumManagement() {
             }, (res) => {
                 console.log(formData);
                 enqueueSnackbar("Tạo khung chương trình thành công!", { variant: "success" });
-                setCurriculumData([...curriculumData, formData]);
                 setOpenCreateEdit(false);
             }, (error) => {
+                enqueueSnackbar(error.error[0], { variant: 'error' });
                 console.log(error);
             });
         } catch (error) {
@@ -104,6 +104,7 @@ function CurriculumManagement() {
                 // setCurriculums([...curriculums, formData]);
                 setOpenCreateEdit(false);
             }, (error) => {
+                enqueueSnackbar(error.error[0], { variant: 'error' });
                 console.log(error);
             });
         } catch (error) {
@@ -112,19 +113,35 @@ function CurriculumManagement() {
 
     };
 
-    const handleOpenDeleteConfirm = (index) => {
-        setCurrentEditIndex(index);
+    const handleOpenDeleteConfirm = (id, index) => {
+        setIdDelete(id);
+        setIndex(index);
         setOpenDeleteConfirm(true);
     };
 
-    const handleDelete = () => {
-        const updatedCurriculums = curriculumData.filter((_, i) => i !== currentEditIndex);
-        setCurriculumData(updatedCurriculums);
-        setOpenDeleteConfirm(false);
-
-        if (valueCurriculum === (currentEditIndex + 1).toString()) {
-            setValueCurriculum('1');
+    const handleDelete = async () => {
+        if (!idDelete) {
+            enqueueSnackbar("Xoá khung chương trình thất bại!", { variant: 'error' });
+            setOpenDeleteConfirm(false);
+            return;
         }
+        try {
+            await services.CurriculumManagementAPI.deleteCurriculum(idDelete, {}, (res) => {
+                const updatedCurriculums = curriculumData.filter((c) => c.id !== idDelete);
+                setCurriculumData(updatedCurriculums);
+                setOpenDeleteConfirm(false);
+                enqueueSnackbar("Xoá khung chương trình thành công!", { variant: 'success' });
+                if (valueCurriculum === (index + 1).toString()) {
+                    setValueCurriculum('1');
+                }
+            }, (error) => {
+                enqueueSnackbar(error.error[0], { variant: 'error' });
+                console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+
     };
 
     const handleShowTable = () => {
@@ -168,8 +185,7 @@ function CurriculumManagement() {
                                                     Từ {curriculum.ageFrom} - {curriculum.ageEnd} tuổi
                                                     <IconButton
                                                         size="small"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
+                                                        onClick={() => {
                                                             handleOpenEdit(curriculum);
                                                         }}
                                                         color="default"
@@ -179,9 +195,8 @@ function CurriculumManagement() {
                                                     </IconButton>
                                                     <IconButton
                                                         size="small"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleOpenDeleteConfirm(index);
+                                                        onClick={() => {
+                                                            handleOpenDeleteConfirm(curriculum?.id, index);
                                                         }}
                                                         color="error"
                                                     >

@@ -43,7 +43,7 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
         const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: value
+            [name]: parseInt(value)
         });
     };
 
@@ -61,13 +61,12 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
             handleSubmit(formData, initialData.id);
         } else {
             handleSubmit(formData);
+            setFormData({
+                ageFrom: '',
+                ageEnd: '',
+                description: ''
+            });
         }
-
-        setFormData({
-            ageFrom: '',
-            ageEnd: '',
-            description: ''
-        });
         handleClose();
     };
 
@@ -75,7 +74,7 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
     return (
         <Modal open={open} onClose={handleClose}>
             <Box sx={style}>
-                <Typography textAlign={'center'} variant="h2" mb={2}>
+                <Typography textAlign={'center'} variant="h4" mb={2}>
                     {isEditing ? "Chỉnh sửa khung chương trình" : "Tạo khung chương trình"}
                 </Typography>
                 <Divider />
@@ -105,7 +104,7 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="subtitle1" mb={1}>Nội dung chương trình học</Typography>
-                        <ReactQuill theme="snow" value={formData.description} onChange={handleDescriptionChange} style={{ height: '200px' }} />
+                        <ReactQuill theme="snow" value={formData.description} onChange={handleDescriptionChange} style={{ height: '300px' }} />
                     </Grid>
                 </Grid>
                 <Grid container spacing={2} justifyContent="center" mt={5} sx={{ display: 'flex', justifyContent: 'flex-end' }}>

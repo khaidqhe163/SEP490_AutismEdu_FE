@@ -52,6 +52,7 @@ import PaymentPackageManagement from '~/pages/Tutor/PaymentPackageManagement/Pay
 import BlogUpdate from '~/pages/Admin/BlogManagement/BlogUpdate'
 import ReportTutorManagement from '~/pages/Admin/ReportManagement/ReportTutorManagement'
 import ReportDetail from '~/pages/Admin/ReportManagement/ReportTutorManagement/ReportDetail'
+import ExerciseTypeManagement from '~/pages/Admin/ExerciseTypeManagement'
 
 const UnLayoutRoutes = [
     {
@@ -263,6 +264,10 @@ const adminRoutes = [
     {
         path: PAGES.REPORT_TUTOR_DETAIL,
         element: ReportDetail
+    }
+    , {
+        path: PAGES.EXERCISE_TYPE_MANAGEMENT,
+        element: ExerciseTypeManagement
     },
 
 ]

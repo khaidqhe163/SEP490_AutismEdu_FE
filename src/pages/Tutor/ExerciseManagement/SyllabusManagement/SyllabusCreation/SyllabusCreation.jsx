@@ -41,7 +41,7 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
                     }
                 },
                 (error) => console.log(error),
-                { search: '', orderBy: 'createdDate', sort: 'desc' }
+                { search: '', orderBy: 'createdDate', sort: 'desc', pageSize: 0, pageNumber: 1 }
             );
         } catch (error) {
             console.log(error);
@@ -90,7 +90,10 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
                         setSelectedList([]);
                         formik.resetForm();
                     }
-                }, (error) => console.log(error));
+                }, (error) => {
+                    enqueueSnackbar(error.error[0], { variant: 'error' });
+                    console.log(error)
+                });
             } catch (error) {
                 console.log(error);
             } finally {

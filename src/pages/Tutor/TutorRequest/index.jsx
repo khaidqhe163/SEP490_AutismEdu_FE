@@ -52,7 +52,7 @@ function TutorRequest() {
     const handleOpenModal = async (request) => {
         // nav('/autismtutor/create-student-profile', { state: { request } });
         try {
-            
+
             setLoading(true);
             const body = {
                 id: request?.id,
@@ -303,9 +303,13 @@ function TutorRequest() {
                                     </Stack>
                                 </Stack>
                                 <Stack direction='row' gap={2} justifyContent='flex-end' alignItems='center' sx={{ flexGrow: 1 }}>
-                                    <Button variant="contained" color="primary" startIcon={<QuestionAnswerIcon />}>
-                                        Nhắn tin
-                                    </Button>
+                                    {request?.requestStatus === 1 &&
+                                        <Button variant="contained" color="primary" startIcon={<QuestionAnswerIcon />} onClick={(event) => {
+                                            event.stopPropagation(); 
+                                            console.log('Button clicked');
+                                        }}>
+                                            Nhắn tin
+                                        </Button>}
 
                                     <Box width={130}>
                                         <Button

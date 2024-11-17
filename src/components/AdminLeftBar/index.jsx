@@ -24,6 +24,8 @@ import SortIcon from '@mui/icons-material/Sort';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import ReportIcon from '@mui/icons-material/Report';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+
 function AdminLeftBar() {
     const [open, setOpen] = useState(false);
     const [openPayment, setOpenPayment] = useState(false);
@@ -53,6 +55,8 @@ function AdminLeftBar() {
             setSelectedIndex(2);
         } else if (location.pathname.includes("/test-management")) {
             setSelectedIndex(8);
+        } else if (location.pathname.includes("/exercise-type-management")) {
+            setSelectedIndex(13);
         }
     }, [])
     const handleListItemClick = (event, index) => {
@@ -115,6 +119,16 @@ function AdminLeftBar() {
                                 <QuizIcon />
                             </ListItemIcon>
                             <ListItemText primary="Bài kiểm tra" />
+                        </ListItemButton>
+                    </Link>
+                    <Link to="/admin/exercise-type-management">
+                        <ListItemButton
+                            selected={selectedIndex === 13}
+                            onClick={(event) => handleListItemClick(event, 13)}>
+                            <ListItemIcon>
+                                <MenuBookIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Loại bài tập" />
                         </ListItemButton>
                     </Link>
                     <ListItemButton onClick={handleClick}>

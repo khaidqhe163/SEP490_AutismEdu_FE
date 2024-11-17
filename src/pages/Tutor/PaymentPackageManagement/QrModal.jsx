@@ -22,11 +22,11 @@ const QrModal = (props) => {
     const CASSO_API_KEY = import.meta.env.VITE_CASSO_API_KEY;
     const bank = {
         BANK_ID: "MBBank",
-        ACCOUNT_NO: "0335582164",
+        ACCOUNT_NO: "7500120072002",
         TEMPLATE: "compact2",
         AMOUNT: total,
         DESCRIPTION: randomCode,
-        ACCOUNT_NAME: 'PHAM%20THU%20THUY'
+        ACCOUNT_NAME: 'TRAN%20MANH%20HUNG'
     };
     const fetchData = async () => {
         try {
