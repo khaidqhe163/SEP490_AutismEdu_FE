@@ -12,10 +12,14 @@ const getUpdateRequest = async (success, error, params) => {
 };
 const changeStatusCurriculum = async (endpoint, params, success, error) => {
     await put(API_CODE.API_CHANGE_STATUS_CURRICULUM + endpoint, params, success, error)
-}
+};
+const deleteCurriculum = async (endpoint, data, success, error) => {
+    await del(API_CODE.API_DELETE_CURRICULUM + endpoint, data, success, error);
+};
 export const CurriculumManagementAPI = {
     createCurriculum,
     getCurriculums,
     changeStatusCurriculum,
     getUpdateRequest,
+    deleteCurriculum,
 }

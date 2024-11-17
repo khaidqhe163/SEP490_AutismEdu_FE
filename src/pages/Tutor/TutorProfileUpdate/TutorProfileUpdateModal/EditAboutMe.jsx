@@ -48,11 +48,10 @@ function EditAboutMe({ text, setText }) {
         p: 4,
     };
 
-    // Style for ReactQuill container and editor
     const quillContainerStyle = {
-        height: '300px', // Set a fixed height
-        overflowY: 'auto', // Enable vertical scrolling
-        overflowX: 'hidden', // Disable horizontal scrolling
+        height: '300px', 
+        overflowY: 'auto', 
+        overflowX: 'hidden', 
     };
 
     const quillEditorStyle = {

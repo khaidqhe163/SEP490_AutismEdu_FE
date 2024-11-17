@@ -36,7 +36,7 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
                 (error) => {
                     console.log(error);
                 },
-                { search: '', orderBy: 'createdDate', sort: 'desc' }
+                { search: '', orderBy: 'createdDate', sort: 'desc', pageSize: 0, pageNumber: 1 }
             );
         } catch (error) {
             console.log(error);

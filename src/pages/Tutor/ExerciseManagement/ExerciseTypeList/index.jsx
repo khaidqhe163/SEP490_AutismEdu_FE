@@ -1,19 +1,10 @@
-import { Box, Card, CardContent, CardMedia, Grid, InputAdornment, Pagination, Stack, TextField, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardMedia, Grid, InputAdornment, Pagination, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import ExerciseList from './ExerciseList';
 import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
 
-// Dữ liệu loại bài tập
-// const exerciseTypes = [
-//     { id: 1, exerciseTypeName: 'Tập phát âm thuở ban đầu - nhưng âm thanh của trẻ nhỏ Tập phát âm thuở ban đầu - nhưng âm thanh của trẻ nhỏ' },
-//     { id: 2, exerciseTypeName: 'Tập phát âm thuở ban đầu - lời nói đầu tiên' },
-//     { id: 3, exerciseTypeName: 'Nghe: Chú ý - nhận biết các âm' },
-//     { id: 4, exerciseTypeName: 'Nghe: Chú ý - tìm kiếm và dõi theo các âm thanh' },
-//     { id: 5, exerciseTypeName: 'Nghe: Chú ý - đáp lại sự chú ý bằng cách mỉm cười và phát ra âm thanh' },
-//     { id: 6, exerciseTypeName: 'Nghe: Chú ý - làm cho người khác phải chú ý đến mình' }
-// ];
 
 function ExerciseTypeList() {
     const [loading, setLoading] = useState(false);
@@ -46,6 +37,10 @@ function ExerciseTypeList() {
                 console.log(error);
             }, {
                 search,
+                isHide: 'false',
+                orderBy: 'createdDate',
+                sort: 'desc',
+                pageSize: 9,
                 pageNumber: pagination.pageNumber
             })
         } catch (error) {
@@ -58,11 +53,9 @@ function ExerciseTypeList() {
     const handleSearch = (e) => {
         const { value } = e.target;
         setSearch(value);
+        setPagination((prev) => ({ ...prev, pageNumber: 1 }))
     };
 
-    // const filteredExerciseTypes = exerciseTypes.filter(type =>
-    //     type.exerciseTypeName.toLowerCase().includes(search.toLowerCase())
-    // );
 
     const handlePageChange = (event, value) => {
         setPagination({ ...pagination, pageNumber: value });
@@ -125,24 +118,27 @@ function ExerciseTypeList() {
                             <CardMedia
                                 component="img"
                                 height="240"
-                                image="https://png.pngtree.com/png-vector/20190726/ourlarge/pngtree-college-education-graduation-cap-hat-university-icon-vector-desi-png-image_1588318.jpg" // Ảnh biểu tượng giáo dục
+                                image="https://png.pngtree.com/png-vector/20190726/ourlarge/pngtree-college-education-graduation-cap-hat-university-icon-vector-desi-png-image_1588318.jpg"
                                 alt="Exercise Icon"
                             />
                             <CardContent>
-                                <Typography
-                                    variant="h6"
-                                    component="div"
-                                    sx={{
-                                        display: '-webkit-box',
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: 'vertical',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        height: '52px',
-                                    }}
-                                >
-                                    {type.exerciseTypeName}
-                                </Typography>
+                                <Tooltip title={type.exerciseTypeName} placement="top-start">
+                                    <Typography
+                                        variant="h6"
+                                        component="div"
+                                        sx={{
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: 2,
+                                            WebkitBoxOrient: 'vertical',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            height: '52px',
+                                        }}
+                                    >
+                                        {type.exerciseTypeName}
+                                    </Typography>
+                                </Tooltip>
+                                <Typography variant='body2'>(Số lượng bài tập: <b>{type?.exercises?.length}</b>)</Typography>
                             </CardContent>
                         </Card>
                     </Grid>

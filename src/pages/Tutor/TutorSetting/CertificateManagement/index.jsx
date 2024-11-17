@@ -282,8 +282,8 @@ function CertificateManagement() {
                             {certificateList.map((certificate, index) => (
                                 <TableRow key={certificate.id} hover>
                                     <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 10}</TableCell>
-                                    <TableCell>{certificate.certificateName}</TableCell>
-                                    <TableCell>{new Date(certificate.createdDate).toLocaleDateString()}</TableCell>
+                                    <TableCell>{certificate?.certificateName}</TableCell>
+                                    <TableCell>{certificate?.createdDate && new Date(certificate.createdDate).toLocaleDateString()}</TableCell>
                                     <TableCell>
                                         <Button
                                             variant="outlined"
@@ -295,15 +295,15 @@ function CertificateManagement() {
                                             size="small"
                                             sx={{ borderRadius: 2, textTransform: 'none' }}
                                         >
-                                            {statusText(certificate.requestStatus)}
+                                            {statusText(certificate?.requestStatus)}
                                         </Button>
                                     </TableCell>
-                                    <TableCell>{certificate.feedback || 'Chưa có phản hồi'}</TableCell>
+                                    <TableCell>{certificate?.feedback || 'Chưa có phản hồi'}</TableCell>
                                     <TableCell>
                                         <IconButton color="primary" aria-label="xem chi tiết" onClick={() => handleViewDetail(certificate.id)}>
                                             <VisibilityIcon />
                                         </IconButton>
-                                        {!certificate.identityCardNumber && <IconButton color="error" aria-label="xoá" onClick={() => handleClickOpen(certificate.id)}>
+                                        {!certificate?.identityCardNumber && certificate?.requestStatus !== 2 && <IconButton color="error" aria-label="xoá" onClick={() => handleClickOpen(certificate.id)}>
                                             <DeleteIcon />
                                         </IconButton>}
 

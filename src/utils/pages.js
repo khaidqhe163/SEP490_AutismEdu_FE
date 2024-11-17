@@ -51,10 +51,11 @@ const PAGES = {
   PAYMENT_PACKAGE: '/autismtutor/payment-package',
   PAYMENT_PACKAGE_FOCUS: '/autismtutor/payment-package-focus',
   PERSONAL_INFORMATION: '/admin/personal-information',
-  CERTIFICATE_MANAGEMENT:'/admin/certificate_management',
-  CURRICULUM_MANAGEMENT:'/admin/curriculum_management',
-  WORK_EXPERIENCE_MANAGEMENT: '/admin/work_experience_management',
-  
+  CERTIFICATE_MANAGEMENT: '/admin/certificate-management',
+  CURRICULUM_MANAGEMENT: '/admin/curriculum-management',
+  WORK_EXPERIENCE_MANAGEMENT: '/admin/work-experience-management',
+  EXERCISE_TYPE_MANAGEMENT: '/admin/exercise-type-management',
+
 };
 
 export default PAGES;
