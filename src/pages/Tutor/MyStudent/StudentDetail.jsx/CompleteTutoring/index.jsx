@@ -25,7 +25,7 @@ function CompleteTutoring({ studentProfile, setStudentProfile }) {
     const listStudentProfiles = useSelector(listStudent);
     useEffect(() => {
         handleGetAsessment();
-        handleGetProgressReport();
+        handleGetLastProgressReport();
     }, [])
     useEffect(() => {
         if (open) {
@@ -33,7 +33,7 @@ function CompleteTutoring({ studentProfile, setStudentProfile }) {
         }
     }, [open])
 
-    const handleGetProgressReport = async () => {
+    const handleGetLastProgressReport = async () => {
         try {
             setLoading(true);
             await services.ProgressReportAPI.getListProgressReport((res) => {
@@ -111,7 +111,6 @@ function CompleteTutoring({ studentProfile, setStudentProfile }) {
                 studentProfileId: id,
                 finalAssessmentResults: selectedAssessment
             }, (res) => {
-                console.log(res);
                 enqueueSnackbar("Kết thúc việc dạy thành công!", { variant: "success" })
                 const filterArr = listStudentProfiles.filter((a) => {
                     return a.id !== res.result.id
