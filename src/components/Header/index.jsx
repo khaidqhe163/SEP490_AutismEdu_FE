@@ -82,7 +82,7 @@ function Header() {
 
     useEffect(() => {
         if (newMessage) {
-            if (newMessage.conversation.id === currentChat.id)
+            if (currentChat && newMessage.conversation.id === currentChat.id)
                 setMessages((preMessages) => [...preMessages, newMessage])
             const receiveConversation = conversations.find((c) => {
                 return c.id === newMessage.conversation.id
@@ -151,6 +151,7 @@ function Header() {
             handleGetMessage();
             handleReadMessage();
         } else setMessages([])
+        setText("");
     }, [currentChat])
     const handleGetConversation = async () => {
         try {

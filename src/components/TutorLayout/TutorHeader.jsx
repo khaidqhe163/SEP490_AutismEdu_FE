@@ -118,6 +118,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
             handleGetMessage();
             handleReadMessage();
         } else setMessages([])
+        setText("");
     }, [currentChat])
     useEffect(() => {
         if (!connection || !tutorInfo) return;
