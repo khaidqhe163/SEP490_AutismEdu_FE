@@ -8,6 +8,7 @@ const getMessages = async (endpoint, success, error, params) => {
     await get(API_CODE.API_GET_MESSAGE + endpoint, success, error, params)
 }
 const readMessages = async (endpoint, params, success, error) => {
+    console.log(endpoint);
     await put(API_CODE.API_READ_MESSAGE + endpoint, params, success, error)
 }
 

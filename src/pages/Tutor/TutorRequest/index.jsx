@@ -17,6 +17,7 @@ import { format } from 'date-fns';
 import { enqueueSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { SignalRContext } from '~/Context/SignalRContext';
+import { useContext } from 'react';
 
 function TutorRequest() {
 
@@ -41,7 +42,7 @@ function TutorRequest() {
         status: 'all',
         sort: 'desc',
     });
-    const { setOpenMessage, setConversations, conversations, setCurrentChat } = React.useContext(SignalRContext);
+    const { setOpenMessage, setConversations, conversations, setCurrentChat } = useContext(SignalRContext);
     const handleFilterChange = (key) => (event) => {
         setFilters({
             ...filters,
@@ -213,15 +214,23 @@ function TutorRequest() {
             return request.parent.id === c.user.id;
         })
         if (conversation) {
-            setCurrentChat(conversation.id);
+            setCurrentChat(conversation);
         } else {
             setConversations([{
                 id: 0,
-                user: request.parent
+                user: request.parent,
+                messages: [
+                    {
+                        content: "",
+                        isRead: true
+                    }
+                ],
+                isRead: true
             }, ...conversations]);
             setCurrentChat({
                 id: 0,
-                user: request.parent
+                user: request.parent,
+                isRead: true
             });
         }
         setOpenMessage(true);

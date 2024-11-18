@@ -105,9 +105,7 @@ function AssessmentChart({ studentProfile }) {
             for (let i = 0; i <= labelLength; i++) {
                 label.push("");
             }
-            console.log(pagination.total / pagination.pageSize + 1);
             if ((pagination.total <= 10) || (Math.floor(pagination.total / pagination.pageSize + 1) === pagination.pageNumber)) {
-                console.log("zoay");
                 label.unshift(formatDate(studentProfile.createdDate));
                 datasets.forEach((d) => {
                     const initAssessment = initialCondition.find((i) => {
@@ -246,11 +244,11 @@ function AssessmentChart({ studentProfile }) {
                             plugins: {
                                 title: {
                                     display: true,
-                                    text: "Biểu đồ tổng quan đánh giá của học sinh",
+                                    text: "Biểu đồ tổng quan đánh giá của học sinh"
                                 },
                                 legend: {
                                     display: true,
-                                    position: "bottom",
+                                    position: "bottom"
                                 }
                             },
                             scales: {

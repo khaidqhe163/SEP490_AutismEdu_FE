@@ -32,7 +32,7 @@ function Header() {
     const dispatch = useDispatch();
     const location = useLocation();
     const [openNotification, setOpenNotification] = useState(false);
-    const { connection, openMessage, setOpenMessage, setCurrentChat, currentChat } = useContext(SignalRContext);
+    const { connection, openMessage, setOpenMessage, setCurrentChat, currentChat, conversations, setConversations } = useContext(SignalRContext);
     const [notifications, setNotifications] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const notificationRef = useRef(null);
@@ -43,7 +43,8 @@ function Header() {
     const [messages, setMessages] = useState([]);
     const [chatBox, setChatBox] = useState(null);
     const messageIconRef = useRef(null);
-    const [conversations, setConversations] = useState([]);
+    const [unreadMessage, setUnreadMessage] = useState(true);
+    const [newMessage, setNewMessage] = useState(null);
     useEffect(() => {
         if (location.pathname === "/autismedu") {
             setTab("1");
@@ -73,6 +74,60 @@ function Header() {
     }, [userInfo])
 
     useEffect(() => {
+        if (openMessage && !currentChat && conversations.length !== 0) {
+            console.log("zoday2");
+            setCurrentChat(conversations[0]);
+        }
+    }, [openMessage])
+
+    useEffect(() => {
+        if (newMessage) {
+            if (newMessage.conversation.id === currentChat.id)
+                setMessages((preMessages) => [...preMessages, newMessage])
+            const receiveConversation = conversations.find((c) => {
+                return c.id === newMessage.conversation.id
+            })
+            if (receiveConversation) {
+                receiveConversation.messages = [newMessage];
+                const filtedConversation = conversations.filter((c) => {
+                    return c.id !== newMessage.conversation.id;
+                })
+                if (receiveConversation.id !== currentChat.id && receiveConversation.isRead === true) {
+                    receiveConversation.isRead = false;
+                    setUnreadMessage(false);
+                }
+                if (receiveConversation.id === currentChat.id) {
+                    handleReadMessage();
+                }
+                setConversations([receiveConversation, ...filtedConversation])
+            } else {
+                let read = false;
+                if (currentChat) {
+                    read = false;
+                } else read = true;
+                setConversations([
+                    {
+                        id: newMessage.conversation.id,
+                        user: newMessage.sender,
+                        messages: [newMessage],
+                        isRead: read
+                    }, ...conversations
+                ])
+                if (openMessage && !currentChat) {
+                    setCurrentChat({
+                        id: newMessage.conversation.id,
+                        user: newMessage.sender,
+                        messages: [newMessage],
+                        isRead: true
+                    })
+                } else {
+                    setUnreadMessage(false)
+                }
+            }
+        }
+    }, [newMessage])
+    console.log(conversations);
+    useEffect(() => {
         if (chatBox) {
             chatBox.scrollTop = chatBox.scrollHeight;
         }
@@ -83,21 +138,37 @@ function Header() {
             setNotifications((preNotifications) => [notification, ...preNotifications]);
         });
         connection.on(`Messages-${userInfo.id}`, (message) => {
-            setMessages((preMessages) => [message, ...preMessages])
+            setNewMessage(message)
         });
         return () => {
             connection.off(`Notifications-${userInfo.id}`);
             connection.off(`Messages-${userInfo.id}`);
         };
     }, [connection, userInfo]);
+
+    useEffect(() => {
+        if (currentChat && currentChat?.id !== 0) {
+            handleGetMessage();
+            handleReadMessage();
+        } else setMessages([])
+    }, [currentChat])
     const handleGetConversation = async () => {
         try {
             await services.ConversationAPI.getConversations((res) => {
-                setConversations(res.result);
-                if (res.result.length !== 0) {
-                    setCurrentChat(res.result[0])
-                }
-                console.log(res.result);
+                const returnArr = res.result.map((r) => {
+                    if (r.messages[0].sender.id === userInfo.id) {
+                        r.isRead = true;
+                    } else {
+                        r.isRead = r.messages[0].isRead;
+                    }
+                    return r;
+                })
+                returnArr.forEach((r) => {
+                    if (r.isRead === false) {
+                        setUnreadMessage(false);
+                    }
+                })
+                setConversations(returnArr);
             }, (error) => {
                 console.log(error);
             }, {
@@ -107,6 +178,48 @@ function Header() {
             console.log(error);
         }
     }
+    console.log(conversations);
+    const handleReadMessage = async () => {
+        try {
+            await services.MessageAPI.readMessages(currentChat?.id || 0, {}, (res) => {
+                const currentChatBox = conversations.find((c) => {
+                    return c.id === currentChat.id
+                })
+                currentChatBox.isRead = true;
+                setUnreadMessage(true);
+                conversations.forEach((r) => {
+                    if (r.isRead === false) {
+                        setUnreadMessage(false);
+                    }
+                })
+                setConversations([...conversations]);
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const handleGetMessage = async () => {
+        try {
+            await services.MessageAPI.getMessages(currentChat?.id || 0, (res) => {
+                setMessages(res.result.reverse());
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    useEffect(() => {
+        if (currentChat) {
+            handleGetMessage();
+        }
+    }, [currentChat])
     const handleGetNotification = async () => {
         try {
             await services.NotificationAPI.getAllPaymentPackage((res) => {
@@ -235,6 +348,15 @@ function Header() {
                 content: text.trim(),
             }, (res) => {
                 setMessages([...messages, res.result]);
+                const receiveConversation = conversations.find((c) => {
+                    return c.id === res.result.conversation.id
+                })
+
+                receiveConversation.messages = [res.result];
+                const filtedConversation = conversations.filter((c) => {
+                    return c.id !== res.result.conversation.id;
+                })
+                setConversations([receiveConversation, ...filtedConversation])
                 setText("");
             }, (error) => {
                 console.log(error);
@@ -359,7 +481,7 @@ function Header() {
                                     setOpenMessage(!openMessage);
                                     setOpenNotification(false);
                                 }}>
-                                <Badge badgeContent={unreadNoti} color="primary">
+                                <Badge variant="dot" invisible={unreadMessage} color="primary">
                                     <ChatIcon />
                                 </Badge>
                             </IconButton>
@@ -400,7 +522,7 @@ function Header() {
                                                             size="small"
                                                         >
                                                             <OutlinedInput
-                                                                startAdornment={<InputAdornment><SearchIcon /></InputAdornment>}
+                                                                startAdornment={<InputAdornment position='start'><SearchIcon /></InputAdornment>}
                                                                 inputProps={{
                                                                     "aria-label": "Tìm kiếm phụ huynh"
                                                                 }}
@@ -426,7 +548,7 @@ function Header() {
                                                                             ":hover": {
                                                                                 bgcolor: "#F8F0FF"
                                                                             }
-                                                                        }}>
+                                                                        }} onClick={() => setCurrentChat(c)}>
                                                                             <Stack direction='row' gap={2} alignItems="center" sx={{ width: "80%" }}>
                                                                                 <Avatar alt="Remy Sharp" src={c.user.imageUrl} />
                                                                                 <Box sx={{ overflow: "hidden" }}>
@@ -441,7 +563,7 @@ function Header() {
                                                                                 </Box>
                                                                             </Stack>
                                                                             {
-                                                                                !c.messages[0].isRead && (
+                                                                                !c.isRead && (
                                                                                     <Box sx={{ width: "15px", height: "15px", bgcolor: "blue", borderRadius: "50%" }}>
                                                                                     </Box>
                                                                                 )
@@ -460,11 +582,11 @@ function Header() {
                                                             justifyContent: "space-between"
                                                         }}>
                                                             <Stack direction='row' sx={{ gap: 2, alignItems: "center" }}>
-                                                                <Avatar alt="Remy Sharp" src={currentChat ? currentChat.user?.imageUrl : "/"} sx={{
+                                                                <Avatar alt="Remy Sharp" src={currentChat ? currentChat?.user?.imageUrl : "/"} sx={{
                                                                     width: "50px",
                                                                     height: "50px"
                                                                 }} />
-                                                                <Typography variant='h5' sx={{}}>{currentChat ? currentChat.user?.fullName : "Mất kết nối"}</Typography>
+                                                                <Typography variant='h5' sx={{}}>{currentChat ? currentChat?.user?.fullName : "Mất kết nối"}</Typography>
                                                             </Stack>
                                                             <Button sx={{ color: "red" }}>CHẶN</Button>
                                                         </Stack>

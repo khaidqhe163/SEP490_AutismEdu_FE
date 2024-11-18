@@ -179,7 +179,7 @@ const API_CODE = {
 
   //Messages
   API_GET_MESSAGE: '/v1/Message/',
-  API_READ_MESSAGE: '/v1/Message/read/{id}',
+  API_READ_MESSAGE: '/v1/Message/read/',
   API_SEND_MESSAGE: '/v1/Message'
 };
 

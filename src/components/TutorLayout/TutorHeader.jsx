@@ -30,7 +30,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     const openAccountMenu = Boolean(accountMenu);
     const [openModalPayment, setOpenModalPayment] = useState(false);
     const [openNotification, setOpenNotification] = useState(false);
-    const { connection, openMessage, setOpenMessage, setCurrentChat, currentChat } = useContext(SignalRContext);
+    const { connection, openMessage, setOpenMessage, setCurrentChat, currentChat, conversations, setConversations } = useContext(SignalRContext);
     const [notifications, setNotifications] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const notificationRef = useRef(null);
@@ -42,8 +42,8 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     const [text, setText] = useState("");
     const [messages, setMessages] = useState([]);
     const [chatBox, setChatBox] = useState(null);
-    const [conversations, setConversations] = useState([]);
-    const [currentChatObject, setCurrentChatObject] = useState(null);
+    const [unreadMessage, setUnreadMessage] = useState(true);
+    const [newMessage, setNewMessage] = useState(null);
     // const [currentUserPayment, setCurrentUserPayment] = useState(null);
 
     // console.log(currentUserPayment);
@@ -66,6 +66,20 @@ function TutorHeader({ openMenu, setOpenMenu }) {
         setMessages([1, 2]);
     }, []);
 
+    useEffect(() => {
+        if (openMessage && !currentChat && conversations.length !== 0) {
+            setCurrentChat(conversations[0]);
+        }
+        if (!openMessage && conversations.length !== 0 && currentChat) {
+            const filterConversation = conversations.filter((c) => {
+                return c.id !== 0
+            })
+            setConversations([...filterConversation])
+            if (currentChat.id === 0) {
+                setCurrentChat(filterConversation[0])
+            }
+        }
+    }, [openMessage])
     useEffect(() => {
         const calculateDaysLeft = (endDate) => {
             const currentDate = new Date();
@@ -100,23 +114,47 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     }, [tutorInfo])
 
     useEffect(() => {
-        if (currentChat !== 0) {
+        if (currentChat && currentChat?.id !== 0) {
             handleGetMessage();
-        }
+            handleReadMessage();
+        } else setMessages([])
     }, [currentChat])
     useEffect(() => {
         if (!connection || !tutorInfo) return;
         connection.on(`Notifications-${tutorInfo.id}`, (notification) => {
             setNotifications((preNotifications) => [notification, ...preNotifications]);
         });
-        connection.on(`Messages-${tutorInfo.id}`, (notification) => {
-            setNotifications((preNotifications) => [notification, ...preNotifications]);
+        connection.on(`Messages-${tutorInfo.id}`, (message) => {
+            setNewMessage(message)
         });
         return () => {
             connection.off(`Notifications-${tutorInfo.id}`);
             connection.off(`Messages-${tutorInfo.id}`);
         };
     }, [connection, tutorInfo]);
+
+    useEffect(() => {
+        if (newMessage) {
+            if (newMessage.conversation.id === currentChat.id)
+                setMessages((preMessages) => [...preMessages, newMessage]);
+            const receiveConversation = conversations.find((c) => {
+                return c.id === newMessage.conversation.id
+            })
+            receiveConversation.messages = [newMessage];
+            const filtedConversation = conversations.filter((c) => {
+                return c.id !== newMessage.conversation.id;
+            })
+
+            if (receiveConversation.id !== currentChat.id && receiveConversation.isRead === true) {
+                receiveConversation.isRead = false;
+                setUnreadMessage(false);
+            }
+            if (receiveConversation.id === currentChat.id) {
+                handleReadMessage();
+            }
+            setConversations([receiveConversation, ...filtedConversation])
+        }
+    }, [newMessage])
     const handleGetNotification = async () => {
         try {
             await services.NotificationAPI.getAllPaymentPackage((res) => {
@@ -139,11 +177,23 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     const handleGetConversation = async () => {
         try {
             await services.ConversationAPI.getConversations((res) => {
-                setConversations(res.result);
-                if (res.result.length !== 0) {
-                    setCurrentChat(res.result[0])
-                }
-                console.log(res.result);
+                const returnArr = res.result.map((r) => {
+                    if (r.messages[0].sender.id === tutorInfo.id) {
+                        r.isRead = true;
+                    } else {
+                        r.isRead = r.messages[0].isRead;
+                    }
+                    return r;
+                })
+                returnArr.forEach((r) => {
+                    if (r.isRead === false) {
+                        setUnreadMessage(false);
+                    }
+                })
+                setConversations(returnArr);
+                // if (res.result.length !== 0) {
+                //     setCurrentChat(returnArr[0])
+                // }
             }, (error) => {
                 console.log(error);
             }, {
@@ -156,7 +206,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     const handleGetMessage = async () => {
         try {
             await services.MessageAPI.getMessages(currentChat?.id || 0, (res) => {
-                console.log(res.result);
                 setMessages(res.result.reverse());
             }, (error) => {
                 console.log(error);
@@ -167,15 +216,22 @@ function TutorHeader({ openMenu, setOpenMenu }) {
             console.log(error);
         }
     }
-    const sendMessages = async () => {
-        if (text.trim() === "") return;
+    const handleReadMessage = async () => {
         try {
-            await services.MessageAPI.sendMessages({
-                conversationId: currentChat.id,
-                content: text.trim(),
-            }, (res) => {
-                setMessages([...messages, res.result]);
-                setText("");
+            console.log("readmesseage");
+            await services.MessageAPI.readMessages(currentChat?.id || 0, {}, (res) => {
+                const currentChatBox = conversations.find((c) => {
+                    return c.id === currentChat.id
+                })
+                currentChatBox.isRead = true;
+                console.log(currentChatBox);
+                setUnreadMessage(true);
+                conversations.forEach((r) => {
+                    if (r.isRead === false) {
+                        setUnreadMessage(false);
+                    }
+                })
+                setConversations([...conversations]);
             }, (error) => {
                 console.log(error);
             }, {
@@ -186,6 +242,62 @@ function TutorHeader({ openMenu, setOpenMenu }) {
         }
     }
 
+    const sendMessages = async () => {
+        if (text.trim() === "") return;
+        try {
+            if (currentChat.id !== 0) {
+                await services.MessageAPI.sendMessages({
+                    conversationId: currentChat.id,
+                    content: text.trim(),
+                }, (res) => {
+                    setMessages([...messages, res.result]);
+                    const receiveConversation = conversations.find((c) => {
+                        return c.id === res.result.conversation.id
+                    })
+
+                    receiveConversation.messages = [res.result];
+                    const filtedConversation = conversations.filter((c) => {
+                        return c.id !== res.result.conversation.id;
+                    })
+                    setConversations([receiveConversation, ...filtedConversation])
+                    const filterConver = conversations.filter((c) => {
+                        return c.id !== receiveConversation.id;
+                    })
+                    setConversations([receiveConversation, ...filterConver])
+                    setText("");
+                }, (error) => {
+                    console.log(error);
+                }, {
+                    pageNumber: currentPage
+                })
+            }
+            else {
+                await services.ConversationAPI.createConversations({
+                    receiverId: currentChat.user.id,
+                    message: text.trim()
+                }, (res) => {
+                    setMessages([...messages, res.result.messages[0]]);
+                    const receiveConversation = conversations.find((c) => {
+                        return c.id === 0
+                    })
+                    const filtedConversation = conversations.filter((c) => {
+                        return c.id !== 0;
+                    })
+                    receiveConversation.id = res.result.id
+                    receiveConversation.messages = res.result.messages;
+                    setCurrentChat(receiveConversation)
+                    setConversations([receiveConversation, ...filtedConversation])
+                    setText("");
+                }, (error) => {
+                    console.log(error);
+                }, {
+                    pageNumber: currentPage
+                })
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const handleOpenAccountMenu = (event) => {
         setAccountMenu(event.currentTarget);
     };
@@ -269,6 +381,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
             chatBox.scrollTop = chatBox.scrollHeight;
         }
     }, [messages, chatBox]);
+
     return (
         <Box sx={{
             position: "fixed",
@@ -321,7 +434,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                 setOpenMessage(!openMessage);
                                 setOpenNotification(false);
                             }}>
-                            <Badge badgeContent={unreadNoti} color="primary">
+                            <Badge variant="dot" invisible={unreadMessage} color="primary">
                                 <ChatIcon />
                             </Badge>
                         </IconButton>
@@ -362,7 +475,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                                         size="small"
                                                     >
                                                         <OutlinedInput
-                                                            startAdornment={<InputAdornment><SearchIcon /></InputAdornment>}
+                                                            startAdornment={<InputAdornment position="start"><SearchIcon /></InputAdornment>}
                                                             inputProps={{
                                                                 "aria-label": "Tìm kiếm phụ huynh"
                                                             }}
@@ -383,12 +496,12 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                                                         py: 2, justifyContent: "space-between",
                                                                         cursor: "pointer",
                                                                         px: 2,
-                                                                        bgcolor: c.id === currentChat.id ? "#F8F0FF" : "",
+                                                                        bgcolor: c.id === currentChat?.id ? "#F8F0FF" : "",
                                                                         borderRadius: "10px",
                                                                         ":hover": {
                                                                             bgcolor: "#F8F0FF"
                                                                         }
-                                                                    }}>
+                                                                    }} onClick={() => setCurrentChat(c)}>
                                                                         <Stack direction='row' gap={2} alignItems="center" sx={{ width: "80%" }}>
                                                                             <Avatar alt="Remy Sharp" src={c.user.imageUrl} />
                                                                             <Box sx={{ overflow: "hidden" }}>
@@ -399,11 +512,11 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                                                                     WebkitBoxOrient: 'vertical',
                                                                                     overflow: 'hidden',
                                                                                     textOverflow: 'ellipsis'
-                                                                                }}>{c.messages[0].content}</Typography>
+                                                                                }}>{c.messages ? c?.messages[0]?.content : ""}</Typography>
                                                                             </Box>
                                                                         </Stack>
                                                                         {
-                                                                            !c.messages[0].isRead && (
+                                                                            !c?.isRead && (
                                                                                 <Box sx={{ width: "15px", height: "15px", bgcolor: "blue", borderRadius: "50%" }}>
                                                                                 </Box>
                                                                             )
@@ -422,11 +535,11 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                                         justifyContent: "space-between"
                                                     }}>
                                                         <Stack direction='row' sx={{ gap: 2, alignItems: "center" }}>
-                                                            <Avatar alt="Remy Sharp" src={currentChat ? currentChat.user?.imageUrl : "/"} sx={{
+                                                            <Avatar alt="Remy Sharp" src={currentChat ? currentChat?.user?.imageUrl : "/"} sx={{
                                                                 width: "50px",
                                                                 height: "50px"
                                                             }} />
-                                                            <Typography variant='h5' sx={{}}>{currentChat ? currentChat.user?.fullName : "Mất kết nối"}</Typography>
+                                                            <Typography variant='h5' sx={{}}>{currentChat ? currentChat?.user?.fullName : "Mất kết nối"}</Typography>
                                                         </Stack>
                                                         <Button sx={{ color: "red" }}>CHẶN</Button>
                                                     </Stack>

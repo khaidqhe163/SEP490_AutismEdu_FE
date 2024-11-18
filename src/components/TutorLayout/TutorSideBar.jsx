@@ -33,7 +33,6 @@ export default function TutorSideBar({ openMenu }) {
     const getListStudent = async () => {
         try {
             await services.StudentProfileAPI.getListStudent((res) => {
-                console.log(res.result);
                 dispatch(setListStudent(res.result))
             }, (error) => {
                 console.log(error);
