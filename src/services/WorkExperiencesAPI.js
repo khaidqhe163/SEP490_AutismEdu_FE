@@ -15,7 +15,7 @@ const createWorkExperience = async (params, success, error) => {
 
 const deleteWorkExperience = async (endpoint, data, success, error) => {
     await del(API_CODE.API_DELETE_WORK_EXPERIENCE + endpoint, data, success, error)
-}
+};
 
 export const WorkExperiencesAPI = {
     changeWorkExperienceStatus,

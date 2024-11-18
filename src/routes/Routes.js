@@ -53,6 +53,10 @@ import BlogUpdate from '~/pages/Admin/BlogManagement/BlogUpdate'
 import ReportTutorManagement from '~/pages/Admin/ReportManagement/ReportTutorManagement'
 import ReportDetail from '~/pages/Admin/ReportManagement/ReportTutorManagement/ReportDetail'
 import ExerciseTypeManagement from '~/pages/Admin/ExerciseTypeManagement'
+import UpdateRequest from '~/pages/Admin/TutorSettingManagement/UpdateRequest'
+import CurriculumManagement from '~/pages/Admin/TutorSettingManagement/CurriculumManagement'
+import CertificateManagement from '~/pages/Admin/TutorSettingManagement/CertificateManagement'
+import WorkExperienceManagement from '~/pages/Admin/TutorSettingManagement/WorkExperienceManagement'
 
 const UnLayoutRoutes = [
     {
@@ -268,6 +272,22 @@ const adminRoutes = [
     , {
         path: PAGES.EXERCISE_TYPE_MANAGEMENT,
         element: ExerciseTypeManagement
+    },
+    {
+        path: PAGES.PERSONAL_INFORMATION,
+        element: UpdateRequest
+    },
+    {
+        path: PAGES.CURRICULUM_MANAGEMENT,
+        element: CurriculumManagement
+    },
+    {
+        path: PAGES.CERTIFICATE_MANAGEMENT,
+        element: CertificateManagement
+    },
+    {
+        path: PAGES.WORK_EXPERIENCE_MANAGEMENT,
+        element: WorkExperienceManagement
     },
 
 ]

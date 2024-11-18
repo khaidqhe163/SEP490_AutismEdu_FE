@@ -25,6 +25,10 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import ReportIcon from '@mui/icons-material/Report';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import DescriptionIcon from '@mui/icons-material/Description';
+import WorkIcon from '@mui/icons-material/Work';
 
 function AdminLeftBar() {
     const [open, setOpen] = useState(false);
@@ -65,9 +69,9 @@ function AdminLeftBar() {
 
     return (
         <>
-            <Box sx={{ bgcolor: "white", height: "100%", px: "15px", pt: "20px" }}>
+            <Box sx={{ bgcolor: "white", height: "100vh", px: "15px", pt: "20px" }}>
                 <List
-                    sx={{ width: '100%' }}
+                    sx={{ width: '100%', height: 'auto' }}
                     component="nav"
                     aria-labelledby="nested-list-subheader"
                 >
@@ -287,21 +291,9 @@ function AdminLeftBar() {
                                     selected={selectedIndex === 9}
                                     onClick={(event) => handleListItemClick(event, 9)}>
                                     <ListItemIcon>
-                                        <SortIcon />
+                                        <ManageAccountsIcon />
                                     </ListItemIcon>
                                     <ListItemText primary="Cập nhật thông tin" />
-                                </ListItemButton>
-                            </List>
-                        </Link>
-                        <Link to={PAGES.CERTIFICATE_MANAGEMENT}>
-                            <List component="div" disablePadding>
-                                <ListItemButton sx={{ pl: 4 }}
-                                    selected={selectedIndex === 10}
-                                    onClick={(event) => handleListItemClick(event, 10)}>
-                                    <ListItemIcon>
-                                        <PostAddIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Chứng chỉ" />
                                 </ListItemButton>
                             </List>
                         </Link>
@@ -311,9 +303,21 @@ function AdminLeftBar() {
                                     selected={selectedIndex === 11}
                                     onClick={(event) => handleListItemClick(event, 11)}>
                                     <ListItemIcon>
-                                        <PostAddIcon />
+                                        <AutoStoriesIcon />
                                     </ListItemIcon>
                                     <ListItemText primary="Khung chương trình" />
+                                </ListItemButton>
+                            </List>
+                        </Link>
+                        <Link to={PAGES.CERTIFICATE_MANAGEMENT}>
+                            <List component="div" disablePadding>
+                                <ListItemButton sx={{ pl: 4 }}
+                                    selected={selectedIndex === 10}
+                                    onClick={(event) => handleListItemClick(event, 10)}>
+                                    <ListItemIcon>
+                                        <DescriptionIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Chứng chỉ" />
                                 </ListItemButton>
                             </List>
                         </Link>
@@ -323,7 +327,7 @@ function AdminLeftBar() {
                                     selected={selectedIndex === 12}
                                     onClick={(event) => handleListItemClick(event, 12)}>
                                     <ListItemIcon>
-                                        <PostAddIcon />
+                                        <WorkIcon />
                                     </ListItemIcon>
                                     <ListItemText primary="Kinh nghiệm làm việc" />
                                 </ListItemButton>

@@ -39,6 +39,8 @@ const API_CODE = {
   API_GET_TUTOR: '/v1/Tutor/',
   API_GET_TUTOR_PROFILE: '/v1/Tutor/profile',
   API_UPDATE_TUTOR_PROFILE: '/v1/Tutor/',
+  API_GET_TUTOR_UPDATE_REQUEST: '/v1/Tutor/updateRequest',
+  API_PUT_TUTOR_CHANGE_STATUS: '/v1/Tutor/changeStatus/',
 
   //Curriculum management
   API_CREATE_CURRICULUM: '/v1/Curriculum',

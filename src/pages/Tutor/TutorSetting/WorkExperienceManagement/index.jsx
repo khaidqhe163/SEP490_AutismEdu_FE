@@ -55,7 +55,7 @@ function WorkExperienceManagement() {
         "endDate": "",
         "originalId": 0
     });
-
+ 
     const [workExperienceList, setWorkExperienceList] = useState([]);
 
     const [pagination, setPagination] = useState({
@@ -91,10 +91,10 @@ function WorkExperienceManagement() {
     };
 
     React.useEffect(() => {
-        getCeritificates();
+        getWorkExperienceList();
     }, [filters, pagination.pageNumber]);
 
-    const getCeritificates = async () => {
+    const getWorkExperienceList = async () => {
         try {
             setLoading(true);
             await services.WorkExperiencesAPI.getWorkExperiences((res) => {
@@ -116,7 +116,7 @@ function WorkExperienceManagement() {
         } finally {
             setLoading(false);
         }
-    }
+    };
 
 
     const handleFilterChange = (key) => (event) => {

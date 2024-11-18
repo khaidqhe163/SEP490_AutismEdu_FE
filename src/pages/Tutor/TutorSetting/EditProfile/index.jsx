@@ -220,9 +220,7 @@ function EditProfile() {
         }
     };
 
-    const quillEditorStyle = {
-        height: '250px',
-    };
+   
 
     return (
         <Stack direction='column' sx={{ width: "90%", margin: "auto", mt: "20px", gap: 2 }}>
@@ -408,18 +406,15 @@ function EditProfile() {
                     />
                 </Grid>
 
-                <Grid item xs={12} mb={8} sx={{ height: '300px' }}>
+                <Grid item xs={12} mb={0} sx={{ height: '350px' }}>
                     <Typography variant='h6' mb={2}>Giới thiệu về tôi</Typography>
-                    <Box mt={2} sx={{ height: "200px", width: "100%" }}>
                         <ReactQuill
-                            style={quillEditorStyle}
                             value={tutor?.aboutMe || ''}
                             onChange={handleQuillChange}
                         />
-                    </Box>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={12} mt={2}>
                     <Box textAlign='right'>
                         <Button disabled={tutor?.requestStatus === 2} variant="contained" color="primary" onClick={handleSaveClick}>Lưu</Button>
                     </Box>

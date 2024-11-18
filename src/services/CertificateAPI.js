@@ -18,7 +18,7 @@ const deleteCertificate = async (endpoint, data, success, error) => {
 };
 
 const changeStatusCertificate = async (endpoint, params, success, error) => {
-    await put(API_CODE.API_CERTIFICATE_STATUS + endpoint, params, success, error)
+    await put(API_CODE.API_CERTIFICATE_STATUS + endpoint, params, success, error);
 }
 
 export const CertificateAPI = {
