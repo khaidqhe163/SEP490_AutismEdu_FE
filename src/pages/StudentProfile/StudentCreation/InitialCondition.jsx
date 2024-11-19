@@ -1,20 +1,21 @@
-import { Button, Card, CardContent, FormControl, Grid, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { Card, CardContent, FormControl, Grid, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import services from '~/plugins/services';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import AssessmentGuild from './AssessmentGuild';
 import AssessmentDetail from './AssessmentDetail';
+import AssessmentGuild from './AssessmentGuild';
 function InitialCondition({ setInitialCondition, initialCondition, childrenInfor,
     selectedAssessment, setSelectedAssessment, hasAccount }) {
-    const [assessment, setAssessment] = useState([]);
+    const [assessments, setAssessments] = useState([]);
     useEffect(() => {
         handleGetAsessment();
     }, [])
     const handleGetAsessment = async () => {
         try {
             await services.AssessmentManagementAPI.listAssessment((res) => {
-                setAssessment(res.result.questions);
-                const initialAssessment = res.result.questions.map((r, index) => {
+                console.log(res.result.questions);
+                setAssessments(res.result.questions);
+                const initialAssessment = assessments.map((r) => {
+                    console.log(r.assessmentOptions[0].id);
                     return {
                         questionId: r.id,
                         optionId: r.assessmentOptions[0].id
@@ -43,7 +44,7 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
                 <AssessmentGuild />
                 <Grid container columnSpacing={2} rowSpacing={2}>
                     {
-                        assessment.map((a, index) => {
+                        assessments.map((a, index) => {
                             return (
                                 <Grid item xs={6} key={a.id}>
                                     <Stack direction='row' alignItems='center' sx={{
@@ -54,7 +55,7 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
                                         <AssessmentDetail assessment={a} />
                                     </Stack>
                                     <FormControl size='small' sx={{ width: "300px" }} key={a.id}>
-                                        <Select value={selectedAssessment[index].optionId}
+                                        <Select value={selectedAssessment[index]?.optionId}
                                             onChange={(e) => {
                                                 selectedAssessment[index].optionId = Number(e.target.value);
                                                 setSelectedAssessment([...selectedAssessment]);
@@ -63,7 +64,7 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
                                             {
                                                 a.assessmentOptions.map((option) => {
                                                     return (
-                                                        <MenuItem value={option.id} key={option.id}>{option.point} điểm</MenuItem>
+                                                        <MenuItem value={option?.id} key={option?.id}>{option?.point} điểm</MenuItem>
                                                     )
                                                 })
                                             }

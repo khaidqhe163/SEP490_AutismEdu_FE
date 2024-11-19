@@ -3,7 +3,7 @@ import { useState } from 'react'
 import LoadingComponent from '../LoadingComponent';
 
 function ConfirmDialog({ openConfirm, setOpenConfirm, handleAction, title, content }) {
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const handleSubmit = async () => {
         setLoading(true);
         handleAction();
