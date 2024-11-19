@@ -176,7 +176,16 @@ const API_CODE = {
   API_CREATE_REPORT_TUTOR: '/v1/Report/tutor',
   API_GET_LIST_REPORT: '/v1/Report',
   API_GET_REPORT_DETAIL: '/v1/Report/',
-  API_CHANGE_REPORT_STATUS: '/v1/Report/changeStatus/'
+  API_CHANGE_REPORT_STATUS: '/v1/Report/changeStatus/',
+
+  //Conversation
+  API_GET_CONVERSATION: '/v1/Conversation',
+  API_CREATE_CONVERSATION: '/v1/Conversation',
+
+  //Messages
+  API_GET_MESSAGE: '/v1/Message/',
+  API_READ_MESSAGE: '/v1/Message/read/',
+  API_SEND_MESSAGE: '/v1/Message'
 };
 
 export default API_CODE;

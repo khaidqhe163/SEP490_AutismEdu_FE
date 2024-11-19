@@ -1,22 +1,34 @@
 import { Logout } from '@mui/icons-material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import { Avatar, Badge, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack } from '@mui/material';
+import { Avatar, Badge, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
 import Cookies from "js-cookie";
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setTutorInformation, tutorInfor } from '~/redux/features/tutorSlice';
+import { adminInfor, setAdminInformation } from '~/redux/features/adminSlice';
 import PAGES from '~/utils/pages';
 import Logo from '../Logo';
-import { setAdminInformation } from '~/redux/features/adminSlice';
+import { jwtDecode } from 'jwt-decode';
 function AdminHeader() {
     const nav = useNavigate();
     const [accountMenu, setAccountMenu] = useState();
     const dispatch = useDispatch();
     const openAccountMenu = Boolean(accountMenu);
+    const adminInfo = useSelector(adminInfor);
+    useEffect(() => {
+        const accessToken = Cookies.get("access_token");
+        if (!accessToken) {
+            nav(PAGES.LOGIN_ADMIN)
+            return;
+        }
+        const decodedToken = jwtDecode(accessToken);
+        const role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+        if (role !== "Admin" && role !== "Manager" && role !== "Staff") {
+            nav(PAGES.LOGIN_ADMIN)
+        }
+    }, [adminInfo])
     const handleOpenAccountMenu = (event) => {
         setAccountMenu(event.currentTarget);
     };
@@ -42,21 +54,14 @@ function AdminHeader() {
                 justifyContent: "space-between",
                 height: "64px",
                 alignItems: "center",
-                px: "20px",
+                px: "20px"
             }}>
                 <Box sx={{ display: "flex", gap: 2 }}>
                     <Logo sizeLogo={30} sizeName={25} />
                 </Box>
-                <Box sx={{ display: "flex", gap: 2 }}>
-                    <IconButton onClick={() => { nav(PAGES.STUDENT_CREATION) }}>
-                        <AddOutlinedIcon />
-                    </IconButton>
-                    <IconButton>
-                        <Badge badgeContent={4} color="primary">
-                            <NotificationsActiveIcon />
-                        </Badge>
-                    </IconButton>
-                    <Avatar alt='Khai Dao' src={'/'} sx={{
+                <Box sx={{ display: "flex", gap: 2 }} alignItems="center">
+                    <Typography>{adminInfo?.fullName}</Typography>
+                    <Avatar alt={adminInfo?.fullName || "K"} src={'/'} sx={{
                         bgcolor: deepPurple[500], width: "30px",
                         height: "30px",
                         cursor: "pointer"

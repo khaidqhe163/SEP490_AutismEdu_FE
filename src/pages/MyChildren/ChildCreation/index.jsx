@@ -19,7 +19,7 @@ const style = {
     overflowY: "auto",
     p: 4,
 };
-function ChildCreation({ setChildren }) {
+function ChildCreation({ setChildren, setCurrentChild, currentChild }) {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -68,14 +68,17 @@ function ChildCreation({ setChildren }) {
                 formData.append("Media", avatar);
                 axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
                 await services.ChildrenManagementAPI.createChild(formData, (res) => {
-                    setChildren((pre) => [...pre, res.result])
+                    setChildren((pre) => [res.result, ...pre])
                     enqueueSnackbar("Tạo thành công!", { variant: "success" });
                     handleClose();
                 }, (err) => {
                     enqueueSnackbar(err.error[0], { variant: "error" })
                 })
                 axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
-                setLoading(false)
+                setLoading(false);
+                if (currentChild !== 0) {
+                    setCurrentChild(0);
+                }
             } catch (error) {
                 setLoading(false);
                 enqueueSnackbar("Tạo thất bại!", { variant: "error" })

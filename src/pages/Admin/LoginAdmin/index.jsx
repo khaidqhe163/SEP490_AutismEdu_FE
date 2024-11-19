@@ -29,7 +29,6 @@ function LoginAdmin() {
             color: "red"
         }
     };
-
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
@@ -106,6 +105,7 @@ function LoginAdmin() {
                                 AutismEdu
                             </Typography>
                         </Box>
+                        <Typography variant='h4' textAlign="center" mt={3}>Đăng nhập</Typography>
                         <Box mt="30px">
                             <FormControl sx={{ ...INPUT_CSS }} variant="outlined">
                                 <InputLabel htmlFor="email">Email</InputLabel>

@@ -23,8 +23,9 @@ function MyChildren() {
     const [childAvatar, setChildAvatar] = useState(null);
     useEffect(() => {
         console.log("zoday");
-        handleGetChildren();
-    }, [])
+        if (userInfo)
+            handleGetChildren();
+    }, [userInfo])
 
     const validate = values => {
         const errors = {};
@@ -86,15 +87,15 @@ function MyChildren() {
     });
     useEffect(() => {
         if (children.length !== 0) {
-            formik.setFieldValue("fullName", children[currentChild].name)
-            const gender = children[currentChild].gender === "Male" ? "True" : "False"
-            formik.setFieldValue("gender", gender)
             const formattedDate = children[currentChild].birthDate.split('T')[0];
-            formik.setFieldValue("dateOfBirth", formattedDate)
-            formik.setFieldError("fullName", "");
-            formik.setFieldError('dateOfBirth', "");
+            formik.resetForm({
+                values: {
+                    fullName: children[currentChild].name || '',
+                    gender: children[currentChild].gender === "Male" ? "True" : "False" || '',
+                    dateOfBirth: formattedDate || '',
+                }
+            });
             setChildAvatar(children[currentChild].imageUrlPath)
-            setAvatar(null)
         }
         setChange(true);
     }, [children, currentChild])
@@ -118,7 +119,7 @@ function MyChildren() {
             setLoading(true);
             await services.ChildrenManagementAPI.listChildren(userInfo?.id, (res) => {
                 console.log(res);
-                setChildren(res.result);
+                setChildren(res.result.reverse());
             }, (err) => {
                 console.log("data child ==> ", err);
             })
@@ -133,7 +134,7 @@ function MyChildren() {
             <Stack sx={{ width: "80%" }} direction="row" justifyContent="center">
                 <Box sx={{ width: "60%" }}>
                     <Box sx={{ width: "100%", mb: 5 }}>
-                        <ChildCreation setChildren={setChildren} />
+                        <ChildCreation setChildren={setChildren} setCurrentChild={setCurrentChild} currentChild={currentChild} />
                     </Box>
                     {
                         children.length !== 0 ? (

@@ -10,6 +10,9 @@ export const SignalRProvider = ({ children }) => {
     const [connection, setConnection] = useState(null);
     const tutorInfo = useSelector(tutorInfor);
     const parentInfo = useSelector(userInfor);
+    const [openMessage, setOpenMessage] = useState(false);
+    const [currentChat, setCurrentChat] = useState(null);
+    const [conversations, setConversations] = useState([]);
     useEffect(() => {
         let userId = "";
         if (tutorInfo) {
@@ -25,11 +28,25 @@ export const SignalRProvider = ({ children }) => {
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
             setConnection(newConnection);
+            newConnection.start()
+                .then(() => {
+                    console.log("SignalR connected");
+                })
+                .catch((err) => console.error("SignalR connection failed:", err));
+            return () => {
+                newConnection.stop().then(() => console.log("SignalR disconnected"));
+            };
         }
     }, [tutorInfo, parentInfo]);
     return (
         <SignalRContext.Provider value={{
-            connection
+            connection,
+            openMessage,
+            setOpenMessage,
+            conversations,
+            setConversations,
+            currentChat,
+            setCurrentChat,
         }}>
             {children}
         </SignalRContext.Provider>

@@ -1,24 +1,26 @@
+import ChatIcon from '@mui/icons-material/Chat';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Logout from '@mui/icons-material/Logout';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import PersonAdd from '@mui/icons-material/PersonAdd';
 import SearchIcon from '@mui/icons-material/Search';
+import SendIcon from '@mui/icons-material/Send';
 import Settings from '@mui/icons-material/Settings';
-import { Avatar, Badge, Box, Button, Divider, IconButton, InputAdornment, InputBase, ListItemIcon, Menu, MenuItem, Paper, Stack, Tab, Tabs, TextField, Typography } from '@mui/material';
+import { Avatar, Badge, Box, Button, Divider, FormControl, IconButton, InputAdornment, ListItemIcon, Menu, MenuItem, OutlinedInput, Paper, Stack, Tab, Tabs, TextField, Typography } from '@mui/material';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import Cookies from 'js-cookie';
 import React, { useContext, useEffect, useRef, useState } from 'react';
+import InputEmoji from "react-input-emoji";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { SignalRContext } from '~/Context/SignalRContext';
+import services from '~/plugins/services';
 import { setUserInformation, userInfor } from '~/redux/features/userSlice';
 import PAGES from '~/utils/pages';
 import ButtonComponent from '../ButtonComponent';
 import Logo from '../Logo';
 import NavigationMobile from './NavigationMobile';
-import Cookies from 'js-cookie';
-import { SignalRContext } from '~/Context/SignalRContext';
-import services from '~/plugins/services';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime'
-import * as signalR from '@microsoft/signalr';
+import { jwtDecode } from 'jwt-decode';
 function Header() {
     const [tab, setTab] = useState("1");
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -26,19 +28,24 @@ function Header() {
     const [anchorEl1, setAnchorEl1] = React.useState(null);
     const nav = useNavigate();
     const userInfo = useSelector(userInfor);
-
     const openAccountMenu = Boolean(accountMenu);
     const [searchVal, setSearchVal] = useState('');
     const dispatch = useDispatch();
     const location = useLocation();
     const [openNotification, setOpenNotification] = useState(false);
-    const { connection } = useContext(SignalRContext);
+    const { connection, openMessage, setOpenMessage, setCurrentChat, currentChat, conversations, setConversations } = useContext(SignalRContext);
     const [notifications, setNotifications] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const notificationRef = useRef(null);
     const notificationIconRef = useRef(null);
     const [unreadNoti, setUnreadNoti] = useState(0);
     dayjs.extend(relativeTime);
+    const [text, setText] = useState("");
+    const [messages, setMessages] = useState([]);
+    const [chatBox, setChatBox] = useState(null);
+    const messageIconRef = useRef(null);
+    const [unreadMessage, setUnreadMessage] = useState(true);
+    const [newMessage, setNewMessage] = useState(null);
     useEffect(() => {
         if (location.pathname === "/autismedu") {
             setTab("1");
@@ -61,29 +68,184 @@ function Header() {
     }, [location])
 
     useEffect(() => {
+        const accessToken = Cookies.get("access_token");
+        if (!accessToken) {
+            return;
+        }
+        const decodedToken = jwtDecode(accessToken);
+        const role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+        if (!location.pathname.includes(PAGES.ROOT + PAGES.LOGIN) &&
+            !location.pathname.includes(PAGES.ROOT + PAGES.REGISTER) &&
+            !location.pathname.includes(PAGES.ROOT + PAGES.FORGOTPASSWORD) &&
+            !location.pathname.includes(PAGES.ROOT + PAGES.RESETPASSWORD) &&
+            !location.pathname.includes(PAGES.ROOT + PAGES.LISTTUTOR) &&
+            !location.pathname.includes(PAGES.ROOT + PAGES.TUTORPROFILE) &&
+            !location.pathname.includes(PAGES.ROOT + PAGES.CONFIRMREGISTER) &&
+            !location.pathname.includes(PAGES.ROOT + PAGES.LOGIN_OPTION) &&
+            !location.pathname.includes(PAGES.ROOT + PAGES.REGISTER_OPTION) &&
+            !location.pathname.includes(PAGES.ROOT + PAGES.CHANGE_PASSWORD) &&
+            !location.pathname.includes(PAGES.ROOT + PAGES.BLOG_LIST) &&
+            !location.pathname.includes(PAGES.ROOT + PAGES.BLOG_LIST) &&
+            !location.pathname.includes(PAGES.ROOT + PAGES.BLOG_DETAIL)
+        ) {
+            if (userInfo === undefined || role !== "Parent") {
+                nav(PAGES.ROOT + PAGES.LOGIN)
+            }
+        }
         if (userInfo) {
             handleGetNotification();
+            handleGetConversation();
         }
-    }, [userInfo])
+    }, [userInfo, location])
 
     useEffect(() => {
-        if (connection && userInfo) {
-            connection
-                .start()
-                .then(() => {
-                    console.log('Kết nối SignalR thành công!');
-
-                    connection.on(`Notifications-${userInfo.id}`, (notification) => {
-                        setNotifications((preNotifications) => [notification, ...preNotifications]);
-
-                    });
-                })
-                .catch((error) => console.error('Kết nối SignalR thất bại:', error));
-            return () => {
-                connection.stop();
-            };
+        if (openMessage && !currentChat && conversations.length !== 0) {
+            setCurrentChat(conversations[0]);
         }
+    }, [openMessage])
+
+    useEffect(() => {
+        if (newMessage) {
+            if (currentChat && newMessage.conversation.id === currentChat?.id)
+                setMessages((preMessages) => [...preMessages, newMessage])
+            const receiveConversation = conversations.find((c) => {
+                return c.id === newMessage.conversation.id
+            })
+            if (receiveConversation) {
+                receiveConversation.messages = [newMessage];
+                const filtedConversation = conversations.filter((c) => {
+                    return c.id !== newMessage.conversation.id;
+                })
+                if (receiveConversation.id !== currentChat?.id && receiveConversation.isRead === true) {
+                    receiveConversation.isRead = false;
+                    setUnreadMessage(false);
+                }
+                if (receiveConversation.id === currentChat?.id) {
+                    handleReadMessage();
+                    if (chatBox) {
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                }
+                setConversations([receiveConversation, ...filtedConversation])
+            } else {
+                let read = false;
+                if (currentChat) {
+                    read = false;
+                } else read = true;
+                setConversations([
+                    {
+                        id: newMessage.conversation.id,
+                        user: newMessage.sender,
+                        messages: [newMessage],
+                        isRead: read
+                    }, ...conversations
+                ])
+                if (openMessage && !currentChat) {
+                    setCurrentChat({
+                        id: newMessage.conversation.id,
+                        user: newMessage.sender,
+                        messages: [newMessage],
+                        isRead: true
+                    })
+                } else {
+                    setUnreadMessage(false)
+                }
+            }
+        }
+    }, [newMessage])
+    useEffect(() => {
+        if (chatBox && messages.length <= 10) {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }, [messages, chatBox]);
+    useEffect(() => {
+        if (!connection || !userInfo) return;
+        connection.on(`Notifications-${userInfo.id}`, (notification) => {
+            setNotifications((preNotifications) => [notification, ...preNotifications]);
+        });
+        connection.on(`Messages-${userInfo.id}`, (message) => {
+            setNewMessage(message)
+        });
+        return () => {
+            connection.off(`Notifications-${userInfo.id}`);
+            connection.off(`Messages-${userInfo.id}`);
+        };
     }, [connection, userInfo]);
+
+    useEffect(() => {
+        if (currentChat && currentChat?.id !== 0) {
+            handleGetMessage();
+            handleReadMessage();
+        } else setMessages([])
+        setText("");
+    }, [currentChat])
+    const handleGetConversation = async () => {
+        try {
+            await services.ConversationAPI.getConversations((res) => {
+                const returnArr = res.result.map((r) => {
+                    if (r.messages[0].sender.id === userInfo.id) {
+                        r.isRead = true;
+                    } else {
+                        r.isRead = r.messages[0].isRead;
+                    }
+                    return r;
+                })
+                returnArr.forEach((r) => {
+                    if (r.isRead === false) {
+                        setUnreadMessage(false);
+                    }
+                })
+                setConversations(returnArr);
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const handleReadMessage = async () => {
+        try {
+            await services.MessageAPI.readMessages(currentChat?.id || 0, {}, (res) => {
+                const currentChatBox = conversations.find((c) => {
+                    return c.id === currentChat?.id
+                })
+                currentChatBox.isRead = true;
+                setUnreadMessage(true);
+                conversations.forEach((r) => {
+                    if (r.isRead === false) {
+                        setUnreadMessage(false);
+                    }
+                })
+                setConversations([...conversations]);
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const handleGetMessage = async () => {
+        try {
+            await services.MessageAPI.getMessages(currentChat?.id || 0, (res) => {
+                setMessages(res.result.reverse());
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    useEffect(() => {
+        if (currentChat) {
+            handleGetMessage();
+        }
+    }, [currentChat])
     const handleGetNotification = async () => {
         try {
             await services.NotificationAPI.getAllPaymentPackage((res) => {
@@ -146,10 +308,17 @@ function Header() {
     };
     const handleClickOutside = (event) => {
         if (
+            messageIconRef.current &&
+            !messageIconRef.current.contains(event.target) &&
+            !event.target.closest(".MuiIconButton-root")
+        ) {
+            setOpenMessage(false);
+        }
+        if (
             notificationRef.current &&
-            notificationIconRef.current &&
             !notificationRef.current.contains(event.target) &&
-            !notificationIconRef.current.contains(event.target)
+            !notificationIconRef.current.contains(event.target) &&
+            !event.target.closest(".MuiIconButton-root")
         ) {
             setOpenNotification(false);
         }
@@ -196,6 +365,37 @@ function Header() {
             console.log(error);
         }
     }
+
+    const sendMessages = async () => {
+        if (text.trim() === "") return;
+        try {
+            await services.MessageAPI.sendMessages({
+                conversationId: currentChat?.id,
+                content: text.trim(),
+            }, (res) => {
+                setMessages([...messages, res.result]);
+                const receiveConversation = conversations.find((c) => {
+                    return c.id === res.result.conversation.id
+                })
+
+                receiveConversation.messages = [res.result];
+                const filtedConversation = conversations.filter((c) => {
+                    return c.id !== res.result.conversation.id;
+                })
+                setConversations([receiveConversation, ...filtedConversation])
+                setText("");
+                if (chatBox) {
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+            }, (error) => {
+                console.log(error);
+            }, {
+                pageNumber: currentPage
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <Stack
             direction="row"
@@ -233,7 +433,7 @@ function Header() {
                 onClose={handleClose}
                 MenuListProps={{
                     'aria-labelledby': 'lock-button',
-                    role: 'listbox',
+                    role: 'listbox'
                 }}
             >
                 {
@@ -262,12 +462,9 @@ function Header() {
                 onClose={handleClose1}
                 MenuListProps={{
                     'aria-labelledby': 'lock-button',
-                    role: 'listbox',
+                    role: 'listbox'
                 }}
             >
-                {/* <MenuItem onClick={(event) => handleMenuItemClick(event, PAGES.ROOT + PAGES.MY_TUTOR)}>
-                    Gia sư của tôi
-                </MenuItem> */}
                 <MenuItem
                     onClick={(event) => handleMenuItemClick1(event, PAGES.ROOT + PAGES.TEST)}
                 >
@@ -299,11 +496,213 @@ function Header() {
                             width: '350px',
                             height: '45px',
                             borderRadius: '999px',
-                            backgroundColor: '#fff',
-                        },
+                            backgroundColor: '#fff'
+                        }
                     }}
                 />
 
+                {
+                    userInfo && (
+                        <Box sx={{ position: "relative" }}>
+                            <IconButton sx={{ color: "#c58ee5" }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOpenMessage(!openMessage);
+                                    setOpenNotification(false);
+                                }}>
+                                <Badge variant="dot" invisible={unreadMessage} color="primary">
+                                    <ChatIcon />
+                                </Badge>
+                            </IconButton>
+                            {
+                                openMessage && (
+                                    <Paper variant='elevation' sx={{
+                                        position: "absolute", top: "50px",
+                                        right: "0px", width: "1000px", bgcolor: "#F3E8FF",
+                                        p: 2,
+                                        height: "85vh"
+                                    }} ref={messageIconRef}>
+                                        {
+                                            conversations.length !== 0 ? (
+                                                <Stack direction='row' sx={{ height: "100%" }} gap={1}>
+                                                    <Box sx={{ width: "35%" }}>
+                                                        <Typography variant='h4'>Đoạn chat</Typography>
+                                                        <FormControl
+                                                            sx={{
+                                                                mt: 4,
+                                                                "& .MuiOutlinedInput-root": {
+                                                                    bgcolor: "#FFFFFF",
+                                                                    borderRadius: "10px",
+                                                                    border: "1px solid #B388FF",
+                                                                    "&:hover": {
+                                                                        borderColor: "#7C4DFF"
+                                                                    },
+                                                                    "&.Mui-focused": {
+                                                                        borderColor: "#6200EA",
+                                                                        boxShadow: "0 0 5px #B388FF"
+                                                                    }
+                                                                },
+                                                                "& .MuiOutlinedInput-input": {
+                                                                    color: "#6200EA"
+                                                                },
+                                                            }}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            size="small"
+                                                        >
+                                                            <OutlinedInput
+                                                                startAdornment={<InputAdornment position='start'><SearchIcon /></InputAdornment>}
+                                                                inputProps={{
+                                                                    "aria-label": "Tìm kiếm phụ huynh"
+                                                                }}
+                                                                placeholder='Tìm kiếm phụ huynh'
+                                                            />
+                                                        </FormControl>
+                                                        <Box sx={{
+                                                            overflow: "hidden", height: "80%",
+                                                            "&:hover": {
+                                                                overflow: "auto"
+                                                            },
+                                                            mt: 1
+                                                        }}>
+                                                            {
+                                                                conversations && conversations.length !== 0 && conversations.map((c) => {
+                                                                    return (
+                                                                        <Stack key={c.id} direction='row' gap={1} alignItems="center" sx={{
+                                                                            py: 2, justifyContent: "space-between",
+                                                                            cursor: "pointer",
+                                                                            px: 2,
+                                                                            bgcolor: c.id === currentChat?.id ? "#F8F0FF" : "",
+                                                                            borderRadius: "10px",
+                                                                            ":hover": {
+                                                                                bgcolor: "#F8F0FF"
+                                                                            }
+                                                                        }} onClick={() => setCurrentChat(c)}>
+                                                                            <Stack direction='row' gap={2} alignItems="center" sx={{ width: "80%" }}>
+                                                                                <Avatar alt="Remy Sharp" src={c.user.imageUrl} />
+                                                                                <Box sx={{ overflow: "hidden" }}>
+                                                                                    <Typography fontWeight="bold" color="black">{c.user.fullName}</Typography>
+                                                                                    <Typography sx={{
+                                                                                        display: '-webkit-box',
+                                                                                        WebkitLineClamp: 1,
+                                                                                        WebkitBoxOrient: 'vertical',
+                                                                                        overflow: 'hidden',
+                                                                                        textOverflow: 'ellipsis'
+                                                                                    }}>{c.messages[0].content}</Typography>
+                                                                                </Box>
+                                                                            </Stack>
+                                                                            {
+                                                                                !c.isRead && (
+                                                                                    <Box sx={{ width: "15px", height: "15px", bgcolor: "blue", borderRadius: "50%" }}>
+                                                                                    </Box>
+                                                                                )
+                                                                            }
+                                                                        </Stack>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </Box>
+                                                    </Box>
+                                                    <Divider orientation="vertical" flexItem />
+
+                                                    <Stack direction='column' sx={{ width: "65%", height: "100%" }}>
+                                                        <Stack direction='row' sx={{
+                                                            px: 1, alignItems: "center",
+                                                            justifyContent: "space-between"
+                                                        }}>
+                                                            <Stack direction='row' sx={{ gap: 2, alignItems: "center" }}>
+                                                                <Avatar alt="Remy Sharp" src={currentChat ? currentChat?.user?.imageUrl : "/"} sx={{
+                                                                    width: "50px",
+                                                                    height: "50px"
+                                                                }} />
+                                                                <Typography variant='h5' sx={{}}>{currentChat ? currentChat?.user?.fullName : "Mất kết nối"}</Typography>
+                                                            </Stack>
+                                                            <Button sx={{ color: "red" }}>CHẶN</Button>
+                                                        </Stack>
+                                                        <Divider sx={{ mt: 1 }} />
+                                                        <Box style={{
+                                                            width: "100%",
+                                                            flexGrow: 2,
+                                                            overflow: "auto"
+                                                        }} ref={setChatBox}>
+                                                            {
+                                                                messages && messages.length !== 0 && messages.map((m) => {
+                                                                    if (m.sender?.id === userInfo?.id) {
+                                                                        return (
+                                                                            <Stack key={m.id} direction='row' sx={{
+                                                                                justifyContent: "flex-end",
+                                                                                mt: 1
+                                                                            }}>
+                                                                                <Box sx={{
+                                                                                    bgcolor: "#E0D1FF",
+                                                                                    p: 2,
+                                                                                    borderRadius: "15px",
+                                                                                    maxWidth: "70%",
+                                                                                }}>
+                                                                                    <Typography>{m.content}</Typography>
+                                                                                </Box>
+                                                                            </Stack>
+                                                                        )
+                                                                    } else {
+                                                                        return (
+                                                                            <Stack direction="row" key={m.id} sx={{ mt: 1 }}>
+                                                                                <Box sx={{
+                                                                                    bgcolor: "#FBF8FF",
+                                                                                    p: 2,
+                                                                                    borderRadius: "15px",
+                                                                                    maxWidth: "70%",
+                                                                                    flexShrink: 0
+                                                                                }}>
+                                                                                    <Typography>{m.content}</Typography>
+                                                                                </Box>
+                                                                            </Stack>
+                                                                        )
+                                                                    }
+                                                                })
+                                                            }
+                                                        </Box>
+                                                        <Divider sx={{ mt: 1 }} />
+                                                        <Stack direction='row' justifyContent='space-between' alignItems="center"
+                                                            sx={{
+                                                                maxHeight: "110px"
+                                                            }}>
+                                                            <Box flexGrow={2}>
+                                                                <InputEmoji
+                                                                    value={text}
+                                                                    onChange={setText}
+                                                                    cleanOnEnter
+                                                                    placeholder="Type a message"
+                                                                />
+                                                            </Box>
+                                                            <IconButton onClick={() => sendMessages()} sx={{
+                                                                bgcolor: "#c079ea", color: "white",
+                                                                ":hover": {
+                                                                    bgcolor: "#c58ee5"
+                                                                }
+                                                            }}>
+                                                                <SendIcon />
+                                                            </IconButton>
+                                                        </Stack>
+                                                    </Stack>
+                                                </Stack>
+                                            ) : (
+                                                <Box sx={{
+                                                    width: "100%",
+                                                    height: "100%",
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center"
+                                                }}>
+                                                    <Typography sx={{ fontSize: "30px" }}>Bạn chưa có cuộc hội thoại nào</Typography>
+                                                </Box>
+                                            )
+                                        }
+                                    </Paper>
+                                )
+                            }
+                        </Box>
+                    )
+                }
                 {
                     userInfo && (
                         <Box sx={{ position: "relative" }}>
@@ -364,7 +763,7 @@ function Header() {
                             <Box sx={{
                                 display: {
                                     xs: "none",
-                                    lg: "block",
+                                    lg: "block"
                                 }
                             }}>
                                 <Link to={PAGES.ROOT + PAGES.LOGIN_OPTION}><ButtonComponent text="Đăng nhập" height="40px" /></Link>
@@ -400,7 +799,7 @@ function Header() {
                                                 width: 32,
                                                 height: 32,
                                                 ml: -0.5,
-                                                mr: 1,
+                                                mr: 1
                                             },
                                             '&::before': {
                                                 content: '""',
@@ -412,10 +811,10 @@ function Header() {
                                                 height: 10,
                                                 bgcolor: 'background.paper',
                                                 transform: 'translateY(-50%) rotate(45deg)',
-                                                zIndex: 0,
-                                            },
-                                        },
-                                    },
+                                                zIndex: 0
+                                            }
+                                        }
+                                    }
                                 }}
                                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}

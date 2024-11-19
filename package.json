@@ -37,6 +37,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
     "react-image-crop": "^11.0.7",
+    "react-input-emoji": "^5.9.0",
     "react-material-ui-carousel": "^3.4.2",
     "react-number-format": "^5.4.2",
     "react-quill": "^2.0.0",

@@ -37,10 +37,16 @@ function App() {
       services.UserManagementAPI.getUserById(userId, (res) => {
         if (role === "Parent") {
           dispatch(setUserInformation(res.result))
+          dispatch(setAdminInformation(undefined))
+          dispatch(setTutorInformation(undefined))
         } else if (role === "Tutor") {
           dispatch(setTutorInformation(res.result))
+          dispatch(setAdminInformation(undefined))
+          dispatch(setUserInformation(undefined))
         } else if (role === "Admin" || role === "Staff" || role === "Manager") {
           dispatch(setAdminInformation(res.result))
+          dispatch(setUserInformation(undefined))
+          dispatch(setTutorInformation(undefined))
         }
       }, (error) => {
         console.log(error);

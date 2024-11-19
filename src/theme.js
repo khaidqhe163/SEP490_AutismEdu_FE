@@ -115,7 +115,7 @@ const theme = createTheme({
                 'h1, h2, h3, h4, h5, h6': {
                     fontWeight: 'bold',
                     color: '#192335'
-                },
+                }
             }
         },
         MuiButton: {

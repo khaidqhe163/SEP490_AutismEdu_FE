@@ -16,6 +16,8 @@ import LoadingComponent from '~/components/LoadingComponent';
 import { format } from 'date-fns';
 import { enqueueSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
+import { SignalRContext } from '~/Context/SignalRContext';
+import { useContext } from 'react';
 
 function TutorRequest() {
 
@@ -40,7 +42,7 @@ function TutorRequest() {
         status: 'all',
         sort: 'desc',
     });
-
+    const { setOpenMessage, setConversations, conversations, setCurrentChat } = useContext(SignalRContext);
     const handleFilterChange = (key) => (event) => {
         setFilters({
             ...filters,
@@ -207,6 +209,32 @@ function TutorRequest() {
         return adrs?.reverse()?.join(', ');
     };
 
+    const handleOpenChat = (request) => {
+        const conversation = conversations.find((c) => {
+            return request.parent.id === c.user.id;
+        })
+        if (conversation) {
+            setCurrentChat(conversation);
+        } else {
+            setConversations([{
+                id: 0,
+                user: request.parent,
+                messages: [
+                    {
+                        content: "",
+                        isRead: true
+                    }
+                ],
+                isRead: true
+            }, ...conversations]);
+            setCurrentChat({
+                id: 0,
+                user: request.parent,
+                isRead: true
+            });
+        }
+        setOpenMessage(true);
+    }
     return (
         <Stack direction='column' sx={{
             width: "80%",
@@ -305,12 +333,12 @@ function TutorRequest() {
                                 <Stack direction='row' gap={2} justifyContent='flex-end' alignItems='center' sx={{ flexGrow: 1 }}>
                                     {request?.requestStatus === 1 &&
                                         <Button variant="contained" color="primary" startIcon={<QuestionAnswerIcon />} onClick={(event) => {
-                                            event.stopPropagation(); 
-                                            console.log('Button clicked');
+                                            event.stopPropagation();
+                                            handleOpenChat(request);
                                         }}>
                                             Nhắn tin
-                                        </Button>}
-
+                                        </Button>
+                                    }
                                     <Box width={130}>
                                         <Button
                                             variant='outlined'
