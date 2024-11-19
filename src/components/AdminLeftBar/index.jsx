@@ -19,6 +19,7 @@ import ReportIcon from '@mui/icons-material/Report';
 import SortIcon from '@mui/icons-material/Sort';
 import TocIcon from '@mui/icons-material/Toc';
 import WorkIcon from '@mui/icons-material/Work';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import { Box, Collapse, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -264,13 +265,13 @@ function AdminLeftBar() {
                                             </ListItemButton>
                                         </List>
                                     </Link>
-                                    <Link to={PAGES.ASSESSMENT_CREATION}>
+                                    <Link to={PAGES.PAYMENT_HISTORY_ADMIN}>
                                         <List component="div" disablePadding>
                                             <ListItemButton sx={{ pl: 4 }}
                                                 selected={selectedIndex === 9}
                                                 onClick={(event) => handleListItemClick(event, 9)}>
                                                 <ListItemIcon>
-                                                    <PlaylistAddIcon />
+                                                    <CurrencyExchangeIcon />
                                                 </ListItemIcon>
                                                 <ListItemText primary="Lịch sử thanh toán" />
                                             </ListItemButton>

@@ -99,7 +99,7 @@ const CertificateManagement = () => {
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const handleViewDetail = (certificate) => {
         setSelectedCertificate(certificate);

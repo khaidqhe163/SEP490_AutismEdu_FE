@@ -31,6 +31,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { useNavigate } from 'react-router-dom';
 import LoadingComponent from '~/components/LoadingComponent';
 import DeleteConfirmationModal from './CertificateModal/DeleteConfirmationModal';
+import { format } from 'date-fns';
 
 function CertificateManagement() {
     const [idDelete, setIdDelete] = useState(-1);
@@ -283,7 +284,7 @@ function CertificateManagement() {
                                 <TableRow key={certificate.id} hover>
                                     <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 10}</TableCell>
                                     <TableCell>{certificate?.certificateName}</TableCell>
-                                    <TableCell>{certificate?.createdDate && new Date(certificate.createdDate).toLocaleDateString()}</TableCell>
+                                    <TableCell>{certificate?.createdDate && format(new Date(certificate.createdDate),'HH:mm dd/MM/yyyy')}</TableCell>
                                     <TableCell>
                                         <Button
                                             variant="outlined"
@@ -325,7 +326,7 @@ function CertificateManagement() {
 
             <DeleteConfirmationModal open={open} handleClose={handleClose} id={idDelete} certificateList={certificateList} setCertificateList={setCertificateList} />
 
-            <CreateCertificateDialog
+            {openDialog && <CreateCertificateDialog
                 open={openDialog}
                 onClose={handleDialogClose}
                 certificateData={certificateData}
@@ -333,8 +334,10 @@ function CertificateManagement() {
                 handleInputChange={handleInputChange}
                 handleImageUpload={handleImageUpload}
                 handleImageRemove={handleImageRemove}
-                handleSubmitCertificate={handleSubmitCertificate}
-            />
+                // handleSubmitCertificate={handleSubmitCertificate}
+                certificateList={certificateList}
+                setCertificateList={setCertificateList}
+            />}
 
             <LoadingComponent open={loading} setOpen={setLoading} />
         </Box>

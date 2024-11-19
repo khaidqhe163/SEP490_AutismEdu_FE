@@ -61,6 +61,9 @@ const PAGES = {
   WORK_EXPERIENCE_MANAGEMENT: '/admin/work-experience-management',
   EXERCISE_TYPE_MANAGEMENT: '/admin/exercise-type-management',
 
+  PAYMENT_HISTORY_TUTOR: '/autismtutor/payment-history',
+  PAYMENT_HISTORY_ADMIN: '/admin/payment-history',
+
 };
 
 export default PAGES;

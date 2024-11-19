@@ -4,6 +4,7 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import axios from "~/plugins/axios";
 import {
     Box,
     Button,
@@ -18,12 +19,14 @@ import {
     Divider
 } from '@mui/material';
 import LoadingComponent from '~/components/LoadingComponent';
+import { enqueueSnackbar } from 'notistack';
+import services from '~/plugins/services';
 
-export default function CreateCertificateDialog({ open, onClose, certificateData, setCertificateData, handleSubmitCertificate }) {
+export default function CreateCertificateDialog({ open, onClose, certificateData, setCertificateData, certificateList, setCertificateList}) {
     const [selectedImage, setSelectedImage] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [openImageDialog, setOpenImageDialog] = useState(false);
     const [listImg, setListImg] = useState([]);
-    const [loading, setLoading] = useState(false);
     const handleImageClick = (image) => {
         setSelectedImage(image);
         setOpenImageDialog(true);
@@ -32,6 +35,36 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
     const handleCloseImageDialog = () => {
         setOpenImageDialog(false);
         setSelectedImage(null);
+    };
+
+    const handleSubmitCertificate = async () => {
+        try {
+            setLoading(true);
+            const formData = new FormData();
+
+            formData.append('CertificateName', certificateData.CertificateName);
+            formData.append('IssuingInstitution', certificateData.IssuingInstitution);
+            formData.append('IdentityCardNumber', certificateData.IdentityCardNumber);
+            formData.append('IssuingDate', certificateData.IssuingDate);
+            formData.append('ExpirationDate', certificateData.ExpirationDate);
+
+            certificateData.Medias.forEach((file, index) => {
+                formData.append(`Medias`, file);
+            });
+
+            axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
+            await services.CertificateAPI.createCertificate(formData, (res) => {
+                setCertificateList([res.result, ...certificateList]);
+                enqueueSnackbar('Chứng chỉ của bạn đã được tạo thành công!', { variant: 'success' })
+            }, (error) => {
+                console.log(error);
+            })
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+        axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
     };
 
     const handleImageRemove = (idx) => {

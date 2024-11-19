@@ -21,6 +21,8 @@ import services from '~/plugins/services';
 import InputEmoji from "react-input-emoji";
 import SendIcon from '@mui/icons-material/Send';
 import { jwtDecode } from 'jwt-decode';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+
 function TutorHeader({ openMenu, setOpenMenu }) {
     dayjs.extend(relativeTime);
     const nav = useNavigate();
@@ -325,7 +327,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
         dispatch(setTutorInformation(null));
         dispatch(setPackagePayment(null));
         nav(PAGES.TUTOR_LOGIN)
-    }
+    };
 
     const handleClickOutside = (event) => {
         if (
@@ -734,6 +736,12 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
+                        <MenuItem onClick={() => nav(PAGES.PAYMENT_HISTORY_TUTOR)}>
+                            <ListItemIcon>
+                                <CurrencyExchangeIcon fontSize="small" />
+                            </ListItemIcon>
+                            Lịch sử giao dịch
+                        </MenuItem>
                         <MenuItem onClick={handleLogout}>
                             <ListItemIcon>
                                 <Logout fontSize="small" />

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import AboutMe from './AboutMe';
 import BigCity from './BigCity';
 import Blog from './Blog';
@@ -8,6 +8,7 @@ import TutorComponent from './Tutor';
 function Home() {
     return (
         <Box>
+            <Typography>Hello</Typography>
             <CarouselComponent />
             <BigCity />
             <TutorComponent />

@@ -57,6 +57,8 @@ import UpdateRequest from '~/pages/Admin/TutorSettingManagement/UpdateRequest'
 import CurriculumManagement from '~/pages/Admin/TutorSettingManagement/CurriculumManagement'
 import CertificateManagement from '~/pages/Admin/TutorSettingManagement/CertificateManagement'
 import WorkExperienceManagement from '~/pages/Admin/TutorSettingManagement/WorkExperienceManagement'
+import PaymentHistory from '~/pages/Tutor/PaymentHistory'
+import PaymentHistoryAdmin from '~/pages/Admin/PaymentManagement/PaymentHistory'
 
 const UnLayoutRoutes = [
     {
@@ -210,6 +212,9 @@ const tutorRoutes = [
     }, {
         path: PAGES.PAYMENT_PACKAGE,
         element: RechargeModal
+    }, {
+        path: PAGES.PAYMENT_HISTORY_TUTOR,
+        element: PaymentHistory
     }
 ]
 const adminRoutes = [
@@ -288,6 +293,10 @@ const adminRoutes = [
     {
         path: PAGES.WORK_EXPERIENCE_MANAGEMENT,
         element: WorkExperienceManagement
+    },
+    {
+        path: PAGES.PAYMENT_HISTORY_ADMIN,
+        element: PaymentHistoryAdmin
     },
 
 ]

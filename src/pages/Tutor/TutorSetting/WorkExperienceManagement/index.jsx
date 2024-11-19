@@ -35,9 +35,12 @@ import InputAdornment from '@mui/material/InputAdornment';
 import LoadingComponent from '~/components/LoadingComponent';
 import WorkExperienceCreation from './WorkExprerienceModal/WorkExperienceCreation';
 import DeleteConfirmationModal from './WorkExprerienceModal/DeleteConfirmationModal';
+import WorkExperienceDetail from './WorkExprerienceModal/WorkExperienceDetail';
 
 function WorkExperienceManagement() {
     const [selectedContent, setSelectedContent] = useState('');
+    const [selectedWorkExp, setSelectedWorkExp] = useState(null);
+    const [workExpDialogOpen, setWorkExpDialogOpen] = useState(false);
     const [idDelete, setIdDelete] = useState(-1);
     const [loading, setLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
@@ -55,7 +58,7 @@ function WorkExperienceManagement() {
         "endDate": "",
         "originalId": 0
     });
- 
+
     const [workExperienceList, setWorkExperienceList] = useState([]);
 
     const [pagination, setPagination] = useState({
@@ -236,7 +239,7 @@ function WorkExperienceManagement() {
                                     <TableCell sx={{ fontWeight: 'bold' }}>Thời gian bắt đầu</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Thời gian kết đầu</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Phản hồi</TableCell>
+                                    {/* <TableCell sx={{ fontWeight: 'bold' }}>Phản hồi</TableCell> */}
                                     <TableCell sx={{ fontWeight: 'bold' }}>Hành động</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -273,7 +276,7 @@ function WorkExperienceManagement() {
                                                 {statusText(certificate?.requestStatus)}
                                             </Button>
                                         </TableCell>
-                                        <TableCell>
+                                        {/* <TableCell>
                                             <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
                                                 <Box sx={{
                                                     overflow: 'hidden',
@@ -294,8 +297,11 @@ function WorkExperienceManagement() {
                                                     </Button>
                                                 )}
                                             </Box>
-                                        </TableCell>
+                                        </TableCell> */}
                                         <TableCell>
+                                            <IconButton color="primary" onClick={() => { setSelectedWorkExp(certificate); setWorkExpDialogOpen(true); }}>
+                                                <VisibilityIcon />
+                                            </IconButton>
                                             {certificate?.requestStatus !== 2 && (<IconButton color="error" aria-label="xoá" onClick={() => handleClickOpen(certificate.id)}>
                                                 <DeleteIcon />
                                             </IconButton>)}
@@ -337,6 +343,7 @@ function WorkExperienceManagement() {
             />
 
             <LoadingComponent open={loading} setOpen={setLoading} />
+            {workExpDialogOpen&& <WorkExperienceDetail open={workExpDialogOpen} onClose={()=>setWorkExpDialogOpen(false)} workExperience={selectedWorkExp}/>}
         </Box>
     );
 }

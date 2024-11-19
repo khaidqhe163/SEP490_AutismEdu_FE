@@ -13,6 +13,7 @@ import LoadingComponent from '~/components/LoadingComponent';
 import { useNavigate } from 'react-router-dom';
 function Tutor() {
     const [listTutor, setListTutor] = useState([]);
+
     const [currentTutor, setCurrentTutor] = useState(0);
     const [loading, setLoading] = useState(false);
     const nav = useNavigate();
@@ -37,16 +38,18 @@ function Tutor() {
         nav(`/autismedu/tutor-profile/${id}`);
     };
 
-    const formatAddress = (address) => {
+    const formatAddress = (address = '') => {
         const splitedAdd = address?.split("|");
         let formatedAddress = "";
-        splitedAdd.forEach((s, index) => {
-            if (index === 0)
-                formatedAddress = s + formatedAddress;
-            else formatedAddress = s + " - " + formatedAddress;
-        })
-        return formatedAddress
-    }
+        if (address) {
+            splitedAdd.forEach((s, index) => {
+                if (index === 0)
+                    formatedAddress = s + formatedAddress;
+                else formatedAddress = s + " - " + formatedAddress;
+            });
+        }
+        return formatedAddress;
+    };
     return (
         <Box sx={{ width: "100vw", py: "100px", textAlign: 'center', bgcolor: "#f9f9ff" }}>
 
@@ -119,7 +122,7 @@ function Tutor() {
 
                                             </CardContent>
                                             <CardActions>
-                                                <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />} onClick={()=>handleClickToProfile(listTutor[currentTutor]?.userId)}>Tìm hiểu thêm</Button>
+                                                <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />} onClick={() => handleClickToProfile(listTutor[currentTutor]?.userId)}>Tìm hiểu thêm</Button>
                                             </CardActions>
                                         </Box>
 
