@@ -115,7 +115,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
 
     useEffect(() => {
         if (currentChat && currentChat?.id !== 0) {
-            handleGetMessage();
+            handleGetMessage(1, 10);
             handleReadMessage();
         } else setMessages([])
         setText("");
@@ -204,14 +204,15 @@ function TutorHeader({ openMenu, setOpenMenu }) {
             console.log(error);
         }
     }
-    const handleGetMessage = async () => {
+    const handleGetMessage = async (pageNumber, pageSize) => {
         try {
             await services.MessageAPI.getMessages(currentChat?.id || 0, (res) => {
-                setMessages(res.result.reverse());
+                setMessages([...res.result.reverse(), ...messages]);
             }, (error) => {
                 console.log(error);
             }, {
-                pageNumber: currentPage
+                pageNumber: pageNumber,
+                pageSize: pageSize
             })
         } catch (error) {
             console.log(error);
@@ -378,7 +379,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     }
 
     useEffect(() => {
-        if (chatBox) {
+        if (chatBox && messages.length <= 10) {
             chatBox.scrollTop = chatBox.scrollHeight;
         }
     }, [messages, chatBox]);
@@ -550,6 +551,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                                         flexGrow: 2,
                                                         overflow: "auto"
                                                     }} ref={setChatBox}>
+                                                        <Button onClick={() => handleGetMessage(2, messages.length)}>Xem thêm</Button>
                                                         {
                                                             messages && messages.length !== 0 && messages.map((m) => {
                                                                 if (m.sender?.id === tutorInfo?.id) {

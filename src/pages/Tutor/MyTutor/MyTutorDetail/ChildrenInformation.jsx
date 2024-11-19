@@ -1,7 +1,4 @@
-import { Avatar, Box, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import services from '~/plugins/services';
+import { Avatar, Box, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
 function ChildInformation({ studentProfile }) {
     const formatDate = (date) => {
@@ -24,7 +21,7 @@ function ChildInformation({ studentProfile }) {
                         Tình trạng ban đầu
                     </Typography>
                     <Typography mt={2} sx={{ whiteSpace: "break-spaces" }}>
-                        {studentProfile?.initialCondition}
+                        {studentProfile?.initialAssessmentResults?.condition}
                     </Typography>
                     <Typography variant='h3' mt={5}>
                         Bảng đánh giá
@@ -39,7 +36,7 @@ function ChildInformation({ studentProfile }) {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {studentProfile && studentProfile.initialAssessmentResults.map((assessment) => (
+                                {studentProfile && studentProfile?.initialAssessmentResults?.assessmentResults.map((assessment) => (
                                     <TableRow
                                         key={assessment.id}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

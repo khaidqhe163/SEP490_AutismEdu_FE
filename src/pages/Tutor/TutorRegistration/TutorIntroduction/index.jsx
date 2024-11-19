@@ -8,7 +8,7 @@ import { NumericFormat } from 'react-number-format';
 import ReactQuill from 'react-quill';
 import Curriculum from './CurriculumAddition';
 import CurriculumDetail from './CurriculumDetail';
-
+import '~/assets/css/ql-editor.css'
 const NumericFormatCustom = React.forwardRef(
     function NumericFormatCustom(props, ref) {
         const { onChange, ...other } = props;
@@ -78,7 +78,6 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
         if (!values.sessionHours) {
             errors.sessionHours = "Bắt buộc"
         }
-        console.log(errors);
         return errors
     }
     const formik = useFormik({
@@ -173,18 +172,15 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                 <Stack direction='row' gap={3}>
                     <Box mt={2} sx={{ width: "60%" }}>
                         <Typography variant='h6' mb={2}>Nhập giới thiệu về bạn</Typography>
-                        <Box sx={{ height: "450px" }}>
-                            <ReactQuill
-                                value={formik.values.description}
-                                name="description"
-                                onChange={handleChangeEdit}
-                                theme="snow"
-                                modules={{
-                                    toolbar: toolbarOptions
-                                }}
-                                style={{ height: '350px' }}
-                            />
-                        </Box>
+                        <ReactQuill
+                            value={formik.values.description}
+                            name="description"
+                            onChange={handleChangeEdit}
+                            theme="snow"
+                            modules={{
+                                toolbar: toolbarOptions
+                            }}
+                        />
                         {
                             formik.errors.description && (
                                 <FormHelperText error>

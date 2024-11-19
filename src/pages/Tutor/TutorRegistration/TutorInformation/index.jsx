@@ -34,6 +34,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
             errors.fullName = 'Bắt buộc';
         } else if (values.fullName.length > 20) {
             errors.fullName = 'Tên dưới 20 ký tự';
+        } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.fullName)) {
+            errors.fullName = 'Tên không hợp lệ'
         }
         if (!values.phoneNumber) {
             errors.phoneNumber = 'Bắt buộc';
@@ -418,7 +420,11 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                                 if (e.target.files.length > 2) {
                                     enqueueSnackbar("Chỉ chọn 2 ảnh", { variant: "error" });
                                     e.target.value = "";
-                                } else {
+                                } else if (e.target.files.length > 1 && citizenIdentification.length >= 1) {
+                                    enqueueSnackbar("Chỉ chọn 2 ảnh", { variant: "error" });
+                                    e.target.value = "";
+                                }
+                                else {
                                     setCitizenIdentification([...citizenIdentification, ...Array.from(e.target.files)])
                                     setInputKey(preKey => preKey + 1)
                                 }

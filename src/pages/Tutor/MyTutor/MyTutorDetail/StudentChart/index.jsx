@@ -105,9 +105,7 @@ function StudentChart({ studentProfile }) {
             for (let i = 0; i <= labelLength; i++) {
                 label.push("");
             }
-            console.log(pagination.total / pagination.pageSize + 1);
             if ((pagination.total <= 10) || (Math.floor(pagination.total / pagination.pageSize + 1) === pagination.pageNumber)) {
-                console.log("zoay");
                 label.unshift(formatDate(studentProfile.createdDate));
                 datasets.forEach((d) => {
                     const initAssessment = initialCondition.find((i) => {
@@ -168,7 +166,6 @@ function StudentChart({ studentProfile }) {
             })
             setLoading(false);
         } catch (error) {
-            console.log(error);
             setLoading(false)
         }
     }

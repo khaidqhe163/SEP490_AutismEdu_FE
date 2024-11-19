@@ -75,7 +75,6 @@ function Header() {
 
     useEffect(() => {
         if (openMessage && !currentChat && conversations.length !== 0) {
-            console.log("zoday2");
             setCurrentChat(conversations[0]);
         }
     }, [openMessage])
@@ -126,7 +125,6 @@ function Header() {
             }
         }
     }, [newMessage])
-    console.log(conversations);
     useEffect(() => {
         if (chatBox) {
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -179,7 +177,6 @@ function Header() {
             console.log(error);
         }
     }
-    console.log(conversations);
     const handleReadMessage = async () => {
         try {
             await services.MessageAPI.readMessages(currentChat?.id || 0, {}, (res) => {

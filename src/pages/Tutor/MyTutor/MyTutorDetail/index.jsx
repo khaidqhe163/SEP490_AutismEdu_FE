@@ -51,7 +51,6 @@ function MyTutorDetail() {
 
     const { id } = useParams();
     const [studentProfile, setStudentProfile] = useState();
-    console.log(studentProfile);
 
     const [tab, setTab] = useState('1');
     const handleChange = (event, newValue) => {
@@ -64,7 +63,6 @@ function MyTutorDetail() {
     const handleGetStudentProfile = async () => {
         try {
             await services.StudentProfileAPI.getStudentProfileById(id, (res) => {
-                console.log(res);
                 setStudentProfile(res.result)
             }, (error) => {
                 console.log(error);
@@ -115,10 +113,10 @@ function MyTutorDetail() {
                         <Box>
                             <Typography variant='h4'>{studentProfile?.tutor?.fullName}</Typography>
                             <Stack direction="row" alignItems="center" gap={2} mt={2}>
-                                <LocalPhoneIcon /><Typography> {studentProfile?.tutor?.phoneNumber}</Typography>
+                                <LocalPhoneIcon /><Typography sx={{ color: "black" }}> {studentProfile?.tutor?.phoneNumber}</Typography>
                             </Stack>
                             <Stack direction="row" alignItems="center" gap={2} mt={2}>
-                                <LocationOnOutlinedIcon /><Typography> {formatAddress(studentProfile?.tutor?.address)}</Typography>
+                                <LocationOnOutlinedIcon /><Typography sx={{ color: "black" }}> {formatAddress(studentProfile?.tutor?.address)}</Typography>
                             </Stack>
                         </Box>
                     </Stack>

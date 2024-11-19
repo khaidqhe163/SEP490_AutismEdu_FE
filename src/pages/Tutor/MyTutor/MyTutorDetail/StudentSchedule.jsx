@@ -23,20 +23,24 @@ function StudentSchedule({ studentProfile }) {
     const [isDetailModalOpen, setDetailModalOpen] = useState(false);
 
     useEffect(() => {
-        if (weekInYears.length !== 0) {
+        if (weekInYears.length !== 0 && studentProfile) {
             getSchedule();
         }
-    }, [weekInYears])
+    }, [weekInYears, studentProfile])
 
     const getSchedule = async () => {
         try {
             setLoading(true);
             await services.ScheduleAPI.getSchedule((res) => {
-                const startYear = new Date(studentProfile.createdDate).getFullYear();
-                const maxYear = new Date(res.result.maxDate).getFullYear();
-                const years = [];
-                for (let year = startYear; year <= maxYear; year++) {
-                    years.push(year);
+                if (listYears.length !== 0) {
+                    const startYear = new Date(studentProfile.createdDate).getFullYear();
+                    const maxYear = new Date(res.result.maxDate).getFullYear();
+                    const years = [];
+                    for (let year = startYear; year <= maxYear; year++) {
+                        years.push(year);
+                    }
+                    years.reverse();
+                    setListYears(years);
                 }
                 organizeSchedulesByDay(res.result.schedules)
                 setSchedule(res.result)
@@ -69,12 +73,10 @@ function StudentSchedule({ studentProfile }) {
             years.reverse();
             setListYears(years);
         }
-    }, [])
+    }, [studentProfile])
     useEffect(() => {
-        console.log("zoday");
         const year = new Date().getFullYear();
         const weeks = generateMondaysAndSundays(year);
-        console.log(weeks);
         setWeekInYears(weeks);
         const today = resetTime(new Date());
         setCurrentWeek(weeks.findIndex(week => today >= resetTime(week.monday) && today <= resetTime(week.sunday)));
@@ -160,7 +162,6 @@ function StudentSchedule({ studentProfile }) {
                     break;
             }
         });
-        console.log(days);
         setFilterSchedule(days)
     }
 
@@ -306,7 +307,11 @@ function StudentSchedule({ studentProfile }) {
                                                                 {passStatus(f.passingStatus)}
                                                             </span>
                                                         </Typography>
-
+                                                        {
+                                                            f.isUpdatedSchedule === true && (
+                                                                <Typography sx={{ color: "green", fontSize: "12px" }}>Lịch đã thay đổi</Typography>
+                                                            )
+                                                        }
                                                         <Typography sx={{ color: f.attendanceStatus === 1 ? "green" : "red", fontSize: "12px", fontWeight: '500' }} >({attendanceStatus(f.attendanceStatus)})</Typography>
                                                         <Stack direction={'column'} justifyContent={'center'}>
                                                             <Box>
