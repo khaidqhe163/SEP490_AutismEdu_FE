@@ -8,7 +8,6 @@ import TutorComponent from './Tutor';
 function Home() {
     return (
         <Box>
-            <Typography>Hello</Typography>
             <CarouselComponent />
             <BigCity />
             <TutorComponent />
