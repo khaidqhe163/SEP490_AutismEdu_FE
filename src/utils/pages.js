@@ -1,6 +1,6 @@
 const PAGES = {
   ROOT: '/autismedu',
-  HOME: '/',
+  HOME: '/home-page',
   LOGIN: '/login',
   DASHBOARD: '/admin/dashboard',
   USERMANAGEMENT: '/admin/user-management',
@@ -15,6 +15,7 @@ const PAGES = {
   TUTORPROFILE: '/tutor-profile/:id',
   TUTORPROFILEUPDATE: '/tutor-profile-update/:id',
   TUTORREGISTRATIONMANAGEMENT: '/admin/tutor-registration-management',
+  TUTOR_REGISTRATION_DETAIL: '/admin/tutor-registration-management/:id',
   TUTORREGISTRATION: '/autismtutor/tutor-registration',
   MY_STUDENT: '/autismtutor',
   STUDENT_DETAIL: '/autismtutor/student-detail/:id',
@@ -51,7 +52,7 @@ const PAGES = {
   PAYMENT_PACKAGE: '/autismtutor/payment-package',
   PAYMENT_PACKAGE_FOCUS: '/autismtutor/payment-package-focus',
   PERSONAL_INFORMATION: '/admin/personal-information',
-  
+
   BLOG_EDIT: '/admin/blog-management/edit/:id',
   REPORT_TUTOR_MANAGEMENT: '/admin/report-tutor-management',
   REPORT_TUTOR_DETAIL: '/admin/report-tutor-management/detail/:id',

@@ -35,6 +35,9 @@ const handleUpdateTutorChangeStatus = async (endpoint, params, success, error) =
     await put(API_CODE.API_PUT_TUTOR_CHANGE_STATUS + endpoint, params, success, error);
 };
 
+const handleGetTutorRegisterDetail = async (endpoint, success, error) => {
+    await get(API_CODE.API_GET_TUTOR_REGISTER_DETAIL + endpoint, success, error);
+};
 export const TutorManagementAPI = {
     registerAsTutor,
     listTutor,
@@ -45,4 +48,5 @@ export const TutorManagementAPI = {
     handleUpdateTutorProfile,
     handleGetTutorUpdateRequest,
     handleUpdateTutorChangeStatus,
+    handleGetTutorRegisterDetail
 }

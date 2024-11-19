@@ -1,19 +1,18 @@
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Avatar, Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import LoadingComponent from '~/components/LoadingComponent';
 import TablePagging from '~/components/TablePagging';
 import TutorContext from '~/Context/TutorContext';
 import services from '~/plugins/services';
-import BasicInformation from './BasicInformation';
-import CareerInformation from './CareerInformation';
-import AcceptDialog from './handleDialog/acceptDialog';
-import RejectReason from './RejectReason';
+import PAGES from '~/utils/pages';
 
 function TutorRegistrationTable({ status, searchValue, submit, startDate, endDate }) {
     const [loading, setLoading] = useState(false);
     const [listTutor, setListTutor] = useState([]);
     const [pagination, setPagination] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const nav = useNavigate();
     const formatDate = (date) => {
         const dateObj = new Date(date);
         const formattedDate = dateObj.getDate().toString().padStart(2, '0') + '/' +
@@ -52,9 +51,10 @@ function TutorRegistrationTable({ status, searchValue, submit, startDate, endDat
                 startDate: startDate,
                 endDate: endDate
             })
-            setLoading(false);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false)
         }
     }
     return (
@@ -65,12 +65,8 @@ function TutorRegistrationTable({ status, searchValue, submit, startDate, endDat
                         <TableRow>
                             <TableCell>STT</TableCell>
                             <TableCell>Người đăng ký</TableCell>
-                            <TableCell align='center'>Chi tiết</TableCell>
-                            <TableCell align='center'>
-                                Thông tin nghề nghiệp
-                            </TableCell>
+                            <TableCell align='left'>Số điện thoại</TableCell>
                             <TableCell align='center'>Ngày tạo</TableCell>
-                            <TableCell align='center'>Người xử lý</TableCell>
                             <TableCell align='center'>Trạng thái đơn</TableCell>
                             <TableCell>Hành động</TableCell>
                         </TableRow>
@@ -83,25 +79,18 @@ function TutorRegistrationTable({ status, searchValue, submit, startDate, endDat
                                         <TableCell>{index + 1 + (currentPage - 1) * 10}</TableCell>
                                         <TableCell>
                                             <Box sx={{ display: "flex", gap: 1 }}>
+                                                <Avatar alt={tutor.fullName} src={tutor.imageUrl} />
                                                 <Box>
                                                     <Typography sx={{ fontWeight: "bold" }}>{tutor.fullName}</Typography>
                                                     <Typography sx={{ fontSize: "12px" }}>{tutor.email}</Typography>
                                                 </Box>
                                             </Box>
                                         </TableCell>
-                                        <TableCell align='center'>
-                                            <BasicInformation information={tutor} />
-                                        </TableCell>
-                                        <TableCell align='center'>
-                                            <CareerInformation curriculums={tutor.curriculums}
-                                                workExperiences={tutor.workExperiences}
-                                                certificates={tutor.certificates} id={tutor.id} />
+                                        <TableCell align='left'>
+                                            {tutor.phoneNumber}
                                         </TableCell>
                                         <TableCell align='center'>
                                             {formatDate(tutor.createdDate)}
-                                        </TableCell>
-                                        <TableCell align='center'>
-                                            {tutor.approvedBy ? tutor.approvedBy.fullName : "Chưa có"}
                                         </TableCell>
                                         <TableCell align='center'>
                                             {
@@ -115,22 +104,7 @@ function TutorRegistrationTable({ status, searchValue, submit, startDate, endDat
                                             }
                                         </TableCell>
                                         <TableCell>
-                                            {
-                                                tutor.requestStatus === 2 && (
-                                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                                        <AcceptDialog id={tutor.id} status={1} setListTutor={setListTutor}
-                                                            listTutor={listTutor} />
-                                                        <AcceptDialog id={tutor.id} status={0} setListTutor={setListTutor}
-                                                            listTutor={listTutor} />
-                                                    </Box>
-                                                )
-                                            }
-
-                                            {
-                                                tutor.requestStatus === 0 && (
-                                                    <RejectReason reason={tutor.rejectionReason}/>
-                                                )
-                                            }
+                                            <Button onClick={() => { nav(PAGES.TUTORREGISTRATIONMANAGEMENT + "/" + tutor.id) }}>Xem chi tiết</Button>
                                         </TableCell>
                                     </TableRow>
                                 )

@@ -2,15 +2,13 @@ import { Box, Button, Modal, TextField, Typography } from '@mui/material'
 import { enqueueSnackbar } from 'notistack';
 import React, { useState } from 'react'
 import LoadingComponent from '~/components/LoadingComponent'
-import { useTutorContext } from '~/Context/TutorContext';
 import services from '~/plugins/services';
 
-function RejectWorkExperiences({ id, workExperiencesId }) {
+function RejectWorkExperiences({ workExperiences, setWorkExperiences, workExperiencesId }) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const { listTutor, setListTutor } = useTutorContext();
     const [rejectReason, setRejectReason] = useState("");
     const handleSubmit = async () => {
         try {
@@ -27,23 +25,14 @@ function RejectWorkExperiences({ id, workExperiencesId }) {
                     rejectionReason: rejectReason
                 },
                 (res) => {
-                    const updatedForm = listTutor.find((form) => form.id === id)
-                    const updatedWorkExperiences = updatedForm.workExperiences.map((c) => {
+                    const updatedWorkExperiences = workExperiences.map((c) => {
                         return c.id === res.result.id ? res.result : c
                     })
-                    updatedForm.workExperiences = updatedWorkExperiences;
-                    setListTutor((pre) =>
-                        pre.map((tutor) =>
-                            tutor.id === updatedForm.id ? updatedForm : tutor
-                        )
-                    )
+                    setWorkExperiences([...updatedWorkExperiences])
                     enqueueSnackbar("Cập nhật thành công!", { variant: "success" })
                 }, (err) => {
-                    console.log(err);
-                    enqueueSnackbar("Lỗi hệ thống!", { variant: "error" })
-                }, {
-                id: id
-            });
+                    enqueueSnackbar(err.error[0], { variant: "error" })
+                });
             setLoading(false);
             handleClose();
         } catch (error) {

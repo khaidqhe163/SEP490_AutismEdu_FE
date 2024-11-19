@@ -10,10 +10,7 @@ function TutorRegistrationManagement() {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
     return (
-        <Box sx={{
-            position: "relative",
-            p: 2
-        }}>
+        <Box>
             <Box sx={{
                 width: "100%", bgcolor: "white", p: "20px",
                 borderRadius: "10px",

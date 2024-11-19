@@ -5,12 +5,11 @@ import LoadingComponent from '~/components/LoadingComponent'
 import { useTutorContext } from '~/Context/TutorContext';
 import services from '~/plugins/services';
 
-function RejectCertificate({ id, certificateId, setCertificate }) {
+function RejectCertificate({ id, certificateId, setCertificates, certificates }) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const { listTutor, setListTutor } = useTutorContext();
     const [rejectReason, setRejectReason] = useState("");
     const handleSubmit = async () => {
         try {
@@ -27,16 +26,10 @@ function RejectCertificate({ id, certificateId, setCertificate }) {
                     rejectionReason: rejectReason
                 },
                 (res) => {
-                    const updatedForm = listTutor.find((form) => form.id === id)
-                    const updatedCertificates = updatedForm.certificates.map((c) => {
+                    const updatedCertificates = certificates.map((c) => {
                         return c.id === res.result.id ? res.result : c
                     })
-                    updatedForm.certificates = updatedCertificates;
-                    setListTutor((pre) =>
-                        pre.map((tutor) =>
-                            tutor.id === updatedForm.id ? updatedForm : tutor
-                        )
-                    )
+                    setCertificates([...updatedCertificates]);
                     enqueueSnackbar("Cập nhật thành công!", { variant: "success" })
                 }, (err) => {
                     console.log(err);
@@ -68,7 +61,7 @@ function RejectCertificate({ id, certificateId, setCertificate }) {
                     boxShadow: 24,
                     p: 4
                 }}>
-                    <Typography>
+                    <Typography fontWeight="bold">
                         Bạn muốn từ chối chứng chỉ này ?
                     </Typography>
                     <Typography mt={3}>Lý do</Typography>

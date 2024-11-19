@@ -2,13 +2,13 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import { Accordion, AccordionSummary, Box, Grid, IconButton, Modal } from '@mui/material';
+import { Accordion, AccordionSummary, Box, Grid, IconButton, Modal, Paper, Stack, Typography } from '@mui/material';
 import AccordionActions from '@mui/material/AccordionActions';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import { useEffect, useRef, useState } from 'react';
-import RejectCertificate from './handleDialog/RejectCertificate';
-
-function TutorCertificate({ id, certificates }) {
+import RejectCertificate from '../handleDialog/RejectCertificate';
+import SchoolIcon from '@mui/icons-material/School';
+function TutorCertificate({ id, certificates, setCertificates }) {
     const [openViewImage, setOpenViewImage] = useState(false);
     const [currentImage, setCurrentImage] = useState('');
     const [scale, setScale] = useState(1);
@@ -87,7 +87,15 @@ function TutorCertificate({ id, certificates }) {
 
     return (
         <>
-            <Box mt={3}>
+            <Paper variant='elevation' sx={{ p: 2 }}>
+                <Stack direction='row' mb={2} gap={2} bgcolor="#E3F2FD" p={1} borderRadius="5px"
+                    sx={{
+                        border: "1px solid #BBDEFB"
+                    }}
+                >
+                    <SchoolIcon sx={{ color: "#0056B3" }} />
+                    <Typography variant='h5' color="#0056B3">Các bằng cấp, chứng chỉ</Typography>
+                </Stack>
                 {
                     displayList?.map((c, index) => {
                         return (
@@ -96,8 +104,9 @@ function TutorCertificate({ id, certificates }) {
                                     expandIcon={<ExpandMoreIcon />}
                                     aria-controls="panel1-content"
                                     id="panel1-header"
+                                    sx={{ lineHeight: "20px" }}
                                 >
-                                    {c.certificateName} {
+                                    <span style={{ fontWeight: "bold", fontSize: "20px" }}>{c.certificateName} </span>{
                                         c.requestStatus === 0 && <span style={{ color: "red", marginLeft: "20px" }}>(Đã từ chối)</span>
                                     }
                                     {
@@ -109,14 +118,14 @@ function TutorCertificate({ id, certificates }) {
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <Grid container columnSpacing={2} rowSpacing={3}>
-                                        <Grid item xs={3}>Nơi cấp:</Grid>
+                                        <Grid item xs={3} style={{ fontWeight: "bold" }}>Nơi cấp:</Grid>
                                         <Grid item xs={9}>{c.issuingInstitution}</Grid>
-                                        <Grid item xs={3}>Ngày cấp:</Grid>
+                                        <Grid item xs={3} style={{ fontWeight: "bold" }}>Ngày cấp:</Grid>
                                         <Grid item xs={9}>{c.issuingDate}</Grid>
                                         {
                                             c.expirationDate && (
                                                 <>
-                                                    <Grid item xs={3}>Ngày hết hạn:</Grid>
+                                                    <Grid item xs={3} style={{ fontWeight: "bold" }}>Ngày hết hạn:</Grid>
                                                     <Grid item xs={9}>{c.expirationDate}</Grid>
                                                 </>
                                             )
@@ -125,8 +134,8 @@ function TutorCertificate({ id, certificates }) {
                                         {
                                             c.requestStatus === 0 && (
                                                 <>
-                                                    <Grid item xs={3}>Lý do từ chối:</Grid>
-                                                    <Grid item xs={9}>{c.rejectionReason}</Grid>
+                                                    <Grid item xs={3} style={{ fontWeight: "bold" }}>Lý do từ chối:</Grid>
+                                                    <Grid item xs={9} color="red">{c.rejectionReason}</Grid>
                                                 </>
                                             )
                                         }
@@ -145,7 +154,8 @@ function TutorCertificate({ id, certificates }) {
                                     </Box>
                                     {
                                         c.requestStatus === 2 && (<AccordionActions>
-                                            <RejectCertificate certificateId={c.id} id={id} setCertificate={setDisplayList} />
+                                            <RejectCertificate certificateId={c.id} id={id} setCertificates={setCertificates}
+                                                certificates={certificates} />
                                         </AccordionActions>)
                                     }
                                 </AccordionDetails>
@@ -153,7 +163,7 @@ function TutorCertificate({ id, certificates }) {
                         )
                     })
                 }
-            </Box>
+            </Paper >
 
             {
                 currentImage && certificates && (

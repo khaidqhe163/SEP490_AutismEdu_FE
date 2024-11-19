@@ -5,12 +5,11 @@ import LoadingComponent from '~/components/LoadingComponent'
 import { useTutorContext } from '~/Context/TutorContext';
 import services from '~/plugins/services';
 
-function RejectCurriculum({ id, curriculumId }) {
+function RejectCurriculum({ curriculumId, curriculums, setCurriculums }) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const { listTutor, setListTutor } = useTutorContext();
     const [rejectReason, setRejectReason] = useState("");
     const handleSubmit = async () => {
         try {
@@ -27,22 +26,14 @@ function RejectCurriculum({ id, curriculumId }) {
                     rejectionReason: rejectReason
                 },
                 (res) => {
-                    const updatedForm = listTutor.find((form) => form.id === id)
-                    const updatedCurriculum = updatedForm.curriculums.map((c) => {
+                    const updatedCurriculum = curriculums.map((c) => {
                         return c.id === res.result.id ? res.result : c
                     })
-                    updatedForm.curriculums = updatedCurriculum;
-                    setListTutor((pre) =>
-                        pre.map((tutor) =>
-                            tutor.id === updatedForm.id ? updatedForm : tutor
-                        )
-                    )
+                    setCurriculums([...updatedCurriculum])
                     enqueueSnackbar("Cập nhật thành công!", { variant: "success" })
                 }, (err) => {
-                    enqueueSnackbar("Lỗi hệ thống!", { variant: "error" })
-                }, {
-                id: id
-            });
+                    enqueueSnackbar(err.error[0], { variant: "error" })
+                });
             setLoading(false);
             handleClose();
         } catch (error) {
@@ -67,7 +58,7 @@ function RejectCurriculum({ id, curriculumId }) {
                     boxShadow: 24,
                     p: 4
                 }}>
-                    <Typography>
+                    <Typography fontWeight="bold">
                         Bạn muốn từ chối khung chương trình này ?
                     </Typography>
                     <Typography mt={3}>Lý do</Typography>

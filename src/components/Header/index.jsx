@@ -47,7 +47,7 @@ function Header() {
     const [unreadMessage, setUnreadMessage] = useState(true);
     const [newMessage, setNewMessage] = useState(null);
     useEffect(() => {
-        if (location.pathname === "/autismedu") {
+        if (location.pathname.includes("/home-page")) {
             setTab("1");
         } else if (location.pathname.includes("/list-tutor")) {
             setTab("2");
@@ -86,7 +86,8 @@ function Header() {
             !location.pathname.includes(PAGES.ROOT + PAGES.CHANGE_PASSWORD) &&
             !location.pathname.includes(PAGES.ROOT + PAGES.BLOG_LIST) &&
             !location.pathname.includes(PAGES.ROOT + PAGES.BLOG_LIST) &&
-            !location.pathname.includes(PAGES.ROOT + PAGES.BLOG_DETAIL)
+            !location.pathname.includes(PAGES.ROOT + PAGES.BLOG_DETAIL) &&
+            !location.pathname.includes(PAGES.ROOT + PAGES.HOME)
         ) {
             if (userInfo === undefined || role !== "Parent") {
                 nav(PAGES.ROOT + PAGES.LOGIN)
@@ -299,7 +300,7 @@ function Header() {
         Cookies.remove("access_token");
         Cookies.remove("refresh_token");
         dispatch(setUserInformation(null))
-        nav(PAGES.ROOT)
+        nav(PAGES.ROOT + PAGES.HOME)
     };
 
     const handleSearch = () => {
@@ -414,7 +415,7 @@ function Header() {
                     xs: "none"
                 }
             }}>
-                <Tab sx={{ fontSize: "18px" }} value={"1"} label="Trang chủ" onClick={() => { nav(PAGES.ROOT) }} />
+                <Tab sx={{ fontSize: "18px" }} value={"1"} label="Trang chủ" onClick={() => { nav(PAGES.ROOT + PAGES.HOME) }} />
                 <Tab sx={{ fontSize: "18px" }} value={"2"} label="Gia sư" icon={<ExpandMoreIcon />} iconPosition="end" onClick={handleClickListItem} />
                 {
                     userInfo && (

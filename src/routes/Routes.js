@@ -57,6 +57,7 @@ import UpdateRequest from '~/pages/Admin/TutorSettingManagement/UpdateRequest'
 import CurriculumManagement from '~/pages/Admin/TutorSettingManagement/CurriculumManagement'
 import CertificateManagement from '~/pages/Admin/TutorSettingManagement/CertificateManagement'
 import WorkExperienceManagement from '~/pages/Admin/TutorSettingManagement/WorkExperienceManagement'
+import TutorRegistrationDetail from '~/pages/Admin/TutorRegistrationManagement/TutorRegistrationDetail'
 
 const UnLayoutRoutes = [
     {
@@ -74,6 +75,10 @@ const UnLayoutRoutes = [
 ]
 
 const publicRoutes = [
+    {
+        path: PAGES.ROOT + "/",
+        element: Home
+    },
     {
         path: PAGES.ROOT + PAGES.HOME,
         element: Home
@@ -228,6 +233,10 @@ const adminRoutes = [
     {
         path: PAGES.TUTORREGISTRATIONMANAGEMENT,
         element: TutorRegistrationManagement
+    },
+    {
+        path: PAGES.TUTOR_REGISTRATION_DETAIL,
+        element: TutorRegistrationDetail
     },
     {
         path: PAGES.ASSESSMENT_MANAGEMENT,
