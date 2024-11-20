@@ -10,6 +10,7 @@ import services from '~/plugins/services';
 import PAGES from '~/utils/pages';
 import 'react-quill/dist/quill.snow.css'
 import ImageResize from 'quill-image-resize-module-react';
+import LoadingComponent from '~/components/LoadingComponent';
 Quill.register('modules/imageResize', ImageResize);
 function BlogCreation() {
     const [status, setStatus] = useState(true);
@@ -18,6 +19,7 @@ function BlogCreation() {
     const [image, setImage] = useState(null);
     const nav = useNavigate();
     const quillRef = useRef(null);
+    const [loading, setLoading] = useState(false);
     const handleMouseDown = () => {
         const editor = quillRef.current.getEditor();
         const range = editor.getSelection();
@@ -55,8 +57,12 @@ function BlogCreation() {
             enqueueSnackbar("Bạn chưa nhập tiêu đề", { variant: "error" })
             return;
         }
-        if (title.length < 10) {
+        else if (title.length < 10) {
             enqueueSnackbar("Tiêu đề quá ngắn", { variant: "error" })
+            return;
+        }
+        else if (title.length > 100) {
+            enqueueSnackbar("Tiêu đề quá dài", { variant: "error" })
             return;
         }
         if (!content) {
@@ -68,6 +74,7 @@ function BlogCreation() {
             return;
         }
         try {
+            setLoading(true);
             const form = new FormData();
             form.append("Title", title);
             form.append("Content", content);
@@ -83,6 +90,8 @@ function BlogCreation() {
             axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
         } catch (error) {
             enqueueSnackbar("Tạo bài viết thất bại", { variant: "error" })
+        } finally {
+            setLoading(true);
         }
     }
     return (
@@ -139,6 +148,7 @@ function BlogCreation() {
                     ref={quillRef}
                 />
             </Box>
+            <LoadingComponent open={loading} />
         </Box>
     )
 }

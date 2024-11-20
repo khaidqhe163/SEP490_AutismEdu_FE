@@ -99,7 +99,7 @@ function PaymentPackage() {
                     <TableHead>
                         <TableRow>
                             <TableCell>STT</TableCell>
-                            <TableCell>Tiêu đề</TableCell>
+                            <TableCell>Tên gói</TableCell>
                             <TableCell align="center">Thời gian (tháng)</TableCell>
                             <TableCell align="center">Giá</TableCell>
                             <TableCell>Ngày tạo</TableCell>

@@ -63,6 +63,8 @@ export default function PaymentCreation({ change, setChange }) {
         const errors = {}
         if (!values.title) {
             errors.title = "Bắt buộc";
+        } else if (values.title.length > 50) {
+            errors.title = "Tên chỉ chứa tối đa 50 kí tự";
         }
         if (!values.duration) {
             errors.duration = "Bắt buộc";
@@ -121,7 +123,7 @@ export default function PaymentCreation({ change, setChange }) {
                         Tạo gói thanh toán mới
                     </Typography>
                     <form onSubmit={formik.handleSubmit}>
-                        <Typography>Tiêu đề</Typography>
+                        <Typography>Tên gói</Typography>
                         <TextField
                             fullWidth
                             name='title'

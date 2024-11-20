@@ -74,15 +74,14 @@ function LoginForm({ setVerify, setEmailVerify, onLoginSuccess }) {
                     const decodedToken = jwtDecode(res.result.accessToken);
                     setUserId(decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
                 }, (err) => {
-                    console.log(err);
-                    if (err.code === 500) {
-                        enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
-                    } else if (err.code === 406) {
-                        enqueueSnackbar("Tài khoản này chưa được kích hoạt!", { variant: "warning" });
+                    if (err.code !== 406) {
+                        enqueueSnackbar(err.error[0], { variant: "error" });
+                    }
+                    else {
+                        enqueueSnackbar(err.error[0], { variant: "warning" });
                         setVerify(true);
                         setEmailVerify(email);
                     }
-                    else enqueueSnackbar("Tài khoản hoặc mật khẩu không đúng!", { variant: "error" });
                 })
                 setLoading(false)
             }

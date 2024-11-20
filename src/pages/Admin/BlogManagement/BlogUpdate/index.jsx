@@ -11,6 +11,7 @@ import axios from '~/plugins/axios';
 import services from '~/plugins/services';
 import PAGES from '~/utils/pages';
 import CircleIcon from '@mui/icons-material/Circle';
+import LoadingComponent from '~/components/LoadingComponent';
 Quill.register('modules/imageResize', ImageResize);
 function BlogUpdate() {
     const { id } = useParams();
@@ -21,6 +22,7 @@ function BlogUpdate() {
     const nav = useNavigate();
     const quillRef = useRef(null);
     const [blogImage, setBlogImage] = useState("");
+    const [loading, setLoading] = useState(false);
     const handleMouseDown = () => {
         const editor = quillRef.current.getEditor();
         const range = editor.getSelection();
@@ -83,15 +85,20 @@ function BlogUpdate() {
             enqueueSnackbar("Bạn chưa nhập tiêu đề", { variant: "error" })
             return;
         }
-        if (title.length < 10) {
+        else if (title.length < 10) {
             enqueueSnackbar("Tiêu đề quá ngắn", { variant: "error" })
             return;
         }
-        if (!content) {
+        else if (title.length > 100) {
+            enqueueSnackbar("Tiêu đề quá dài", { variant: "error" })
+            return;
+        }
+        else if (!content) {
             enqueueSnackbar("Bạn chưa nhập nội dung", { variant: "error" })
             return;
         }
         try {
+            setLoading(true);
             const form = new FormData();
             form.append("Title", title.trim());
             form.append("Content", content);
@@ -109,6 +116,8 @@ function BlogUpdate() {
             axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
         } catch (error) {
             enqueueSnackbar("Cập nhật bài viết thất bại", { variant: "error" })
+        } finally {
+            setLoading(false);
         }
     }
     return (
@@ -120,9 +129,9 @@ function BlogUpdate() {
             <Stack direction='row' alignItems="center" px="100px" gap={4} mt={2}>
                 <Typography variant='h6'>ID: {blog?.id}</Typography>
                 <Stack direction='row'>
-                    <CircleIcon sx={{ color: blog?.isPublished ? "red" : "green" }} />
-                    <Typography sx={{ color: blog?.isPublished ? "red" : "green" }}>
-                        {blog?.isPublished ? "Đang ẩn" : "Đang công khai"}
+                    <CircleIcon sx={{ color: blog?.isPublished ? "green" : "red" }} />
+                    <Typography sx={{ color: blog?.isPublished ? "green" : "red" }}>
+                        {blog?.isPublished ? "Đang công khai" : "Đang ẩn"}
                     </Typography>
                 </Stack>
             </Stack>
@@ -163,6 +172,7 @@ function BlogUpdate() {
                     ref={quillRef}
                 />
             </Box>
+            <LoadingComponent open={loading} />
         </Box>
     )
 }
