@@ -20,6 +20,8 @@ function BlogCreation() {
     const nav = useNavigate();
     const quillRef = useRef(null);
     const [loading, setLoading] = useState(false);
+    const [description, setDescription] = useState("");
+    const [contentText, setContentText] = useState("");
     const handleMouseDown = () => {
         const editor = quillRef.current.getEditor();
         const range = editor.getSelection();
@@ -45,6 +47,7 @@ function BlogCreation() {
     ];
     const handleChangeEdit = (content, delta, source, editor) => {
         const plainText = editor.getText().trim();
+        setContentText(plainText)
         if (plainText === '') {
             setContent("")
         } else {
@@ -65,8 +68,25 @@ function BlogCreation() {
             enqueueSnackbar("Tiêu đề quá dài", { variant: "error" })
             return;
         }
+
+        if (!description) {
+            enqueueSnackbar("Bạn chưa nhập tiêu đề", { variant: "error" })
+            return;
+        }
+        else if (description.length < 100) {
+            enqueueSnackbar("Mô tả quá ngắn", { variant: "error" })
+            return;
+        }
+        else if (description.length > 300) {
+            enqueueSnackbar("Mô tả quá dài", { variant: "error" })
+            return;
+        }
         if (!content) {
             enqueueSnackbar("Bạn chưa nhập nội dung", { variant: "error" })
+            return;
+        }
+        else if (contentText.length < 500) {
+            enqueueSnackbar("Nội dung quá ngắn", { variant: "error" })
             return;
         }
         if (!image) {
@@ -78,6 +98,7 @@ function BlogCreation() {
             const form = new FormData();
             form.append("Title", title);
             form.append("Content", content);
+            form.append("Description", description);
             form.append("ImageDisplay", image);
             form.append("IsPublished", status);
             axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
@@ -127,6 +148,9 @@ function BlogCreation() {
                         <img src={URL.createObjectURL(image)} alt='avatar' width="100%" />
                     }
                 </Box>
+                <TextField fullWidth sx={{ mt: 3, bgcolor: "white" }} placeholder='Mô tả bài viết'
+                    value={description} onChange={(e) => setDescription(e.target.value)}
+                    multiline rows={5} />
                 <ReactQuill
                     value={content}
                     name="description"

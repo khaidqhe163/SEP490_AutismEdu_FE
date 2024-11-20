@@ -59,9 +59,7 @@ function Blog() {
 
     const formatDate = (date) => {
         if (!date) return "";
-        console.log(date);
         const d = new Date(date);
-        console.log(d);
         return `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`
     }
 
@@ -99,7 +97,6 @@ function Blog() {
                     {
                         blogs && blogs[0] && (
                             <Card sx={{
-                                height: "700px",
                                 paddingBottom: '20px',
                                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
                                 '&:hover': {
@@ -117,6 +114,9 @@ function Blog() {
                                 <CardContent sx={{ flex: '1 0 auto' }}>
                                     <Typography component="div" variant="h4">
                                         {blogs[0].title}
+                                    </Typography>
+                                    <Typography component="div">
+                                        {blogs[0].description}
                                     </Typography>
                                     <Stack direction='row' gap={5}>
                                         <Stack direction='row' mt={2} gap={1}>
@@ -159,6 +159,9 @@ function Blog() {
                                             <CardContent>
                                                 <Typography component="div" variant="h5">
                                                     {b.title}
+                                                </Typography>
+                                                <Typography component="div">
+                                                    {b.description}
                                                 </Typography>
                                                 <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />} onClick={() => nav(PAGES.ROOT + PAGES.BLOG_LIST + `/${b.id}`)}>Tìm hiểu thêm </Button>
                                             </CardContent>

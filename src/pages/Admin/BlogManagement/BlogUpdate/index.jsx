@@ -23,6 +23,8 @@ function BlogUpdate() {
     const quillRef = useRef(null);
     const [blogImage, setBlogImage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [description, setDescription] = useState("");
+    const [contentText, setContentText] = useState("");
     const handleMouseDown = () => {
         const editor = quillRef.current.getEditor();
         const range = editor.getSelection();
@@ -41,6 +43,7 @@ function BlogUpdate() {
             setTitle(blog.title);
             setContent(blog.content);
             setBlogImage(blog.urlImageDisplay);
+            setDescription(blog?.description || "")
         }
     }, [blog])
     const handleGetBlog = async () => {
@@ -73,6 +76,7 @@ function BlogUpdate() {
     ];
     const handleChangeEdit = (content, delta, source, editor) => {
         const plainText = editor.getText().trim();
+        setContentText(plainText);
         if (plainText === '') {
             setContent("")
         } else {
@@ -93,8 +97,25 @@ function BlogUpdate() {
             enqueueSnackbar("Tiêu đề quá dài", { variant: "error" })
             return;
         }
-        else if (!content) {
+
+        if (!description) {
+            enqueueSnackbar("Bạn chưa nhập tiêu đề", { variant: "error" })
+            return;
+        }
+        else if (description.length < 100) {
+            enqueueSnackbar("Mô tả quá ngắn", { variant: "error" })
+            return;
+        }
+        else if (description.length > 300) {
+            enqueueSnackbar("Mô tả quá dài", { variant: "error" })
+            return;
+        }
+        if (!content) {
             enqueueSnackbar("Bạn chưa nhập nội dung", { variant: "error" })
+            return;
+        }
+        else if (contentText.length < 500) {
+            enqueueSnackbar("Nội dung quá ngắn", { variant: "error" })
             return;
         }
         try {
@@ -103,6 +124,7 @@ function BlogUpdate() {
             form.append("Title", title.trim());
             form.append("Content", content);
             form.append("Id", blog.id)
+            form.append("Description", description)
             if (image) {
                 form.append("ImageDisplay", image);
             }
@@ -151,6 +173,9 @@ function BlogUpdate() {
                         <img src={URL.createObjectURL(image)} alt='avatar' width="100%" />
                     }
                 </Box>
+                <TextField fullWidth sx={{ mt: 3, bgcolor: "white" }} placeholder='Mô tả bài viết'
+                    value={description} onChange={(e) => setDescription(e.target.value)}
+                    multiline rows={5} />
                 <ReactQuill
                     value={content}
                     name="description"

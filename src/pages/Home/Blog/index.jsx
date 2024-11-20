@@ -57,7 +57,7 @@ function Blog() {
                         </Grid>
                     </Grid>
                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} textAlign={"left"}>
-                        <Grid item xs={12} md={6} sx={{ height: "500px" }}>
+                        <Grid item xs={12} md={6}>
                             <Card sx={{
                                 height: "100%",
                                 paddingBottom: '20px',
@@ -78,6 +78,9 @@ function Blog() {
                                     <CardContent sx={{ flex: '1 0 auto' }}>
                                         <Typography component="div" variant="h4">
                                             {blogs[0] ? blogs[0].title : ""}
+                                        </Typography>
+                                        <Typography component="div">
+                                            {blogs[0] ? blogs[0].description : ""}
                                         </Typography>
                                     </CardContent>
                                     <CardActions>

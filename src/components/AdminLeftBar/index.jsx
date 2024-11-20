@@ -67,8 +67,11 @@ function AdminLeftBar() {
         else if (location.pathname.includes("/payment-package-management")) {
             setSelectedIndex(8);
         }
-        else if (location.pathname.includes("/blog-management")) {
+        else if (location.pathname.includes("/payment-history")) {
             setSelectedIndex(9);
+        }
+        else if (location.pathname.includes("/blog-management")) {
+            setSelectedIndex(10);
         }
         else if (location.pathname.includes("/blog-creation")) {
             setSelectedIndex(11);
@@ -88,7 +91,7 @@ function AdminLeftBar() {
         else if (location.pathname.includes("/work-experience-management")) {
             setSelectedIndex(17);
         }
-    }, [])
+    }, [location])
 
     useEffect(() => {
         if (adminInformation?.role === 'Admin' || adminInformation?.role === 'Staff') {

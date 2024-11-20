@@ -42,6 +42,7 @@ function BlogDetail({ openDetail, setOpenDetail, blog }) {
                             <RemoveRedEyeIcon /> <Typography>{blog?.viewCount}</Typography>
                         </Stack>
                     </Stack>
+                    <Typography sx={{ whiteSpace: "break-spaces" }} mt={2}><i>{blog?.description}</i></Typography>
                     <img src={blog?.urlImageDisplay}
                         style={{ width: "100%", marginTop: "30px" }} />
                     <Box sx={{ mt: 5 }} dangerouslySetInnerHTML={{ __html: blog?.content }} />
