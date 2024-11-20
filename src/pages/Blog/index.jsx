@@ -59,7 +59,9 @@ function Blog() {
 
     const formatDate = (date) => {
         if (!date) return "";
+        console.log(date);
         const d = new Date(date);
+        console.log(d);
         return `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`
     }
 
@@ -219,7 +221,7 @@ function Blog() {
                                             </Typography>
                                             <Stack direction='row' gap={5}>
                                                 <Stack direction='row' mt={2} gap={1}>
-                                                    <AccessTimeIcon /> <Typography>{formatDate(formatDate(r.publishDate))}</Typography>
+                                                    <AccessTimeIcon /> <Typography>{formatDate(r.publishDate)}</Typography>
                                                 </Stack>
                                                 <Stack direction='row' mt={2} gap={1}>
                                                     <RemoveRedEyeIcon /> <Typography>{r.viewCount}</Typography>
