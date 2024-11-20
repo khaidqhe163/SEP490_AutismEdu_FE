@@ -10,7 +10,7 @@ import { useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 
-function AcceptDialog({ id, status, setListTutor, listTutor }) {
+function AcceptDialog({ id, status, setTutorInformation, setCurriculums, setCertificates, setWorkExperiences }) {
     const [open, setOpen] = useState(false);
     const [rejectReason, setRejectReason] = useState("");
     const [loading, setLoading] = useState(false);
@@ -37,14 +37,14 @@ function AcceptDialog({ id, status, setListTutor, listTutor }) {
                     rejectionReason: rejectReason
                 },
                 (res) => {
-                    setListTutor((pre) =>
-                        pre.map((tutor) =>
-                            tutor.id === res.result.id ? res.result : tutor
-                        )
-                    );
+                    const { certificates, curriculums, workExperiences, ...tutorInfo } = res.result
+                    setTutorInformation(tutorInfo);
+                    setCertificates(certificates);
+                    setCurriculums(curriculums);
+                    setWorkExperiences(workExperiences);
                     enqueueSnackbar("Cập nhật thành công!", { variant: "success" })
                 }, (err) => {
-                    enqueueSnackbar("Lỗi hệ thống!", { variant: "error" })
+                    enqueueSnackbar(err.error[0], { variant: "error" })
                 }, {
                 id: id
             });
@@ -56,7 +56,7 @@ function AcceptDialog({ id, status, setListTutor, listTutor }) {
     }
     return (
         <>
-            <Button color={status === 1 ? "success" : "error"} variant='contained'
+            <Button sx={{ ml: 2 }} color={status === 1 ? "success" : "error"} variant='contained'
                 onClick={handleClickOpen}
             >{status === 1 ? "Chấp nhận" : "Từ chối"}</Button>
             {
@@ -64,7 +64,6 @@ function AcceptDialog({ id, status, setListTutor, listTutor }) {
                     <Dialog
                         open={open}
                         onClose={handleClose}
-                        sx={{ height: "500px" }}
                     >
                         <DialogContent>
                             <DialogContentText>
@@ -96,7 +95,7 @@ function AcceptDialog({ id, status, setListTutor, listTutor }) {
                             boxShadow: 24,
                             p: 4
                         }}>
-                            <Typography>
+                            <Typography fontWeight="bold">
                                 Bạn muốn từ chối đơn đăng ký này ?
                             </Typography>
                             <Typography mt={3}>Lý do</Typography>

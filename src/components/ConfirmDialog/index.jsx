@@ -1,6 +1,14 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
+import { useState } from 'react'
+import LoadingComponent from '../LoadingComponent';
 
-function ConfirmDialog({openConfirm, setOpenConfirm, handleAction, title, content }) {
+function ConfirmDialog({ openConfirm, setOpenConfirm, handleAction, title, content }) {
+    const [loading, setLoading] = useState(false);
+    const handleSubmit = async () => {
+        setLoading(true);
+        handleAction();
+        setLoading(false);
+    }
     return (
         <Dialog
             open={openConfirm}
@@ -17,11 +25,12 @@ function ConfirmDialog({openConfirm, setOpenConfirm, handleAction, title, conten
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleAction}>Đồng ý</Button>
+                <Button onClick={handleSubmit}>Đồng ý</Button>
                 <Button onClick={() => setOpenConfirm(false)} autoFocus>
                     Huỷ bỏ
                 </Button>
             </DialogActions>
+            <LoadingComponent open={loading} />
         </Dialog>
     )
 }

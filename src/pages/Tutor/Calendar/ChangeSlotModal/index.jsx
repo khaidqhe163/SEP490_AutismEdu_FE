@@ -31,6 +31,9 @@ function ChangeSlotModal({ schedule, setIsChange }) {
         } else if (startTime >= endTime) {
             setTimeError("Thời gian không hợp lệ!");
             return false;
+        } else if (toMinutes(endTime) - toMinutes(startTime) < 30) {
+            setTimeError("1 buổi học dài ít nhất 30 phút");
+            return;
         }
         const selectedDate = new Date(date);
         const todaySlots = existSchedule.filter((e) => {

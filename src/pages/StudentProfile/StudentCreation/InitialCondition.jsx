@@ -1,11 +1,11 @@
-import { Button, Card, CardContent, FormControl, Grid, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { Card, CardContent, FormControl, Grid, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import services from '~/plugins/services';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import AssessmentGuild from './AssessmentGuild';
 import AssessmentDetail from './AssessmentDetail';
-function InitialCondition({ setInitialCondition, initialCondition, childrenInfor,
-    selectedAssessment, setSelectedAssessment, hasAccount }) {
+import AssessmentGuild from './AssessmentGuild';
+import { IntegrationInstructions } from '@mui/icons-material';
+function InitialCondition({ setInitialCondition, initialCondition,
+    selectedAssessment, setSelectedAssessment }) {
     const [assessment, setAssessment] = useState([]);
     useEffect(() => {
         handleGetAsessment();
@@ -41,7 +41,7 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
                 />
                 <Typography variant='h5' mt={5}>Danh sách đánh giá</Typography>
                 <AssessmentGuild />
-                <Grid container columnSpacing={2} rowSpacing={2}>
+                <Grid container columnSpacing={2} rowSpacing={2} maxHeight="60vh" overflow='auto' mt={2}>
                     {
                         assessment.map((a, index) => {
                             return (
@@ -54,7 +54,7 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
                                         <AssessmentDetail assessment={a} />
                                     </Stack>
                                     <FormControl size='small' sx={{ width: "300px" }} key={a.id}>
-                                        <Select value={selectedAssessment[index].optionId}
+                                        <Select value={selectedAssessment[index]?.optionId}
                                             onChange={(e) => {
                                                 selectedAssessment[index].optionId = Number(e.target.value);
                                                 setSelectedAssessment([...selectedAssessment]);
@@ -63,7 +63,7 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
                                             {
                                                 a.assessmentOptions.map((option) => {
                                                     return (
-                                                        <MenuItem value={option.id} key={option.id}>{option.point} điểm</MenuItem>
+                                                        <MenuItem value={option?.id} key={option?.id}>{option?.point} điểm</MenuItem>
                                                     )
                                                 })
                                             }

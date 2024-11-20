@@ -205,7 +205,7 @@ export default function PaymentCreation({ change, setChange }) {
                             </Select>
                         </FormControl>
                         <Box>
-                            <Button variant='contained' type='submit' sx={{ mt: 2 }}>Tạo nhận xét</Button>
+                            <Button variant='contained' type='submit' sx={{ mt: 2 }}>Tạo gói thanh toán</Button>
                         </Box>
                     </form>
                 </Box>

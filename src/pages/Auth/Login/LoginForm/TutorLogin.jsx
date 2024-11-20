@@ -95,7 +95,7 @@ function TutorLogin() {
                 p: "28px"
             }}>
                 <CardContent>
-                    <Link to={PAGES.ROOT}>
+                    <Link to={PAGES.ROOT + PAGES.HOME}>
                         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1 }}>
                             <EscalatorWarningIcon sx={{ color: "#394ef4", fontSize: "40px" }} />
                             <Typography sx={{ fontSize: 20, fontWeight: "bold", color: "text.secondary" }}>
