@@ -3,19 +3,18 @@ import { useEffect, useState } from 'react';
 import services from '~/plugins/services';
 import AssessmentDetail from './AssessmentDetail';
 import AssessmentGuild from './AssessmentGuild';
-function InitialCondition({ setInitialCondition, initialCondition, childrenInfor,
-    selectedAssessment, setSelectedAssessment, hasAccount }) {
-    const [assessments, setAssessments] = useState([]);
+import { IntegrationInstructions } from '@mui/icons-material';
+function InitialCondition({ setInitialCondition, initialCondition,
+    selectedAssessment, setSelectedAssessment }) {
+    const [assessment, setAssessment] = useState([]);
     useEffect(() => {
         handleGetAsessment();
     }, [])
     const handleGetAsessment = async () => {
         try {
             await services.AssessmentManagementAPI.listAssessment((res) => {
-                console.log(res.result.questions);
-                setAssessments(res.result.questions);
-                const initialAssessment = assessments.map((r) => {
-                    console.log(r.assessmentOptions[0].id);
+                setAssessment(res.result.questions);
+                const initialAssessment = res.result.questions.map((r, index) => {
                     return {
                         questionId: r.id,
                         optionId: r.assessmentOptions[0].id
@@ -42,9 +41,9 @@ function InitialCondition({ setInitialCondition, initialCondition, childrenInfor
                 />
                 <Typography variant='h5' mt={5}>Danh sách đánh giá</Typography>
                 <AssessmentGuild />
-                <Grid container columnSpacing={2} rowSpacing={2}>
+                <Grid container columnSpacing={2} rowSpacing={2} maxHeight="60vh" overflow='auto' mt={2}>
                     {
-                        assessments.map((a, index) => {
+                        assessment.map((a, index) => {
                             return (
                                 <Grid item xs={6} key={a.id}>
                                     <Stack direction='row' alignItems='center' sx={{

@@ -39,17 +39,17 @@ function ProgressReportDetail({ open, setOpen, selectedItem }) {
                             <Typography mt={2}>Thời gian: {formatDate(selectedItem?.from)} - {formatDate(selectedItem?.to)}</Typography>
                             <Stack direction='row' gap={2} mt={2}>
                                 <DoneIcon sx={{ color: "green" }} />
-                                <Typography>Đã làm được</Typography>
+                                <Typography fontWeight="bold">Đã làm được</Typography>
                             </Stack>
                             <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem.achieved}</Typography>
                             <Stack direction='row' gap={2} mt={2}>
                                 <CloseIcon sx={{ color: "red" }} />
-                                <Typography>Chưa làm được</Typography>
+                                <Typography fontWeight="bold">Chưa làm được</Typography>
                             </Stack>
                             <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem.failed}</Typography>
                             <Stack direction='row' gap={2} mt={2}>
                                 <EditNoteIcon sx={{ color: "blue" }} />
-                                <Typography>Ghi chú thêm</Typography>
+                                <Typography fontWeight="bold">Ghi chú thêm</Typography>
                             </Stack>
                             <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem.noteFromTutor === "" ? "Không có ghi chú" : selectedItem.noteFromTutor}</Typography>
                             <Stack direction='row' gap={2} mt={2}>

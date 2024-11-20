@@ -1,4 +1,4 @@
-import { Box, Checkbox, colors, FormControl, IconButton, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Stack } from "@mui/material";
+import { Box, Checkbox, colors, FormControl, IconButton, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
@@ -96,7 +96,7 @@ function AssessmentChart({ studentProfile }) {
             const datasets = reportData.map((dataset, index) => ({
                 ...dataset,
                 borderColor: index < 15 ? colorArray[index] : getUniqueRandomColor(),
-                fill: false,
+                fill: false
             }));
             const label = progressReports.map((p) => {
                 return formatDate(p.to);
@@ -166,7 +166,6 @@ function AssessmentChart({ studentProfile }) {
             })
             setLoading(false);
         } catch (error) {
-            console.log(error);
             setLoading(false)
         }
     }
@@ -200,8 +199,16 @@ function AssessmentChart({ studentProfile }) {
             typeof value === 'string' ? value.split(',') : value
         );
     };
+    console.log(chartData);
     return (
         <Box px={5} pt={2} pb={3}>
+            {
+                !chartData && (
+                    <Stack width="100%" alignItems="center" justifyContent="cente">
+                        <Typography>Học sinh này chưa có đánh giá nào!</Typography>
+                    </Stack>
+                )
+            }
             {
                 assessments && assessments.length !== 0 && chartData && (
                     <>

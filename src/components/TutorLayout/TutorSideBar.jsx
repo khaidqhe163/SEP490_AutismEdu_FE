@@ -62,6 +62,7 @@ export default function TutorSideBar({ openMenu }) {
     const handleOpenStudent = () => {
         setOpenStudent(!openStudent);
     };
+    console.log(listStudents);
     return (
         <Drawer variant="permanent" open={openMenu} sx={{
             width: openMenu ? 300 : 80,
@@ -155,11 +156,11 @@ export default function TutorSideBar({ openMenu }) {
                                 <Link to={'/autismtutor/student-detail/' + l.id} key={l.id}>
                                     <List component="div" disablePadding>
                                         <ListItemButton
-                                            onClick={(event) => { setCurrentStudent(index); handleListItemClick(event, 3) }}
+                                            onClick={(event) => { setCurrentStudent(index); handleListItemClick(event, 4) }}
                                             selected={selectedIndex === 4 && currentStudent === index}
                                         >
                                             <ListItemIcon sx={listIconStyle}>
-                                                <Avatar alt={l.studentCode} src={'/'} sx={{ background: "black", width: "30px", height: "30px" }} />
+                                                <Avatar alt={l.studentCode} src={l?.imageUrlPath || '/'} sx={{ background: "black", width: "30px", height: "30px" }} />
                                             </ListItemIcon>
                                             <ListItemText primary={`${l.studentCode} - ${l.name}`} />
                                         </ListItemButton>

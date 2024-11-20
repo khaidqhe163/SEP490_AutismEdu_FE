@@ -1,4 +1,4 @@
-import { Box, Checkbox, colors, FormControl, IconButton, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Stack } from "@mui/material";
+import { Box, Checkbox, colors, FormControl, IconButton, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
@@ -201,6 +201,13 @@ function StudentChart({ studentProfile }) {
     };
     return (
         <Box px={5} pt={2} pb={3} sx={{ width: "80%", margin: "auto" }}>
+            {
+                !chartData && (
+                    <Stack width="100%" alignItems="center" justifyContent="cente">
+                        <Typography>Học sinh này chưa có đánh giá nào!</Typography>
+                    </Stack>
+                )
+            }
             {
                 assessments && assessments.length !== 0 && chartData && (
                     <>

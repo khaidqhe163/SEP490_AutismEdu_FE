@@ -1,4 +1,4 @@
-import { Box, Grid, Modal, Stack, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Divider, Grid, Modal, Stack, Tab, Tabs, Typography } from '@mui/material'
 import React from 'react'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
@@ -89,37 +89,81 @@ function CompareReport({ open, setOpen, selectedItem, compareItem }) {
                         </Tabs>
                     </Box>
                 </Box>
-                <Box px="100px">
-                    {
-                        selectedItem && selectedItem.assessmentResults.map((s) => {
-                            return (
-                                <Grid container mt={2} sx={{ borderBottom: "1px solid gray" }} key={s.id}>
-                                    <Grid item xs={3}>
-                                        <Stack direction='row' justifyContent='end'>
-                                            <Typography textAlign='right'>{s.point}</Typography>
-                                        </Stack>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography sx={{ textAlign: "center", px: 2 }}>{s.question}</Typography>
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                        <Stack direction='row' justifyContent='start' gap={5}>
-                                            <Typography textAlign='left'>{getAssessmentPoint(s.question)}</Typography>
-                                            {
-                                                getAssessmentChange(s.question) === DESC &&
-                                                <ArrowDownwardIcon sx={{ color: "red" }} />
-                                            }
-                                            {
-                                                getAssessmentChange(s.question) === ASC &&
-                                                <ArrowUpwardIcon sx={{ color: "green" }} />
-                                            }
-                                        </Stack>
-                                    </Grid>
-                                </Grid>
-                            )
-                        })
-                    }
-                </Box>
+                {
+                    value === "1" && (
+                        <Box px="100px">
+                            {
+                                selectedItem && selectedItem.assessmentResults.map((s) => {
+                                    return (
+                                        <Grid container mt={2} sx={{ borderBottom: "1px solid gray" }} key={s.id}>
+                                            <Grid item xs={3}>
+                                                <Stack direction='row' justifyContent='end'>
+                                                    <Typography textAlign='right'>{s.point}</Typography>
+                                                </Stack>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ textAlign: "center", px: 2 }}>{s.question}</Typography>
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                <Stack direction='row' justifyContent='start' gap={5}>
+                                                    <Typography textAlign='left'>{getAssessmentPoint(s.question)}</Typography>
+                                                    {
+                                                        getAssessmentChange(s.question) === DESC &&
+                                                        <ArrowDownwardIcon sx={{ color: "red" }} />
+                                                    }
+                                                    {
+                                                        getAssessmentChange(s.question) === ASC &&
+                                                        <ArrowUpwardIcon sx={{ color: "green" }} />
+                                                    }
+                                                </Stack>
+                                            </Grid>
+                                        </Grid>
+                                    )
+                                })
+                            }
+                        </Box>
+                    )
+                }
+                {
+                    value === '2' && (
+                        <Stack direction='row' justifyContent="center" gap={3} mt={2}>
+                            <Box width="50%" px={5}>
+                                <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem?.achieved}</Typography>
+                            </Box>
+                            <Divider orientation='vertical' flexItem />
+                            <Box width="50%" px={5}>
+                                <Typography sx={{ whiteSpace: "break-spaces" }}>{compareItem?.achieved}</Typography>
+                            </Box>
+                        </Stack>
+                    )
+                }
+                {
+                    value === '3' && (
+                        <Stack direction='row' justifyContent="center" gap={3} mt={2}>
+                            <Box width="50%" px={5}>
+                                <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem?.failed}</Typography>
+                            </Box>
+                            <Divider orientation='vertical' flexItem />
+                            <Box width="50%" px={5}>
+                                <Typography sx={{ whiteSpace: "break-spaces" }}>{compareItem?.failed}</Typography>
+                            </Box>
+                        </Stack>
+                    )
+                }
+                {
+                    value === '4' && (
+                        <Stack direction='row' justifyContent="center" gap={3} mt={2}>
+                            <Box width="50%" px={5}>
+                                <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem?.noteFromTutor || "Không có ghi chú!"}</Typography>
+                            </Box>
+                            <Divider orientation='vertical' flexItem />
+                            <Box width="50%" px={5}>
+                                <Typography sx={{ whiteSpace: "break-spaces" }}>{compareItem?.noteFromTutor || "Không có ghi chú!"}</Typography>
+                            </Box>
+                        </Stack>
+                    )
+                }
+
             </Box>
         </Modal>
     )
