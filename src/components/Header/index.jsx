@@ -79,7 +79,7 @@ function Header() {
             !location.pathname.includes(PAGES.ROOT + PAGES.FORGOTPASSWORD) &&
             !location.pathname.includes(PAGES.ROOT + PAGES.RESETPASSWORD) &&
             !location.pathname.includes(PAGES.ROOT + PAGES.LISTTUTOR) &&
-            !location.pathname.includes(PAGES.ROOT + PAGES.TUTORPROFILE) &&
+            !location.pathname.includes("/autismedu/tutor-profile/") &&
             !location.pathname.includes(PAGES.ROOT + PAGES.CONFIRMREGISTER) &&
             !location.pathname.includes(PAGES.ROOT + PAGES.LOGIN_OPTION) &&
             !location.pathname.includes(PAGES.ROOT + PAGES.REGISTER_OPTION) &&
