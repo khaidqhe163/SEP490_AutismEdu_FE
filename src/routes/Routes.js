@@ -59,7 +59,9 @@ import CertificateManagement from '~/pages/Admin/TutorSettingManagement/Certific
 import WorkExperienceManagement from '~/pages/Admin/TutorSettingManagement/WorkExperienceManagement'
 import PaymentHistory from '~/pages/Tutor/PaymentHistory'
 import PaymentHistoryAdmin from '~/pages/Admin/PaymentManagement/PaymentHistory'
-
+import ParentTutorManagement from '~/pages/Admin/ParentTutorManagement'
+import AdminTutorProfile from '~/pages/Admin/ParentTutorManagement/TutorProfile'
+import AdminParentProfile from '~/pages/Admin/ParentTutorManagement/ParentProfile'
 const UnLayoutRoutes = [
     {
         path: PAGES.TUTOR_LOGIN,
@@ -297,6 +299,18 @@ const adminRoutes = [
     {
         path: PAGES.PAYMENT_HISTORY_ADMIN,
         element: PaymentHistoryAdmin
+    },
+    {
+        path: PAGES.PARENT_TUTOR_MAMAGEMENT,
+        element: ParentTutorManagement
+    },
+    {
+        path: PAGES.ADMIN_TUTOR_PROFILE,
+        element: AdminTutorProfile
+    },
+    {
+        path: PAGES.ADMIN_PARENT_PROFILE,
+        element: AdminParentProfile
     },
 
 ]

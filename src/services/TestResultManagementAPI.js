@@ -9,8 +9,8 @@ const getListTestResultHistory = async (success, error, params) => {
     await get(API_CODE.API_GET_TEST_RESULT_HISTORY, success, error, params);
 };
 
-const getTestResultDetailHistory = async (endpoint, success, error)=>{
-    await get(API_CODE.API_GET_TEST_RESULT_DETAIL_HISTORY+endpoint, success, error);
+const getTestResultDetailHistory = async (endpoint, success, error) => {
+    await get(API_CODE.API_GET_TEST_RESULT_DETAIL_HISTORY + endpoint, success, error);
 }
 
 export const TestResultManagementAPI = {

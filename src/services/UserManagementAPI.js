@@ -4,11 +4,11 @@ import API_CODE from '~/utils/api_code';
 const getUsers = async (success, error, params) => {
     await get(API_CODE.API_GET_USERS, success, error, params);
 };
-const lockUsers = async (endpoint, success, error, params) => {
-    await get(API_CODE.API_LOCK_USERS + endpoint, success, error, params);
+const lockUsers = async (endpoint, success, error) => {
+    await get(API_CODE.API_LOCK_USERS + endpoint, success, error);
 };
-const unLockUsers = async (endpoint, success, error, params) => {
-    await get(API_CODE.API_UNLOCK_USERS + endpoint, success, error, params);
+const unLockUsers = async (endpoint, success, error) => {
+    await get(API_CODE.API_UNLOCK_USERS + endpoint, success, error);
 };
 const getUserClaims = async (endpoint, success, error, params) => {
     await get(API_CODE.API_GET_USER_CLAIMS + endpoint, success, error, params);

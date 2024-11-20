@@ -51,7 +51,7 @@ const PAGES = {
   PAYMENT_PACKAGE: '/autismtutor/payment-package',
   PAYMENT_PACKAGE_FOCUS: '/autismtutor/payment-package-focus',
   PERSONAL_INFORMATION: '/admin/personal-information',
-  
+
   BLOG_EDIT: '/admin/blog-management/edit/:id',
   REPORT_TUTOR_MANAGEMENT: '/admin/report-tutor-management',
   REPORT_TUTOR_DETAIL: '/admin/report-tutor-management/detail/:id',
@@ -64,6 +64,9 @@ const PAGES = {
   PAYMENT_HISTORY_TUTOR: '/autismtutor/payment-history',
   PAYMENT_HISTORY_ADMIN: '/admin/payment-history',
 
+  PARENT_TUTOR_MAMAGEMENT: '/admin/parent-tutor-management',
+  ADMIN_TUTOR_PROFILE: '/admin/tutor-profile/:id',
+  ADMIN_PARENT_PROFILE: '/admin/parent-profile/:id',
 };
 
 export default PAGES;

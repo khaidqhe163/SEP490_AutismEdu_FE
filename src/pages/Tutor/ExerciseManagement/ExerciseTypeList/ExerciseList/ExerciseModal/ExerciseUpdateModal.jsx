@@ -115,11 +115,10 @@ function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCl
                         <Grid item xs={4}>
                             <Typography variant="body1" fontWeight={600} textAlign={'right'}>Nội dung:</Typography>
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid item xs={8} sx={{ height: '350px' }}>
                             <ReactQuill
                                 theme="snow"
                                 modules={{ toolbar: toolbarOptions }}
-                                style={quillEditorStyle}
                                 value={formik.values.description}
                                 onChange={(value) => formik.setFieldValue('description', value)}
                                 onBlur={() => formik.setFieldTouched('description', true)}
@@ -134,7 +133,7 @@ function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCl
                 </form>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleCloseEditDialog} color="primary">Hủy</Button>
+                <Button onClick={handleCloseEditDialog} color="primary" variant='outlined'>Hủy</Button>
                 <LoadingButton
                     onClick={formik.handleSubmit}
                     loading={loading}

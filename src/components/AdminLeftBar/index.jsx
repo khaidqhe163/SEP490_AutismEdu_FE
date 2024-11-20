@@ -138,7 +138,7 @@ function AdminLeftBar() {
                     }
                     {
                         (adminInformation?.role === "Manager" || adminInformation?.role === "Staff") && (
-                            <Link to="/admin/user-management">
+                            <Link to="/admin/parent-tutor-management">
                                 <ListItemButton
                                     selected={selectedIndex === 1}
                                     onClick={(event) => handleListItemClick(event, 1)}>
