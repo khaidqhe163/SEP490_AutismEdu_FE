@@ -102,12 +102,14 @@ function ChangeSlotModal({ schedule, setIsChange }) {
         try {
             setLoading(true);
             await services.ScheduleAPI.getSchedule((res) => {
+                console.log(res.result);
                 setSchedules(res.result.schedules)
             }, (err) => {
                 console.log(err);
             }, {
                 startDate: date,
-                endDate: date
+                endDate: date,
+                getAll: false
             })
             setLoading(false);
         } catch (error) {
@@ -148,6 +150,7 @@ function ChangeSlotModal({ schedule, setIsChange }) {
         try {
             await services.StudentProfileAPI.getTutorSchedule((res) => {
                 const arr = [];
+                console.log(res.result);
                 res.result.forEach((a) => {
                     a.scheduleTimeSlots.forEach((s) => {
                         arr.push(s);
