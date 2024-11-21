@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Modal, Typography, TextField, MenuItem, Select, FormControl, Grid, Divider } from '@mui/material';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
@@ -11,11 +11,15 @@ import { enqueueSnackbar } from 'notistack';
 import { format } from 'date-fns';
 import PAGES from '~/utils/pages';
 
-function TutorRequestModal({ rejectChildIds, tutorId, calculateAge, studyingList }) {
+function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
     const [open, setOpen] = useState(false);
     const [childData, setChildData] = useState([]);
     const [selectedChild, setSelectedChild] = useState(null);
     const userInf = useSelector(userInfor);
+
+    const [studyingList, setStudyingList] = useState([]);
+    console.log(studyingList);
+    
     const nav = useNavigate();
 
     console.log(userInf);
@@ -40,9 +44,29 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge, studyingList
             nav(PAGES.ROOT + PAGES.PARENT_PROFILE);
         } else {
             await handleGetChildInformation();
+            await handleGetStudyingList();
         }
     };
     const handleClose = () => setOpen(false);
+
+    const handleGetStudyingList = async () => {
+        try {
+            await services.StudentProfileAPI.getMyTutor((res) => {
+                if (res?.result) {
+                    const newData = res?.result?.filter((r) => r.tutorId === tutorId);
+                    console.log(newData);
+                    setStudyingList(newData);
+                }
+            }, (error) => {
+                console.log(error);
+            }, {
+                status: 'teaching'
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
 
     const handleGetChildInformation = async () => {
         try {

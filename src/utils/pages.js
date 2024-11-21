@@ -65,6 +65,9 @@ const PAGES = {
   PAYMENT_HISTORY_TUTOR: '/autismtutor/payment-history',
   PAYMENT_HISTORY_ADMIN: '/admin/payment-history',
 
+  PARENT_TUTOR_MAMAGEMENT: '/admin/parent-tutor-management',
+  ADMIN_TUTOR_PROFILE: '/admin/tutor-profile/:id',
+  ADMIN_PARENT_PROFILE: '/admin/parent-profile/:id',
 };
 
 export default PAGES;

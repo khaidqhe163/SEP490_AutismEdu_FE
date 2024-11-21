@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, CardMedia, Grid, InputAdornment, Pagination, Stack, TextField, Typography, Modal, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Box, Button, Card, CardContent, CardMedia, Grid, InputAdornment, Pagination, Stack, TextField, Typography, Modal, FormControl, InputLabel, Select, MenuItem, Tooltip, IconButton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -7,11 +7,12 @@ import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 import ConfirmShow from './Modal/ConfirmShow';
 import ExerciseTypeCreation from './Modal/ExerciseTypeCreation';
-
+import EditIcon from '@mui/icons-material/Edit';
+import ExerciseTypeEdit from './Modal/ExerciseTypeEdit';
 const ExerciseTypeManagement = () => {
     const [loading, setLoading] = useState(false);
-    const [selectedTest, setSelectedTest] = useState(null);
     const [exerciseTypeList, setExerciseTypeList] = useState([]);
+    const [selectedExercise, setSelectedExercise] = useState(null);
     const [showId, setShowId] = useState(0);
     const [openModal, setOpenModal] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -29,15 +30,6 @@ const ExerciseTypeManagement = () => {
         sort: 'desc',
         pageSize: 9,
     });
-
-    const handleOpenDialog = () => {
-        setDialogOpen(true);
-    };
-
-    const handleCloseDialog = () => {
-        setDialogOpen(false);
-    };
-
 
     const handlePageChange = (event, value) => {
         setPagination({ ...pagination, pageNumber: value });
@@ -92,7 +84,12 @@ const ExerciseTypeManagement = () => {
         setShowId(eType.id);
         setOpenModal(true);
     };
-    console.log(exerciseTypeList);
+
+    const handleEdit = (eType) => {
+        setSelectedExercise(eType);
+        setDialogOpen(true);
+        console.log(eType);
+    };
 
     const handleShowExerciseType = async (showId) => {
         try {
@@ -232,22 +229,24 @@ const ExerciseTypeManagement = () => {
                                         alt="Exercise Icon"
                                     />
                                     <CardContent>
-                                        <Typography
-                                            variant="h6"
-                                            component="div"
-                                            sx={{
-                                                display: '-webkit-box',
-                                                WebkitLineClamp: 2,
-                                                WebkitBoxOrient: 'vertical',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                height: '52px',
-                                            }}
-                                        >
-                                            {eType.exerciseTypeName}
-                                        </Typography>
-                                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                            <Typography variant='body2'>(Số lượng bài tập: <b>{eType?.exercises?.length}</b>)</Typography>
+                                        <Tooltip title={eType?.exerciseTypeName} placement='top'>
+                                            <Typography
+                                                variant="h6"
+                                                component="div"
+                                                sx={{
+                                                    display: '-webkit-box',
+                                                    WebkitLineClamp: 2,
+                                                    WebkitBoxOrient: 'vertical',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    height: '52px',
+                                                }}
+                                            >
+                                                {eType?.exerciseTypeName}
+                                            </Typography>
+                                        </Tooltip>
+                                        <Box sx={{ display: 'flex', justifyContent: 'right' }} gap={2}>
+                                            <IconButton variant={'outlined'} color={'primary'} onClick={() => handleEdit(eType)}><EditIcon /></IconButton>
                                             <Button variant={!eType?.isHide ? 'outlined' : 'contained'} color={!eType?.isHide ? 'success' : 'warning'} onClick={() => handleShow(eType)}>{eType?.isHide ? 'Ẩn' : 'Hiện'}</Button>
                                         </Box>
                                     </CardContent>
@@ -270,7 +269,7 @@ const ExerciseTypeManagement = () => {
                         <ConfirmShow open={openModal} handleClose={() => setOpenModal(false)} id={showId} exerciseTypeList={exerciseTypeList} setExerciseTypeList={setExerciseTypeList} handleShowExerciseType={handleShowExerciseType} />
                     }
                     {modalOpen && <ExerciseTypeCreation open={modalOpen} handleClose={() => setModalOpen(false)} handleCreateExerciseType={handleCreateExerciseType} />}
-
+                    {dialogOpen && selectedExercise && <ExerciseTypeEdit open={dialogOpen} onClose={() => { setDialogOpen(false); setSelectedExercise(null); }} exerciseTypeList={exerciseTypeList} setExerciseTypeList={setExerciseTypeList} eType={selectedExercise} />}
                 </Stack>
             </Box>
         </Box>
