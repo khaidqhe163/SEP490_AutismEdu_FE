@@ -88,6 +88,8 @@ function AssessmentChart({ studentProfile }) {
                     })
                     if (question) {
                         data.data.unshift(question.point)
+                    } else {
+                        data.data.unshift(null);
                     }
                 })
                 reportData.unshift(data);

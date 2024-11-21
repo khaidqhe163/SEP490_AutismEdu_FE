@@ -15,7 +15,6 @@ import services from '~/plugins/services';
 function UpdateProgressReport({ open, setOpen, report, progressReports, setProgressReports, setSelectedItem,
     currentReport, setCurrentReport
 }) {
-    const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [assessment, setAssessment] = useState([]);
     const [selectedAssessment, setSelectedAssessment] = useState([]);
@@ -23,15 +22,29 @@ function UpdateProgressReport({ open, setOpen, report, progressReports, setProgr
     const [changes, setChanges] = useState(true);
     const [openConfirm, setOpenConfirm] = useState(false);
     useEffect(() => {
-        handleGetAsessment();
-    }, [])
+        if (report && open) {
+            console.log(report);
+            console.log(open);
+            handleGetAsessment();
+        } else {
+            setAssessment([]);
+            setSelectedAssessment([]);
+            formik.resetForm();
+        }
+    }, [report, open])
 
     const handleGetAsessment = async () => {
         try {
+            console.log("zoday1");
             setLoading(true);
             await services.AssessmentManagementAPI.listAssessment((res) => {
-                setAssessment(res.result.questions);
-                const initialAssessment = res.result.questions.map((r, index) => {
+                const filterAssessment = res.result.questions.filter((a) => {
+                    const choosenAss = report.assessmentResults.find((r) => r.questionId === a.id);
+                    return !!choosenAss;
+                });
+                console.log(filterAssessment);
+                setAssessment(filterAssessment);
+                const initialAssessment = filterAssessment.map((r, index) => {
                     return {
                         questionId: r.id,
                         optionId: r.assessmentOptions[0].id
@@ -43,7 +56,6 @@ function UpdateProgressReport({ open, setOpen, report, progressReports, setProgr
             })
             setLoading(false);
         } catch (error) {
-            console.log(error);
             setLoading(false);
         }
     }
@@ -87,7 +99,6 @@ function UpdateProgressReport({ open, setOpen, report, progressReports, setProgr
                 assessmentResults: submitArr,
                 id: report.id
             }, (res) => {
-                console.log(res);
                 const findIndex = progressReports.findIndex((a) => {
                     return a.id === res.result.id;
                 })
@@ -114,7 +125,7 @@ function UpdateProgressReport({ open, setOpen, report, progressReports, setProgr
         }
     }
     useEffect(() => {
-        if (assessment && report) {
+        if (assessment.length !== 0 && report) {
             const preData = report.assessmentResults.map((a) => {
                 return {
                     questionId: a.questionId,
@@ -122,11 +133,13 @@ function UpdateProgressReport({ open, setOpen, report, progressReports, setProgr
                 }
             })
             setSelectedAssessment(preData)
-        }
-        if (report) {
-            formik.setFieldValue("achieved", report.achieved);
-            formik.setFieldValue("failed", report.failed);
-            formik.setFieldValue("noteFromTutor", report.noteFromTutor);
+            formik.resetForm({
+                values: {
+                    achieved: report.achieved || '',
+                    failed: report.failed || '',
+                    noteFromTutor: report.noteFromTutor || ''
+                }
+            });
         }
     }, [assessment, report])
     const formatDate = (date) => {
@@ -150,15 +163,17 @@ function UpdateProgressReport({ open, setOpen, report, progressReports, setProgr
             setChanges(true);
         }
         let change = true;
-        selectedAssessment.map((s) => {
-            const ass = report.assessmentResults.find((c) => {
-                return s.questionId === c.questionId;
+        if (selectedAssessment.length !== 0 && assessment.length !== 0) {
+            selectedAssessment.map((s) => {
+                const ass = report.assessmentResults.find((c) => {
+                    return s.questionId === c.questionId;
+                })
+                if (ass.optionId !== s.optionId) {
+                    change = false;
+                }
             })
-            if (ass.optionId !== s.optionId) {
-                change = false;
-            }
-        })
-        setChanges(change)
+            setChanges(change)
+        }
     }, [formik])
     return (
         <>

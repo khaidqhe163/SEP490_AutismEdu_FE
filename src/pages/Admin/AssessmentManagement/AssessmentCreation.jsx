@@ -13,13 +13,26 @@ function AssessmentCreation() {
     const assessmentDetail = useRef();
     const [selectedPoint, setSelectedPoint] = useState([]);
     const [contentError, setContentErr] = useState(false);
-    const [titleError, setTitleError] = useState(false);
+    const [titleError, setTitleError] = useState("");
     const [loading, setLoading] = useState(false);
     const handleAddPoint = () => {
         if (assessmentDetail.current.value.trim() === "") {
-            setContentErr(true);
+            setContentErr("Bắt buộc nhập");
+            return;
+        } else if (assessmentDetail.current.value.trim().length < 20) {
+            setContentErr("Đánh giá quá ngắn")
             return;
         }
+        const splitString = assessmentDetail.current.value.trim().split(" ");
+        if (splitString.length > 250) {
+            setContentErr("Đánh giá quá dài")
+            return;
+        }
+        // if (assessmentDetail.current.value.trim().length > 1000) {
+        //     setContentErr("Đánh giá quá dài")
+        //     return;
+        // }
+
         const newAss = {
             point: point,
             optionText: assessmentDetail.current.value
@@ -35,7 +48,7 @@ function AssessmentCreation() {
                 break;
             }
         }
-        setContentErr(false);
+        setContentErr("");
         assessmentDetail.current.value = "";
     }
 
@@ -89,95 +102,98 @@ function AssessmentCreation() {
     }
     return (
         <Paper variant="elevation" sx={{
-            p: 3
+            py: 3,
+            px: 5
         }}>
             <Typography variant='h4'>Thêm đánh giá</Typography>
-            <Grid container mt={3} rowSpacing={4}>
-                <Grid item xs={2}><Typography variant='h6'>Tên đánh giá</Typography></Grid>
-                <Grid item xs={10}>
-                    <TextField
-                        size='small'
-                        sx={{ width: "70%" }}
-                        inputRef={assessmentName}
-                        placeholder='Nhập tên đánh giá vào đây'
-                    />
+            <Box px="100px">
+                <Grid container mt={3} rowSpacing={4} m="auto">
+                    <Grid item xs={2}><Typography variant='h6'>Tên đánh giá</Typography></Grid>
+                    <Grid item xs={10}>
+                        <TextField
+                            size='small'
+                            sx={{ width: "70%" }}
+                            inputRef={assessmentName}
+                            placeholder='Nhập tên đánh giá vào đây'
+                        />
+                        {
+                            titleError && (
+                                <FormHelperText error>
+                                    {titleError}
+                                </FormHelperText>
+                            )
+                        }
+                    </Grid>
+                    <Grid item xs={2}><Typography variant='h6'>Chi tiết đánh giá</Typography></Grid>
+                    <Grid item xs={10}></Grid>
                     {
-                        titleError && (
-                            <FormHelperText error>
-                                Nhập tên đánh giá
-                            </FormHelperText>
-                        )
-                    }
-                </Grid>
-                <Grid item xs={2}><Typography variant='h6'>Chi tiết đánh giá</Typography></Grid>
-                <Grid item xs={10}></Grid>
-                {
-                    selectedPoint.length < 7 && (
-                        <>
-                            <Grid item xs={2}>
-                                <FormControl sx={{ width: "80%" }}>
-                                    <InputLabel id="label-point">Điểm</InputLabel>
-                                    <Select
-                                        labelId="label-point"
-                                        value={point}
-                                        label="Point"
-                                        onChange={(e) => { setPoint(e.target.value) }}
-                                    >
-                                        {
-                                            pointArr.map((p) => {
-                                                return (
-                                                    <MenuItem value={p} disabled={selectedPoint.includes(p)} key={p}>{p} điểm</MenuItem>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={10}>
-                                <TextField
-                                    size='small'
-                                    multiline
-                                    rows={4}
-                                    sx={{ width: "70%" }}
-                                    inputRef={assessmentDetail}
-                                    label="Nội dung"
-                                    variant='outlined'
-                                />
-                                {
-                                    contentError && (
-                                        <FormHelperText error id="accountId-error">
-                                            Nhập nội dung
-                                        </FormHelperText>
-                                    )
-                                }
-                                <Box mt={3}>
-                                    <Button variant='contained' onClick={handleAddPoint}>Thêm</Button>
-                                </Box>
-                            </Grid>
-                        </>
-                    )
-                }
-                {
-                    listAss.length !== 0 && listAss.map((l, index) => {
-                        return (
-                            <React.Fragment key={index}>
+                        selectedPoint.length < 7 && (
+                            <>
                                 <Grid item xs={2}>
-                                    <Typography>{l.point} điểm</Typography>
+                                    <FormControl sx={{ width: "80%" }}>
+                                        <InputLabel id="label-point">Điểm</InputLabel>
+                                        <Select
+                                            labelId="label-point"
+                                            value={point}
+                                            label="Point"
+                                            onChange={(e) => { setPoint(e.target.value) }}
+                                        >
+                                            {
+                                                pointArr.map((p) => {
+                                                    return (
+                                                        <MenuItem value={p} disabled={selectedPoint.includes(p)} key={p}>{p} điểm</MenuItem>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </FormControl>
                                 </Grid>
                                 <Grid item xs={10}>
-                                    <Stack direction='row' alignItems="center">
-                                        <Typography sx={{ width: "60%" }}>{l.optionText}</Typography>
-                                        <IconButton onClick={() => { handleDelete(index) }}
-                                            sx={{ color: '#ff3e1d' }}
-                                        ><DeleteIcon /></IconButton>
-                                    </Stack>
+                                    <TextField
+                                        size='small'
+                                        multiline
+                                        rows={4}
+                                        sx={{ width: "70%" }}
+                                        inputRef={assessmentDetail}
+                                        label="Nội dung"
+                                        variant='outlined'
+                                    />
+                                    {
+                                        contentError && (
+                                            <FormHelperText error id="accountId-error">
+                                                {contentError}
+                                            </FormHelperText>
+                                        )
+                                    }
+                                    <Box mt={3}>
+                                        <Button variant='contained' onClick={handleAddPoint}>Thêm</Button>
+                                    </Box>
                                 </Grid>
-                            </React.Fragment>
+                            </>
                         )
-                    })
-                }
-                <Button variant='contained' sx={{ mt: 5, mb: 3 }} onClick={handleSubmit}>Tạo đánh giá</Button>
-            </Grid>
+                    }
+                    {
+                        listAss.length !== 0 && listAss.map((l, index) => {
+                            return (
+                                <React.Fragment key={index}>
+                                    <Grid item xs={2}>
+                                        <Typography>{l.point} điểm</Typography>
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        <Stack direction='row' alignItems="center">
+                                            <Typography sx={{ width: "60%" }}>{l.optionText}</Typography>
+                                            <IconButton onClick={() => { handleDelete(index) }}
+                                                sx={{ color: '#ff3e1d' }}
+                                            ><DeleteIcon /></IconButton>
+                                        </Stack>
+                                    </Grid>
+                                </React.Fragment>
+                            )
+                        })
+                    }
+                    <Button variant='contained' sx={{ mt: 5, mb: 3 }} onClick={handleSubmit}>Tạo đánh giá</Button>
+                </Grid>
+            </Box>
             <LoadingComponent open={loading} />
         </Paper>
     )

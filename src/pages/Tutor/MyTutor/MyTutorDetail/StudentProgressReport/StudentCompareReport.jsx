@@ -12,22 +12,27 @@ function StudentCompareReport({ open, setOpen, selectedItem, compareItem }) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const getAssessmentPoint = (question) => {
-        if (!compareItem || !question) {
-            return 0;
+    const getAssessmentPoint = (question, type) => {
+        if (!compareItem || !question || !selectedItem) {
+            return "";
         }
-        const comAss = compareItem.assessmentResults.find((p) => {
-            return p.question === question;
-        })
+        let comAss;
+        if (type === 1) {
+            comAss = compareItem.assessmentResults.find((p) => {
+                return p.question === question;
+            })
+        } else {
+            comAss = selectedItem.assessmentResults.find((p) => {
+                return p.question === question;
+            })
+        }
         if (comAss) {
             return comAss.point
         } else {
-            return 0
+            return ""
         }
     }
-
     const getAssessmentChange = (question) => {
         if (!compareItem || !selectedItem || !question) {
             return NOT_CHANGE;
@@ -38,7 +43,7 @@ function StudentCompareReport({ open, setOpen, selectedItem, compareItem }) {
         const selectedAss = selectedItem.assessmentResults.find((p) => {
             return p.question === question;
         })
-        if (selectedItem) {
+        if (selectedAss && compareAss) {
             if (selectedAss.point > compareAss.point) {
                 return DESC;
             } else if (selectedAss.point < compareAss.point) {
@@ -84,7 +89,7 @@ function StudentCompareReport({ open, setOpen, selectedItem, compareItem }) {
                 </Box>
                 <Box px="100px">
                     {
-                        selectedItem && selectedItem.assessmentResults.map((s) => {
+                        selectedItem && (selectedItem.assessmentResults.length >= compareItem.assessmentResults.length) && selectedItem.assessmentResults.map((s) => {
                             return (
                                 <Grid container mt={2} sx={{ borderBottom: "1px solid gray" }} key={s.id}>
                                     <Grid item xs={3}>
@@ -97,7 +102,36 @@ function StudentCompareReport({ open, setOpen, selectedItem, compareItem }) {
                                     </Grid>
                                     <Grid item xs={3}>
                                         <Stack direction='row' justifyContent='start' gap={5}>
-                                            <Typography textAlign='left'>{getAssessmentPoint(s.question)}</Typography>
+                                            <Typography textAlign='left'>{getAssessmentPoint(s.question, 1)}</Typography>
+                                            {
+                                                getAssessmentChange(s.question) === DESC &&
+                                                <ArrowDownwardIcon sx={{ color: "red" }} />
+                                            }
+                                            {
+                                                getAssessmentChange(s.question) === ASC &&
+                                                <ArrowUpwardIcon sx={{ color: "green" }} />
+                                            }
+                                        </Stack>
+                                    </Grid>
+                                </Grid>
+                            )
+                        })
+                    }
+                    {
+                        compareItem && (compareItem.assessmentResults.length > selectedItem.assessmentResults.length) && compareItem.assessmentResults.map((s) => {
+                            return (
+                                <Grid container mt={2} sx={{ borderBottom: "1px solid gray" }} key={s.id}>
+                                    <Grid item xs={3}>
+                                        <Stack direction='row' justifyContent='end'>
+                                            <Typography textAlign='right'>{getAssessmentPoint(s.question, 2)}</Typography>
+                                        </Stack>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography sx={{ textAlign: "center", px: 2 }}>{s.question}</Typography>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <Stack direction='row' justifyContent='start' gap={5}>
+                                            <Typography textAlign='left'>{s.point}</Typography>
                                             {
                                                 getAssessmentChange(s.question) === DESC &&
                                                 <ArrowDownwardIcon sx={{ color: "red" }} />

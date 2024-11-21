@@ -15,7 +15,6 @@ const processResponse = (response) => {
 };
 
 const logError = (e, error) => {
-  console.log(e.response);
 
   if (error && e.response) {
 

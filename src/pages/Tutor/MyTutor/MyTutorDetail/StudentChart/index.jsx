@@ -88,6 +88,8 @@ function StudentChart({ studentProfile }) {
                     })
                     if (question) {
                         data.data.unshift(question.point)
+                    } else {
+                        data.data.unshift(null);
                     }
                 })
                 reportData.unshift(data);
@@ -96,7 +98,7 @@ function StudentChart({ studentProfile }) {
             const datasets = reportData.map((dataset, index) => ({
                 ...dataset,
                 borderColor: index < 15 ? colorArray[index] : getUniqueRandomColor(),
-                fill: false,
+                fill: false
             }));
             const label = progressReports.map((p) => {
                 return formatDate(p.to);
@@ -199,8 +201,9 @@ function StudentChart({ studentProfile }) {
             typeof value === 'string' ? value.split(',') : value
         );
     };
+    console.log(chartData);
     return (
-        <Box px={5} pt={2} pb={3} sx={{ width: "80%", margin: "auto" }}>
+        <Box px="150px" pt={2} pb={3}>
             {
                 !chartData && (
                     <Stack width="100%" alignItems="center" justifyContent="cente">
@@ -250,11 +253,11 @@ function StudentChart({ studentProfile }) {
                             plugins: {
                                 title: {
                                     display: true,
-                                    text: "Biểu đồ tổng quan đánh giá của học sinh",
+                                    text: "Biểu đồ tổng quan đánh giá của học sinh"
                                 },
                                 legend: {
                                     display: true,
-                                    position: "bottom",
+                                    position: "bottom"
                                 }
                             },
                             scales: {

@@ -15,15 +15,21 @@ function MyTutor() {
     const nav = useNavigate();
     React.useEffect(() => {
         getStudentProfile();
-    }, [])
+    }, [status])
     const getStudentProfile = async () => {
+        let apiStatus = "Teaching";
+        if (status === 1) {
+            apiStatus = "Teaching";
+        } else if (status === 2) {
+            apiStatus = "Stop"
+        }
         try {
             await services.StudentProfileAPI.getMyTutor((res) => {
                 setListTutor(res.result)
             }, (err) => {
                 console.log(err);
             }, {
-                status: "Teaching"
+                status: apiStatus
             })
         } catch (error) {
             console.log(error);

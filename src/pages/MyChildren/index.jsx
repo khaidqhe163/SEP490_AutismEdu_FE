@@ -118,14 +118,12 @@ function MyChildren() {
         try {
             setLoading(true);
             await services.ChildrenManagementAPI.listChildren(userInfo?.id, (res) => {
-                console.log(res);
                 setChildren(res.result.reverse());
             }, (err) => {
                 console.log("data child ==> ", err);
             })
             setLoading(false);
         } catch (error) {
-            console.log(error);
             setLoading(false);
         }
     }

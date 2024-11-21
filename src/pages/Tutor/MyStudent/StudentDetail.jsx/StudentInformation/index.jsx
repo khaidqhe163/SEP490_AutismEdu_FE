@@ -32,7 +32,6 @@ function StudentInformation({ studentProfile, setStudentProfile }) {
         const formattedAddress = `${addressParts[3]} - ${addressParts[2]} - ${addressParts[1]} - ${addressParts[0]}`;
         return formattedAddress;
     }
-    console.log(studentProfile);
     return (
         <Box sx={{ px: 5 }}>
             {

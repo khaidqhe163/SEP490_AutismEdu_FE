@@ -55,12 +55,20 @@ function CompleteTutoring({ studentProfile, setStudentProfile }) {
 
     useEffect(() => {
         if (assessment && finalAssessment) {
-            const preData = finalAssessment.assessmentResults.map((a) => {
-                return {
-                    questionId: a.questionId,
-                    optionId: a.optionId
+            const preData = assessment.map((a) => {
+                const choosenAss = finalAssessment.assessmentResults.find((r) => r.questionId === a.id);
+                if (choosenAss) {
+                    return {
+                        questionId: choosenAss.questionId,
+                        optionId: choosenAss.optionId
+                    }
+                } else {
+                    return {
+                        questionId: a.id,
+                        optionId: a.assessmentOptions[0].id
+                    }
                 }
-            })
+            });
             setSelectedAssessment(preData)
         }
     }, [assessment, finalAssessment])
@@ -81,7 +89,6 @@ function CompleteTutoring({ studentProfile, setStudentProfile }) {
             })
             setLoading(false);
         } catch (error) {
-            console.log(error);
             setLoading(false);
         }
     }
@@ -185,8 +192,8 @@ function CompleteTutoring({ studentProfile, setStudentProfile }) {
                                                 <Box sx={{ display: "flex", width: "50%" }} key={a.id}>
                                                     <ArrowRightIcon sx={{ fontSize: "40px", color: "red" }} />
                                                     <Box>
-                                                        <Typography>{a.question}</Typography>
-                                                        <FormControl size='small' sx={{ width: "300px" }} key={a.id}>
+                                                        <Typography sx={{ width: "300px" }}>{a.question}</Typography>
+                                                        <FormControl size='small' sx={{ width: "300px", mt: 1 }} key={a.id}>
                                                             <Select value={selectedAssessment[index].optionId}
                                                                 onChange={(e) => {
                                                                     selectedAssessment[index].optionId = Number(e.target.value);

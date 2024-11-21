@@ -34,7 +34,7 @@ function ProgressReport({ studentProfile }) {
     const [sortType, setSortType] = useState('desc');
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
-    const [openUpdate, setOpenUpdate] = useState();
+    const [openUpdate, setOpenUpdate] = useState(false);
     const handleOpenUpdate = () => setOpenUpdate(true);
     useEffect(() => {
         services.ProgressReportAPI.getListProgressReport((res) => {
