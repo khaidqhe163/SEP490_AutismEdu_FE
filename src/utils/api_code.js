@@ -178,7 +178,7 @@ const API_CODE = {
   API_GET_LIST_REPORT: '/v1/Report',
   API_GET_REPORT_DETAIL: '/v1/Report/',
   API_CHANGE_REPORT_STATUS: '/v1/Report/changeStatus/',
-
+  API_CREATE_REPORT_REVIEW: '/v1/Report/review',
   //Conversation
   API_GET_CONVERSATION: '/v1/Conversation',
   API_CREATE_CONVERSATION: '/v1/Conversation',

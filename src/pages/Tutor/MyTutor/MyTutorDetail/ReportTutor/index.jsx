@@ -59,7 +59,7 @@ function ReportTutor({ studentProfile }) {
         initialValues: {
             type: 0,
             title: '',
-            description: '',
+            description: ''
         }, validate,
         onSubmit: async (values) => {
             if (images.length === 0) return;
@@ -70,6 +70,7 @@ function ReportTutor({ studentProfile }) {
                 formData.append("Title", values.title);
                 formData.append("Description", values.description);
                 formData.append("TutorId", studentProfile.tutor.userId);
+                formData.append("StudentProfileId", studentProfile.id);
                 images.forEach((i) => {
                     formData.append("ReportMedias", i);
                 })
@@ -78,14 +79,13 @@ function ReportTutor({ studentProfile }) {
                     enqueueSnackbar("Gửi đơn tố cáo thành công!", { variant: "success" })
                     setOpen(false);
                 }, (err) => {
-                    console.log(err);
                     enqueueSnackbar(err.error[0], { variant: "error" })
                 })
                 axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
             } catch (error) {
                 enqueueSnackbar("Gửi đơn tố cáo thất bại!", { variant: "error" })
             } finally {
-                setLoading(false);
+                // setLoading(false);
             }
         }
     })
@@ -174,7 +174,14 @@ function ReportTutor({ studentProfile }) {
                         <TextField fullWidth type='file' inputProps={{
                             multiple: true,
                             accept: "image/png, image/jpeg"
-                        }} onChange={(e) => setImages(Array.from(e.target.files))} />
+                        }} onChange={(e) => {
+                            if (e.target.files.length > 5) {
+                                enqueueSnackbar("Chỉ chọn tối đa 5 ảnh", { variant: "error" });
+                                e.target.value = "";
+                            } else {
+                                setImages(Array.from(e.target.files))
+                            }
+                        }} />
                         {
                             images.length === 0 && (
                                 <FormHelperText error>
@@ -197,12 +204,12 @@ function ReportTutor({ studentProfile }) {
                                                 alignItems: "center",
                                                 justifyContent: "center",
                                                 bgcolor: "#4589c4bf"
-                                            },
+                                            }
                                         }}>
                                             <Box className="hoverContent" sx={{
                                                 width: "100%",
                                                 height: "100%",
-                                                display: "none",
+                                                display: "none"
                                             }}>
                                                 <IconButton>
                                                     <RemoveRedEyeIcon
@@ -218,12 +225,12 @@ function ReportTutor({ studentProfile }) {
                                 })
                             }
                         </Stack>
-                        <Stack direction='row' gap={3} justifyContent="end">
+                        <Stack direction='row' gap={3} justifyContent="end" mt={3}>
                             <Button variant='contained' type='submit'>Tố cáo</Button>
                             <Button onClick={() => setOpen(false)}>Huỷ bỏ</Button>
                         </Stack>
+                        <LoadingComponent open={loading} />
                     </form>
-                    <LoadingComponent open={loading} />
                 </Box>
             </Modal >
             {

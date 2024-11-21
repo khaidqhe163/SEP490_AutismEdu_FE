@@ -22,28 +22,21 @@ function ConfirmRegister() {
     }, [isSubmitting]);
     const handleSubmit = async () => {
         try {
-            console.log("zoday");
             await service.AuthenticationAPI.confirmEmail({
                 code,
                 security,
                 userId
             }, (res) => {
-                console.log(res);
                 enqueueSnackbar("Xác thực tài khoản thành công!", { variant: "success" });
                 nav(PAGES.ROOT + PAGES.LOGIN)
             }, (err) => {
-                console.log(err);
-                if (err.code === 500) {
-                    enqueueSnackbar("Xác thực tài khoản thất bại!", { variant: "error" });
-                }
-                else enqueueSnackbar(err.error[0], { variant: "error" });
+                enqueueSnackbar(err.error[0], { variant: "error" });
                 nav(PAGES.ROOT + PAGES.LOGIN)
             })
         } catch (error) {
             nav(PAGES.ROOT + PAGES.LOGIN)
         }
     }
-    console.log(isSubmitting);
     return (
         <></>
     )

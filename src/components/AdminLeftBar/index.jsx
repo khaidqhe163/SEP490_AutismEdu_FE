@@ -343,7 +343,7 @@ function AdminLeftBar() {
                                             </ListItemButton>
                                         </List>
                                     </Link>
-                                    <Link to={PAGES.BLOG_CREATION}>
+                                    <Link to={PAGES.ADMIN_REPORT_REVIEW}>
                                         <List component="div" disablePadding>
                                             <ListItemButton sx={{ pl: 4 }}
                                                 selected={selectedIndex === 13}

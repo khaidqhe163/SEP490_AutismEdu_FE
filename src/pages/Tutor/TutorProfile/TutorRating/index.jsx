@@ -11,6 +11,8 @@ import LoadingComponent from '~/components/LoadingComponent';
 import DeleteConfirmationModal from './RatingModal/DeleteConfirmationModal';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
+import ReportIcon from '@mui/icons-material/Report';
+import ReportModal from './ReportModal';
 function TutorRating({ tutorId, userInfo }) {
 
     const [idDelete, setIdDelete] = useState(-1);
@@ -20,7 +22,8 @@ function TutorRating({ tutorId, userInfo }) {
     const [selectedReview, setSelectedReview] = useState(null);
     const [tempRating, setTempRating] = useState(0);
     const [tempContent, setTempContent] = useState('');
-
+    const [openReportReview, setOpenReportReview] = useState(false);
+    const [currentReport, setCurrentReport] = useState(null);
     const [dataReviewStats, setDataReviewStats] = useState(null);
     const [pagination, setPagination] = React.useState({
         pageNumber: 1,
@@ -318,13 +321,17 @@ function TutorRating({ tutorId, userInfo }) {
                                 </Box>
                             </Stack>
                             <Typography width={'15%'} textAlign={'right'}><small>{dayjs(new Date(r?.createdDate)).fromNow()}</small></Typography>
-                            {userInfo?.id === r?.parent?.id && (
-                                // {userInfo?.id === r?.id && (
-                                <>
+
+                            {
+                                userInfo && (
                                     <IconButton onClick={handleOpenMenu} size='medium'>
                                         <MoreHorizIcon />
                                     </IconButton>
-                                    <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
+                                )
+                            }
+                            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
+                                {userInfo?.id === r?.parent?.id && (
+                                    <>
                                         <MenuItem onClick={() => handleEditClick(r)}>
                                             <EditIcon fontSize="small" color='primary' sx={{ mr: 1 }} />
                                             Chỉnh sửa
@@ -333,12 +340,17 @@ function TutorRating({ tutorId, userInfo }) {
                                             <DeleteIcon fontSize="small" color='error' sx={{ mr: 1 }} />
                                             Xoá
                                         </MenuItem>
-                                    </Menu></>
-                            )}
-                            {/* <IconButton onClick={handleOpenMenu}>
-                        <MoreHorizIcon />
-                    </IconButton> */}
-
+                                    </>
+                                )}
+                                {
+                                    userInfo && (userInfo?.id !== r?.parent?.id) && (
+                                        <MenuItem onClick={() => { setOpenReportReview(true); setCurrentReport(r); handleCloseMenu(); }}>
+                                            <ReportIcon fontSize="small" color='warning' sx={{ mr: 1 }} />
+                                            Tố cáo
+                                        </MenuItem>
+                                    )
+                                }
+                            </Menu>
                         </Stack>
 
                         {isEditing && (r?.id === selectedReview?.id) ? (
@@ -387,6 +399,7 @@ function TutorRating({ tutorId, userInfo }) {
                 {open && <DeleteConfirmationModal id={idDelete} open={open} handleClose={handleClose} dataReviewStats={dataReviewStats} setDataReviewStats={setDataReviewStats} handleGetDataReviewStats={handleGetDataReviewStats} />}
 
                 <LoadingComponent open={loading} setOpen={setLoading} />
+                <ReportModal open={openReportReview} setOpen={setOpenReportReview} currentReport={currentReport} />
             </Box >
         )
     )

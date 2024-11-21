@@ -22,7 +22,6 @@ function MyChildren() {
     const [avatar, setAvatar] = useState(null);
     const [childAvatar, setChildAvatar] = useState(null);
     useEffect(() => {
-        console.log("zoday");
         if (userInfo)
             handleGetChildren();
     }, [userInfo])

@@ -64,6 +64,8 @@ import TutorRegistrationDetail from '~/pages/Admin/TutorRegistrationManagement/T
 import ParentTutorManagement from '~/pages/Admin/ParentTutorManagement'
 import AdminTutorProfile from '~/pages/Admin/ParentTutorManagement/TutorProfile'
 import AdminParentProfile from '~/pages/Admin/ParentTutorManagement/ParentProfile'
+import ReportReviewManagement from '~/pages/Admin/ReportManagement/ReportReviewManagement'
+import ReportReviewDetail from '~/pages/Admin/ReportManagement/ReportReviewManagement/ReportReviewDetail'
 const UnLayoutRoutes = [
     {
         path: PAGES.TUTOR_LOGIN,
@@ -321,6 +323,14 @@ const adminRoutes = [
     {
         path: PAGES.ADMIN_PARENT_PROFILE,
         element: AdminParentProfile
+    },
+    {
+        path: PAGES.ADMIN_REPORT_REVIEW,
+        element: ReportReviewManagement
+    },
+    {
+        path: PAGES.REPORT_REVIEW_DETAIL,
+        element: ReportReviewDetail
     },
 
 ]

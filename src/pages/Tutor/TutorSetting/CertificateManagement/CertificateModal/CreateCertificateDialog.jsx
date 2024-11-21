@@ -22,7 +22,7 @@ import LoadingComponent from '~/components/LoadingComponent';
 import { enqueueSnackbar } from 'notistack';
 import services from '~/plugins/services';
 
-export default function CreateCertificateDialog({ open, onClose, certificateData, setCertificateData, certificateList, setCertificateList}) {
+export default function CreateCertificateDialog({ open, onClose, certificateData, setCertificateData, certificateList, setCertificateList }) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [openImageDialog, setOpenImageDialog] = useState(false);
@@ -123,7 +123,7 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <form onSubmit={formik.handleSubmit}>
                 <DialogTitle sx={{ textAlign: 'center' }} variant='h5'>Tạo chứng chỉ</DialogTitle>
-                <Divider/>
+                <Divider />
                 <DialogContent>
                     <Grid container spacing={2} mb={2}>
                         <Grid item xs={4}>

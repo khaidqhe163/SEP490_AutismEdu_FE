@@ -1,20 +1,15 @@
 import styled from '@emotion/styled';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import NotListedLocationIcon from '@mui/icons-material/NotListedLocation';
-import PhoneIcon from '@mui/icons-material/Phone';
-import { Avatar, Box, Breadcrumbs, Button, Divider, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Avatar, Box, Breadcrumbs, Divider, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { formatter } from '~/utils/service';
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
-import ChildInformation from './ChildrenInformation';
 import services from '~/plugins/services';
-import Calendar from '../../Calendar';
-import StudentSchedule from './StudentSchedule';
-import StudentProgressReport from './StudentProgressReport';
-import StudentChart from './StudentChart';
+import ChildInformation from './ChildrenInformation';
 import ReportTutor from './ReportTutor';
+import StudentChart from './StudentChart';
+import StudentProgressReport from './StudentProgressReport';
+import StudentSchedule from './StudentSchedule';
 const StyledTabs = styled((props) => (
     <Tabs
         {...props}
