@@ -49,13 +49,18 @@ function CalenderButtons({ f, keys, handleAssign, handleOpenEvaluate }) {
             {showEvaluateButton ? (
                 <Button
                     variant='contained'
-                    color='secondary'
-                    sx={{ mt: 2, fontSize: "12px" }}
+                    sx={{
+                        mt: 2, fontSize: "12px", bgcolor: '#16ab65',
+                        '&:hover': {
+                            bgcolor: '#128a51',
+                        },
+                    }}
                     onClick={() => handleOpenEvaluate(f, keys)}
                 >
                     Đánh giá
-                </Button>
-            ) : null}
+                </Button >
+            ) : null
+            }
         </>
     );
 }
