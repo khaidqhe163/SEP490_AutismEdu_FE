@@ -99,6 +99,7 @@ function AssessmentCreation() {
                         size='small'
                         sx={{ width: "70%" }}
                         inputRef={assessmentName}
+                        placeholder='Nhập tên đánh giá vào đây'
                     />
                     {
                         titleError && (
