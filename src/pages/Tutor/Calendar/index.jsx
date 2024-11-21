@@ -1,4 +1,4 @@
-import { Box, FormControl, InputLabel, MenuItem, Select, Stack, Typography } from '@mui/material';
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -10,6 +10,7 @@ import AssignExercise from './CalendarModal/AssignExercise';
 import Evaluate from './CalendarModal/Evaluate';
 import CalenderButtons from './CalenderButtons/CalenderButtons';
 import ChangeSlotModal from './ChangeSlotModal';
+import ViewDetailModal from './CalendarModal/ViewDetailModal';
 function Calendar() {
     const { id } = useParams();
     const [isModalOpen, setModalOpen] = useState(false);
@@ -26,6 +27,7 @@ function Calendar() {
     const [currentStudent, setCurrentStudent] = useState(0);
     const listStudents = useSelector(listStudent);
     const [isChange, setIsChange] = useState(true);
+    const [isDetailModalOpen, setDetailModalOpen] = useState(false);
     useEffect(() => {
         if (weekInYears.length !== 0) {
             getSchedule();
@@ -219,7 +221,12 @@ function Calendar() {
         } else {
             return false;
         }
-    }
+    };
+
+    const handleViewDetail = (f) => {
+        setASchedule(f);
+        setDetailModalOpen(true);
+    };
 
     return (
         <>
@@ -344,10 +351,20 @@ function Calendar() {
                                                             )
                                                         }
                                                         <Typography sx={{ color: f.attendanceStatus === 1 ? "green" : "red", fontSize: "12px", fontWeight: '500' }} >({attendanceStatus(f.attendanceStatus)})</Typography>
-                                                        {
-                                                            !checkTime(f) && <ChangeSlotModal schedule={f} setIsChange={setIsChange} />
-                                                        }
-                                                        <CalenderButtons f={f} keys={keys} handleAssign={handleAssign} handleOpenEvaluate={handleOpenEvaluate} />
+                                                        <Stack direction={'column'} justifyContent={'center'}>
+                                                            <Box>
+                                                                {
+                                                                    !checkTime(f) && <ChangeSlotModal schedule={f} setIsChange={setIsChange} />
+                                                                }
+                                                                <CalenderButtons f={f} keys={keys} handleAssign={handleAssign} handleOpenEvaluate={handleOpenEvaluate} />
+                                                                <Button size='small' variant='contained'
+                                                                    sx={{ mt: 2, fontSize: "12px", backgroundColor:'#218eed'}}
+                                                                    onClick={() => handleViewDetail(f)}
+                                                                >
+                                                                    Xem chi tiết
+                                                                </Button>
+                                                            </Box>
+                                                        </Stack>
                                                     </Box>
                                                 )
                                             })
@@ -361,6 +378,7 @@ function Calendar() {
                 </Stack>
                 {isModalOpen && selectedKey && aSchedule && <AssignExercise isOpen={isModalOpen} setModalOpen={setModalOpen} schedule={aSchedule} filterSchedule={filterSchedule} setFilterSchedule={setFilterSchedule} selectedKey={selectedKey} />}
                 {isEvaluateModalOpen && aSchedule && <Evaluate isOpen={isEvaluateModalOpen} setModalOpen={setEvaluateModalOpen} schedule={aSchedule} selectedKey={selectedKey} filterSchedule={filterSchedule} setFilterSchedule={setFilterSchedule} />}
+                {aSchedule && tutorInformation && <ViewDetailModal isOpen={isDetailModalOpen} setModalOpen={setDetailModalOpen} schedule={aSchedule} setSchedule={setASchedule} tutorName={tutorInformation?.fullName} />}
                 <LoadingComponent open={loading} />
             </Box>
         </>
