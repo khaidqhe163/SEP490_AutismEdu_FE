@@ -41,7 +41,6 @@ function TutorProfile() {
     const [valueCurriculum, setValueCurriculum] = useState('1');
     const [tutor, setTutor] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [studyingList, setStudyingList] = useState([]);
     const userInfo = useSelector(userInfor);
     console.log(tutor);
     const handleChange = (event, newValue) => {
@@ -77,26 +76,9 @@ function TutorProfile() {
 
     useEffect(() => {
         handleGetAllAvailableTime(1);
-        handleGetStudyingList();
     }, [id]);
 
-    const handleGetStudyingList = async () => {
-        try {
-            await services.StudentProfileAPI.getMyTutor((res) => {
-                if (res?.result) {
-                    const newData = res?.result?.filter((r) => r.tutorId === id);
-                    console.log(newData);
-                    setStudyingList(newData);
-                }
-            }, (error) => {
-                console.log(error);
-            }, {
-                status: 'teaching'
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    
 
     const handleDateChange = async (weekday) => {
         setTimeData(weekday);
@@ -257,7 +239,7 @@ function TutorProfile() {
                                 </Stack>
                             </Box>
                             <Box sx={{ width: "20%" }}>
-                                <TutorRequestModal rejectChildIds={tutor?.rejectChildIds} tutorId={id} calculateAge={calculateAge} studyingList={studyingList} />
+                                <TutorRequestModal rejectChildIds={tutor?.rejectChildIds} tutorId={id} calculateAge={calculateAge}/>
                             </Box>
                         </Box>
 
