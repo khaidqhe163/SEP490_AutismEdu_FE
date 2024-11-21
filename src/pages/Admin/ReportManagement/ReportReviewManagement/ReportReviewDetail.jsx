@@ -1,17 +1,10 @@
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import DeleteIcon from '@mui/icons-material/Delete';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Avatar, Box, Button, Grid, IconButton, Modal, Paper, Stack, Typography } from '@mui/material';
-import { enqueueSnackbar } from 'notistack';
+import { Avatar, Box, Button, Grid, Paper, Rating, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import services from '~/plugins/services';
-import PAGES from '~/utils/pages';
-import StatusChangeConfirm from './StatusChangeConfirm';
+import StatusChangeConfirm from '../ReportTutorManagement/StatusChangeConfirm';
 
-function ReportDetail() {
+function ReportReviewDetail() {
     const [report, setReport] = useState(null);
     const { id } = useParams();
     const [openImage, setOpenImage] = useState(false);
@@ -63,6 +56,7 @@ function ReportDetail() {
         const formattedAddress = `${addressParts[3]} - ${addressParts[2]} - ${addressParts[1]} - ${addressParts[0]}`;
         return formattedAddress;
     }
+    console.log(report);
     return (
         <Stack sx={{ gap: 2, alignItems: "flex-start" }} direction='row'>
             <Box sx={{
@@ -87,78 +81,16 @@ function ReportDetail() {
                             <span style={{ color: report?.status === 1 ? "green" : report?.status === 2 ? "blue" : "red" }}>{getStatus(report?.status)}</span>
                         </Typography>
                     </Stack>
-                    <Typography sx={{ textAlign: "center", mt: 2 }}>{report?.title}</Typography>
-                    <Typography sx={{ whiteSpace: "break-spaces", px: 2 }}>{report?.description}</Typography>
-                    <Typography mt={2} fontWeight="bold">Hình ảnh bằng chứng</Typography>
-                    <Stack direction='row' gap={3} mt={2}>
-                        {
-                            report?.reportMedias && report?.reportMedias.length !== 0 && report?.reportMedias.map((image, index) => {
-                                return (
-                                    <Box key={index} sx={{
-                                        backgroundImage: `url(${image.urlMedia})`, backgroundSize: 'cover',
-                                        backgroundPosition: 'center',
-                                        width: "100px",
-                                        height: "100px",
-                                        cursor: "pointer",
-                                        "&:hover .hoverContent": {
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            bgcolor: "#4589c4bf"
-                                        }
-                                    }}>
-                                        <Box className="hoverContent" sx={{
-                                            width: "100%",
-                                            height: "100%",
-                                            display: "none"
-                                        }}>
-                                            <IconButton onClick={() => { setOpenImage(true); setCurrentImage(index) }} >
-                                                <RemoveRedEyeIcon />
-                                            </IconButton>
-                                        </Box>
-                                    </Box>
-                                )
-                            })
-                        }
-                        {
-                            report?.reportMedias[currentImage] && report?.reportMedias.length !== 0 !== null && openImage && (
-                                <Modal open={openImage} onClose={() => setOpenImage(false)}>
-                                    <Box
-                                        display="flex"
-                                        justifyContent="center"
-                                        alignItems="center"
-                                        height="100vh"
-                                        bgcolor="rgba(0, 0, 0, 0.8)"
-                                        position="relative"
-                                    >
-                                        <img
-                                            src={report?.reportMedias[currentImage]?.urlMedia}
-                                            alt="large"
-                                            style={{ maxWidth: '90%', maxHeight: '90%' }}
-                                        />
-
-                                        <IconButton
-                                            onClick={() => setOpenImage(false)}
-                                            style={{ position: 'absolute', top: 20, right: 20, color: 'white' }}
-                                        >
-                                            <HighlightOffIcon />
-                                        </IconButton>
-                                        <IconButton
-                                            style={{ position: 'absolute', left: 20, color: 'white' }}
-                                            onClick={() => setCurrentImage(currentImage === 0 ? 0 : currentImage - 1)}
-                                        >
-                                            <ArrowBackIosIcon />
-                                        </IconButton>
-                                        <IconButton
-                                            style={{ position: 'absolute', right: 20, color: 'white' }}
-                                            onClick={() => setCurrentImage(currentImage === report?.reportMedias[currentImage].length - 1 ? currentImage : currentImage + 1)}
-                                        >
-                                            <ArrowForwardIosIcon />
-                                        </IconButton>
-                                    </Box>
-                                </Modal>
-                            )
-                        }
+                    <Stack direction='row' gap={2} mt={3}>
+                        <Typography fontWeight="bold">Nội dung đánh giá:</Typography>
+                        <Box>
+                            <Rating name="read-only" value={report?.review?.rateScore || 0} readOnly />
+                            <Typography sx={{ whiteSpace: "break-spaces" }}>{report?.review?.description}</Typography>
+                        </Box>
+                    </Stack>
+                    <Stack direction='row' gap={2} mt={3}>
+                        <Typography fontWeight="bold" sx={{ width: "20%" }}>Lý do tố cáo:</Typography>
+                        <Typography sx={{ whiteSpace: "break-spaces", width: "70%" }}>{report?.description}</Typography>
                     </Stack>
                     {
                         report?.status === 2 && (
@@ -189,12 +121,12 @@ function ReportDetail() {
                                             relatedReport.map((r) => {
                                                 return (
                                                     <li key={r.id}>
-                                                        <Link to={PAGES.REPORT_TUTOR_MANAGEMENT + "/detail/" + r.id} style={{ textDecoration: 'underline', color: "blue" }}
+                                                        <Link to={'/admin/report-review-management/' + r.id} style={{ textDecoration: 'underline', color: "blue" }}
                                                             onClick={(e) => {
                                                                 e.preventDefault();
-                                                                window.open(PAGES.REPORT_TUTOR_MANAGEMENT + "/detail/" + r.id, '_blank');
+                                                                window.open('/admin/report-review-management/' + r.id, '_blank');
                                                             }}>
-                                                            {r.title}
+                                                            {r?.reporter.email}
                                                         </Link>
                                                     </li>
                                                 )
@@ -211,8 +143,8 @@ function ReportDetail() {
                 {
                     report && (
                         <Paper variant='elevation' sx={{ p: 2 }}>
-                            <Typography variant='h5'>Gia sư bị tố cáo</Typography>
-                            <Avatar alt="Remy Sharp" src={report.tutor?.imageUrl} sx={{
+                            <Typography variant='h5'>Người đăng đánh giá</Typography>
+                            <Avatar alt="Remy Sharp" src={report?.review?.parent?.imageUrl} sx={{
                                 width: "150px",
                                 height: "150px",
                                 margin: "auto",
@@ -220,17 +152,15 @@ function ReportDetail() {
                             }} />
                             <Grid container pl={2} py="50px" columnSpacing={2} rowSpacing={1.5}>
                                 <Grid item xs={3} textAlign="right">Họ và tên:</Grid>
-                                <Grid item xs={9}>{report.tutor?.fullName}</Grid>
+                                <Grid item xs={9}>{report?.review?.parent?.fullName}</Grid>
                                 <Grid item xs={3} textAlign="right">Email:</Grid>
-                                <Grid item xs={9}>{report.tutor?.email}</Grid>
-                                <Grid item xs={3} textAlign="right">Ngày sinh:</Grid>
-                                <Grid item xs={9}>{formatDate(report.tutor?.dateOfBirth)}</Grid>
+                                <Grid item xs={9}>{report?.review?.parent?.email}</Grid>
                                 <Grid item xs={3} textAlign="right">Địa chỉ:</Grid>
-                                <Grid item xs={9}>{formatAddress(report.tutor?.address)}</Grid>
+                                <Grid item xs={9}>{formatAddress(report?.review?.parent?.address)}</Grid>
                                 <Grid item xs={3} textAlign="right">Số điện thoại:</Grid>
-                                <Grid item xs={9}>{report.tutor?.phoneNumber}</Grid>
+                                <Grid item xs={9}>{report?.review?.parent?.phoneNumber}</Grid>
                             </Grid>
-                            <a href={'/admin/tutor-profile/' + report?.tutor?.userId} rel="noopener noreferrer" target="_blank">
+                            <a href={'/admin/parent-profile/' + report?.review?.parent?.id} rel="noopener noreferrer" target="_blank">
                                 <Button>Xem chi tiết</Button>
                             </a>
                         </Paper>
@@ -243,4 +173,4 @@ function ReportDetail() {
     )
 }
 
-export default ReportDetail
+export default ReportReviewDetail

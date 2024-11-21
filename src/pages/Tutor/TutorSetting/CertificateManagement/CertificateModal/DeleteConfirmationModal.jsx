@@ -1,10 +1,8 @@
-import { Box, Button, Modal, Typography, Divider } from '@mui/material';
+import { Box, Button, Divider, Modal, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import React from 'react';
 import services from '~/plugins/services';
 
 function DeleteConfirmationModal({ open, handleClose, id, certificateList, setCertificateList }) {
-
     const handleDelete = async () => {
         try {
             await services.CertificateAPI.deleteCertificate(id, {}, (res) => {

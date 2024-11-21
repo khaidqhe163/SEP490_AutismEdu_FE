@@ -1,50 +1,22 @@
-import { Box, FormControl, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Box, FormControl, IconButton, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import LoadingComponent from '~/components/LoadingComponent';
 import TablePagging from '~/components/TablePagging';
 import services from '~/plugins/services';
-import PAGES from '~/utils/pages';
-function ReportTutorManagement() {
+function ReportReviewManagement() {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [status, setStatus] = useState("all");
+    const [status, setStatus] = useState("pending");
     const [searchName, setSearchName] = useState("");
     const [pagination, setPagination] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const nav = useNavigate();
     useEffect(() => {
-        handleGetReports();
+        handleGetReports()
     }, [])
-    useEffect(() => {
-        handleGetReports();
-    }, [currentPage])
-    useEffect(() => {
-        if (currentPage === 1) {
-            handleGetReports();
-        } else {
-            setCurrentPage(1)
-        }
-    }, [status])
-
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            if (currentPage === 1) {
-                handleGetReports();
-            } else {
-                setCurrentPage(1)
-            }
-        }, 1000)
-        return () => {
-            clearTimeout(handler)
-        }
-    }, [searchName])
-    const formatDate = (date) => {
-        if (!date) return "";
-        const d = new Date(date);
-        return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
-    }
     const handleGetReports = async () => {
         try {
             setLoading(true);
@@ -57,9 +29,7 @@ function ReportTutorManagement() {
             }, {
                 pageNumber: currentPage,
                 status: status,
-                type: "tutor",
-                reportTutorType: 0,
-                search: searchName
+                type: "review"
             })
             setLoading(false);
         } catch (error) {
@@ -67,32 +37,11 @@ function ReportTutorManagement() {
             setLoading(false);
         }
     }
-
-    const getReportReason = (type) => {
-        let reportReason = "";
-        switch (type) {
-            case 1:
-                reportReason = "Không đáp ứng đúng yêu cầu về chuyên môn";
-                break;
-            case 2:
-                reportReason = "Không có sự kiên nhẫn hoặc thái độ không phù hợp";
-                break;
-            case 3:
-                reportReason = "Không đảm bảo lịch học đúng giờ";
-                break;
-            case 4:
-                reportReason = "Thiếu giao tiếp với phụ huynh";
-                break;
-            case 5:
-                reportReason = "Có dấu hiệu không trung thực hoặc vi phạm đạo đức nghề nghiệp";
-                break;
-            case 6:
-                reportReason = "Lý do khác";
-                break;
-        }
-        return reportReason;
+    const formatDate = (date) => {
+        if (!date) return "";
+        const d = new Date(date);
+        return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
     }
-
     const getStatus = (status) => {
         let statusString = "";
         switch (status) {
@@ -118,7 +67,6 @@ function ReportTutorManagement() {
                         label="Trạng thái đơn"
                         labelId="status"
                     >
-                        <MenuItem value="all">Tất cả</MenuItem>
                         <MenuItem value="pending">Đang chờ</MenuItem>
                         <MenuItem value="approve">Đã chấp nhận</MenuItem>
                         <MenuItem value="reject">Đã từ chối</MenuItem>
@@ -136,12 +84,12 @@ function ReportTutorManagement() {
                     <TableHead>
                         <TableRow>
                             <TableCell>STT</TableCell>
-                            <TableCell sx={{ maxWidth: "300px" }}>Tiêu đề</TableCell>
                             <TableCell>Người tố cáo</TableCell>
                             <TableCell>Người bị tố cáo</TableCell>
                             <TableCell sx={{ maxWidth: "200px" }} align="left">Lý do tố cáo</TableCell>
                             <TableCell align="left">Trạng thái</TableCell>
                             <TableCell align="center">Ngày tạo</TableCell>
+                            <TableCell align="center"></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -152,25 +100,25 @@ function ReportTutorManagement() {
                                         <TableCell>
                                             {index + 1 + (currentPage - 1) * 10}
                                         </TableCell>
-                                        <TableCell sx={{ maxWidth: "200px" }}>
-                                            <Link to={PAGES.REPORT_TUTOR_MANAGEMENT + "/detail/" + b.id} style={{ textDecoration: 'underline', color: "blue" }}>
-                                                {b.title}
-                                            </Link>
-                                        </TableCell>
                                         <TableCell>
                                             {b.reporter.email}
                                         </TableCell>
                                         <TableCell>
-                                            {b.tutor.email}
+                                            {b.review.parent.email}
                                         </TableCell>
                                         <TableCell align="left" sx={{ maxWidth: "200px" }}>
-                                            {getReportReason(b.reportType)}
+                                            {b.description}
                                         </TableCell>
-                                        <TableCell align="center" sx={{ color: b.status === 1 ? "green" : b.status === 2 ? "blue" : "red" }}>
+                                        <TableCell sx={{ color: b.status === 1 ? "green" : b.status === 2 ? "blue" : "red" }}>
                                             {getStatus(b.status)}
                                         </TableCell>
                                         <TableCell align="center">
                                             {formatDate(b.createdDate)}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <IconButton onClick={() => nav('/admin/report-review-management/' + b.id)}>
+                                                <VisibilityIcon />
+                                            </IconButton>
                                         </TableCell>
                                     </TableRow>
                                 )
@@ -185,4 +133,4 @@ function ReportTutorManagement() {
     )
 }
 
-export default ReportTutorManagement
+export default ReportReviewManagement

@@ -40,8 +40,7 @@ function ForgotPassword() {
             }, (res) => {
                 setSubmited(true);
             }, (err) => {
-                console.log(err);
-                enqueueSnackbar("Email không hợp lệ", { variant: "error" });
+                enqueueSnackbar(err.error[0], { variant: "error" });
                 setLoading(false)
             })
             setLoading(false)

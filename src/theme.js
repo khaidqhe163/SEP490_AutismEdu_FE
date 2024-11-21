@@ -124,6 +124,13 @@ const theme = createTheme({
                     textTransform: "none"
                 }
             }
+        },
+        MuiBackdrop: {
+            styleOverrides: {
+                root: {
+                    zIndex: 1301
+                }
+            }
         }
     }
 });

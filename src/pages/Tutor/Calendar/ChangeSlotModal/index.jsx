@@ -210,7 +210,7 @@ function ChangeSlotModal({ schedule, setIsChange }) {
     }
     return (
         <>
-            <Button onClick={handleOpen}>Đổi lịch</Button>
+            <Button sx={{ mt: 2, fontSize: "12px", borderColor:'#218eed'}} variant='outlined' size='medium' onClick={handleOpen}>Đổi lịch</Button>
             <Modal
                 open={open}
                 onClose={handleClose}

@@ -95,7 +95,7 @@ const API_CODE = {
   API_CREATE_PROGRESS_REPORT: '/v1/ProgressReport',
   API_GET_LIST_PROGRESS_REPORT: '/v1/ProgressReport',
   API_UPDATE_PROGRESS_REPORT: '/v1/ProgressReport',
-  //Exercuse management
+  //Exercise management
   API_GET_ALL_EXERCISE_TYPE: '/v1/ExerciseType/getAllNoPaging',
   API_GET_EXERCISE_BY_TYPE: '/v1/Exercise/',
   API_GET_LIST_EXERCISE_TYPE: '/v1/ExerciseType',
@@ -104,6 +104,7 @@ const API_CODE = {
   API_DELETE_EXERCISE: '/v1/Exercise/',
   API_CHANGE_STATUS_ETYPE: '/v1/ExerciseType/changeStatus/',
   API_CREATE_EXERICSE_TYPE: '/v1/ExerciseType',
+  API_UPDATE_EXERCISE_TYPE: '/v1/ExerciseType/',
 
   //Syllabus management
   API_CREATE_SYLLABUS: '/v1/Syllabus',
@@ -177,7 +178,7 @@ const API_CODE = {
   API_GET_LIST_REPORT: '/v1/Report',
   API_GET_REPORT_DETAIL: '/v1/Report/',
   API_CHANGE_REPORT_STATUS: '/v1/Report/changeStatus/',
-
+  API_CREATE_REPORT_REVIEW: '/v1/Report/review',
   //Conversation
   API_GET_CONVERSATION: '/v1/Conversation',
   API_CREATE_CONVERSATION: '/v1/Conversation',

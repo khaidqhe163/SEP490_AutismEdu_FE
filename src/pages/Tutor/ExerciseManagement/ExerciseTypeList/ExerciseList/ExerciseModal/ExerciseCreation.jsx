@@ -30,7 +30,6 @@ function ExerciseCreation({ setExercises, exerciseType, open, handleClose }) {
 
     const quillEditorStyle = {
         height: '250px',
-        marginBottom: '100px'
     };
 
     const validationSchema = Yup.object({
@@ -118,12 +117,10 @@ function ExerciseCreation({ setExercises, exerciseType, open, handleClose }) {
                         <Grid item xs={4}>
                             <Typography variant="body1" fontWeight={600} textAlign={'right'}>Nội dung:</Typography>
                         </Grid>
-                        <Grid item xs={8}>
-                            <Box>
+                        <Grid item xs={8} sx={{ height: '350px' }}>
                                 <ReactQuill
                                     theme="snow"
                                     modules={{ toolbar: toolbarOptions }}
-                                    style={quillEditorStyle}
                                     value={formik.values.description}
                                     onChange={(value) => formik.setFieldValue('description', value)}
                                     onBlur={() => formik.setFieldTouched('description', true)}
@@ -133,13 +130,12 @@ function ExerciseCreation({ setExercises, exerciseType, open, handleClose }) {
                                         {formik.errors.description}
                                     </Typography>
                                 )}
-                            </Box>
                         </Grid>
                     </Grid>
                 </form>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="primary">Hủy</Button>
+                <Button onClick={handleClose} color="primary" variant='outlined'>Hủy</Button>
                 <Button onClick={formik.handleSubmit} color="primary" variant="contained" disabled={!formik.isValid || formik.isSubmitting}>Tạo</Button>
             </DialogActions>
             <LoadingComponent open={loading} setOpen={setLoading} />

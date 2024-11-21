@@ -12,6 +12,7 @@ import {
     Stack,
     Typography
 } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 
 function ViewDetailModal({ isOpen, setModalOpen, schedule, setSchedule, tutorName }) {
 
@@ -23,6 +24,10 @@ function ViewDetailModal({ isOpen, setModalOpen, schedule, setSchedule, tutorNam
     const [openDialogE, setOpenDialogE] = useState(false);
 
     const handleOpenDialogE = (content) => {
+        if (!content) {
+            enqueueSnackbar('Không có chi tiết bài tập!', { variant: 'error' });
+            return;
+        }
         setSelectedContentE(content);
         setOpenDialogE(true);
     };
