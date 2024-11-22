@@ -228,6 +228,7 @@ function Calendar() {
         setDetailModalOpen(true);
     };
 
+    console.log(filterSchedule);
     return (
         <>
             <Box p="30px" sx={{ width: "100%", height: "calc(100vh - 64px)" }}>

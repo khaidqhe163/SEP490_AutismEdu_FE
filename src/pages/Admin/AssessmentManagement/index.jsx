@@ -1,15 +1,13 @@
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import { Box, Grid, IconButton, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import AssessmentUpdater from './AssessmentUpdater';
 function AssessmentManagement() {
     const [loading, setLoading] = useState(false);
     const [assessments, setAssessments] = useState([]);
     const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [currentAss, setCurrentAss] = useState(0);
     const [openEdit, setOpenEdit] = useState(false);

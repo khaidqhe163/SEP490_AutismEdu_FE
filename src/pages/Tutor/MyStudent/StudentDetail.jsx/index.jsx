@@ -12,6 +12,8 @@ import StudentInformation from './StudentInformation';
 import ScheduleSetting from './ScheduleSetting';
 import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
 import Calendar from '../../Calendar';
+import StudentExcercise from './StudentExcercise';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 function StudentDetail() {
     const [tab, setTabs] = useState(0);
     const { id } = useParams();
@@ -55,6 +57,7 @@ function StudentDetail() {
                     <Tab icon={<CalendarMonthOutlinedIcon />} iconPosition="end" label="Lịch học" />
                     <Tab icon={<NoteAltOutlinedIcon />} iconPosition="end" label="Sổ liên lạc" />
                     <Tab icon={<BarChartIcon />} iconPosition="end" label="Biểu đồ đánh giá" />
+                    <Tab icon={<AutoStoriesIcon />} iconPosition="end" label="Bài tập" />
                     <Tab icon={<ManageHistoryIcon />} iconPosition="end" label="Cài đặt lịch học" />
                     <Tab icon={<AccountBoxOutlinedIcon />} iconPosition="end" label="Thông tin học sinh" />
                 </Tabs>
@@ -83,10 +86,13 @@ function StudentDetail() {
                 tab === 2 && studentProfile?.status !== 3 && <AssessmentChart studentProfile={studentProfile} />
             }
             {
-                tab === 3 && studentProfile?.status !== 3 && <ScheduleSetting studentProfile={studentProfile} />
+                tab === 3 && studentProfile?.status !== 3 && <StudentExcercise studentProfile={studentProfile} />
             }
             {
-                tab === 4 && <StudentInformation studentProfile={studentProfile} setStudentProfile={setStudentProfile} />
+                tab === 4 && studentProfile?.status !== 3 && <ScheduleSetting studentProfile={studentProfile} />
+            }
+            {
+                tab === 5 && <StudentInformation studentProfile={studentProfile} setStudentProfile={setStudentProfile} />
             }
         </Box>
     )
