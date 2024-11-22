@@ -64,7 +64,6 @@ function EditProfile() {
             },
         },
     };
-    console.log(tutor);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
