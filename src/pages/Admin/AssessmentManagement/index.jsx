@@ -3,21 +3,23 @@ import { useEffect, useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import AssessmentUpdater from './AssessmentUpdater';
 function AssessmentManagement() {
     const [loading, setLoading] = useState(false);
-    const [assessments, setAssessment] = useState([]);
+    const [assessments, setAssessments] = useState([]);
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [currentAss, setCurrentAss] = useState(0);
-
+    const [openEdit, setOpenEdit] = useState(false);
     useEffect(() => {
         handleGetAsessment()
     }, [])
     const handleGetAsessment = async () => {
         try {
             await services.AssessmentManagementAPI.listAssessment((res) => {
-                setAssessment(res.result.questions)
+                setAssessments(res.result.questions)
             }, (err) => {
                 console.log(err);
             })
@@ -32,10 +34,7 @@ function AssessmentManagement() {
         return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
     }
     return (
-        <Box sx={{
-            p: 2,
-            position: "relative",
-        }}>
+        <Box>
             <Typography variant='h4'>Bảng danh sách đánh giá</Typography>
             {
                 assessments.length === 0 ? (
@@ -46,10 +45,10 @@ function AssessmentManagement() {
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>STT</TableCell>
-                                        <TableCell>Tên đánh giá</TableCell>
-                                        <TableCell align='center'>Ngày tạo</TableCell>
-                                        <TableCell align='center'>Hành động</TableCell>
+                                        <TableCell sx={{ fontWeight: "bold" }}>STT</TableCell>
+                                        <TableCell sx={{ fontWeight: "bold" }}>Tên đánh giá</TableCell>
+                                        <TableCell align='center' sx={{ fontWeight: "bold" }}>Ngày tạo</TableCell>
+                                        <TableCell align='center' sx={{ fontWeight: "bold" }}>Hành động</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -65,8 +64,8 @@ function AssessmentManagement() {
                                                         {formatDate(assess.createdDate)}
                                                     </TableCell>
                                                     <TableCell align='center'>
-                                                        <IconButton onClick={() => { handleOpen(); setCurrentAss(index) }}>
-                                                            <VisibilityIcon />
+                                                        <IconButton onClick={() => { setOpenEdit(true); setCurrentAss(index) }} color='warning'>
+                                                            <DriveFileRenameOutlineIcon />
                                                         </IconButton>
                                                     </TableCell>
                                                 </TableRow>
@@ -76,12 +75,12 @@ function AssessmentManagement() {
                                 </TableBody>
                             </Table>
                             <LoadingComponent open={loading} setOpen={setLoading} />
+                            <AssessmentUpdater open={openEdit} setOpen={setOpenEdit} currentAsssesment={assessments[currentAss]}
+                                setAssessments={setAssessments} assessments={assessments} />
                         </TableContainer >
                         <Modal
                             open={open}
                             onClose={handleClose}
-                            aria-labelledby="modal-modal-title"
-                            aria-describedby="modal-modal-description"
                         >
                             <Box sx={{
                                 position: 'absolute',

@@ -75,6 +75,7 @@ const API_CODE = {
   //Assessment management
   API_GET_ASSESSMENT: '/v1/Assessment',
   API_CREATE_ASSESSMENT: '/v1/Assessment',
+  API_UPDATE_ASSESSMENT: '/v1/Assessment',
 
   //Work experiences management
   API_WORK_EXPERIENCE_STATUS: '/v1/WorkExperience/changeStatus/',
