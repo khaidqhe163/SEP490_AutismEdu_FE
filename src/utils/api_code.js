@@ -126,6 +126,7 @@ const API_CODE = {
   API_GET_SCHEDULE_BY_ID: '/v1/Schedule/',
   API_UPDATE_ASSIGN_EXERCISES: '/v1/Schedule/AssignExercises/',
   API_UPDATE_SCHEDULE_CHANGE_STATUS: '/v1/Schedule/changeStatus/',
+  API_GET_ASSIGNED_SCHEDULE: '/v1/Schedule/GetAllAssignedSchedule',
 
   //time slot
   API_GET_STUDENT_TIME_SLOT: '/v1/StudentProfile/GetStudentProfileScheduleTimeSlot/',

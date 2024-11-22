@@ -28,11 +28,6 @@ function AssessmentCreation() {
             setContentErr("Đánh giá quá dài")
             return;
         }
-        // if (assessmentDetail.current.value.trim().length > 1000) {
-        //     setContentErr("Đánh giá quá dài")
-        //     return;
-        // }
-
         const newAss = {
             point: point,
             optionText: assessmentDetail.current.value

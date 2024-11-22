@@ -22,6 +22,12 @@ function AssessmentUpdater({ open, setOpen, currentAsssesment, assessments, setA
         setAssessment(currentAsssesment);
     }, [currentAsssesment])
 
+    useEffect(() => {
+        if (!open) {
+            setCurrentEdit(-1);
+            setUpdatedValue("");
+        }
+    }, [open])
     const handleChange = (id) => {
         const arr = [...assessment.assessmentOptions];
         const updatedOption = arr.find((a) => {
