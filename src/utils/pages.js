@@ -69,7 +69,10 @@ const PAGES = {
   ADMIN_TUTOR_PROFILE: '/admin/tutor-profile/:id',
   ADMIN_PARENT_PROFILE: '/admin/parent-profile/:id',
   ADMIN_REPORT_REVIEW: '/admin/report-review-management',
-  REPORT_REVIEW_DETAIL: '/admin/report-review-management/:id'
+  REPORT_REVIEW_DETAIL: '/admin/report-review-management/:id',
+
+  CHANGE_PASSWORD_TUTOR: '/autismtutor/change-password',
+
 };
 
 export default PAGES;

@@ -424,7 +424,7 @@ function Header() {
                 }
                 <Tab sx={{ fontSize: "18px" }} value={"4"} label="Blog" onClick={() => { nav(PAGES.ROOT + PAGES.BLOG_LIST) }} />
                 {/* <Tab sx={{ fontSize: "18px" }} value={"5"} label="Kiểm tra" onClick={() => { nav(PAGES.ROOT + PAGES.TEST) }} /> */}
-                {userInfo && <Tab sx={{ fontSize: "18px" }} value={"5"} label="Kiểm tra" icon={<ExpandMoreIcon />} iconPosition="end" onClick={handleClickListItem1} />}
+                {/* {userInfo && <Tab sx={{ fontSize: "18px" }} value={"5"} label="Kiểm tra" icon={<ExpandMoreIcon />} iconPosition="end" onClick={handleClickListItem1} />} */}
 
             </Tabs>
             <Menu

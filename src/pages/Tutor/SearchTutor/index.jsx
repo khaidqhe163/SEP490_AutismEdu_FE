@@ -170,7 +170,7 @@ function SearchTutor() {
                                                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                                                     <Box sx={{ display: "flex", alignItems: "center" }}>
                                                         <Rating name="read-only" value={t.reviewScore} readOnly />
-                                                        <Typography ml={2}>({t.totalReview} reviews)</Typography>
+                                                        <Typography ml={2}>({t.totalReview} Đánh giá)</Typography>
                                                     </Box>
                                                     <IconButton><BookmarkBorderIcon /></IconButton>
                                                 </Box>

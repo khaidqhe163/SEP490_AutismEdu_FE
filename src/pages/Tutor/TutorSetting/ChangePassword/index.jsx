@@ -6,14 +6,15 @@ import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import services from '~/plugins/services';
-import { userInfor } from '~/redux/features/userSlice';
+import { tutorInfor } from '~/redux/features/tutorSlice';
 function ChangePassword() {
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
-    const userInfo = useSelector(userInfor);
+    const tutorInfo = useSelector(tutorInfor);
+
     const validate = (values) => {
         const errors = {};
         if (!values.oldPassword) {
@@ -42,8 +43,8 @@ function ChangePassword() {
         validate,
         onSubmit: async (values) => {
             try {
-                await services.UserManagementAPI.changePassword(userInfo.id, {
-                    id: userInfo.id,
+                await services.UserManagementAPI.changePassword(tutorInfo.id, {
+                    id: tutorInfo.id,
                     oldPassword: values.oldPassword,
                     newPassword: values.newPassword,
                     confirmNewPassword: values.cfPassword
@@ -61,11 +62,11 @@ function ChangePassword() {
 
 
     return (
-        <Box sx={{ bgcolor: "#efefef", width: "100%", py: "20px" }}>
+        <Box sx={{ width: "100%", py: "100px", height: "calc(100vh - 64px)" }}>
             <Box sx={{
-                width: "80%", m: "auto", pt: '50px', bgcolor: "white",
+                width: "90%",mx: "auto", pt: '50px', bgcolor: "white",
                 borderRadius: "10px",
-                boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
+                boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
             }}>
                 <Typography variant='h5' textAlign="center">Đổi mật khẩu</Typography>
                 <form onSubmit={formik.handleSubmit}>

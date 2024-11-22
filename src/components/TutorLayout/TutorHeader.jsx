@@ -22,6 +22,7 @@ import InputEmoji from "react-input-emoji";
 import SendIcon from '@mui/icons-material/Send';
 import { jwtDecode } from 'jwt-decode';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import Settings from '@mui/icons-material/Settings';
 
 function TutorHeader({ openMenu, setOpenMenu }) {
     dayjs.extend(relativeTime);
@@ -736,6 +737,12 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
+                        <MenuItem onClick={() => nav(PAGES.CHANGE_PASSWORD_TUTOR)}>
+                            <ListItemIcon>
+                                <Settings fontSize="small" />
+                            </ListItemIcon>
+                            Đổi mật khẩu
+                        </MenuItem>
                         <MenuItem onClick={() => nav(PAGES.PAYMENT_HISTORY_TUTOR)}>
                             <ListItemIcon>
                                 <CurrencyExchangeIcon fontSize="small" />

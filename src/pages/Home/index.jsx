@@ -7,7 +7,7 @@ import Center from './Center';
 import TutorComponent from './Tutor';
 function Home() {
     return (
-        <Box>
+        <Box sx={{ overflowX: 'hidden' }}>
             <CarouselComponent />
             <BigCity />
             <TutorComponent />
