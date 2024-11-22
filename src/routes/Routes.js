@@ -64,6 +64,9 @@ import TutorRegistrationDetail from '~/pages/Admin/TutorRegistrationManagement/T
 import ParentTutorManagement from '~/pages/Admin/ParentTutorManagement'
 import AdminTutorProfile from '~/pages/Admin/ParentTutorManagement/TutorProfile'
 import AdminParentProfile from '~/pages/Admin/ParentTutorManagement/ParentProfile'
+
+import ChangePasswordTutor from '~/pages/Tutor/TutorSetting/ChangePassword'
+
 const UnLayoutRoutes = [
     {
         path: PAGES.TUTOR_LOGIN,
@@ -223,6 +226,9 @@ const tutorRoutes = [
     }, {
         path: PAGES.PAYMENT_HISTORY_TUTOR,
         element: PaymentHistory
+    }, {
+        path: PAGES.CHANGE_PASSWORD_TUTOR,
+        element: ChangePasswordTutor
     }
 ]
 const adminRoutes = [

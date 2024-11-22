@@ -28,13 +28,13 @@ function CurriculumManagement() {
 
     useEffect(() => {
         handleGetCurriculums();
-    }, []);
+    }, [showTable]);
 
     const handleGetCurriculums = async () => {
         try {
             await services.CurriculumManagementAPI.getCurriculums((res) => {
                 if (res?.result) {
-                    setCurriculumData(res.result);
+                    setCurriculumData(res.result?.sort((a, b) => a.ageFrom - b.ageFrom));
                 }
             }, (error) => {
                 console.log(error);
@@ -219,19 +219,19 @@ function CurriculumManagement() {
                 </>
             )}
 
-            <CreateOrEditModal
+            {openCreateEdit && <CreateOrEditModal
                 open={openCreateEdit}
-                handleClose={() => setOpenCreateEdit(false)}
+                handleClose={() => { setOpenCreateEdit(false); setCurrentEditIndex(null); }}
                 handleSubmit={isEditing ? handleSubmitEdit : handleSubmitCreate}
                 initialData={isEditing ? currentEditIndex : null}
                 isEditing={isEditing}
-            />
+            />}
 
-            <DeleteConfirmationModal
+            {openDeleteConfirm && <DeleteConfirmationModal
                 open={openDeleteConfirm}
                 handleClose={() => setOpenDeleteConfirm(false)}
                 handleDelete={handleDelete}
-            />
+            />}
         </Box>
     );
 }

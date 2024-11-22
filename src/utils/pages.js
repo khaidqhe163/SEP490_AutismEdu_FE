@@ -68,6 +68,9 @@ const PAGES = {
   PARENT_TUTOR_MAMAGEMENT: '/admin/parent-tutor-management',
   ADMIN_TUTOR_PROFILE: '/admin/tutor-profile/:id',
   ADMIN_PARENT_PROFILE: '/admin/parent-profile/:id',
+
+  CHANGE_PASSWORD_TUTOR: '/autismtutor/change-password',
+
 };
 
 export default PAGES;

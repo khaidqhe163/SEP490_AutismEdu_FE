@@ -105,6 +105,10 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
     }
 
     const handleOpenDialog = (content) => {
+        if (!content) {
+            enqueueSnackbar('Không có chi tiết bài tập!', { variant: 'error' });
+            return;
+        }
         setSelectedContent(content);
         setOpenDialog(true);
     };
@@ -158,14 +162,14 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
                             <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Loại bài tập:</Typography>
                         </Grid>
                         <Grid item xs={7}>
-                            <Typography variant='subtitle1'>{schedule?.exerciseType?.exerciseTypeName}</Typography>
+                            <Typography variant='subtitle1'>{schedule?.exerciseType?.exerciseTypeName||'-'}</Typography>
                         </Grid>
                         <Grid item xs={5}>
                             <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Bài tập:</Typography>
                         </Grid>
                         <Grid item xs={7}>
                             <Typography variant='subtitle1'>
-                                {schedule?.exercise?.exerciseName}
+                                {schedule?.exercise?.exerciseName||'-'}
                             </Typography>
                         </Grid>
                         <Grid item xs={5}>

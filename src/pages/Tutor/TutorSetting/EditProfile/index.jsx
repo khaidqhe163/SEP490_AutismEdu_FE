@@ -42,6 +42,7 @@ NumericFormatCustom.propTypes = {
 };
 
 function EditProfile() {
+    const [openConfirm, setOpenConfirm] = useState(false);
     const tutorInfo = useSelector(tutorInfor);
     const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
@@ -53,6 +54,7 @@ function EditProfile() {
     const [loadingDistricts, setLoadingDistricts] = useState(false);
     const [loadingCommunes, setLoadingCommunes] = useState(false);
     const [tutor, setTutor] = useState(null);
+    const [defaultTutor, setDefaultTutor] = useState(null);
     const [loading, setLoading] = useState(false);
     const menuProps = {
         PaperProps: {
@@ -62,12 +64,14 @@ function EditProfile() {
             },
         },
     };
+    console.log(tutor);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        const nameList = ["priceFrom", "priceEnd", "sessionHours", "startAge", "endAge"];
         setTutor({
             ...tutor,
-            [name]: value
+            [name]: nameList.includes(name) ? parseFloat(value) : value
         });
     };
 
@@ -81,14 +85,15 @@ function EditProfile() {
     const getTutorInformation = async () => {
         try {
             await services.TutorManagementAPI.handleGetTutorProfile((res) => {
-                console.log(res.result);
-
-                setTutor(res.result);
-                if (res?.result?.address) {
-                    const [provinceName, districtName, communeName, address] = res.result.address.split('|');
-                    setSpecificAddress(address);
-                    setSelectedProvince(provinceName);
-                    fetchCommunes(districtName, communeName);
+                if (res?.result) {
+                    setDefaultTutor(res.result);
+                    setTutor(res.result);
+                    if (res?.result?.address) {
+                        const [provinceName, districtName, communeName, address] = res.result.address.split('|');
+                        setSpecificAddress(address);
+                        setSelectedProvince(provinceName);
+                        fetchCommunes(districtName, communeName);
+                    }
                 }
             }, (error) => {
                 console.log(error);
@@ -119,7 +124,7 @@ function EditProfile() {
     }, [districts, selectedDistrict]);
 
     const fetchDistricts = (provinceName, districtName = '') => {
-        if (!provinces || provinces.length === 0) return; // Đảm bảo provinces đã được tải
+        if (!provinces || provinces.length === 0) return;
 
         const selectedProvinceData = provinces.find(prov => prov.name === provinceName);
         if (selectedProvinceData) {
@@ -188,9 +193,10 @@ function EditProfile() {
         setSelectedCommune(event.target.value);
     };
 
-    const handleSaveClick = async () => {
+
+    const handleSaveClick = async (e) => {
+        e.preventDefault()
         const updatedAddress = `${selectedProvince}|${selectedDistrict}|${selectedCommune}|${specificAddress}`;
-        // console.log({ ...tutor, address: updatedAddress, price: parseFloat(tutor?.price) });
         const updateTutor = {
             priceFrom: parseFloat(tutor.priceFrom),
             priceEnd: parseFloat(tutor.priceEnd),
@@ -209,7 +215,6 @@ function EditProfile() {
                     setTutor(res.result);
                 }
                 enqueueSnackbar('Cập nhật đã được gửi thành công đến hệ thống!\n', { variant: 'success' });
-                // setIsDisable(true);
             }, (error) => {
                 console.log(error);
             });
@@ -219,8 +224,21 @@ function EditProfile() {
             setLoading(false);
         }
     };
+    const handleChangeSpecificAddress = (e) => {
+        const updatedAddress = `${selectedProvince}|${selectedDistrict}|${selectedCommune}|${e.target.value}`;
+        setSpecificAddress(e.target.value);
+        setTutor((prev) => ({ ...prev, address: updatedAddress }));
+    };
 
-   
+    const checkChangeValue = () => {
+        let isNotChange = true;
+        if (tutor && defaultTutor) {
+            isNotChange = !(tutor?.priceEnd !== defaultTutor?.priceEnd || tutor?.priceFrom !== defaultTutor?.priceFrom || tutor?.sessionHours !== defaultTutor?.sessionHours ||
+                tutor?.startAge !== defaultTutor?.startAge || tutor?.endAge !== defaultTutor?.endAge || tutor?.phoneNumber !== defaultTutor?.phoneNumber || tutor?.address !== defaultTutor?.address
+                || tutor?.aboutMe !== defaultTutor?.aboutMe || selectedCommune !== defaultTutor.address.split('|')[2]);
+        }
+        return isNotChange;
+    };
 
     return (
         <Stack direction='column' sx={{ width: "90%", margin: "auto", mt: "20px", gap: 2 }}>
@@ -228,8 +246,7 @@ function EditProfile() {
                 <Typography variant='h4' my={2}>Chỉnh sửa hồ sơ </Typography> {(tutor?.requestStatus === 2) ? <Button size='small' variant='outlined' color='warning'>Đang chờ duyệt</Button> :
                     <Button size='small' variant='outlined' color='success'>Đã chấp nhận</Button>}
             </Stack>
-            <Grid container spacing={3} component="form" onSubmit={(e) => e.preventDefault()}>
-
+            <Grid container spacing={3} component="form" onSubmit={handleSaveClick}>
                 <Grid item xs={6} md={3}>
                     <TextField
                         fullWidth
@@ -268,15 +285,12 @@ function EditProfile() {
                         variant="outlined"
                         name="email"
                         value={tutorInfo?.email || ''}
-                        onChange={handleInputChange}
                     />
                 </Grid>
 
-
-
-
                 <Grid item xs={4} md={2}>
                     <TextField
+                        type='number'
                         fullWidth
                         required
                         label="Số giờ dạy trên buổi"
@@ -402,27 +416,28 @@ function EditProfile() {
                         variant="outlined"
                         name="specificAddress"
                         value={specificAddress}
-                        onChange={(e) => setSpecificAddress(e.target.value)}
+                        onChange={(e) => handleChangeSpecificAddress(e)}
                     />
                 </Grid>
 
                 <Grid item xs={12} mb={0} sx={{ height: '350px' }}>
                     <Typography variant='h6' mb={2}>Giới thiệu về tôi</Typography>
-                        <ReactQuill
-                            value={tutor?.aboutMe || ''}
-                            onChange={handleQuillChange}
-                        />
+                    <ReactQuill
+                        value={tutor?.aboutMe || ''}
+                        onChange={handleQuillChange}
+                    />
                 </Grid>
 
                 <Grid item xs={12} mt={2}>
                     <Box textAlign='right'>
-                        <Button disabled={tutor?.requestStatus === 2} variant="contained" color="primary" onClick={handleSaveClick}>Lưu</Button>
+                        <Button disabled={tutor?.requestStatus === 2 || checkChangeValue()} variant="contained" color="primary" type='submit'>Lưu</Button>
                     </Box>
                 </Grid>
             </Grid>
 
             <LoadingComponent open={loading} setOpen={setLoading} />
 
+            {openConfirm && <ModalConfirm open={openConfirm} onClose={() => setOpenConfirm(false)} handleSubmit={handleSaveClick} />}
         </Stack>
     );
 }
