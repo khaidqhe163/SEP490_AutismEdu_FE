@@ -1,4 +1,12 @@
-import { Box, IconButton, Typography } from '@mui/material';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import {
+    Box, Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Divider, IconButton, Stack, Typography
+} from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,9 +17,10 @@ import TableRow from '@mui/material/TableRow';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import services from '~/plugins/services';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 function StudentExcercise({ studentProfile }) {
     const [schedules, setSchedules] = useState([]);
+    const [openDialogE, setOpenDialogE] = useState(false);
+    const [selectedExcercise, setSelectedExcercise] = useState(null);
     useEffect(() => {
         handleGetSchedules();
     }, [])
@@ -39,7 +48,7 @@ function StudentExcercise({ studentProfile }) {
         }
     }
 
-    console.log(schedules);
+    console.log(selectedExcercise);
     return (
         <Box sx={{ px: 5, py: 3 }}>
             <Typography variant='h4'>Lịch sử học tập của trẻ</Typography>
@@ -52,7 +61,7 @@ function StudentExcercise({ studentProfile }) {
                             <TableCell sx={{ maxWidth: "200px", fontWeight: "bold" }}>Loại bài tập</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }}>Ngày học</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }}>Trạng thái</TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }} align='center'>Xem nhận xét</TableCell>
+                            <TableCell sx={{ fontWeight: "bold" }} align='center'>Xem chi tiết</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -83,7 +92,7 @@ function StudentExcercise({ studentProfile }) {
                                         </span>
                                     </TableCell>
                                     <TableCell align='center'>
-                                        <IconButton>
+                                        <IconButton onClick={() => { setSelectedExcercise(row); setOpenDialogE(true) }}>
                                             <RemoveRedEyeIcon />
                                         </IconButton>
                                     </TableCell>
@@ -93,6 +102,27 @@ function StudentExcercise({ studentProfile }) {
                     </TableBody>
                 </Table>
             </TableContainer>
+            {selectedExcercise && <Dialog open={openDialogE} onClose={() => setOpenDialogE(false)} maxWidth="md" fullWidth>
+                <DialogTitle textAlign={'center'}>{selectedExcercise.exercise.exerciseName}</DialogTitle>
+                <Divider />
+                <DialogContent>
+                    <Stack direction='row' gap={2}>
+                        <Typography sx={{ width: "25%" }}>Ghi chú từ giảng viên: </Typography>
+                        {
+                            !selectedExcercise.note ? (
+                                <Typography sx={{ color: "orange" }}><i>Không có ghi chú</i></Typography>
+                            ) : (
+                                <Typography sx={{ color: "orange", width: "70%" }}><i>{selectedExcercise.note}</i></Typography>
+                            )
+                        }
+                    </Stack>
+                    <Box mx={'auto'} width={'90%'} dangerouslySetInnerHTML={{ __html: selectedExcercise.exercise.description }} />
+                </DialogContent>
+                <Divider />
+                <DialogActions>
+                    <Button onClick={() => setOpenDialogE(false)} variant='contained' color="primary">Đóng</Button>
+                </DialogActions>
+            </Dialog>}
         </Box>
     )
 }
