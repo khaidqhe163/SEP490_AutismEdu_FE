@@ -138,7 +138,7 @@ function ExerciseTypeList() {
                                         {type.exerciseTypeName}
                                     </Typography>
                                 </Tooltip>
-                                <Typography variant='body2'>(Số lượng bài tập: <b>{type?.exercises?.length}</b>)</Typography>
+                                {/* <Typography variant='body2'>(Số lượng bài tập: <b>{type?.exercises?.length}</b>)</Typography> */}
                             </CardContent>
                         </Card>
                     </Grid>

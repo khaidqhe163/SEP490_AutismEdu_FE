@@ -30,6 +30,7 @@ import { PaymentHistoryAPI } from "~/services/PaymentHistoryAPI"
 import { ReportManagementAPI } from "~/services/ReportManagementAPI";
 import { MessageAPI } from "~/services/MessageAPI";
 import { ConversationAPI } from "~/services/ConversationAPI";
+import {DashboardManagementAPI} from"~/services/DashboardManagementAPI";
 
 (function () {
   initializeService(axios, "/api");
@@ -65,7 +66,8 @@ const services = {
   PaymentHistoryAPI,
   ReportManagementAPI,
   MessageAPI,
-  ConversationAPI
+  ConversationAPI,
+  DashboardManagementAPI
 };
 
 export default services;

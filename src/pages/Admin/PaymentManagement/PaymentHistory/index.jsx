@@ -33,6 +33,12 @@ const PaymentHistory = () => {
         paymentId: 0,
     });
 
+    console.log(filters);
+    
+
+    console.log(filters);
+    
+
     const [pagination, setPagination] = useState({
         pageNumber: 1,
         pageSize: 10,
