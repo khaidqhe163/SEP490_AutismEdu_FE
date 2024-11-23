@@ -18,7 +18,7 @@ function DashBoard() {
     const adminInfo = useSelector(adminInfor);
 
     console.log(adminInfo);
-    
+
 
     const [paymentPackages, setPaymentPackages] = useState([]);
 
@@ -125,7 +125,7 @@ function DashBoard() {
             y: {
                 ticks: {
                     callback: (value) => {
-                        return value > 1 ? value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : `${value*10}đ`;
+                        return value > 1 ? value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : `${value * 10}đ`;
                     },
                 },
             },
@@ -345,7 +345,11 @@ function DashBoard() {
             }}
         >
             <Typography variant="h5" fontWeight="bold" mb={1}>
-                {`Xin chào quản lý ${adminInfo?.fullName}, chúc bạn một ngày tốt lành! 😍`}
+                {`Xin chào quản lý `}
+                <span style={{ color: '#c849eb', fontWeight: 'bold', fontSize: '1.3em' }}>
+                    {adminInfo?.fullName}
+                </span>
+                {`, chúc bạn một ngày tốt lành! 😍`}
             </Typography>
             <Typography sx={{ color: 'gray', mb: 4 }}>
                 Dashboard về hệ thống AutismEduCS
