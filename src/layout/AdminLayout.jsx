@@ -11,7 +11,7 @@ function AdminLayout() {
                     <Box width={"17%"} sx={{ height: "100%", overflow: "auto" }}>
                         <AdminLeftBar />
                     </Box>
-                    <Box width={"83%"} padding={5} sx={{ height: "100%", overflow: "auto" }}>
+                    <Box width={"83%"} padding={3} sx={{ height: "100%", overflow: "auto" }}>
                         <Outlet />
                     </Box>
                 </Stack>

@@ -7,14 +7,6 @@ import LoadingComponent from '../LoadingComponent';
 
 const RechargeModal = () => {
     const [loading, setLoading] = useState(false);
-    const servicePackages = [
-        { id: 1, packageName: "Cơ bản", duration: "1 tháng", price: 10000 },
-        { id: 2, packageName: "Tiêu chuẩn", duration: "3 tháng", price: 270000 },
-        { id: 3, packageName: "Cao cấp", duration: "6 tháng", price: 500000 },
-        { id: 4, packageName: "Tối thượng", duration: "1 năm", price: 900000 },
-        { id: 5, packageName: "Ultimate", duration: "2 năm", price: 1000000 },
-        { id: 6, packageName: "Ultimate", duration: "3 năm", price: 10000000 },
-    ];
 
     const [servicePackage, setServicePackage] = useState([]);
 

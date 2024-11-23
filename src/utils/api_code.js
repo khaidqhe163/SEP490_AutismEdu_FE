@@ -188,7 +188,13 @@ const API_CODE = {
   //Messages
   API_GET_MESSAGE: '/v1/Message/',
   API_READ_MESSAGE: '/v1/Message/read/',
-  API_SEND_MESSAGE: '/v1/Message'
+  API_SEND_MESSAGE: '/v1/Message',
+
+  //Dashboard
+  API_GET_TOTAL_PARENT_HAVE_STUDENT_PROFILE: '/v1/Dashboard/TotalParentHaveStudentProfile',
+  API_GET_TOTAL_USER: '/v1/Dashboard/TotalUser',
+  API_GET_PACKAGEPAYMENT: '/v1/Dashboard/PackagePayment',
+  API_GET_REVENUES: '/v1/Dashboard/Revenues',
 };
 
 export default API_CODE;
