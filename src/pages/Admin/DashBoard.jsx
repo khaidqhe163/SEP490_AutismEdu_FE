@@ -10,6 +10,7 @@ import { format } from 'date-fns';
 import services from '~/plugins/services';
 import { adminInfor, setAdminInformation } from '~/redux/features/adminSlice';
 import { useSelector } from 'react-redux';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
@@ -88,10 +89,11 @@ function DashBoard() {
     };
 
     const [stats, setStats] = useState([
-        { label: 'Tổng số người dùng', value: '658', color: '#fdf0d2', icon: <AccountBoxIcon fontSize="large" sx={{ color: '#feb118' }} /> },
-        { label: 'Tổng số phụ huynh đã dùng', value: '90K', color: '#eaf0ff', icon: <Diversity1Icon fontSize="large" sx={{ color: '#4880fb' }} /> },
-        { label: 'Tổng số gia sư', value: '864', color: '#eef7e2', icon: <School fontSize="large" sx={{ color: '#7bc402' }} /> },
-        { label: 'Phụ huynh mới', value: '83', color: '#e8e4ff', icon: <SupervisorAccountIcon fontSize="large" sx={{ color: '#9e91ed' }} /> },
+        { label: 'Tổng số người dùng', value: 0, color: '#fdf0d2', icon: <AccountBoxIcon fontSize="large" sx={{ color: '#feb118' }} /> },
+        { label: 'Phụ huynh đã dùng', value: 0, color: '#eaf0ff', icon: <Diversity1Icon fontSize="large" sx={{ color: '#4880fb' }} /> },
+        { label: 'Tổng số gia sư', value: 0, color: '#d9eeef', icon: <School fontSize="large" sx={{ color: '#02b9bb' }} /> },
+        { label: 'Phụ huynh mới', value: 0, color: '#e8e4ff', icon: <SupervisorAccountIcon fontSize="large" sx={{ color: '#9e91ed' }} /> },
+        { label: 'Tổng thu nhập', value: 12620000000, color: '#eef7e2', icon: <LocalAtmIcon fontSize="large" sx={{ color: '#7bc402' }} /> },
     ]);
 
     const barData = {
@@ -191,6 +193,7 @@ function DashBoard() {
         handleGetParentHaveStudentProfile();
         handleGetAllTutor();
         handleGetNewParent();
+        // handleGetTotalRevenue();
     }, []);
 
     useEffect(() => {
@@ -201,6 +204,30 @@ function DashBoard() {
         handleGetRevenues();
     }, [filterRevenues]);
 
+    const handleGetTotalRevenue = async () => {
+        try {
+            await services.DashboardManagementAPI.getRevenues((res) => {
+                if (res?.result) {
+                    const money = res.result.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
+
+                    const updatedStats = stats.map((stat, index) =>
+                        index === 4
+                            ? { ...stat, value: money }
+                            : stat
+                    );
+
+                    setStats(updatedStats);
+                }
+            }, (error) => {
+                console.log(error);
+            }, {
+                startDate: '0001-01-01',
+                endDate: '9999-12-31'
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const handleGetRevenues = async () => {
         try {
@@ -242,12 +269,15 @@ function DashBoard() {
         try {
             await services.DashboardManagementAPI.getTotalParentHaveStudentProfile((res) => {
                 if (res?.result) {
-                    const userS = stats[1];
-                    userS.value = res.result;
-                    const newData = [...stats];
-                    newData.splice(1, 1, userS);
-                    setStats(newData);
+                    const updatedStats = stats.map((stat, index) =>
+                        index === 1
+                            ? { ...stat, value: res.result }
+                            : stat
+                    );
+
+                    setStats(updatedStats);
                 }
+
             }, (error) => {
                 console.log(error);
 
@@ -264,11 +294,13 @@ function DashBoard() {
         try {
             await services.DashboardManagementAPI.getTotalUser((res) => {
                 if (res?.result) {
-                    const userS = stats[0];
-                    userS.value = res.result;
-                    const newData = [...stats];
-                    newData.splice(0, 1, userS);
-                    setStats(newData);
+                    const updatedStats = stats.map((stat, index) =>
+                        index === 0
+                            ? { ...stat, value: res.result }
+                            : stat
+                    );
+
+                    setStats(updatedStats);
                 }
             }, (error) => {
                 console.log(error);
@@ -287,11 +319,13 @@ function DashBoard() {
         try {
             await services.DashboardManagementAPI.getTotalUser((res) => {
                 if (res?.result) {
-                    const userS = stats[2];
-                    userS.value = res.result;
-                    const newData = [...stats];
-                    newData.splice(2, 1, userS);
-                    setStats(newData);
+                    const updatedStats = stats.map((stat, index) =>
+                        index === 2
+                            ? { ...stat, value: res.result }
+                            : stat
+                    );
+
+                    setStats(updatedStats);
                 }
             }, (error) => {
                 console.log(error);
@@ -315,11 +349,13 @@ function DashBoard() {
             const endDate = new Date(year, month + 1, 0);
             await services.DashboardManagementAPI.getTotalUser((res) => {
                 if (res?.result) {
-                    const userS = stats[3];
-                    userS.value = res.result;
-                    const newData = [...stats];
-                    newData.splice(3, 1, userS);
-                    setStats(newData);
+                    const updatedStats = stats.map((stat, index) =>
+                        index === 3
+                            ? { ...stat, value: res.result }
+                            : stat
+                    );
+
+                    setStats(updatedStats);
                 }
             }, (error) => {
                 console.log(error);
@@ -333,6 +369,17 @@ function DashBoard() {
             console.log(error);
         }
     };
+
+    function formatNumberToVN(num) {
+        // if (num >= 1_000_000_000) {
+        //     return `${(num / 1_000_000_000).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}B`;
+        // } else if (num >= 1_000_000) {
+        //     return `${(num / 1_000_000).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}M`;
+        // } else {
+        //     return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        // }
+        return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    }
 
     return (
         <Box
@@ -357,7 +404,7 @@ function DashBoard() {
 
             <Grid container spacing={2} sx={{ mb: 4 }}>
                 {stats.map((stat, index) => (
-                    <Grid item xs={12} sm={6} md={3} key={index}>
+                    <Grid item xs={12} sm={6} md={2.4} key={index}>
                         <Paper
                             elevation={3}
                             sx={{
@@ -376,7 +423,7 @@ function DashBoard() {
                                     {stat.label}
                                 </Typography>
                                 <Typography variant="h5" sx={{ my: 1 }}>
-                                    {stat.value}
+                                    {index === 4 ? formatNumberToVN(stat.value) : stat.value}
                                 </Typography>
                             </Box>
                         </Paper>
