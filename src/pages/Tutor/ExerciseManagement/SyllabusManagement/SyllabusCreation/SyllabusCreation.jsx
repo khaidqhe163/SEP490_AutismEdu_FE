@@ -64,14 +64,8 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
                 .min(0, 'Tuổi phải lớn hơn 0'),
             ageEnd: Yup.number()
                 .required('Bắt buộc phải nhập')
-                .test(
-                    'greater-than-ageFrom',
-                    'Tuổi kết thúc phải lớn hơn tuổi bắt đầu',
-                    function (value) {
-                        const { ageFrom } = this.parent;
-                        return value > ageFrom;
-                    }
-                ),
+                .positive('Độ tuổi phải là số dương')
+                .moreThan(Yup.ref('ageFrom'), 'Độ tuổi kết thúc phải lớn hơn độ tuổi bắt đầu'),
             syllabusExercises: Yup.array()
                 .min(1, 'Phải có ít nhất 1 loại bài tập và bài tập'),
         }),
@@ -139,7 +133,12 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
                                     label="Từ"
                                     type="number"
                                     value={ageFrom}
-                                    onChange={(e) => handleAgeFromChange(e.target.value)}
+                                    onChange={
+                                        (e) => {
+                                            formik.handleChange(e);
+                                            setAgeFrom(parseInt(e.target.value));
+                                        }
+                                    }
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.ageFrom && Boolean(formik.errors.ageFrom)}
                                     helperText={formik.touched.ageFrom && formik.errors.ageFrom}
@@ -151,7 +150,12 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
                                     label="Đến"
                                     type="number"
                                     value={ageEnd}
-                                    onChange={(e) => handleAgeEndChange(e.target.value)}
+                                    onChange={
+                                        (e) => {
+                                            formik.handleChange(e);
+                                            setAgeEnd(parseInt(e.target.value));
+                                        }
+                                    }
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.ageEnd && Boolean(formik.errors.ageEnd)}
                                     helperText={formik.touched.ageEnd && formik.errors.ageEnd}

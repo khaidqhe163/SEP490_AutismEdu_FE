@@ -10,6 +10,7 @@ import 'react-quill/dist/quill.snow.css';
 
 function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCloseEditDialog, selectedExercise, setSelectedExercise, exerciseTypeName, selectedExerciseType }) {
     const [loading, setLoading] = useState(false);
+    console.log(selectedExercise);
 
     const toolbarOptions = [
         ['bold', 'italic', 'underline', 'strike'],
@@ -63,7 +64,7 @@ function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCl
                     exerciseName: values.exerciseName,
                     description: values.description,
                     exerciseTypeId: selectedExerciseType.id,
-                    originalId: selectedExercise?.id
+                    originalId: selectedExercise?.original ? selectedExercise.original?.id : selectedExercise?.id
                 };
                 await services.ExerciseManagementAPI.createExercise(dataUpdate, (res) => {
                     if (res?.result) {

@@ -11,21 +11,6 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
         description: initialData?.description || '',
     });
 
-    // useEffect(() => {
-    //     if (isEditing && initialData) {
-    //         setFormData({
-    //             ageFrom: initialData.ageFrom,
-    //             ageEnd: initialData.ageEnd,
-    //             description: initialData.description,
-    //         });
-    //     } else {
-    //         setFormData({
-    //             ageFrom: '',
-    //             ageEnd: '',
-    //             description: ''
-    //         });
-    //     }
-    // }, [isEditing, initialData]);
 
     const validationSchema = Yup.object({
         ageFrom: Yup.number().required('Độ tuổi bắt đầu là bắt buộc').positive('Độ tuổi phải là số dương'),
@@ -33,7 +18,7 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
             .required('Độ tuổi kết thúc là bắt buộc')
             .positive('Độ tuổi phải là số dương')
             .moreThan(Yup.ref('ageFrom'), 'Độ tuổi kết thúc phải lớn hơn độ tuổi bắt đầu'),
-        description: Yup.string().required('Nội dung chương trình học là bắt buộc') .test('is-not-empty', 'Không được để trống', value => value !== '<p><br></p>' || value!=='<p> </p>'),
+        description: Yup.string().required('Nội dung chương trình học là bắt buộc').test('is-not-empty', 'Không được để trống', value => value !== '<p><br></p>' || value !== '<p> </p>'),
     });
 
 
@@ -50,27 +35,14 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
         borderRadius: '10px'
     };
 
-    // const handleInputChange = (e) => {
-    //     const { name, value } = e.target;
-    //     setFormData({
-    //         ...formData,
-    //         [name]: parseInt(value)
-    //     });
-    // };
-
-    // const handleDescriptionChange = (content) => {
-    //     setFormData({
-    //         ...formData,
-    //         description: content
-    //     });
-    // };
 
     const handleFormSubmit = (values) => {
         console.log(values);
 
         if (isEditing) {
             console.log(initialData.id);
-            handleSubmit(values, initialData.id);
+            const data = initialData.originalCurriculum ? initialData.originalCurriculum.id : initialData.id;
+            handleSubmit(values, data);
         } else {
             handleSubmit(values);
         }

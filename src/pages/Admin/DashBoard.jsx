@@ -11,15 +11,27 @@ import services from '~/plugins/services';
 import { adminInfor, setAdminInformation } from '~/redux/features/adminSlice';
 import { useSelector } from 'react-redux';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import StatCard from '~/components/StatsCard';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
 function DashBoard() {
 
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [parentsWithProfiles, setParentsWithProfiles] = useState(0);
+    const [totalTutors, setTotalTutors] = useState(0);
+    const [newParents, setNewParents] = useState(0);
+    const [totalRevenue, setTotalRevenue] = useState(0);
+
+    useEffect(() => {
+        console.log("Total Users:", totalUsers);
+        console.log("Parents With Profiles:", parentsWithProfiles);
+        console.log("Total Tutors:", totalTutors);
+        console.log("New Parents:", newParents);
+        console.log("Total Revenue:", totalRevenue);
+    }, [totalUsers, parentsWithProfiles, totalTutors, newParents, totalRevenue]);
+
     const adminInfo = useSelector(adminInfor);
-
-    console.log(adminInfo);
-
 
     const [paymentPackages, setPaymentPackages] = useState([]);
 
@@ -93,8 +105,9 @@ function DashBoard() {
         { label: 'Phụ huynh đã dùng', value: 0, color: '#eaf0ff', icon: <Diversity1Icon fontSize="large" sx={{ color: '#4880fb' }} /> },
         { label: 'Tổng số gia sư', value: 0, color: '#d9eeef', icon: <School fontSize="large" sx={{ color: '#02b9bb' }} /> },
         { label: 'Phụ huynh mới', value: 0, color: '#e8e4ff', icon: <SupervisorAccountIcon fontSize="large" sx={{ color: '#9e91ed' }} /> },
-        { label: 'Tổng thu nhập', value: 12620000000, color: '#eef7e2', icon: <LocalAtmIcon fontSize="large" sx={{ color: '#7bc402' }} /> },
+        { label: 'Tổng thu nhập', value: 0, color: '#eef7e2', icon: <LocalAtmIcon fontSize="large" sx={{ color: '#7bc402' }} /> },
     ]);
+
 
     const barData = {
         labels: monthlyRevenue.map((data) => data.month),
@@ -193,7 +206,7 @@ function DashBoard() {
         handleGetParentHaveStudentProfile();
         handleGetAllTutor();
         handleGetNewParent();
-        // handleGetTotalRevenue();
+        handleGetTotalRevenue();
     }, []);
 
     useEffect(() => {
@@ -204,19 +217,23 @@ function DashBoard() {
         handleGetRevenues();
     }, [filterRevenues]);
 
+    console.log(stats);
+
+
     const handleGetTotalRevenue = async () => {
         try {
             await services.DashboardManagementAPI.getRevenues((res) => {
                 if (res?.result) {
                     const money = res.result.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
 
-                    const updatedStats = stats.map((stat, index) =>
-                        index === 4
-                            ? { ...stat, value: money }
-                            : stat
-                    );
+                    // const updatedStats = stats.map((stat, index) =>
+                    //     index === 4
+                    //         ? { ...stat, value: money }
+                    //         : stat
+                    // );
 
-                    setStats(updatedStats);
+                    // setStats(updatedStats);
+                    setTotalRevenue(money);
                 }
             }, (error) => {
                 console.log(error);
@@ -269,13 +286,14 @@ function DashBoard() {
         try {
             await services.DashboardManagementAPI.getTotalParentHaveStudentProfile((res) => {
                 if (res?.result) {
-                    const updatedStats = stats.map((stat, index) =>
-                        index === 1
-                            ? { ...stat, value: res.result }
-                            : stat
-                    );
+                    // const updatedStats = stats.map((stat, index) =>
+                    //     index === 1
+                    //         ? { ...stat, value: res.result }
+                    //         : stat
+                    // );
 
-                    setStats(updatedStats);
+                    // setStats(updatedStats);
+                    setParentsWithProfiles(res.result);
                 }
 
             }, (error) => {
@@ -294,13 +312,15 @@ function DashBoard() {
         try {
             await services.DashboardManagementAPI.getTotalUser((res) => {
                 if (res?.result) {
-                    const updatedStats = stats.map((stat, index) =>
-                        index === 0
-                            ? { ...stat, value: res.result }
-                            : stat
-                    );
+                    // const updatedStats = stats.map((stat, index) =>
+                    //     index === 0
+                    //         ? { ...stat, value: res.result }
+                    //         : stat
+                    // );
 
-                    setStats(updatedStats);
+                    // setStats(updatedStats);
+                    setTotalUsers(res.result);
+
                 }
             }, (error) => {
                 console.log(error);
@@ -319,13 +339,14 @@ function DashBoard() {
         try {
             await services.DashboardManagementAPI.getTotalUser((res) => {
                 if (res?.result) {
-                    const updatedStats = stats.map((stat, index) =>
-                        index === 2
-                            ? { ...stat, value: res.result }
-                            : stat
-                    );
+                    // const updatedStats = stats.map((stat, index) =>
+                    //     index === 2
+                    //         ? { ...stat, value: res.result }
+                    //         : stat
+                    // );
 
-                    setStats(updatedStats);
+                    // setStats(updatedStats);
+                    setTotalTutors(res.result);
                 }
             }, (error) => {
                 console.log(error);
@@ -349,13 +370,14 @@ function DashBoard() {
             const endDate = new Date(year, month + 1, 0);
             await services.DashboardManagementAPI.getTotalUser((res) => {
                 if (res?.result) {
-                    const updatedStats = stats.map((stat, index) =>
-                        index === 3
-                            ? { ...stat, value: res.result }
-                            : stat
-                    );
+                    // const updatedStats = stats.map((stat, index) =>
+                    //     index === 3
+                    //         ? { ...stat, value: res.result }
+                    //         : stat
+                    // );
 
-                    setStats(updatedStats);
+                    // setStats(updatedStats);
+                    setNewParents(res.result);
                 }
             }, (error) => {
                 console.log(error);
@@ -403,9 +425,9 @@ function DashBoard() {
             </Typography>
 
             <Grid container spacing={2} sx={{ mb: 4 }}>
-                {stats.map((stat, index) => (
-                    <Grid item xs={12} sm={6} md={2.4} key={index}>
-                        <Paper
+                {/* {stats.map((stat, index) => ( */}
+                {/* <Grid item xs={12} sm={6} md={2.4} key={index}> */}
+                {/* <Paper
                             elevation={3}
                             sx={{
                                 display: 'flex',
@@ -426,9 +448,51 @@ function DashBoard() {
                                     {index === 4 ? formatNumberToVN(stat.value) : stat.value}
                                 </Typography>
                             </Box>
-                        </Paper>
-                    </Grid>
-                ))}
+                        </Paper> */}
+
+                {/* </Grid> */}
+                <Grid item xs={12} sm={6} md={2.4}>
+                    <StatCard
+                        label="Tổng số người dùng"
+                        value={totalUsers}
+                        color="#fdf0d2"
+                        icon={<AccountBoxIcon fontSize="large" sx={{ color: '#feb118' }} />}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6} md={2.4}>
+                    <StatCard
+                        label="Phụ huynh đã dùng"
+                        value={parentsWithProfiles}
+                        color="#eaf0ff"
+                        icon={<Diversity1Icon fontSize="large" sx={{ color: '#4880fb' }} />}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6} md={2.4}>
+                    <StatCard
+                        label="Tổng số gia sư"
+                        value={totalTutors}
+                        color="#d9eeef"
+                        icon={<School fontSize="large" sx={{ color: '#02b9bb' }} />}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6} md={2.4}>
+                    <StatCard
+                        label="Phụ huynh mới"
+                        value={newParents}
+                        color="#e8e4ff"
+                        icon={<SupervisorAccountIcon fontSize="large" sx={{ color: '#9e91ed' }} />}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6} md={2.4}>
+                    <StatCard
+                        label="Tổng thu nhập"
+                        value={formatNumberToVN(totalRevenue)}
+                        color="#eef7e2"
+                        icon={<LocalAtmIcon fontSize="large" sx={{ color: '#7bc402' }} />}
+                    />
+                </Grid>
+
+                {/* ))} */}
             </Grid>
 
             <Grid container spacing={4}>

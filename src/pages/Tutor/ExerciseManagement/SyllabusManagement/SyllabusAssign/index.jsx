@@ -63,14 +63,8 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
                 .min(0, 'Tuổi phải lớn hơn 0'),
             ageEnd: Yup.number()
                 .required('Bắt buộc phải nhập')
-                .test(
-                    'greater-than-ageFrom',
-                    'Tuổi kết thúc phải lớn hơn tuổi bắt đầu',
-                    function (value) {
-                        const { ageFrom } = this.parent;
-                        return value > ageFrom;
-                    }
-                ),
+                .positive('Độ tuổi phải là số dương')
+                .moreThan(Yup.ref('ageFrom'), 'Độ tuổi kết thúc phải lớn hơn độ tuổi bắt đầu'),
             syllabusExercises: Yup.array()
                 .min(1, 'Phải có ít nhất 1 loại bài tập và bài tập'),
         }),
