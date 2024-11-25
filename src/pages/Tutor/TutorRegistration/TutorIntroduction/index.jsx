@@ -333,7 +333,7 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                         onClick={handleBack}
                         sx={{ mr: 1 }}
                     >
-                        Trở lại
+                        Quay lại
                     </Button>
                     <Box sx={{ flex: '1 1 auto' }} />
                     <Button type='submit'>

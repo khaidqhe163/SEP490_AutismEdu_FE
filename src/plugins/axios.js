@@ -12,7 +12,7 @@ if (token != undefined && token.length != 0) {
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
-  timeout: 10000, // replace project base url later
+  timeout: 10000,
   headers
 });
 
@@ -32,7 +32,6 @@ axiosInstance.interceptors.response.use(function (response) {
   return response;
 }, async function (error) {
   const originalRequest = error.config;
-  console.log(error);
   if (error.response.status === 401 && !originalRequest._retry) {
     originalRequest._retry = true;
     if (!isRefreshing) {
@@ -76,7 +75,6 @@ async function refreshAccessToken() {
     return response.data.result.accessToken;
   } catch (error) {
     console.error('Failed to refresh access token:', error);
-    throw error;
   }
 }
 const setHeaders = function (headers) {

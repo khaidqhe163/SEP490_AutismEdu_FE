@@ -89,21 +89,21 @@ function ChangeSlotModal({ schedule, setIsChange }) {
         }
     }, [open])
 
-    useEffect(() => {
-        if (date !== "") {
-            getScheduleInDate();
-        }
-    }, [date])
+    // useEffect(() => {
+    //     if (date !== "") {
+    //         getScheduleInDate();
+    //     }
+    // }, [date])
 
     useEffect(() => {
         checkSelectedTime();
     }, [schedules])
-    const getScheduleInDate = async () => {
+    const getExistSchedule = async () => {
         try {
             setLoading(true);
             await services.ScheduleAPI.getSchedule((res) => {
                 console.log(res.result);
-                setSchedules(res.result.schedules)
+                setExistSchedule(res.result.schedules)
             }, (err) => {
                 console.log(err);
             }, {
@@ -119,15 +119,15 @@ function ChangeSlotModal({ schedule, setIsChange }) {
     const getMinDate = () => {
         const newDate = new Date();
         const year = newDate.getFullYear();
-        const month = String(newDate.getMonth() + 1).padStart(2, '0'); // Thêm '0' nếu cần
-        const day = String(newDate.getDate()).padStart(2, '0'); // Thêm '0' nếu cần
+        const month = String(newDate.getMonth() + 1).padStart(2, '0');
+        const day = String(newDate.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
 
     const getMaxDate = () => {
         if (!schedule) return "";
-        const maxDate = new Date(schedule.scheduleDate)
-        maxDate.setDate(maxDate.getDate() + 30); // Cộng thêm 30 ngày
+        const maxDate = new Date();
+        maxDate.setDate(maxDate.getDate() + 20);
         const year = maxDate.getFullYear();
         const month = String(maxDate.getMonth() + 1).padStart(2, '0');
         const day = String(maxDate.getDate()).padStart(2, '0');
@@ -146,24 +146,24 @@ function ChangeSlotModal({ schedule, setIsChange }) {
         const [hours, minutes] = time.split(':').map(Number);
         return hours * 60 + minutes;
     };
-    const getExistSchedule = async () => {
-        try {
-            await services.StudentProfileAPI.getTutorSchedule((res) => {
-                const arr = [];
-                console.log(res.result);
-                res.result.forEach((a) => {
-                    a.scheduleTimeSlots.forEach((s) => {
-                        arr.push(s);
-                    })
-                })
-                setExistSchedule(arr);
-            }, (error) => {
-                console.log(error);
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    // const getExistSchedule = async () => {
+    //     try {
+    //         await services.StudentProfileAPI.getTutorSchedule((res) => {
+    //             const arr = [];
+    //             console.log(res.result);
+    //             res.result.forEach((a) => {
+    //                 a.scheduleTimeSlots.forEach((s) => {
+    //                     arr.push(s);
+    //                 })
+    //             })
+    //             setExistSchedule(arr);
+    //         }, (error) => {
+    //             console.log(error);
+    //         })
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
     const handleChangeSchedule = async () => {
         const checkValidate = checkSelectedTime();
         if (!checkValidate) {
@@ -210,7 +210,7 @@ function ChangeSlotModal({ schedule, setIsChange }) {
     }
     return (
         <>
-            <Button sx={{ mt: 2, fontSize: "12px", borderColor:'#218eed'}} variant='outlined' size='medium' onClick={handleOpen}>Đổi lịch</Button>
+            <Button sx={{ mt: 2, fontSize: "12px", borderColor: '#218eed' }} variant='outlined' size='medium' onClick={handleOpen}>Đổi lịch</Button>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -230,7 +230,7 @@ function ChangeSlotModal({ schedule, setIsChange }) {
                         schedule && (
                             <Box mt={3}>
                                 <Typography>Đổi thời gian học của <strong>{schedule.studentProfile.name}</strong></Typography>
-                                <Typography color='red'>{getDate()}</Typography>
+                                <Typography color='green'>{getDate()}</Typography>
                             </Box>
                         )
                     }

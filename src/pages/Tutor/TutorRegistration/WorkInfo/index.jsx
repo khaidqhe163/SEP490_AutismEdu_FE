@@ -153,7 +153,7 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                     onClick={handleBack}
                     sx={{ mr: 1 }}
                 >
-                    Back
+                    Quay lại
                 </Button>
                 <Box sx={{ flex: '1 1 auto' }} />
                 <Button onClick={() => setOpenConfirm(true)}>

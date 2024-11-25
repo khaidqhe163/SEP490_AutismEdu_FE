@@ -20,6 +20,7 @@ function LoginAdmin() {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState(null);
+    const [role, setRole] = useState(null);
     const dispatch = useDispatch();
     const nav = useNavigate();
     const INPUT_CSS = {
@@ -35,18 +36,24 @@ function LoginAdmin() {
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     useEffect(() => {
-        if (userId) {
+        if (userId && role) {
             services.UserManagementAPI.getUserById(userId, (res) => {
                 enqueueSnackbar("Đăng nhập thành công!", { variant: "success" });
                 dispatch(setAdminInformation(res.result));
-                nav(PAGES.DASHBOARD)
+                if (role === "Manager") {
+                    nav(PAGES.DASHBOARD)
+                } else if (role === "Admin") {
+                    nav(PAGES.USERMANAGEMENT)
+                } else {
+                    nav(PAGES.PARENT_TUTOR_MAMAGEMENT)
+                }
             }, (error) => {
                 enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
                 console.log(error);
             })
             setLoading(false)
         }
-    }, [userId])
+    }, [userId, role])
 
     const validate = (values) => {
         const errors = {}
@@ -78,6 +85,7 @@ function LoginAdmin() {
             Cookies.set('refresh_token', res.result.refreshToken, { expires: 365 })
             const decodedToken = jwtDecode(res.result.accessToken);
             setUserId(decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
+            setRole(decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'])
         }, (err) => {
             if (err.code === 500) {
                 enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });

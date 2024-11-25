@@ -61,7 +61,6 @@ export default function Career({ career, setCareer }) {
             const existWE = career.find((c) => {
                 return c.companyName === values.companyName && c.position === values.position
             })
-            console.log(existWE);
             if (existWE) {
                 enqueueSnackbar("Bạn đã có kinh nghiệm này rồi", { variant: "error" })
             } else {

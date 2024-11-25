@@ -85,7 +85,7 @@ function ReportTutor({ studentProfile }) {
             } catch (error) {
                 enqueueSnackbar("Gửi đơn tố cáo thất bại!", { variant: "error" })
             } finally {
-                // setLoading(false);
+                setLoading(false);
             }
         }
     })

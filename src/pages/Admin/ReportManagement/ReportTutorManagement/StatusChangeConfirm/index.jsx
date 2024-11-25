@@ -6,12 +6,12 @@ import { useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 function StatusChangeConfirm({ id, status, open, setOpen, setReport, report }) {
-    const [rejectReason, setRejectReason] = useState("");
+    const [reportResponse, setReportResponse] = useState("");
     const [loading, setLoading] = useState(false);
     const handleSubmit = async () => {
         try {
             setLoading(true);
-            if (rejectReason === "") {
+            if (reportResponse === "") {
                 setLoading(false);
                 enqueueSnackbar("Bạn chưa nhập lý do", { variant: "error" })
                 return;
@@ -20,7 +20,7 @@ function StatusChangeConfirm({ id, status, open, setOpen, setReport, report }) {
                 {
                     id: id,
                     statusChange: status,
-                    comment: rejectReason
+                    comment: reportResponse
                 },
                 (res) => {
                     enqueueSnackbar("Cập nhật thành công!", { variant: "success" })
@@ -63,8 +63,8 @@ function StatusChangeConfirm({ id, status, open, setOpen, setReport, report }) {
                     multiline
                     rows={8}
                     fullWidth
-                    value={rejectReason}
-                    onChange={(e) => { setRejectReason(e.target.value) }}
+                    value={reportResponse}
+                    onChange={(e) => { setReportResponse(e.target.value) }}
                 />
                 <Box textAlign="right" mt={2}>
                     <Button onClick={() => setOpen(false)}>Huỷ bỏ</Button>

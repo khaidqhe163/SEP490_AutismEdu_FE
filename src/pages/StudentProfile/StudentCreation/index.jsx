@@ -239,6 +239,10 @@ function StudentCreation() {
             setLoading(false);
         } catch (error) {
             console.log(error);
+            enqueueSnackbar("Tạo hồ sơ thất bại!", { variant: "error" })
+        } finally {
+            setLoading(false);
+            setOpenConfirm(false);
         }
     }
     const handleGetTutorRequest = async () => {
