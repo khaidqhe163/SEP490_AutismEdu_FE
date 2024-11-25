@@ -7,8 +7,6 @@ import StatusChangeConfirm from '../ReportTutorManagement/StatusChangeConfirm';
 function ReportReviewDetail() {
     const [report, setReport] = useState(null);
     const { id } = useParams();
-    const [openImage, setOpenImage] = useState(false);
-    const [currentImage, setCurrentImage] = useState(0);
     const [relatedReport, setRelatedReport] = useState([]);
     const [open, setOpen] = useState(false);
     const [status, setStatus] = useState(1);

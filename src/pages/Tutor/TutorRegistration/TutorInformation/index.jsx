@@ -536,11 +536,11 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                         onClick={handleBack}
                         sx={{ mr: 1 }}
                     >
-                        Back
+                        Quay lại
                     </Button>
                     <Box sx={{ flex: '1 1 auto' }} />
                     <Button type="submit">
-                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                        {activeStep === steps.length - 1 ? 'Kết thúc' : 'Tiếp theo'}
                     </Button>
                 </Box>
             </form>

@@ -94,8 +94,11 @@ function AdminLeftBar() {
     }, [location])
 
     useEffect(() => {
-        if (adminInformation?.role === 'Admin' || adminInformation?.role === 'Staff') {
+        if (adminInformation?.role === 'Admin') {
             nav(PAGES.USERMANAGEMENT);
+            setSelectedIndex(1);
+        } else if (adminInformation?.role === 'Staff') {
+            nav(PAGES.PARENT_TUTOR_MAMAGEMENT);
             setSelectedIndex(1);
         }
     }, [adminInformation])

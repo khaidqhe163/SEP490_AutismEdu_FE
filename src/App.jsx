@@ -21,7 +21,6 @@ function App() {
   useEffect(() => {
     const accessToken = Cookies.get("access_token");
     if (!accessToken) {
-      // dispatch(setTutorInformation(undefined));
       return;
     }
     const decodedToken = jwtDecode(accessToken);
