@@ -6,7 +6,7 @@ function ConfirmDialog({ openConfirm, setOpenConfirm, handleAction, title, conte
     const [loading, setLoading] = useState(false);
     const handleSubmit = async () => {
         setLoading(true);
-        handleAction();
+        await handleAction();
         setLoading(false);
     }
     return (

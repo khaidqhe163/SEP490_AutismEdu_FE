@@ -1,8 +1,9 @@
-import { Box, Button, Checkbox, Divider, FormControl, FormHelperText, IconButton, List, ListItemText, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import services from '~/plugins/services';
 import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, Checkbox, Divider, FormControl, FormHelperText, IconButton, ListItemText, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import services from '~/plugins/services';
+import WarningIcon from '@mui/icons-material/Warning';
 const days = [
     {
         id: 1,
@@ -167,7 +168,6 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
                         return e;
                     }
                 })
-                console.log(overlapSchedule);
                 arrSchedule = [...overlapSchedule, ...arrSchedule];
                 return {
                     weekday: days.find((day) => day.day === d).id,
@@ -219,10 +219,6 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
     }
 
     const handleCreateTimeSlot = async () => {
-        if (overlapSchedules && overlapSchedules.length > 0) {
-            enqueueSnackbar("Bạn đang có lịch bị trùng!", { variant: "warning" })
-            return;
-        }
         try {
             await services.TimeSlotAPI.createTimeSlot(id, listSchedule,
                 (res) => {
@@ -230,9 +226,11 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
                     const sortedItem = updateTimeSlot.sort((a, b) => {
                         return a.weekday - b.weekday
                     })
+                    enqueueSnackbar("Tạo khung giờ học mới thành công!", { variant: "success" });
                     setOpen(false);
                     setListTimeSlots(sortedItem);
                     setListSchedule([]);
+                    setOverlapSchedules([]);
                 }, (error) => {
                     enqueueSnackbar(error.error[0], { variant: "error" })
                 }
@@ -315,9 +313,12 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
                     <Button variant='contained' sx={{ mt: 2 }} disabled={startTime === "" || endTime === ""} onClick={handleAddTime}>Thêm</Button>
                     {
                         overlapSchedules && overlapSchedules.length !== 0 &&
-                        <Typography mt={3} sx={{ color: "red" }}>Lịch của bạn bị trùng</Typography>
+                        <Stack direction='row' mt={3} gap={2}>
+                            <WarningIcon color='warning' />
+                            <Typography sx={{ color: "#ed6c02" }}>Lịch của bạn bị trùng</Typography>
+                        </Stack>
                     }
-                    <ul style={{ color: "red" }}>
+                    <ul style={{ color: "#ed6c02" }}>
                         {
                             overlapSchedules && overlapSchedules.length !== 0 && overlapSchedules.map((o) => {
                                 return (
@@ -335,8 +336,8 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
                                         boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
                                         p: 2,
                                         gap: 2, alignItems: "center",
-                                        bgcolor: schedule.status ? "red" : "white",
-                                        color: schedule.status ? "white" : "",
+                                        bgcolor: schedule.status ? "#ed6c02" : "white",
+                                        color: schedule.status ? "white" : ""
                                     }} key={index}>
                                         <Typography sx={{ fontSize: "12px" }}>{days.find((day) => day.id === schedule.weekday).day}</Typography>
                                         <Divider orientation='vertical' sx={{ bgcolor: "black" }} />

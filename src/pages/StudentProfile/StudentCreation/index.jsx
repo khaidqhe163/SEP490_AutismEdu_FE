@@ -225,23 +225,21 @@ function StudentCreation() {
             formData.append(`ScheduleTimeSlots[${index}].To`, l.to)
         })
         try {
-            setLoading(true);
+            // setLoading(true);
             axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
             await services.StudentProfileAPI.createStudentProfile(formData,
                 (res) => {
                     enqueueSnackbar("Tạo hồ sơ học sinh thành công!", { variant: "success" });
                     setOpenSuccess(true);
-                    // nav(PAGES.MY_STUDENT)
                 }, (err) => {
                     enqueueSnackbar(err.error[0], { variant: "error" });
                 })
             axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
             setLoading(false);
         } catch (error) {
-            console.log(error);
             enqueueSnackbar("Tạo hồ sơ thất bại!", { variant: "error" })
         } finally {
-            setLoading(false);
+            // setLoading(false);
             setOpenConfirm(false);
         }
     }

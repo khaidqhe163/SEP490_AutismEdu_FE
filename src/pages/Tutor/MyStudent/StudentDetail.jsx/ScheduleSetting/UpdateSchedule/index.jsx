@@ -1,8 +1,9 @@
-import { Box, Button, Checkbox, Divider, FormControl, FormHelperText, IconButton, List, ListItemText, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
+import { Box, Button, Checkbox, Divider, FormControl, FormHelperText, IconButton, List, ListItemText, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import services from '~/plugins/services';
 import CloseIcon from '@mui/icons-material/Close';
 import { enqueueSnackbar } from 'notistack';
+import WarningIcon from '@mui/icons-material/Warning';
 const days = [
     {
         id: 1,
@@ -34,16 +35,6 @@ const days = [
     }
 ];
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        },
-    },
-};
 function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, open, setOpen }) {
     const [dayOfWeek, setDayOfWeek] = useState(0);
     const [startTime, setStartTime] = useState("");
@@ -98,6 +89,7 @@ function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, ope
 
     useEffect(() => {
         if (dayOfWeek !== 0) {
+            console.log(existSlots);
             const weekDay = days.find((day) => {
                 return day.day === dayOfWeek;
             })
@@ -141,8 +133,7 @@ function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, ope
         try {
             await services.ScheduleAPI.getSchedule((res) => {
                 const filterSlot = res.result.schedules.filter((f) => {
-                    return (f.scheduleTimeSlotId !== selectedTimeSlot.id && f.isUpdatedSchedule === false) ||
-                        (f.scheduleTimeSlotId === selectedTimeSlot.id && f.isUpdatedSchedule === true);
+                    return f.isUpdatedSchedule === true
                 })
                 setExistSlots(filterSlot);
             }, (error) => {
@@ -194,10 +185,6 @@ function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, ope
             setTimeError("1 buổi học dài ít nhất 30 phút");
             return;
         }
-        if (overlapSchedules && overlapSchedules.length > 0) {
-            enqueueSnackbar("Bạn đang có lịch bị trùng!", { variant: "warning" })
-            return;
-        }
         const selectedDay = days.find((d) => {
             return d.day === dayOfWeek;
         })
@@ -218,6 +205,7 @@ function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, ope
                     })
                     setOpen(false);
                     setListTimeSlots(sortedItem);
+                    enqueueSnackbar("Cập nhật thành công!", { variant: "success" })
                 }, (error) => {
                     enqueueSnackbar(error.error[0], { variant: "error" })
                 }
@@ -253,7 +241,12 @@ function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, ope
                     boxShadow: 24,
                     p: 4
                 }}>
-                    <Typography variant='h5'>Thêm khung giờ mới</Typography>
+                    <Typography variant='h5'>Cập nhật khung giờ</Typography>
+                    <Typography>Giờ hiện tại: {selectedTimeSlot?.from} - {selectedTimeSlot?.to} - {
+                        days.find((d) => {
+                            return d.id === selectedTimeSlot?.weekday
+                        })?.day
+                    }</Typography>
                     <Box sx={{ display: "flex", gap: 3, mt: 2 }}>
                         <Box>
                             <Typography>Giờ bắt đầu</Typography>
@@ -296,9 +289,12 @@ function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, ope
                     }
                     {
                         overlapSchedules && overlapSchedules.length !== 0 &&
-                        <Typography mt={3} sx={{ color: "red" }}>Lịch của bạn bị trùng</Typography>
+                        <Stack direction='row' mt={3} gap={2}>
+                            <WarningIcon color='warning' />
+                            <Typography sx={{ color: "#ed6c02" }}>Lịch của bạn bị trùng</Typography>
+                        </Stack>
                     }
-                    <ul style={{ color: "red" }}>
+                    <ul style={{ color: "#ed6c02" }}>
                         {
                             overlapSchedules && overlapSchedules.length !== 0 && overlapSchedules.map((o) => {
                                 return (
