@@ -228,8 +228,8 @@ const WorkExperienceManagement = () => {
                                     {workExperiences.map((experience, index) => (
                                         <TableRow key={experience.id}>
                                             <TableCell>{index + 1 + (pagination.pageNumber - 1) * pagination.pageSize}</TableCell>
-                                            <TableCell>{experience?.submitter?.email}</TableCell>
-                                            <TableCell>{experience?.submitter?.fullName}</TableCell>
+                                            <TableCell>{experience?.submitter?.email ?? experience?.tutorRegistrationRequest?.email}</TableCell>
+                                            <TableCell>{experience?.submitter?.fullName ?? experience?.tutorRegistrationRequest?.fullName}</TableCell>
                                             {/* <TableCell>{experience.companyName}</TableCell> */}
                                             {/* <TableCell>{experience.position}</TableCell> */}
                                             <TableCell>
@@ -313,7 +313,7 @@ const WorkExperienceManagement = () => {
                         }}
                     />
                 )}
-                {workExpDialogOpen&& <WorkExperienceDetail open={workExpDialogOpen} onClose={()=>setWorkExpDialogOpen(false)} workExperience={selectedWorkExp}/>}
+                {workExpDialogOpen && <WorkExperienceDetail open={workExpDialogOpen} onClose={() => setWorkExpDialogOpen(false)} workExperience={selectedWorkExp} />}
             </Box>
         </Box>
     );

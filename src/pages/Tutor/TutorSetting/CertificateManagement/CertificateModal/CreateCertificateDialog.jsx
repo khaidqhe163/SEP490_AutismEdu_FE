@@ -63,6 +63,14 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
             console.log(error);
         } finally {
             setLoading(false);
+            setCertificateData({
+                CertificateName: '',
+                IssuingInstitution: '',
+                IdentityCardNumber: '',
+                IssuingDate: '',
+                ExpirationDate: '',
+                Medias: []
+            });
         }
         axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
     };
@@ -216,6 +224,11 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
                                     onChange={handleImageUploadWrapper}
                                 />
                             </Button>
+                            {formik.errors.Medias && formik.touched.Medias && (
+                                <Typography variant="body2" color="error" sx={{ marginTop: 1 }}>
+                                    {formik.errors.Medias}
+                                </Typography>
+                            )}
                         </Grid>
                     </Grid>
                     <Grid container>

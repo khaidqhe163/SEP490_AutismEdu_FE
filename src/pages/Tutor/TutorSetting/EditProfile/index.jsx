@@ -1,4 +1,4 @@
-import { Grid, Stack, Typography, TextField, Button, Box, MenuItem, Select, CircularProgress, FormControl, InputLabel } from '@mui/material';
+import { Grid, Stack, Typography, TextField, Button, Box, MenuItem, Select, CircularProgress, FormControl, InputLabel, FormHelperText } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -64,6 +64,56 @@ function EditProfile() {
             },
         },
     };
+
+    const [isSaveDisabled, setIsSaveDisabled] = useState(true); 
+    const [errors, setErrors] = useState({}); 
+
+    const validateForm = () => {
+
+        const {
+            priceFrom,
+            priceEnd,
+            sessionHours,
+            startAge,
+            endAge,
+            phoneNumber,
+        } = tutor;
+
+        const newErrors = {};
+
+        if (priceFrom < 10000) {
+            newErrors.priceFrom = 'Học phí từ phải lớn hơn bằng 10,000';
+        }
+        if (priceFrom > 100000000) {
+            newErrors.priceFrom = 'Học phí quá lớn';
+        }
+        if (priceEnd <= priceFrom) {
+            newErrors.priceEnd = 'Học phí đến phải lớn hơn học phí từ';
+        }
+        if (sessionHours <= 0) {
+            newErrors.sessionHours = 'Số giờ dạy phải lớn hơn 0';
+        }
+        if (startAge < 0) {
+            newErrors.startAge = 'Tuổi từ phải lớn hơn hoặc bằng 0';
+        }
+        if (endAge <= startAge) {
+            newErrors.endAge = 'Tuổi đến phải lớn hơn tuổi từ';
+        }
+        const phoneRegex = /^[0-9]{10,11}$/; 
+        if (phoneNumber && !phoneRegex.test(phoneNumber)) {
+            newErrors.phoneNumber = 'Số điện thoại không hợp lệ. Phải là 10 hoặc 11 chữ số.';
+        }
+
+        setErrors(newErrors); 
+        return Object.keys(newErrors).length === 0; 
+    };
+
+    useEffect(() => {
+        if (tutor) {
+            setIsSaveDisabled(!validateForm()); 
+        }
+    }, [tutor]);
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -195,32 +245,34 @@ function EditProfile() {
 
     const handleSaveClick = async (e) => {
         e.preventDefault()
-        const updatedAddress = `${selectedProvince}|${selectedDistrict}|${selectedCommune}|${specificAddress}`;
-        const updateTutor = {
-            priceFrom: parseFloat(tutor.priceFrom),
-            priceEnd: parseFloat(tutor.priceEnd),
-            sessionHours: tutor.sessionHours,
-            address: updatedAddress,
-            aboutMe: tutor.aboutMe,
-            phoneNumber: tutor.phoneNumber,
-            startAge: tutor.startAge,
-            endAge: tutor.endAge
-        };
-        try {
-            setLoading(true);
-            await services.TutorManagementAPI.handleUpdateTutorProfile(tutorInfo?.id, updateTutor, (res) => {
-                console.log(res);
-                if (res?.result) {
-                    setTutor(res.result);
-                }
-                enqueueSnackbar('Cập nhật đã được gửi thành công đến hệ thống!\n', { variant: 'success' });
-            }, (error) => {
+        if (validateForm()) {
+            const updatedAddress = `${selectedProvince}|${selectedDistrict}|${selectedCommune}|${specificAddress}`;
+            const updateTutor = {
+                priceFrom: parseFloat(tutor.priceFrom),
+                priceEnd: parseFloat(tutor.priceEnd),
+                sessionHours: tutor.sessionHours,
+                address: updatedAddress,
+                aboutMe: tutor.aboutMe,
+                phoneNumber: tutor.phoneNumber,
+                startAge: tutor.startAge,
+                endAge: tutor.endAge
+            };
+            try {
+                setLoading(true);
+                await services.TutorManagementAPI.handleUpdateTutorProfile(tutorInfo?.id, updateTutor, (res) => {
+                    console.log(res);
+                    if (res?.result) {
+                        setTutor(res.result);
+                    }
+                    enqueueSnackbar('Cập nhật đã được gửi thành công đến hệ thống!\n', { variant: 'success' });
+                }, (error) => {
+                    console.log(error);
+                });
+            } catch (error) {
                 console.log(error);
-            });
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false);
+            } finally {
+                setLoading(false);
+            }
         }
     };
     const handleChangeSpecificAddress = (e) => {
@@ -255,10 +307,15 @@ function EditProfile() {
                         name="priceFrom"
                         value={tutor?.priceFrom || ''}
                         onChange={handleInputChange}
+                        type="number"
+                        error={!!errors.priceFrom} 
                         InputProps={{
                             inputComponent: NumericFormatCustom,
                         }}
                     />
+                    {errors.priceFrom && (
+                        <FormHelperText error>{errors.priceFrom}</FormHelperText>
+                    )}
                 </Grid>
 
                 <Grid item xs={6} md={3}>
@@ -270,26 +327,30 @@ function EditProfile() {
                         name="priceEnd"
                         value={tutor?.priceEnd || ''}
                         onChange={handleInputChange}
+                        type="number"
+                        error={!!errors.priceEnd}
                         InputProps={{
                             inputComponent: NumericFormatCustom,
                         }}
                     />
+                    {errors.priceEnd && (
+                        <FormHelperText error>{errors.priceEnd}</FormHelperText>
+                    )}
                 </Grid>
 
                 <Grid item xs={12} md={6}>
                     <TextField
                         fullWidth
-                        aria-readonly
                         label="Email"
                         variant="outlined"
                         name="email"
-                        value={tutorInfo?.email || ''}
+                        value={tutor?.email || ''}
+                        onChange={handleInputChange}
                     />
                 </Grid>
 
                 <Grid item xs={4} md={2}>
                     <TextField
-                        type='number'
                         fullWidth
                         required
                         label="Số giờ dạy trên buổi"
@@ -297,34 +358,47 @@ function EditProfile() {
                         name="sessionHours"
                         value={tutor?.sessionHours || ''}
                         onChange={handleInputChange}
+                        type="number"
+                        error={!!errors.sessionHours}
                     />
+                    {errors.sessionHours && (
+                        <FormHelperText error>{errors.sessionHours}</FormHelperText>
+                    )}
                 </Grid>
 
                 <Grid item xs={4} md={2}>
                     <TextField
-                        required
-                        type='number'
                         fullWidth
+                        required
                         label="Tuổi từ"
                         variant="outlined"
                         name="startAge"
                         value={tutor?.startAge || ''}
                         onChange={handleInputChange}
+                        type="number"
+                        error={!!errors.startAge}
                     />
+                    {errors.startAge && (
+                        <FormHelperText error>{errors.startAge}</FormHelperText>
+                    )}
                 </Grid>
+
                 <Grid item xs={4} md={2}>
                     <TextField
-                        required
-                        type='number'
                         fullWidth
+                        required
                         label="Đến"
                         variant="outlined"
                         name="endAge"
                         value={tutor?.endAge || ''}
                         onChange={handleInputChange}
+                        type="number"
+                        error={!!errors.endAge}
                     />
+                    {errors.endAge && (
+                        <FormHelperText error>{errors.endAge}</FormHelperText>
+                    )}
                 </Grid>
-
 
                 <Grid item xs={12} md={6}>
                     <TextField
@@ -335,7 +409,11 @@ function EditProfile() {
                         name="phoneNumber"
                         value={tutor?.phoneNumber || ''}
                         onChange={handleInputChange}
+                        error={!!errors.phoneNumber}
                     />
+                    {errors.phoneNumber && (
+                        <FormHelperText error>{errors.phoneNumber}</FormHelperText>
+                    )}
                 </Grid>
 
                 <Grid item xs={12} md={6}>
@@ -429,7 +507,7 @@ function EditProfile() {
 
                 <Grid item xs={12} mt={2}>
                     <Box textAlign='right'>
-                        <Button disabled={tutor?.requestStatus === 2 || checkChangeValue()} variant="contained" color="primary" type='submit'>Lưu</Button>
+                        <Button disabled={tutor?.requestStatus === 2 || checkChangeValue() || isSaveDisabled} variant="contained" color="primary" type='submit'>Lưu</Button>
                     </Box>
                 </Grid>
             </Grid>

@@ -260,8 +260,8 @@ const CertificateManagement = () => {
                                 {certificateList.map((certificate, index) => (
                                     <TableRow key={certificate.id} hover>
                                         <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 5}</TableCell>
-                                        <TableCell>{certificate?.submitter?.email}</TableCell>
-                                        <TableCell>{certificate?.submitter?.fullName}</TableCell>
+                                        <TableCell>{certificate?.submitter?.email??certificate?.tutorRegistrationRequest?.email}</TableCell>
+                                        <TableCell>{certificate?.submitter?.fullName??certificate?.tutorRegistrationRequest?.fullName}</TableCell>
                                         <TableCell>{certificate?.certificateName}</TableCell>
                                         <TableCell>{certificate?.createdDate && format(new Date(certificate.createdDate), "HH:mm dd/MM/yyyy")}</TableCell>
                                         <TableCell>

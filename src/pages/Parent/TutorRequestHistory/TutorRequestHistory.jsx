@@ -3,28 +3,6 @@ import { Box, Typography, Stack, TableContainer, Table, TableHead, TableRow, Tab
 import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
 
-const mockRequestData = [
-  {
-    id: 1,
-    tutorName: "Nguyễn Văn A",
-    childName: "Trần Văn B",
-    content: "Yêu cầu dạy Toán",
-    createdDate: "2024-01-15",
-    rejectCategory: "Không đủ điều kiện",
-    rejectReason: "Chưa hoàn tất hồ sơ",
-    requestStatus: 1
-  },
-  {
-    id: 2,
-    tutorName: "Phạm Thị C",
-    childName: "Nguyễn Thị D",
-    content: "Yêu cầu dạy Tiếng Anh",
-    createdDate: "2024-02-10",
-    rejectCategory: "Lịch trình trùng",
-    rejectReason: "Thời gian yêu cầu đã có lớp khác",
-    requestStatus: 0
-  },
-];
 
 const TutorRequestHistory = () => {
 

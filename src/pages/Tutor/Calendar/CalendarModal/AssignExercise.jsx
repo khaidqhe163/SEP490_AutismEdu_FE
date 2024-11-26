@@ -16,8 +16,7 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
     const [isValidate, setValidate] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedContent, setSelectedContent] = useState('');
-
-    // console.log(listSyllabus);
+    
     console.log(schedule);
 
     useEffect(() => {
@@ -231,7 +230,6 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
         }
 
     };
-    // console.log(schedule);
 
     useEffect(() => {
         if (schedule) {

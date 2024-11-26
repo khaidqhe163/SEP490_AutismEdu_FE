@@ -37,7 +37,6 @@ function CreateStudentRecordModal({ open, onClose, request }) {
     };
 
     const handleSave = () => {
-        // Add logic to save the data
         onClose();
     };
 

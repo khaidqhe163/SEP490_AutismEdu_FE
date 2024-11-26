@@ -74,7 +74,6 @@ const QrModal = (props) => {
             const intervalId = setInterval(() => {
                 fetchData();
             }, 3000);
-
             return () => clearInterval(intervalId);
         }
     }, [show, isPaid]);

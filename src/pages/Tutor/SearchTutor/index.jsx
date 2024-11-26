@@ -12,6 +12,7 @@ import services from '~/plugins/services';
 import FormSearch from './FormSearch/FormSearch';
 
 function SearchTutor() {
+    
     const navigate = useNavigate();
     const location = useLocation();
     const searchVal = location.state?.searchVal;
@@ -37,43 +38,11 @@ function SearchTutor() {
     const [selected, setSelected] = useState('grid');
     const [showFilters, setShowFilters] = useState(false);
 
-    // useEffect(() => {
-    //     if (searchVal) {
-    //         setSearchCriteria((prev) => ({ ...prev, searchValue: searchVal }));
-    //     }
-    // }, [location.state?.searchVal]);
-
-    // useEffect(() => {
-    //     if (location.state?.city) {
-    //         setSearchCriteria((prev) => ({ ...prev, address: city.split("|")[1] }));
-    //         setShowFilters(true);
-    //     }
-    // }, [location.state?.city]);
-
-    // console.log(searchCriteria);
-
-    // useEffect(() => {
-    //     handleGetTutor();
-    // }, [searchCriteria]);
-
-    // useEffect(() => {
-    //     if (location.state?.searchVal) {
-    //         setSearchCriteria((prev) => ({ ...prev, searchValue: searchVal }));
-    //     }
-    //     if (location.state?.city) {
-    //         setSearchCriteria((prev) => ({ ...prev, address: location.state.city.split("|")[1] }));
-    //         setShowFilters(true);
-    //     }
-    // }, [location.state?.searchVal, location.state?.city]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
         handleGetTutor();
     }, [searchCriteria]);
-
-    console.log(tutors);
-
-
 
     const handleGetTutor = async (isMore = false) => {
 

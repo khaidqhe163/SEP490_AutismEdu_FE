@@ -247,8 +247,8 @@ const CurriculumManagement = () => {
                   {curriculumList?.map((curriculum, index) => (
                     <TableRow key={curriculum.id} hover>
                       <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 5}</TableCell>
-                      <TableCell>{curriculum?.submitter?.email}</TableCell>
-                      <TableCell>{curriculum?.submitter?.fullName}</TableCell>
+                      <TableCell>{curriculum?.submitter?.email ?? curriculum?.tutorRegistrationRequest?.email}</TableCell>
+                      <TableCell>{curriculum?.submitter?.fullName??curriculum?.tutorRegistrationRequest?.fullName}</TableCell>
                       <TableCell>
                         <IconButton disabled={!curriculum?.description} color="primary" onClick={() => {
                           setSelectedCurriculum(curriculum);
@@ -264,7 +264,7 @@ const CurriculumManagement = () => {
                           variant="outlined"
                           color={
                             curriculum.requestStatus === 1 ? 'success' :
-                            curriculum.requestStatus === 0 ? 'error' :
+                              curriculum.requestStatus === 0 ? 'error' :
                                 'warning'
                           }
                           size="small"

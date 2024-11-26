@@ -50,7 +50,6 @@ function TutorRequest() {
         });
     };
 
-    //handleAccepRequest()
     const handleOpenModal = async (request) => {
         // nav('/autismtutor/create-student-profile', { state: { request } });
         try {

@@ -15,8 +15,6 @@ import {
 
 function ViewDetailModal({ isOpen, setModalOpen, schedule, setSchedule, tutorName }) {
 
-    console.log(schedule);
-
     const [selectedContent, setSelectedContent] = useState('');
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedContentE, setSelectedContentE] = useState('');
@@ -53,6 +51,7 @@ function ViewDetailModal({ isOpen, setModalOpen, schedule, setSchedule, tutorNam
     }
 
     const passStatus = (value) => {
+
         return value === 2 ? 'Chưa có' : value === 1 ? "Đạt" : "Chưa đạt"
     };
     const attendanceStatus = (value) => {
@@ -68,7 +67,7 @@ function ViewDetailModal({ isOpen, setModalOpen, schedule, setSchedule, tutorNam
                     width: 600, bgcolor: 'background.paper', p: 4, boxShadow: 24, borderRadius: 2,
                     outline: 'none'
                 }}>
-                    <Typography variant="h5" sx={{ mb: 2, textAlign: 'center', fontWeight: '600' }}>Đánh giá buổi học</Typography>
+                    <Typography variant="h5" sx={{ mb: 2, textAlign: 'center', fontWeight: '600' }}>Chi tiết về buổi học</Typography>
                     <Divider sx={{ mb: 3 }} />
 
                     <Grid container spacing={2} sx={{ mb: 3 }}>
@@ -125,7 +124,7 @@ function ViewDetailModal({ isOpen, setModalOpen, schedule, setSchedule, tutorNam
                             <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Đánh giá:</Typography>
                         </Grid>
                         <Grid item xs={7}>
-                            <Button size='small' variant='outlined' color={schedule?.passStatus ? 'success' : 'error'}>{passStatus(schedule?.passStatus)}</Button>
+                            <Button size='small' variant='outlined' color={schedule?.passingStatus === 1 ? 'success' : schedule?.passingStatus === 2 ? 'warning' : 'error'}>{passStatus(schedule?.passingStatus)}</Button>
 
                         </Grid>
                         <Grid item xs={5}>
@@ -176,7 +175,7 @@ function ViewDetailModal({ isOpen, setModalOpen, schedule, setSchedule, tutorNam
                         <Button variant="contained" onClick={onClose} sx={{ px: 3 }}>Quay lại</Button>
                     </Stack>
                 </Box>
-            </Modal >
+            </Modal>
 
             <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
                 <DialogTitle textAlign={'center'}>Ghi chú</DialogTitle>

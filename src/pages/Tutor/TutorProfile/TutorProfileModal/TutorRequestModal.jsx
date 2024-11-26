@@ -19,13 +19,8 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
 
     const [studyingList, setStudyingList] = useState([]);
     console.log(studyingList);
-    
+
     const nav = useNavigate();
-
-    console.log(userInf);
-    console.log(childData);
-
-
 
     const menuProps = {
         PaperProps: {

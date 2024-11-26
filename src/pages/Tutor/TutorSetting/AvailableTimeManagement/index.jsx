@@ -24,7 +24,6 @@ function AvailableTimeManagement() {
 
     const handleGetAllAvailableTime = async (weekday) => {
         try {
-            
             await services.AvailableTimeManagementAPI.getAvailableTime((res) => {
                 setAvailability(res.result || []);
             }, (error) => {
@@ -71,7 +70,6 @@ function AvailableTimeManagement() {
         }
     };
 
-    // Handle weekday change
     const handleDateChange = async (weekday) => {
         setTimeData((prev) => ({
             ...prev,

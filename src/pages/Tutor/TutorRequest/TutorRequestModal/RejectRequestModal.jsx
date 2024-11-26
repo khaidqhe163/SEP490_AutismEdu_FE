@@ -28,7 +28,6 @@ const RejectRequestModal = ({ open, onClose, onConfirm }) => {
                     {({ values, handleChange, handleBlur, errors, touched }) => (
                         <Form>
                             <Grid container spacing={3} mt={5}>
-                                {/* Loại từ chối */}
                                 <Grid item xs={4}>
                                     <Typography variant="body1" sx={{ fontWeight: 600, mb: 2 }}>
                                         Loại từ chối:

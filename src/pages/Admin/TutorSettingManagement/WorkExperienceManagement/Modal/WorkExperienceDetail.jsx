@@ -44,7 +44,7 @@ const WorkExperienceDetail = ({ open, onClose, workExperience }) => {
                         </Grid>
                         <Grid item xs={8}>
                             <Typography>
-                                {workExperience?.submitter?.email || 'Không có'}
+                                {(workExperience?.submitter?.email ?? workExperience?.tutorRegistrationRequest?.email) || 'Không có'}
                             </Typography>
                         </Grid>
 
@@ -53,7 +53,7 @@ const WorkExperienceDetail = ({ open, onClose, workExperience }) => {
                         </Grid>
                         <Grid item xs={8}>
                             <Typography>
-                                {workExperience?.submitter?.fullName || 'Không có'}
+                                {(workExperience?.submitter?.fullName ?? workExperience?.tutorRegistrationRequest?.fullName) || 'Không có'}
                             </Typography>
                         </Grid>
 
