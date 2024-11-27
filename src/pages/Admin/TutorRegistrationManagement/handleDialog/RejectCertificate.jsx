@@ -16,7 +16,7 @@ function RejectCertificate({ id, certificateId, setCertificates, certificates })
             setLoading(true);
             if (rejectReason === "") {
                 setLoading(false);
-                enqueueSnackbar("Bạn chưa nhập lý do", { variant: "error" })
+                enqueueSnackbar("Bạn chưa nhập lý do từ chối chứng chỉ", { variant: "error" })
                 return;
             }
             await services.CertificateAPI.changeStatusCertificate(certificateId,

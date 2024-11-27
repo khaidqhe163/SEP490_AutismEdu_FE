@@ -27,7 +27,7 @@ function AcceptDialog({ id, status, setTutorInformation, setCurriculums, setCert
             setLoading(true);
             if (status === 0 && rejectReason === "") {
                 setLoading(false);
-                enqueueSnackbar("Bạn chưa nhập lý do", { variant: "error" })
+                enqueueSnackbar("Bạn chưa nhập lý do từ chối đơn đăng ký", { variant: "error" })
                 return;
             }
             await services.TutorManagementAPI.handleRegistrationForm(id,

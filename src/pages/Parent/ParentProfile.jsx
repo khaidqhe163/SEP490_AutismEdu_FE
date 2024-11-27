@@ -65,7 +65,7 @@ function ParentProfile() {
             }
             axiosInstance.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
             await services.UserManagementAPI.updateUser(userInformation.id, formData, (res) => {
-                enqueueSnackbar("Cập nhật thành công", { variant: "success" });
+                enqueueSnackbar("Cập nhật hồ sơ thành công", { variant: "success" });
                 dispatch(setUserInformation(res.result))
             }, (err) => {
                 enqueueSnackbar(err.error[0], { variant: "error" });

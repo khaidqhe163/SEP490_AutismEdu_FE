@@ -69,7 +69,7 @@ function ChildCreation({ setChildren, setCurrentChild, currentChild }) {
                 axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
                 await services.ChildrenManagementAPI.createChild(formData, (res) => {
                     setChildren((pre) => [res.result, ...pre])
-                    enqueueSnackbar("Tạo thành công!", { variant: "success" });
+                    enqueueSnackbar("Tạo thông tin trẻ thành công!", { variant: "success" });
                     handleClose();
                 }, (err) => {
                     enqueueSnackbar(err.error[0], { variant: "error" })

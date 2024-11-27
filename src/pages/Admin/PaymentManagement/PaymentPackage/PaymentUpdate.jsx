@@ -99,14 +99,14 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
                         setPaymetPackages(filterArr);
                     }
                     else setStatus("Hide");
-                    enqueueSnackbar("Tạo thành công", { variant: "success" });
+                    enqueueSnackbar("Cập nhật gói thanh toán thành công", { variant: "success" });
                     handleClose();
                 }, (error) => {
                     enqueueSnackbar(error.error[0], { variant: "error" })
                 })
                 setLoading(false)
             } catch (error) {
-                enqueueSnackbar("Tạo thất bại", { variant: "error" })
+                enqueueSnackbar("Cập nhật gói thanh toán thất bại", { variant: "error" })
                 setLoading(false);
             }
         }

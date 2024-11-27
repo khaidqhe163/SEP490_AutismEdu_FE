@@ -78,7 +78,7 @@ function TutorProfile() {
         handleGetAllAvailableTime(1);
     }, [id]);
 
-    
+
 
     const handleDateChange = async (weekday) => {
         setTimeData(weekday);
@@ -239,7 +239,7 @@ function TutorProfile() {
                                 </Stack>
                             </Box>
                             <Box sx={{ width: "20%" }}>
-                                <TutorRequestModal rejectChildIds={tutor?.rejectChildIds} tutorId={id} calculateAge={calculateAge}/>
+                                {id && tutor && <TutorRequestModal rejectChildIds={tutor?.rejectChildIds} tutorId={id} calculateAge={calculateAge} />}
                             </Box>
                         </Box>
 
@@ -411,7 +411,7 @@ function TutorProfile() {
                                                 </Stack>
                                             </Box>
                                         </Stack>
-                                        <Divider ref={reviewRef}/>
+                                        <Divider ref={reviewRef} />
                                         {id && <TutorRating tutorId={id} userInfo={userInfo} />}
                                     </Box>
                                 </>

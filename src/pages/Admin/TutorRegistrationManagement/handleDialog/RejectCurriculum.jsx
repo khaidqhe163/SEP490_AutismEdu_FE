@@ -16,7 +16,7 @@ function RejectCurriculum({ curriculumId, curriculums, setCurriculums }) {
             setLoading(true);
             if (rejectReason === "") {
                 setLoading(false);
-                enqueueSnackbar("Bạn chưa nhập lý do", { variant: "error" })
+                enqueueSnackbar("Bạn chưa nhập lý do từ chối khung chương trình", { variant: "error" })
                 return;
             }
             await services.CurriculumManagementAPI.changeStatusCurriculum(curriculumId,

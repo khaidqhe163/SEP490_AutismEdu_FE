@@ -87,7 +87,7 @@ export default function PaymentCreation({ change, setChange }) {
             try {
                 await services.PackagePaymentAPI.createPaymentPackage(values, (res) => {
                     setChange(!change);
-                    enqueueSnackbar("Tạo thành công", { variant: "success" });
+                    enqueueSnackbar("Tạo gói thành toán thành công", { variant: "success" });
                     formik.resetForm();
                     handleClose();
                 }, (error) => {
@@ -95,7 +95,7 @@ export default function PaymentCreation({ change, setChange }) {
                     enqueueSnackbar(error.error[0], { variant: "error" })
                 })
             } catch (error) {
-                enqueueSnackbar("Tạo thất bại", { variant: "error" })
+                enqueueSnackbar("Tạo tạo gói thanh toán thất bại", { variant: "error" })
             }
         }
     })

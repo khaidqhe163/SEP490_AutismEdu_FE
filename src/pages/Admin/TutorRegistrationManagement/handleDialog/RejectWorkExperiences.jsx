@@ -15,7 +15,7 @@ function RejectWorkExperiences({ workExperiences, setWorkExperiences, workExperi
             setLoading(true);
             if (rejectReason === "") {
                 setLoading(false);
-                enqueueSnackbar("Bạn chưa nhập lý do", { variant: "error" })
+                enqueueSnackbar("Bạn chưa nhập lý do từ chối kinh nghiệm làm việc", { variant: "error" })
                 return;
             }
             await services.WorkExperiencesAPI.changeWorkExperienceStatus(workExperiencesId,

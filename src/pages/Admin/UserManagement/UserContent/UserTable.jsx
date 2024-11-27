@@ -122,7 +122,7 @@ function UserTable({ users, setPagination, setUsers, pagination, change }) {
                 <LoadingComponent open={loading} setLoading={setLoading} />
             </Table>
             <TablePagging pagination={pagination} setPagination={setPagination} setCurrentPage={setCurrentPage} />
-        </TableContainer >
+        </TableContainer>
     )
 }
 

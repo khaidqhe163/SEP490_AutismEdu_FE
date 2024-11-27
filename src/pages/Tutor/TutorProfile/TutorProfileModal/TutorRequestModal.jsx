@@ -38,11 +38,15 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
             enqueueSnackbar('Bạn cần cập nhật thêm thông tin cá nhân!', { variant: 'warning' });
             nav(PAGES.ROOT + PAGES.PARENT_PROFILE);
         } else {
-            await handleGetStudyingList();
+            // await handleGetStudyingList();
             await handleGetChildInformation();
         }
     };
     const handleClose = () => setOpen(false);
+
+    useEffect(() => {
+        handleGetStudyingList();
+    }, []);
 
     const handleGetStudyingList = async () => {
         try {
@@ -70,6 +74,10 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                         enqueueSnackbar('Bạn cần tạo thêm thông tin trẻ!', { variant: 'warning' });
                         nav('/autismedu/my-childlren');
                     } else {
+                        // console.log(rejectChildIds);
+                        // console.log(studyingList);
+                        // console.log(res.result);
+
                         const x = res.result?.sort((a, b) => (b.id - a.id))?.find((r) => !(rejectChildIds?.includes(r?.id) || studyingList.some((s) => (s?.childId === r?.id))));
 
                         if (!x) {
