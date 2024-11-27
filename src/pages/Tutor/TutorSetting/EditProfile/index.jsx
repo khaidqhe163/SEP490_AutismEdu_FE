@@ -54,6 +54,8 @@ function EditProfile() {
     const [loadingDistricts, setLoadingDistricts] = useState(false);
     const [loadingCommunes, setLoadingCommunes] = useState(false);
     const [tutor, setTutor] = useState(null);
+    console.log(tutorInfo);
+    
     const [defaultTutor, setDefaultTutor] = useState(null);
     const [loading, setLoading] = useState(false);
     const menuProps = {
@@ -344,7 +346,7 @@ function EditProfile() {
                         label="Email"
                         variant="outlined"
                         name="email"
-                        value={tutor?.email || ''}
+                        value={tutorInfo?.email || ''}
                         onChange={handleInputChange}
                     />
                 </Grid>
