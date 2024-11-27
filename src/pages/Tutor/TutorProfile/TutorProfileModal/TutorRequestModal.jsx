@@ -38,8 +38,8 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
             enqueueSnackbar('Bạn cần cập nhật thêm thông tin cá nhân!', { variant: 'warning' });
             nav(PAGES.ROOT + PAGES.PARENT_PROFILE);
         } else {
-            await handleGetChildInformation();
             await handleGetStudyingList();
+            await handleGetChildInformation();
         }
     };
     const handleClose = () => setOpen(false);
@@ -49,7 +49,6 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
             await services.StudentProfileAPI.getMyTutor((res) => {
                 if (res?.result) {
                     const newData = res?.result?.filter((r) => r.tutorId === tutorId);
-                    console.log(newData);
                     setStudyingList(newData);
                 }
             }, (error) => {
@@ -62,29 +61,32 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
         }
     };
 
-
     const handleGetChildInformation = async () => {
         try {
             await services.ChildrenManagementAPI.listChildren(userInf?.id, (res) => {
-                if (res?.result?.length === 0) {
-                    enqueueSnackbar('Bạn cần tạo thêm thông tin trẻ!', { variant: 'warning' });
-                    nav('/autismedu/my-childlren');
-                } else {
-                    setChildData(res.result);
-                    const x = res?.result?.find((r) => (!rejectChildIds?.includes(r.id) && !studyingList.some(s => s.childId === r.id)));
+                if (res?.result) {
 
-                    if (!x) {
-                        enqueueSnackbar(
-                            'Hiện tại không có trẻ nào của bạn phù hợp với gia sư này.'
-                            ,
-                            { variant: 'warning' }
-                        );
-
-                        setOpen(false);
+                    if (res.result?.length === 0) {
+                        enqueueSnackbar('Bạn cần tạo thêm thông tin trẻ!', { variant: 'warning' });
+                        nav('/autismedu/my-childlren');
                     } else {
-                        setSelectedChild(x);
-                        setOpen(true);
+                        const x = res.result?.sort((a, b) => (b.id - a.id))?.find((r) => !(rejectChildIds?.includes(r?.id) || studyingList.some((s) => (s?.childId === r?.id))));
+
+                        if (!x) {
+                            enqueueSnackbar(
+                                'Hiện tại không có trẻ nào của bạn phù hợp với gia sư này.'
+                                ,
+                                { variant: 'warning' }
+                            );
+
+                            setOpen(false);
+                        } else {
+                            setSelectedChild(x);
+                            setChildData(res.result);
+                            setOpen(true);
+                        }
                     }
+
                 }
             }, (error) => {
                 console.log(error);

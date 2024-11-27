@@ -19,7 +19,6 @@ function RoleManagement() {
             });
         } catch (error) {
             console.log(error);
-
         }
     }
 

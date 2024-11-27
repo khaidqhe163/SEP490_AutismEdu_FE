@@ -33,12 +33,11 @@ function RoleModal({ roles, setRoles }) {
     const handleAddRole = async () => {
         try {
             await services.RoleManagementAPI.addRole({ name: role }, (res) => {
-                enqueueSnackbar("Remove user from role successfully!", { variant: "success" });
-
+                enqueueSnackbar("Thêm vai trò thành công!", { variant: "success" });
                 setOpen(false);
             }
                 , (err) => {
-                    enqueueSnackbar("Remove user from role error!", { variant: "error" });
+                    enqueueSnackbar("Thêm vai trò thất bại!", { variant: "error" });
                     console.log(err);
                 });
             await services.RoleManagementAPI.getRoles((res) => {
