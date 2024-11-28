@@ -177,7 +177,7 @@ export default function TutorSideBar({ openMenu }) {
                         onClick={(event) => handleListItemClick(event, 5)}
                     >
                         <ListItemIcon sx={listIconStyle}>
-                            <MenuBookOutlinedIcon sx={{ color: "#FFEB3B" }}/>
+                            <MenuBookOutlinedIcon sx={{ color: "#FFA726" }}/>
                         </ListItemIcon>
                         <ListItemText primary="Bài tập" style={textStyle} />
                     </ListItemButton>
