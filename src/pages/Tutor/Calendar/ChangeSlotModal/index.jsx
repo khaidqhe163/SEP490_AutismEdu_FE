@@ -18,13 +18,17 @@ function ChangeSlotModal({ schedule, setIsChange }) {
     useEffect(() => {
         getExistSchedule();
     }, [])
+    useEffect(() => {
+        if (open) {
+            getExistSchedule();
+        }
+    }, [open])
 
     useEffect(() => {
         checkSelectedTime();
-    }, [startTime, endTime])
+    }, [startTime, endTime, date])
 
     const checkSelectedTime = () => {
-        const today = new Date(schedule.scheduleDate);
         if (startTime === "" || endTime === "" || date === "") {
             setTimeError("Nhập đầy đủ thông tin!");
             return false;
@@ -32,52 +36,36 @@ function ChangeSlotModal({ schedule, setIsChange }) {
             setTimeError("Thời gian không hợp lệ!");
             return false;
         } else if (toMinutes(endTime) - toMinutes(startTime) < 30) {
-            setTimeError("1 buổi học dài ít nhất 30 phút");
+            setTimeError("1 buổi học dài ít nhất 30 phút!");
             return;
         }
+
+        const [hours, minutes] = startTime.split(':').map(Number);
+        const today = new Date();
         const selectedDate = new Date(date);
-        const todaySlots = existSchedule.filter((e) => {
-            return e.weekday === selectedDate.getDay();
-        })
+        const currentHours = today.getHours();
+        const currentMinutes = today.getMinutes();
+        if (today.getFullYear() === selectedDate.getFullYear() && today.getMonth() === selectedDate.getMonth()
+            && today.getDate() === selectedDate.getDate()) {
+            if (hours < currentHours || (hours === currentHours && minutes < currentMinutes)) {
+                setTimeError("Thời gian đã nhập nhỏ hơn thời gian hiện tại.!");
+                return;
+            }
+        }
         let check = false;
-        schedules.forEach((s) => {
-            if (schedule.id !== s.id && toMinutes(s.start) <= toMinutes(endTime) && toMinutes(startTime) <= toMinutes(s.end)) {
+        const scheduleInDate = existSchedule.filter((c) => {
+            const d = new Date(c.scheduleDate);
+            return d.getFullYear() === selectedDate.getFullYear() && d.getMonth() === selectedDate.getMonth()
+                && d.getDate() === selectedDate.getDate();
+        })
+        scheduleInDate.forEach((s) => {
+            if (s.id !== schedule.id && toMinutes(s.start) < toMinutes(endTime) && toMinutes(startTime) < toMinutes(s.end)) {
                 check = true;
             }
         })
         if (check) {
             setTimeError("Thời gian bị trùng lịch khác!");
             return;
-        }
-        if (today.getFullYear() === selectedDate.getFullYear() && today.getMonth() === selectedDate.getMonth()
-            && today.getDate() === selectedDate.getDate()) {
-            if (todaySlots.length !== 0) {
-                let check = false;
-                todaySlots.forEach((t) => {
-                    if (t.id !== schedule.scheduleTimeSlotId && toMinutes(t.from) <= toMinutes(endTime) && toMinutes(startTime) <= toMinutes(t.to)) {
-                        check = true;
-                    }
-                })
-                if (check) {
-                    setTimeError("Thời gian bị trùng lịch khác!");
-                    return false;
-                }
-            }
-        }
-        else {
-            todaySlots.forEach((t) => {
-                if (toMinutes(t.from) <= toMinutes(endTime) && toMinutes(startTime) <= toMinutes(t.to)) {
-                    check = true;
-                }
-            })
-            if (check) {
-                setTimeError("Thời gian bị trùng lịch khác!");
-                return false;
-            }
-        }
-        const checkTodayTime = checkTime();
-        if (checkTodayTime) {
-            return false;
         }
         setTimeError("");
         return true;
@@ -89,12 +77,6 @@ function ChangeSlotModal({ schedule, setIsChange }) {
         }
     }, [open])
 
-    // useEffect(() => {
-    //     if (date !== "") {
-    //         getScheduleInDate();
-    //     }
-    // }, [date])
-
     useEffect(() => {
         checkSelectedTime();
     }, [schedules])
@@ -102,13 +84,11 @@ function ChangeSlotModal({ schedule, setIsChange }) {
         try {
             setLoading(true);
             await services.ScheduleAPI.getSchedule((res) => {
-                console.log(res.result);
                 setExistSchedule(res.result.schedules)
             }, (err) => {
                 console.log(err);
             }, {
                 startDate: date,
-                endDate: date,
                 getAll: false
             })
             setLoading(false);
@@ -146,24 +126,6 @@ function ChangeSlotModal({ schedule, setIsChange }) {
         const [hours, minutes] = time.split(':').map(Number);
         return hours * 60 + minutes;
     };
-    // const getExistSchedule = async () => {
-    //     try {
-    //         await services.StudentProfileAPI.getTutorSchedule((res) => {
-    //             const arr = [];
-    //             console.log(res.result);
-    //             res.result.forEach((a) => {
-    //                 a.scheduleTimeSlots.forEach((s) => {
-    //                     arr.push(s);
-    //                 })
-    //             })
-    //             setExistSchedule(arr);
-    //         }, (error) => {
-    //             console.log(error);
-    //         })
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
     const handleChangeSchedule = async () => {
         const checkValidate = checkSelectedTime();
         if (!checkValidate) {

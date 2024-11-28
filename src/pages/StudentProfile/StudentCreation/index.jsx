@@ -87,7 +87,6 @@ function StudentCreation() {
         setParent(null);
         setChildren([]);
         setSelectedRequest("");
-        setListShedule([]);
         setInitialCondition('');
         setAvatar(null)
     };
@@ -225,23 +224,21 @@ function StudentCreation() {
             formData.append(`ScheduleTimeSlots[${index}].To`, l.to)
         })
         try {
-            setLoading(true);
+            // setLoading(true);
             axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
             await services.StudentProfileAPI.createStudentProfile(formData,
                 (res) => {
                     enqueueSnackbar("Tạo hồ sơ học sinh thành công!", { variant: "success" });
                     setOpenSuccess(true);
-                    // nav(PAGES.MY_STUDENT)
                 }, (err) => {
                     enqueueSnackbar(err.error[0], { variant: "error" });
                 })
             axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
             setLoading(false);
         } catch (error) {
-            console.log(error);
             enqueueSnackbar("Tạo hồ sơ thất bại!", { variant: "error" })
         } finally {
-            setLoading(false);
+            // setLoading(false);
             setOpenConfirm(false);
         }
     }
@@ -367,7 +364,10 @@ function StudentCreation() {
                             </Box>
                             {
                                 children.length !== 0 && (
-                                    <Box sx={{ mt: 2 }}>
+                                    <Stack direction='row' alignItems="center" gap={3} sx={{ mt: 2 }}>
+                                        <Typography sx={{ fontWeight: "bold", fontSize: "20px", color:"#b15fec" }}>
+                                            Chọn trẻ:
+                                        </Typography>
                                         <FormControl size='small' sx={{ width: "300px" }}>
                                             <Select value={currentChild}
                                                 onChange={(e) => setCurrentChild(e.target.value)}
@@ -381,7 +381,7 @@ function StudentCreation() {
                                                 }
                                             </Select>
                                         </FormControl>
-                                    </Box>
+                                    </Stack>
                                 )
                             }
                         </>

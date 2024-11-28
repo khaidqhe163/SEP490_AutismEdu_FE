@@ -56,7 +56,7 @@ function StatusChangeConfirm({ id, status, open, setOpen, setReport, report }) {
                 p: 4
             }}>
                 <Typography fontWeight="bold">
-                    Bạn muốn {status === 1 ? "chấp nhận" : "từ chối"} đơn tố cáo này ?
+                    Bạn muốn {status === 1 ? "tiếp nhận" : "từ chối"} đơn tố cáo này ?
                 </Typography>
                 <Typography mt={3}>Phản hồi</Typography>
                 <TextField
@@ -68,7 +68,7 @@ function StatusChangeConfirm({ id, status, open, setOpen, setReport, report }) {
                 />
                 <Box textAlign="right" mt={2}>
                     <Button onClick={() => setOpen(false)}>Huỷ bỏ</Button>
-                    <Button onClick={handleSubmit}>{status === 1 ? "Chấp nhận" : "Từ chối"}</Button>
+                    <Button onClick={handleSubmit}>{status === 1 ? "Tiếp nhận" : "Từ chối"}</Button>
                 </Box>
                 <LoadingComponent open={loading} setLoading={setLoading} />
             </Box>

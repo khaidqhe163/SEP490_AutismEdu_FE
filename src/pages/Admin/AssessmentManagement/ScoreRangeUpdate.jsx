@@ -70,13 +70,20 @@ export default function ScoreRangeUpdate({ scoreRanges, setScoreRanges, currentS
             }
         }
     })
-
+    console.log(currentScoreRange);
     React.useEffect(() => {
         if (currentScoreRange) {
-            formik.setFieldValue("description", currentScoreRange.description);
-            formik.setFieldValue("minScore", currentScoreRange.minScore);
-            formik.setFieldValue("maxScore", currentScoreRange.maxScore);
-            formik.setErrors = {}
+            formik.resetForm({
+                values: {
+                    description: currentScoreRange.description || "",
+                    minScore: currentScoreRange.minScore || 0,
+                    maxScore: currentScoreRange.maxScore || ""
+                }
+            })
+            // formik.setFieldValue("description", currentScoreRange.description);
+            // formik.setFieldValue("minScore", currentScoreRange.minScore);
+            // formik.setFieldValue("maxScore", currentScoreRange.maxScore);
+            // formik.setErrors = {}
         }
     }, [currentScoreRange])
     return (

@@ -81,7 +81,7 @@ export default function Career({ career, setCareer }) {
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Thêm bằng cấp hoặc chứng chỉ
+                        Thêm kinh nghiệm làm việc
                     </Typography>
                     <form onSubmit={formik.handleSubmit}>
                         <Grid container px="50px" py="50px" columnSpacing={2} rowSpacing={3}>

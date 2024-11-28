@@ -1,5 +1,11 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Button, FormHelperText, Grid, MenuItem, Modal, Select, TextField, Typography } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import { Box, Button, FormControl, FormHelperText, Grid, IconButton, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -88,18 +94,18 @@ function ChildCreation({ setChildren, setCurrentChild, currentChild }) {
     return (
         <>
             <Button variant='contained' startIcon={<AddIcon />} onClick={handleOpen}>Thêm thông tin trẻ</Button>
-
-            <Modal
+            <Dialog
+                fullWidth="md"
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
             >
-                <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                <DialogTitle>
+                    <Typography variant='h4'>
                         Thêm thông tin của trẻ
                     </Typography>
-                    <form onSubmit={formik.handleSubmit}>
+                </DialogTitle>
+                <form onSubmit={formik.handleSubmit}>
+                    <DialogContent>
                         <Grid container px="50px" py="50px" columnSpacing={2} rowSpacing={3}>
                             <Grid item xs={3} textAlign="right">Ảnh đại diện</Grid>
                             <Grid item xs={9}>
@@ -165,14 +171,14 @@ function ChildCreation({ setChildren, setCurrentChild, currentChild }) {
                                 }
                             </Grid>
                         </Grid>
-                        <Box sx={{ display: "flex", justifyContent: "end", gap: 2 }}>
-                            <Button variant='contained' type='submit'>Thêm</Button>
-                            <Button onClick={handleClose}>Huỷ</Button>
-                        </Box>
-                    </form>
-                    <LoadingComponent open={loading} setOpen={setLoading} />
-                </Box>
-            </Modal>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant='contained' type='submit'>Thêm</Button>
+                        <Button onClick={handleClose}>Huỷ</Button>
+                    </DialogActions>
+                </form>
+                <LoadingComponent open={loading} />
+            </Dialog >
         </>
     )
 }

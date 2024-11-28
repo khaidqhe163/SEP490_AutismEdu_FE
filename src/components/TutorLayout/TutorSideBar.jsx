@@ -20,6 +20,7 @@ import services from '~/plugins/services';
 import { useDispatch, useSelector } from 'react-redux';
 import { listStudent, setListStudent } from '~/redux/features/listStudent';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 export default function TutorSideBar({ openMenu }) {
     const [openStudent, setOpenStudent] = React.useState(true);
     const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -89,7 +90,7 @@ export default function TutorSideBar({ openMenu }) {
                         onClick={(event) => handleListItemClick(event, 0)}
                     >
                         <ListItemIcon sx={listIconStyle}>
-                            <HomeOutlinedIcon />
+                            <HomeOutlinedIcon sx={{ color: "#4CAFEB" }} />
                         </ListItemIcon>
                         <ListItemText
                             primary="Trang chủ"
@@ -103,7 +104,7 @@ export default function TutorSideBar({ openMenu }) {
                         onClick={(event) => handleListItemClick(event, 1)}
                     >
                         <ListItemIcon sx={listIconStyle}>
-                            <CalendarMonthOutlinedIcon />
+                            <CalendarMonthOutlinedIcon sx={{ color: "#4CAF50" }}/>
                         </ListItemIcon>
                         <ListItemText
                             primary="Lịch dạy"
@@ -117,7 +118,7 @@ export default function TutorSideBar({ openMenu }) {
                         onClick={(event) => handleListItemClick(event, 2)}
                     >
                         <ListItemIcon sx={listIconStyle}>
-                            <ContactPageOutlinedIcon />
+                            <ContactPageOutlinedIcon sx={{ color: "#FF9800" }}/>
                         </ListItemIcon>
                         <ListItemText
                             primary="Yêu cầu dạy"
@@ -132,7 +133,7 @@ export default function TutorSideBar({ openMenu }) {
                         onClick={(event) => handleListItemClick(event, 3)}
                     >
                         <ListItemIcon sx={listIconStyle}>
-                            <PersonAddIcon />
+                            <PersonAddIcon sx={{ color: "#9C27B0" }}/>
                         </ListItemIcon>
                         <ListItemText
                             primary="Tạo hồ sơ học sinh"
@@ -144,7 +145,7 @@ export default function TutorSideBar({ openMenu }) {
                     selected={selectedIndex === 4}
                 >
                     <ListItemIcon sx={listIconStyle}>
-                        <GroupOutlinedIcon />
+                        <GroupOutlinedIcon sx={{ color: "#E91E63" }}/>
                     </ListItemIcon>
                     <ListItemText primary="Học sinh" style={textStyle} />
                     {openMenu && (openStudent ? <ExpandLess /> : <ExpandMore />)}
@@ -176,7 +177,7 @@ export default function TutorSideBar({ openMenu }) {
                         onClick={(event) => handleListItemClick(event, 5)}
                     >
                         <ListItemIcon sx={listIconStyle}>
-                            <MenuBookOutlinedIcon />
+                            <MenuBookOutlinedIcon sx={{ color: "#FFEB3B" }}/>
                         </ListItemIcon>
                         <ListItemText primary="Bài tập" style={textStyle} />
                     </ListItemButton>
@@ -187,9 +188,18 @@ export default function TutorSideBar({ openMenu }) {
                     <ListItemButton selected={selectedIndex === 6}
                         onClick={(event) => handleListItemClick(event, 6)}>
                         <ListItemIcon sx={listIconStyle}>
-                            <SettingsOutlinedIcon />
+                            <SettingsOutlinedIcon sx={{ color: "#607D8B" }}/>
                         </ListItemIcon>
                         <ListItemText primary="Cài đặt" style={textStyle} />
+                    </ListItemButton>
+                </Link>
+                <Link to={PAGES.ASSESSMENT_GUILD} >
+                    <ListItemButton selected={selectedIndex === 7}
+                        onClick={(event) => handleListItemClick(event, 7)}>
+                        <ListItemIcon sx={listIconStyle}>
+                            <HelpOutlineIcon sx={{ color: "#3F51B5" }}/>
+                        </ListItemIcon>
+                        <ListItemText primary="Tiêu chí đánh giá" style={textStyle} />
                     </ListItemButton>
                 </Link>
             </List>

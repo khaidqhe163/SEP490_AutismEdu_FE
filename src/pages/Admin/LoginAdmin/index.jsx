@@ -48,7 +48,7 @@ function LoginAdmin() {
                     nav(PAGES.PARENT_TUTOR_MAMAGEMENT)
                 }
             }, (error) => {
-                enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
+                enqueueSnackbar(error.error[0], { variant: "error" });
                 console.log(error);
             })
             setLoading(false)
@@ -87,12 +87,7 @@ function LoginAdmin() {
             setUserId(decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
             setRole(decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'])
         }, (err) => {
-            if (err.code === 500) {
-                enqueueSnackbar("Đăng nhập thất bại!", { variant: "error" });
-            } else if (err.code === 406) {
-                enqueueSnackbar("Tài khoản này chưa được kích hoạt!", { variant: "warning" });
-            }
-            else enqueueSnackbar("Tài khoản hoặc mật khẩu không đúng!", { variant: "error" });
+            enqueueSnackbar(err.error[0], { variant: "error" });
         })
         setLoading(false)
     }

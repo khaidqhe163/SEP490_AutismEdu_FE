@@ -47,12 +47,11 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     const [chatBox, setChatBox] = useState(null);
     const [unreadMessage, setUnreadMessage] = useState(true);
     const [newMessage, setNewMessage] = useState(null);
-
+    const [newNotification, setNewNotification] = useState(null)
     const handleGetCurrentUserPaymentHistory = async () => {
         try {
             await services.PaymentHistoryAPI.getListPaymentHistoryCurrent((res) => {
                 dispatch(setPackagePayment(res.result));
-                // setCurrentUserPayment(res.result);
             }, (error) => {
                 console.log(error);
             });
@@ -129,7 +128,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     useEffect(() => {
         if (!connection || !tutorInfo) return;
         connection.on(`Notifications-${tutorInfo.id}`, (notification) => {
-            setNotifications((preNotifications) => [notification, ...preNotifications]);
+            setNewNotification(notification);
         });
         connection.on(`Messages-${tutorInfo.id}`, (message) => {
             setNewMessage(message)
@@ -140,6 +139,12 @@ function TutorHeader({ openMenu, setOpenMenu }) {
         };
     }, [connection, tutorInfo]);
 
+    useEffect(() => {
+        if (newNotification) {
+            setNotifications((preNotifications) => [newNotification, ...preNotifications]);
+            setUnreadNoti(unreadNoti + 1)
+        }
+    }, [newNotification])
     useEffect(() => {
         if (newMessage) {
             if (newMessage.conversation.id === currentChat.id)
@@ -201,13 +206,10 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                     }
                 })
                 setConversations(returnArr);
-                // if (res.result.length !== 0) {
-                //     setCurrentChat(returnArr[0])
-                // }
             }, (error) => {
                 console.log(error);
             }, {
-                pageNumber: currentPage
+                pageNumber: 1
             })
         } catch (error) {
             console.log(error);
@@ -229,13 +231,11 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     }
     const handleReadMessage = async () => {
         try {
-            console.log("readmesseage");
             await services.MessageAPI.readMessages(currentChat?.id || 0, {}, (res) => {
                 const currentChatBox = conversations.find((c) => {
                     return c.id === currentChat.id
                 })
                 currentChatBox.isRead = true;
-                console.log(currentChatBox);
                 setUnreadMessage(true);
                 conversations.forEach((r) => {
                     if (r.isRead === false) {
@@ -245,8 +245,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                 setConversations([...conversations]);
             }, (error) => {
                 console.log(error);
-            }, {
-                pageNumber: currentPage
             })
         } catch (error) {
             console.log(error);
@@ -281,8 +279,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                     }
                 }, (error) => {
                     console.log(error);
-                }, {
-                    pageNumber: currentPage
                 })
             }
             else {
@@ -290,7 +286,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                     receiverId: currentChat.user.id,
                     message: text.trim()
                 }, (res) => {
-                    setMessages([...messages, res.result.messages[0]]);
                     const receiveConversation = conversations.find((c) => {
                         return c.id === 0
                     })
@@ -304,8 +299,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                     setText("");
                 }, (error) => {
                     console.log(error);
-                }, {
-                    pageNumber: currentPage
                 })
             }
         } catch (error) {
@@ -333,15 +326,15 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     const handleClickOutside = (event) => {
         if (
             messageIconRef.current &&
-            !messageIconRef.current.contains(event.target) &&
+            !messageIconRef.current?.contains(event.target) &&
             !event.target.closest(".MuiIconButton-root")
         ) {
             setOpenMessage(false);
         }
         if (
             notificationRef.current &&
-            !notificationRef.current.contains(event.target) &&
-            !notificationIconRef.current.contains(event.target) &&
+            !notificationRef.current?.contains(event.target) &&
+            !notificationIconRef.current?.contains(event.target) &&
             !event.target.closest(".MuiIconButton-root")
         ) {
             setOpenNotification(false);
@@ -365,8 +358,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                 setUnreadNoti(unreadNoti - 1);
             }, (error) => {
                 console.log(error);
-            }, {
-                pageNumber: currentPage
             })
         } catch (error) {
             console.log(error);
@@ -382,8 +373,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                 setUnreadNoti(0)
             }, (error) => {
                 console.log(error);
-            }, {
-                pageNumber: currentPage
             })
         } catch (error) {
             console.log(error);
@@ -425,8 +414,8 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                     color: daysLeft < 10 ? 'red' : 'green',
                                     animation: daysLeft < 10 ? 'blink 1s step-start infinite' : 'none',
                                     '@keyframes blink': {
-                                        '50%': { opacity: 0 },
-                                    },
+                                        '50%': { opacity: 0 }
+                                    }
                                 }}
                             >
                                 {!isTrial ? 'Hạn còn lại:' : 'Dùng thử:'} {daysLeft} ngày
@@ -436,8 +425,8 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                     <Button startIcon={<KeyboardDoubleArrowUpIcon />} onClick={() => nav(PAGES.PAYMENT_PACKAGE)} variant='contained' size='small' sx={{
                         width: "130px", bgcolor: '#16ab65',
                         '&:hover': {
-                            bgcolor: '#128a51',
-                        },
+                            bgcolor: '#128a51'
+                        }
                     }}>
                         Nâng cấp
                     </Button>
@@ -482,7 +471,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                                             },
                                                             "& .MuiOutlinedInput-input": {
                                                                 color: "#6200EA"
-                                                            },
+                                                            }
                                                         }}
                                                         variant="outlined"
                                                         fullWidth
@@ -576,7 +565,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                                                                 bgcolor: "#E0D1FF",
                                                                                 p: 2,
                                                                                 borderRadius: "15px",
-                                                                                maxWidth: "70%",
+                                                                                maxWidth: "70%"
                                                                             }}>
                                                                                 <Typography>{m.content}</Typography>
                                                                             </Box>
@@ -717,7 +706,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                         width: 32,
                                         height: 32,
                                         ml: -0.5,
-                                        mr: 1,
+                                        mr: 1
                                     },
                                     '&::before': {
                                         content: '""',
@@ -729,10 +718,10 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                         height: 10,
                                         bgcolor: 'background.paper',
                                         transform: 'translateY(-50%) rotate(45deg)',
-                                        zIndex: 0,
-                                    },
-                                },
-                            },
+                                        zIndex: 0
+                                    }
+                                }
+                            }
                         }}
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}

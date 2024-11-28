@@ -13,7 +13,7 @@ import AssessmentGuild from '~/components/AssessmentGuild';
 import TablePagging from '~/components/TablePagging';
 import services from '~/plugins/services';
 import StudentCompareReport from './StudentCompareReport';
-import ProgressReportDetail from '~/pages/Tutor/MyStudent/StudentDetail.jsx/ProgressReport/ProgressReportDetail';
+import ProgressReportDetail from '~/pages/Tutor/MyStudent/StudentDetail/ProgressReport/ProgressReportDetail';
 const ASC = 1;
 const DESC = 2;
 const NOT_CHANGE = 3;

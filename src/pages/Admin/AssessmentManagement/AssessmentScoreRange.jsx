@@ -72,9 +72,8 @@ function AssessmentScoreRange() {
                     <TableHead>
                         <TableRow>
                             <TableCell>STT</TableCell>
-                            <TableCell>Khoảng điểm</TableCell>
-                            <TableCell>Đánh giá</TableCell>
-                            <TableCell>Người tạo</TableCell>
+                            <TableCell align='center'>Khoảng điểm</TableCell>
+                            <TableCell sx={{ maxWidth: "300px" }}>Đánh giá</TableCell>
                             <TableCell>Ngày tạo</TableCell>
                             <TableCell>Hành động</TableCell>
                         </TableRow>
@@ -87,14 +86,11 @@ function AssessmentScoreRange() {
                                         <TableCell>
                                             {index + 1}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell align='center'>
                                             {s.minScore} - {s.maxScore}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell sx={{ maxWidth: "300px" }}>
                                             {s.description}
-                                        </TableCell>
-                                        <TableCell>
-                                            {index + 1}
                                         </TableCell>
                                         <TableCell>
                                             {formatDate(s.createDate)}

@@ -23,7 +23,7 @@ const style = {
     p: 4,
     borderRadius: "10px"
 };
-function UserCreation({ setChange }) {
+function UserCreation({ setUsers, currentPage }) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -33,14 +33,14 @@ function UserCreation({ setChange }) {
     const validate = values => {
         const errors = {};
         if (!values.fullName) {
-            errors.fullName = 'Required';
-        } else if (values.fullName.length > 15) {
-            errors.fullName = 'Must be 15 characters or less';
+            errors.fullName = 'Bắt buộc';
+        } else if (values.fullName.length > 20) {
+            errors.fullName = 'Độ dài nhỏ hơn 20 ký tự';
         }
         if (!values.email) {
-            errors.email = 'Required'
+            errors.email = 'Bắt buộc'
         } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(values.email)) {
-            errors.email = 'Unvalid email';
+            errors.email = 'Email không hợp lệ';
         }
         if (!values.password) {
             errors.password = 'Bắt buộc';
@@ -118,7 +118,9 @@ function UserCreation({ setChange }) {
                         IsLockedOut: false
                     }
                     , (res) => {
-                        setChange(pre => !pre)
+                        if (currentPage === 1) {
+                            setUsers(pre => [res.result, ...pre])
+                        }
                         enqueueSnackbar("Tạo tài khoản thành công!", { variant: "success" });
                     }, (error) => {
                         enqueueSnackbar(error.error[0], { variant: "error" });

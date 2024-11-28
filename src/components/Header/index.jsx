@@ -46,6 +46,7 @@ function Header() {
     const messageIconRef = useRef(null);
     const [unreadMessage, setUnreadMessage] = useState(true);
     const [newMessage, setNewMessage] = useState(null);
+    const [newNotification, setNewNotification] = useState(null)
     useEffect(() => {
         if (location.pathname.includes("/home-page")) {
             setTab("1");
@@ -154,6 +155,14 @@ function Header() {
             }
         }
     }, [newMessage])
+
+    useEffect(() => {
+        if (newNotification) {
+            setNotifications((preNotifications) => [newNotification, ...preNotifications]);
+            setUnreadNoti(unreadNoti + 1)
+        }
+    }, [newNotification])
+
     useEffect(() => {
         if (chatBox && messages.length <= 10) {
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -162,9 +171,11 @@ function Header() {
     useEffect(() => {
         if (!connection || !userInfo) return;
         connection.on(`Notifications-${userInfo.id}`, (notification) => {
-            setNotifications((preNotifications) => [notification, ...preNotifications]);
+            console.log(notification);
+            setNewNotification(notification)
         });
         connection.on(`Messages-${userInfo.id}`, (message) => {
+            console.log(message);
             setNewMessage(message)
         });
         return () => {
@@ -200,7 +211,7 @@ function Header() {
             }, (error) => {
                 console.log(error);
             }, {
-                pageNumber: currentPage
+                pageNumber: 1
             })
         } catch (error) {
             console.log(error);
@@ -223,7 +234,7 @@ function Header() {
             }, (error) => {
                 console.log(error);
             }, {
-                pageNumber: currentPage
+                pageNumber: 1
             })
         } catch (error) {
             console.log(error);
@@ -236,7 +247,7 @@ function Header() {
             }, (error) => {
                 console.log(error);
             }, {
-                pageNumber: currentPage
+                pageNumber: 1
             })
         } catch (error) {
             console.log(error);
@@ -250,12 +261,16 @@ function Header() {
     const handleGetNotification = async () => {
         try {
             await services.NotificationAPI.getAllPaymentPackage((res) => {
-                setNotifications(res.result.result);
-                setUnreadNoti(res.result.totalUnRead)
+                const filterArr = res.result.result.filter((r, index) => {
+                    return index <= 10
+                })
+                setNotifications([...notifications, ...filterArr]);
+                setUnreadNoti(res.result.totalUnRead);
             }, (error) => {
                 console.log(error);
             }, {
-                pageNumber: currentPage
+                pageNumber: notifications.length === 0 ? 1 : 2,
+                pageSize: notifications.length <= 10 ? 10 : notifications.length
             })
         } catch (error) {
             console.log(error);
@@ -342,8 +357,6 @@ function Header() {
                 setUnreadNoti(unreadNoti - 1)
             }, (error) => {
                 console.log(error);
-            }, {
-                pageNumber: currentPage
             })
         } catch (error) {
             console.log(error);
@@ -359,8 +372,6 @@ function Header() {
                 setUnreadNoti(0)
             }, (error) => {
                 console.log(error);
-            }, {
-                pageNumber: currentPage
             })
         } catch (error) {
             console.log(error);
@@ -390,8 +401,6 @@ function Header() {
                 }
             }, (error) => {
                 console.log(error);
-            }, {
-                pageNumber: currentPage
             })
         } catch (error) {
             console.log(error);

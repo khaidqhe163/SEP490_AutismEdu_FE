@@ -1,14 +1,17 @@
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import DeleteIcon from '@mui/icons-material/Delete';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
-import { Box, Button, FormControl, FormHelperText, IconButton, MenuItem, Modal, Select, Stack, TextField, Tooltip, Typography } from '@mui/material';
-import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import ButtonIcon from '~/components/ButtonComponent/ButtonIcon';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Box, Button, FormControl, FormHelperText, IconButton, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
+import React, { useEffect, useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
 import axios from '~/plugins/axios';
 import services from '~/plugins/services';
@@ -42,7 +45,7 @@ function ReportTutor({ studentProfile }) {
         if (!values.title) {
             errors.title = "Bắt buộc"
         } else if (values.title.length > 100) {
-            errors.title = "Tiêu đề quá dài"
+            errors.title = "Tiêu đề dưới 100 ký tự"
         }
         if (!values.description) {
             errors.description = "Bắt buộc"
@@ -102,24 +105,18 @@ function ReportTutor({ studentProfile }) {
                 startIcon={<PriorityHighIcon />} color="warning"
                 onClick={handleOpen}
             >Tố cáo</Button>
-            <Modal
+            <Dialog
+                fullWidth="md"
                 open={open}
                 onClose={handleClose}
             >
-                <Box sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 800,
-                    bgcolor: 'background.paper',
-                    boxShadow: 24,
-                    p: 4,
-                    maxHeight: "80vh",
-                    overflow: "auto"
-                }}>
-                    <form onSubmit={formik.handleSubmit}>
-                        <Typography variant='h5'>Tố cáo gia sư</Typography>
+                <DialogTitle>
+                    <Typography variant='h4'>
+                        Tố cáo gia sư
+                    </Typography>
+                </DialogTitle>
+                <form onSubmit={formik.handleSubmit}>
+                    <DialogContent>
                         <Typography mt={2}>Loại tố cáo:</Typography>
                         <FormControl fullWidth>
                             <Select placeholder='Vui lòng chọn kiểu tố cáo' value={formik.values.type}
@@ -138,7 +135,6 @@ function ReportTutor({ studentProfile }) {
                                 <MenuItem value={LackOfCommunicationWithParents}>
                                     Thiếu giao tiếp với phụ huynh
                                 </MenuItem>
-
                                 <MenuItem value={ViolationOfProfessionalEthics}>
                                     Có dấu hiệu không trung thực hoặc vi phạm đạo đức nghề nghiệp
                                 </MenuItem>
@@ -170,6 +166,7 @@ function ReportTutor({ studentProfile }) {
                                 </FormHelperText>
                             )
                         }
+                        <Typography textAlign="end">{formik.values.description.length} / 5000</Typography>
                         <Typography mt={2}>Hình ảnh bằng chứng: </Typography>
                         <TextField fullWidth type='file' inputProps={{
                             multiple: true,
@@ -225,14 +222,14 @@ function ReportTutor({ studentProfile }) {
                                 })
                             }
                         </Stack>
-                        <Stack direction='row' gap={3} justifyContent="end" mt={3}>
-                            <Button variant='contained' type='submit'>Tố cáo</Button>
-                            <Button onClick={() => setOpen(false)}>Huỷ bỏ</Button>
-                        </Stack>
-                        <LoadingComponent open={loading} />
-                    </form>
-                </Box>
-            </Modal >
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant='contained' type='submit'>Tố cáo</Button>
+                        <Button onClick={() => setOpen(false)}>Huỷ bỏ</Button>
+                    </DialogActions>
+                </form>
+                <LoadingComponent open={loading} />
+            </Dialog >
             {
                 images[currentImage] && images.length !== 0 !== null && openImage && (
                     <Modal open={openImage} onClose={() => setOpenImage(false)}>

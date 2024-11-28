@@ -35,14 +35,14 @@ function ConfirmLockDialog({ isLock, name, id, handleChangeUserStatus }) {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    {isLock ? `Do you want to unlock ${name} account` : `Do you want to lock ${name} account`}
+                    {isLock ? `Bạn có muốn mở khoá tài khoản ${name}` : `Bạn có muốn khoá tài khoản ${name}`}
                 </DialogTitle>
                 <DialogActions>
                     <Button onClick={handleSubmit}>
-                        {isLock ? "Unlock" : "Lock"}
+                        {isLock ? "Mở khoá" : "Khoá"}
                     </Button>
                     <Button onClick={handleClose} autoFocus>
-                        Cancle
+                        Huỷ bỏ
                     </Button>
                 </DialogActions>
             </Dialog>
