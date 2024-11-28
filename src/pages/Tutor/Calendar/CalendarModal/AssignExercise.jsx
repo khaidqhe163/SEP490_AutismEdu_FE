@@ -3,6 +3,7 @@ import { Box, Button, Divider, FormControl, InputLabel, MenuItem, Modal, Select,
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom';
 
 function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFilterSchedule, selectedKey }) {
     const [syllabusId, setSyllabusId] = useState('');
@@ -18,6 +19,7 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
     const [isValidate, setValidate] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedContent, setSelectedContent] = useState('');
+    const nav = useNavigate();
     // console.log(schedule);
 
     useEffect(() => {
@@ -342,6 +344,12 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
                             {exercise && listExercise.length !== 0 && <Grid item xs={12}>
                                 <Button variant='text' onClick={() => handleOpenDialog(exercise)}>Xem chi tiết bài tập</Button>
                             </Grid>}
+                            {listSyllabus.length === 0 && (<Grid item xs={12} display={'flex'} direction={'column'} gap={1}>
+                                <Typography variant='caption' color={'red'}>Hiện tại bạn chưa tạo giáo trình nào. Bạn có muốn tạo không?</Typography>
+                                <Box>
+                                    <Button variant='contained' color='primary' size='small' onClick={() => nav('/autismtutor/exercise', { state: { syllabus: '2' } })}>Có</Button>
+                                </Box>
+                            </Grid>)}
                         </Grid>
                     </Stack>
 

@@ -14,7 +14,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import * as React from 'react';
 import ContactPageOutlinedIcon from '@mui/icons-material/ContactPageOutlined';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PAGES from '~/utils/pages';
 import services from '~/plugins/services';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,9 +27,15 @@ export default function TutorSideBar({ openMenu }) {
     const [currentStudent, setCurrentStudent] = React.useState(0)
     const listStudents = useSelector(listStudent);
     const dispatch = useDispatch();
+    const location = useLocation();
     React.useEffect(() => {
         getListStudent();
     }, []);
+    React.useEffect(() => {
+        if (location.pathname.includes('/autismtutor/exercise')) {
+            setSelectedIndex(5);
+        }
+    }, [location]);
 
     const getListStudent = async () => {
         try {
