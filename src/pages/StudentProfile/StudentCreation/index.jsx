@@ -87,7 +87,6 @@ function StudentCreation() {
         setParent(null);
         setChildren([]);
         setSelectedRequest("");
-        setListShedule([]);
         setInitialCondition('');
         setAvatar(null)
     };
@@ -365,7 +364,10 @@ function StudentCreation() {
                             </Box>
                             {
                                 children.length !== 0 && (
-                                    <Box sx={{ mt: 2 }}>
+                                    <Stack direction='row' alignItems="center" gap={3} sx={{ mt: 2 }}>
+                                        <Typography sx={{ fontWeight: "bold", fontSize: "20px", color:"#b15fec" }}>
+                                            Chọn trẻ:
+                                        </Typography>
                                         <FormControl size='small' sx={{ width: "300px" }}>
                                             <Select value={currentChild}
                                                 onChange={(e) => setCurrentChild(e.target.value)}
@@ -379,7 +381,7 @@ function StudentCreation() {
                                                 }
                                             </Select>
                                         </FormControl>
-                                    </Box>
+                                    </Stack>
                                 )
                             }
                         </>

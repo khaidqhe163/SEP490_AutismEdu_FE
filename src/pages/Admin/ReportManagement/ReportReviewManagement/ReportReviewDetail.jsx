@@ -37,10 +37,10 @@ function ReportReviewDetail() {
         let statusString = "";
         switch (status) {
             case 0:
-                statusString = "Từ chối";
+                statusString = "Đã từ chối";
                 break;
             case 1:
-                statusString = "Chấp nhận";
+                statusString = "Đã tiếp nhận";
                 break;
             case 2:
                 statusString = "Đang chờ";
@@ -95,7 +95,7 @@ function ReportReviewDetail() {
                             <Box mt={2}>
                                 <Button variant='contained' color='success' sx={{ mr: 2 }}
                                     onClick={() => { setOpen(true); setStatus(1) }}
-                                >Chấp nhận</Button>
+                                >Tiếp nhận</Button>
                                 <Button variant='contained' color='warning'
                                     onClick={() => { setOpen(true); setStatus(0) }}
                                 >Từ chối</Button>

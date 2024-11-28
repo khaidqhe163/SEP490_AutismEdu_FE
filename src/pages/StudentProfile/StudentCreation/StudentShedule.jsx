@@ -183,7 +183,10 @@ function StudentShedule({ listSchedule, setListSchedule }) {
                 return e;
             }
         })
-
+        const filterDisableDate = disableDate.filter((d) => {
+            return d !== listSchedule[index].weekday;
+        })
+        setDisableDate(filterDisableDate)
         setExistSchedule(updateExistSchedule)
         setListSchedule([...filter]);
     }

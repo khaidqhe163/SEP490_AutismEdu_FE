@@ -20,6 +20,7 @@ import services from '~/plugins/services';
 import { useDispatch, useSelector } from 'react-redux';
 import { listStudent, setListStudent } from '~/redux/features/listStudent';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 export default function TutorSideBar({ openMenu }) {
     const [openStudent, setOpenStudent] = React.useState(true);
     const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -190,6 +191,15 @@ export default function TutorSideBar({ openMenu }) {
                             <SettingsOutlinedIcon />
                         </ListItemIcon>
                         <ListItemText primary="Cài đặt" style={textStyle} />
+                    </ListItemButton>
+                </Link>
+                <Link to={PAGES.ASSESSMENT_GUILD} >
+                    <ListItemButton selected={selectedIndex === 7}
+                        onClick={(event) => handleListItemClick(event, 7)}>
+                        <ListItemIcon sx={listIconStyle}>
+                            <HelpOutlineIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Tiêu chí đánh giá" style={textStyle} />
                     </ListItemButton>
                 </Link>
             </List>

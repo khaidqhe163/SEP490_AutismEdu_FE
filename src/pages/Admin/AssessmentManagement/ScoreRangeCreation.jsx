@@ -27,8 +27,10 @@ export default function ScoreRangeCreation({ scoreRanges, setScoreRanges }) {
         const errors = {}
         if (!values.description) {
             errors.description = "Bắt buộc";
+        } else if (values.description.length > 300) {
+            errors.description = "Mô tả phải dưới 300 kí tự";
         }
-        if (!values.minScore) {
+        if (values.minScore === "") {
             errors.minScore = "Bắt buộc";
         }
         if (!values.maxScore) {
@@ -89,6 +91,7 @@ export default function ScoreRangeCreation({ scoreRanges, setScoreRanges }) {
                             value={formik.values.description}
                             onChange={formik.handleChange}
                         />
+                        <Typography sx={{ textAlign: "right", fontSize: "12px" }}>{formik.values.description.length} / 300</Typography>
                         {
                             formik.errors.description && (
                                 <FormHelperText error>

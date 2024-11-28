@@ -29,8 +29,18 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
         handleGetAsessment();
     }, [])
     useEffect(() => {
-        if (open) {
+        if (!open) {
             formik.resetForm();
+        } else {
+            formik.resetForm({
+                values: {
+                    from: getFromDate(currentReport?.to) || '',
+                    to: new Date().toISOString().split('T')[0],
+                    achieved: '',
+                    failed: '',
+                    noteFromTutor: ''
+                }
+            })
         }
     }, [open])
 
@@ -93,9 +103,28 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
         }
         return errors;
     }
+
+    const getFromDate = () => {
+        if (currentReport) {
+            if (!currentReport.to) return "";
+            const minDate = new Date(currentReport.to);
+            minDate.setDate(minDate.getDate() + 1);
+            const year = minDate.getFullYear();
+            const month = String(minDate.getMonth() + 1).padStart(2, '0');
+            const day = String(minDate.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`
+        } else {
+            if (!studentProfile.createdDate) return "";
+            const minDate = new Date(studentProfile.createdDate);
+            const year = minDate.getFullYear();
+            const month = String(minDate.getMonth() + 1).padStart(2, '0');
+            const day = String(minDate.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`
+        }
+    }
     const formik = useFormik({
         initialValues: {
-            from: '',
+            from: getFromDate(currentReport?.to) || '',
             to: new Date().toISOString().split('T')[0],
             achieved: '',
             failed: '',
@@ -106,7 +135,6 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
             setOpenConfirm(true);
         }
     })
-
     const handleSubmit = async () => {
         try {
             setLoading(true);
@@ -154,38 +182,6 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
         const d = new Date(date);
         return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
     }
-
-    // const getDefaultValue = (assessment) => {
-    //     if (!assessment || !currentReport) {
-    //         return 1;
-    //     }
-    //     const displayItem = currentReport.assessmentResults.find((a) => {
-    //         return a.question === assessment.question;
-    //     })
-    //     if (!displayItem) {
-    //         return 1;
-    //     }
-    //     return displayItem
-    // }
-
-    const getFromDate = () => {
-        if (currentReport) {
-            if (!currentReport.to) return "";
-            const minDate = new Date(currentReport.to);
-            minDate.setDate(minDate.getDate() + 1);
-            const year = minDate.getFullYear();
-            const month = String(minDate.getMonth() + 1).padStart(2, '0');
-            const day = String(minDate.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`
-        } else {
-            if (!studentProfile.createdDate) return "";
-            const minDate = new Date(studentProfile.createdDate);
-            const year = minDate.getFullYear();
-            const month = String(minDate.getMonth() + 1).padStart(2, '0');
-            const day = String(minDate.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`
-        }
-    }
     return (
         <Box>
             <Button variant='contained' onClick={handleOpen}>Tạo đánh giá mới</Button>
@@ -221,6 +217,7 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
                                                 min: getFromDate(currentReport?.to),
                                                 max: new Date().toISOString().split('T')[0],
                                             }}
+                                            disabled
                                         />
                                         {
                                             formik.errors.from && (
@@ -237,7 +234,8 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
                                             onChange={formik.handleChange}
                                             value={formik.values.to}
                                             inputProps={{
-                                                max: new Date().toISOString().split('T')[0],
+                                                min: getFromDate(currentReport?.to),
+                                                max: new Date().toISOString().split('T')[0]
                                             }}
                                         />
                                         {

@@ -14,7 +14,6 @@ function TablePagging({ pagination, setPagination, setCurrentPage }) {
     }
     return (
         <Box sx={{ p: "10px", display: "flex", justifyContent: "space-between" }}>
-            <Typography>Showing {(pagination?.pageNumber - 1) * 10 + 1} to {((pagination?.pageNumber - 1) * 10 + pagination?.currentSize) > pagination?.total ? pagination?.total : ((pagination?.pageNumber - 1) * 10 + pagination?.currentSize)} of {pagination?.total} enteries</Typography>
             <Pagination count={totalPage || 1} page={pagination?.pageNumber || 1} color="primary" onChange={handleChangePage} />
         </Box>
     )

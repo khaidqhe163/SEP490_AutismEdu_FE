@@ -47,7 +47,7 @@ import StudentProfileApprove from '~/pages/StudentProfile/StudentProfileApprove'
 import Calendar from '~/pages/Tutor/Calendar'
 import ExerciseManagement from '~/pages/Tutor/ExerciseManagement'
 import MyStudent from '~/pages/Tutor/MyStudent'
-import StudentDetail from '~/pages/Tutor/MyStudent/StudentDetail.jsx'
+import StudentDetail from '~/pages/Tutor/MyStudent/StudentDetail/index.jsx'
 import MyTutor from '~/pages/Tutor/MyTutor'
 import MyTutorDetail from '~/pages/Tutor/MyTutor/MyTutorDetail'
 import PaymentHistory from '~/pages/Tutor/PaymentHistory'
@@ -67,6 +67,7 @@ import ReportReviewManagement from '~/pages/Admin/ReportManagement/ReportReviewM
 import ReportReviewDetail from '~/pages/Admin/ReportManagement/ReportReviewManagement/ReportReviewDetail'
 
 import ChangePasswordTutor from '~/pages/Tutor/TutorSetting/ChangePassword'
+import AssessmentGuild from '~/pages/Tutor/AssessmentsGuild'
 
 const UnLayoutRoutes = [
     {
@@ -230,6 +231,10 @@ const tutorRoutes = [
     }, {
         path: PAGES.CHANGE_PASSWORD_TUTOR,
         element: ChangePasswordTutor
+    },
+    {
+        path: PAGES.ASSESSMENT_GUILD,
+        element: AssessmentGuild
     }
 ]
 const adminRoutes = [
