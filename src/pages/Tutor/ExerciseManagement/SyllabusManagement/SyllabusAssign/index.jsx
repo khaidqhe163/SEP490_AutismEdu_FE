@@ -92,11 +92,12 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
                             });
                             return updateData;
                         });
+                        enqueueSnackbar("Gán bài tập thành công!", { variant: 'success' });
+                        setSelectedClone([]);
+                        setSelectedList([]);
+                        formik.resetForm();
+                        handleBack();
                     }
-                    enqueueSnackbar("Gán bài tập thành công!", { variant: 'success' });
-                    setSelectedClone([]);
-                    setSelectedList([]);
-                    formik.resetForm();
                 }, (error) => console.log(error));
             } catch (error) {
                 console.log(error);
@@ -213,7 +214,7 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
                 <Stack direction="row" justifyContent="end" mt={2}>
                     <Button variant="outlined" color="inherit" sx={{ mr: 2 }} onClick={handleBack}>Trở về</Button>
                     <Button type="submit" variant="contained" color="primary" disabled={loading || !formik.isValid}>
-                        {loading ? <LoadingComponent /> : "Lưu"}
+                        {loading ? <LoadingComponent open={loading} /> : "Lưu"}
                     </Button>
 
                 </Stack>

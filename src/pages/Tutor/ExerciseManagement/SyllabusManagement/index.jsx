@@ -22,7 +22,6 @@ export default function SyllabusManagement() {
     const [selectedAssign, setSelectedAssign] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    console.log(listSyllabus);
     useEffect(() => {
         handleGetAllSyllabus();
     }, []);
