@@ -9,7 +9,7 @@ function RoleClaimManagement() {
             py: 2,
             position: 'relative'
         }}>
-            <ClaimManagement />
+            {/* <ClaimManagement /> */}
             <RoleManagement />
             <LoadingComponent />
         </Box>

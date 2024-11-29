@@ -33,18 +33,18 @@ function RoleModal({ roles, setRoles }) {
     const handleAddRole = async () => {
         try {
             await services.RoleManagementAPI.addRole({ name: role }, (res) => {
-                enqueueSnackbar("Thêm vai trò thành công!", { variant: "success" });
-                setOpen(false);
+                if (res?.result) {
+                    setRoles((prev) => [res.result, ...prev]);
+                    enqueueSnackbar("Thêm vai trò thành công!", { variant: "success" });
+                    setOpen(false);
+                }
             }
-                , (err) => {
-                    enqueueSnackbar("Thêm vai trò thất bại!", { variant: "error" });
-                    console.log(err);
+                , (error) => {
+                    // enqueueSnackbar("Thêm vai trò thất bại!", { variant: "error" });
+                    enqueueSnackbar(error.error[0], { variant: "error" });
+                    console.log(error);
+                    setOpen(false);
                 });
-            await services.RoleManagementAPI.getRoles((res) => {
-                setRoles(res.result);
-            }, (err) => {
-                console.log(err);
-            });
         } catch (error) {
             console.log(error);
         }

@@ -30,6 +30,7 @@ const API_CODE = {
   API_CHANGE_PASSWORD: '/v1/User/password/',
   //role management
   API_GET_ROLE: '/v1/Role',
+  API_CREATE_ROLE: '/v1/Role',
 
   //Tutor management
   API_TUTOR_REGISTER: '/v1/TutorRegistrationRequest',

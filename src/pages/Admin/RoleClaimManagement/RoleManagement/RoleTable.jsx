@@ -10,9 +10,9 @@ function RoleTable({roles, setRoles}) {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>STT</TableCell>
+                        <TableCell>Id</TableCell>
                         <TableCell>Vai trò</TableCell>
-                        <TableCell>Người dùng</TableCell>
+                        {/* <TableCell>Người dùng</TableCell> */}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -24,9 +24,9 @@ function RoleTable({roles, setRoles}) {
                                     <TableCell>
                                         {r.name}
                                     </TableCell>
-                                    <TableCell>
+                                    {/* <TableCell>
                                         {r.users.length === 0 ? 'Empty' : <ListUserModal totalUsersInRole={r.totalUsersInRole} users={r.users} roles={roles} setRoles={setRoles} roleId={r.id} />}
-                                    </TableCell>
+                                    </TableCell> */}
 
                                 </TableRow>
                             )
