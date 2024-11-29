@@ -10,9 +10,9 @@ function RoleTable({roles, setRoles}) {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>No</TableCell>
-                        <TableCell>Role</TableCell>
-                        <TableCell>Users</TableCell>
+                        <TableCell>STT</TableCell>
+                        <TableCell>Vai trò</TableCell>
+                        <TableCell>Người dùng</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

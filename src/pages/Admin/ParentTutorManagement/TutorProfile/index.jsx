@@ -246,7 +246,7 @@ function TutorProfile() {
     };
 
     return (
-        <Grid container sx={{ height: 'auto', width: "100%"}} >
+        <Grid container sx={{ height: 'auto', width: "100%" }} >
             <Grid item xs={12}>
                 <Grid component={Paper} container sx={{ height: "auto", width: "100%" }}>
                     {tutor ?
@@ -279,7 +279,7 @@ function TutorProfile() {
                                 </Box>
                                 <Box sx={{ width: "20%" }}>
                                     {!tutor.isLockedOut ? <Button
-                                        startIcon={<LockIcon/>}
+                                        startIcon={<LockIcon />}
                                         variant="contained"
                                         color="error"
                                         onClick={() => handleLock()}
@@ -364,15 +364,20 @@ function TutorProfile() {
                                             <Box sx={{ borderTop: "1px solid", borderColor: "lightgray" }} ref={educationRef}>
                                                 <Typography my={2} variant='h5' mb={3}>Chứng chỉ</Typography>
                                                 <Stack direction={'column'} gap={2}>
-                                                    {tutor?.tutorProfile?.certificates?.length === 0 ? <Typography variant='inherit'>Chưa có dữ liệu chứng chỉ</Typography> : tutor?.certificates?.map((cer, index) => (
+                                                    {tutor?.tutorProfile?.certificates?.length === 0 ? <Typography variant='inherit'>Chưa có dữ liệu chứng chỉ</Typography> : tutor?.tutorProfile?.certificates?.map((cer, index) => (
                                                         <Box sx={{ width: "100%", display: 'flex', direction: 'row', gap: 2 }} key={cer.id}>
                                                             <Box sx={{ maxWidth: "10%", height: "auto", borderRadius: "10px" }}>
                                                                 <SchoolOutlinedIcon fontSize='large' />
                                                             </Box>
-                                                            <Box>
+                                                            <Box width={'80%'}>
                                                                 <Typography variant='h6' fontSize={'medium'}>{cer.certificateName}</Typography>
                                                                 <Typography variant='body1'>Cơ quan phát hành: {cer.issuingInstitution}</Typography>
                                                                 <Typography variant='body1'>Từ ngày {formatDateCer(cer.issuingDate)} {cer?.expirationDate && `đến ${formatDateCer(cer?.expirationDate)}`}</Typography>
+                                                            </Box>
+                                                            <Box width={'10%'}>
+                                                                <Button variant='outlined' color={cer.requestStatus === 1 ? 'success' : cer.requestStatus === 0 ? 'error' : 'warning'}>
+                                                                    {cer.requestStatus === 1 ? 'Chấp nhận' : cer.requestStatus === 0 ? 'Từ chối' : 'Chờ duyệt'}
+                                                                </Button>
                                                             </Box>
                                                         </Box>
                                                     ))
@@ -383,18 +388,23 @@ function TutorProfile() {
                                             <Box py={3} sx={{ borderTop: "1px solid", borderBottom: "1px solid", borderColor: "lightgray" }} ref={experienceRef}>
                                                 <Typography mb={2} variant='h5'>Kinh nghiệm làm việc</Typography>
                                                 <Stack direction={'column'} gap={1}>
-                                                    {tutor?.workExperiences?.length === 0 ? (
+                                                    {tutor?.tutorProfile?.workExperiences?.length === 0 ? (
                                                         <Typography variant='inherit'>Chưa có dữ liệu về kinh nghiệm làm việc</Typography>
                                                     ) : (
-                                                        tutor?.workExperiences?.map((work, index) => (
+                                                        tutor?.tutorProfile?.workExperiences?.map((work, index) => (
                                                             <Box key={index} sx={{ width: "100%", display: 'flex', flexDirection: 'row', gap: 2 }}>
                                                                 <Box sx={{ maxWidth: "10%", height: "auto", borderRadius: "10px" }}>
                                                                     <BusinessCenterOutlinedIcon fontSize='large' />
                                                                 </Box>
-                                                                <Box>
+                                                                <Box width={'80%'}>
                                                                     <Typography variant='h6' fontSize={'medium'}>{work.companyName}</Typography>
                                                                     <Typography variant='body1'>Vị trí: {work.position}</Typography>
                                                                     <Typography variant='body2'>Từ ngày {formatDateCer(work.startDate)} {work?.endDate && `đến ${formatDateCer(work?.endDate)}`}</Typography>
+                                                                </Box>
+                                                                <Box width={'10%'}>
+                                                                    <Button variant='outlined' color={work.requestStatus === 1 ? 'success' : work.requestStatus === 0 ? 'error' : 'warning'}>
+                                                                        {work.requestStatus === 1 ? 'Chấp nhận' : work.requestStatus === 0 ? 'Từ chối' : 'Chờ duyệt'}
+                                                                    </Button>
                                                                 </Box>
                                                             </Box>
                                                         ))
@@ -406,7 +416,7 @@ function TutorProfile() {
 
                                             <Box pb={2} ref={curriculumRef}>
                                                 <Typography mb={2} variant='h5'>Khung chương trình học</Typography>
-                                                {tutor?.curriculums?.length === 0 ? <Typography variant='inherit'>Chưa có dữ liệu khung chương trình học</Typography> :
+                                                {tutor?.tutorProfile?.curriculums?.length === 0 ? <Typography variant='inherit'>Chưa có dữ liệu khung chương trình học</Typography> :
                                                     <TabContext value={valueCurriculum}>
                                                         <Box sx={{ maxWidth: { xs: 320, sm: 480 } }}>
                                                             <Tabs
@@ -416,14 +426,19 @@ function TutorProfile() {
                                                                 scrollButtons="auto"
                                                                 aria-label="icon position tabs example"
                                                             >
-                                                                {tutor?.curriculums?.map((cur, index) => (
+                                                                {tutor?.tutorProfile?.curriculums?.map((cur, index) => (
                                                                     <Tab value={`${index + 1}`} icon={<ElevatorIcon />} iconPosition="start" label={`Từ ${cur.ageFrom} - ${cur.ageEnd} tuổi`} key={cur.id} />
                                                                 ))}
 
                                                             </Tabs>
                                                         </Box>
-                                                        {tutor?.curriculums?.map((cur, index) => (
+                                                        {tutor?.tutorProfile?.curriculums?.map((cur, index) => (
                                                             <TabPanel value={`${index + 1}`} sx={{ padding: '0' }} key={cur.id}>
+                                                                <Box display={'flex'} justifyContent={'flex-end'} mt={2}>
+                                                                    <Button variant='outlined' color={cur.requestStatus === 1 ? 'success' : cur.requestStatus === 0 ? 'error' : 'warning'}>
+                                                                        {cur.requestStatus === 1 ? 'Chấp nhận' : cur.requestStatus === 0 ? 'Từ chối' : 'Chờ duyệt'}
+                                                                    </Button>
+                                                                </Box>
                                                                 <Stack direction={'row'} gap={2} bgcolor={'#fff8e3'} mt={2} p={3} borderRadius={'20px'}>
                                                                     <Box sx={{ width: "5%" }}>
                                                                         <CheckCircleIcon color='success' fontSize='large' />

@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react'
 import StarIcon from '@mui/icons-material/Star';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime'
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.locale('vi');
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -177,6 +178,7 @@ function TutorRating({ tutorId, userInfo }) {
     const isRevewExist = checkReviewExist();
 
     dayjs.extend(relativeTime);
+    dayjs.locale('vi');
 
     return (
         dataReviewStats && (
@@ -320,7 +322,7 @@ function TutorRating({ tutorId, userInfo }) {
                                     </Stack>
                                 </Box>
                             </Stack>
-                            <Typography width={'15%'} textAlign={'right'}><small>{dayjs(new Date(r?.createdDate)).fromNow()}</small></Typography>
+                            <Typography width={'15%'} textAlign={'right'}><small>{dayjs(new Date(r?.createdDate))?.fromNow()}</small></Typography>
 
                             {
                                 userInfo && (
