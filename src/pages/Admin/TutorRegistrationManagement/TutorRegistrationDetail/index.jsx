@@ -86,7 +86,7 @@ function TutorRegistrationDetail() {
                     }
 
                     {
-                        tutorInformation?.requestStatus !== 2 && (
+                        tutorInformation?.requestStatus !== 2 && tutorInformation?.approvedBy && (
                             <Typography>Người xử lý: {tutorInformation?.approvedBy?.email}</Typography>
                         )
                     }

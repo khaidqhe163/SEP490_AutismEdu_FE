@@ -49,8 +49,8 @@ function RegisterForm({ setVerify, setEmailVerify }) {
         }
         if (!values.fullName) {
             errors.fullName = 'Bắt buộc';
-        } else if (values.fullName.length > 20) {
-            errors.fullName = 'Tên dưới 20 ký tự';
+        } else if (values.fullName.length > 100) {
+            errors.fullName = 'Tên dưới 100 ký tự';
         }
         if (!values.phoneNumber) {
             errors.phoneNumber = 'Bắt buộc';

@@ -110,7 +110,7 @@ function ReportTutorManagement() {
     }
     return (
         <Paper variant='elevation' sx={{ p: 3 }}>
-            <Typography variant='h4'>Quản lý bài viết</Typography>
+            <Typography variant='h4'>Quản lý đơn tố cáo gia sư</Typography>
             <Box sx={{ display: "flex", gap: 5 }} mt={5}>
                 <FormControl sx={{ width: '150px' }}>
                     <InputLabel id="status">Trạng thái đơn</InputLabel>

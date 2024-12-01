@@ -63,8 +63,8 @@ export default function PaymentCreation({ change, setChange }) {
         const errors = {}
         if (!values.title) {
             errors.title = "Bắt buộc";
-        } else if (values.title.length > 50) {
-            errors.title = "Tên chỉ chứa tối đa 50 kí tự";
+        } else if (values.title.length > 100) {
+            errors.title = "Tên chỉ chứa tối đa 100 kí tự";
         }
         if (!values.duration) {
             errors.duration = "Bắt buộc";
