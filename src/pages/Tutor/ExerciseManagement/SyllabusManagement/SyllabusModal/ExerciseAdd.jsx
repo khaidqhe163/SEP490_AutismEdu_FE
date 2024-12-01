@@ -3,41 +3,19 @@ import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, Select,
 import services from '~/plugins/services';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import { enqueueSnackbar } from 'notistack';
 
 function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList, setSelectedList, selectedClone, setSelectedClone }) {
     const [newData, setNewData] = useState({
-        exerciseTypeId: 0,
-        exerciseIds: []
+        exerciseTypeId: exerciseTypes[0]?.id || 1,
+        exerciseIds: selectedList?.find((s) => s.exerciseTypeId === exerciseTypes[0]?.id)?.exerciseIds ?? []
     });
-
-    // console.log(newData);
-
 
     const [exercises, setExercises] = useState([]);
 
-    // console.log(exerciseTypes);
 
     useEffect(() => {
-
-        if (exerciseTypes.length > 0 && !newData.exerciseTypeId) {
-            const exist = selectedList?.find((s) => s.exerciseTypeId === exerciseTypes[exerciseTypes?.length - 1].id);
-            if (exist) {
-                setNewData({
-                    exerciseTypeId: exerciseTypes[exerciseTypes?.length - 1].id,
-                    exerciseIds: exist.exerciseIds
-                });
-            } else {
-                setNewData(prev => ({
-                    ...prev,
-                    exerciseTypeId: exerciseTypes[exerciseTypes?.length - 1].id
-                }));
-            }
-
-        }
-    }, [exerciseTypes]);
-
-    useEffect(() => {
-        if (newData.exerciseTypeId !== 0) {
+        if (newData.exerciseTypeId !== exerciseTypes[0].id) {
             const exist = selectedList?.find((s) => s.exerciseTypeId === newData.exerciseTypeId);
             if (exist) {
                 setNewData((prev) => ({
@@ -45,9 +23,8 @@ function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList,
                     exerciseIds: exist.exerciseIds
                 }));
             }
-            handleGetExerciseByType();
-
         }
+        handleGetExerciseByType();
     }, [newData.exerciseTypeId]);
 
     const handleGetExerciseByType = async () => {
@@ -57,6 +34,7 @@ function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList,
                     setExercises(res.result);
                 }
             }, (error) => {
+                enqueueSnackbar(error.error[0], { variant: 'error' });
                 console.log(error);
             }, { search: '', orderBy: 'createdDate', sort: 'desc' });
         } catch (error) {
@@ -83,14 +61,15 @@ function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList,
             });
         }
     };
-    
+
 
     const handleAdd = () => {
+
         if (newData.exerciseIds.length === 0) {
 
             const updatedSelectedList = selectedList?.filter(s => s.exerciseTypeId !== newData.exerciseTypeId);
             const updatedSelectedClone = selectedClone?.filter(s => s.eType.id !== newData.exerciseTypeId);
-    
+
             setSelectedList(updatedSelectedList);
             setSelectedClone(updatedSelectedClone);
             handleCloseModal();
@@ -117,20 +96,6 @@ function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList,
                     return s;
                 }
             });
-            // const newC = selectedClone?.map((s, index) => {
-            //     if (index === indexOfExist) {
-            //         s.lsExercise
-            //     }
-            // })
-            // const newClone = newList.map((l, index) => {
-            //     const eType = exerciseTypes.find((e) => e.id === l.exerciseTypeId);
-            //     const lsExercise = exercises.filter((e) => l.exerciseIds.includes(e.id));
-            //     return {
-            //         eType,
-            //         lsExercise
-            //     };
-            // });
-            // setSelectedClone(newClone);
             setSelectedList(newList);
         } else {
             const eType = exerciseTypes.find((e) => e.id === newData.exerciseTypeId);
@@ -146,8 +111,12 @@ function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList,
         handleCloseModal();
     };
 
-    console.log(selectedClone);
-
+    const handleCheckEmpty = () => {
+        const isExist = selectedList?.find((s) => s.exerciseTypeId === newData?.exerciseTypeId);
+        const checkSelected = selectedList.length === 0 ? true : !isExist ? true : isExist?.exerciseIds?.length === 0;
+        const checkCurrent = newData.exerciseIds.length === 0;
+        return checkSelected && checkCurrent;
+    };
 
     return (
         <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
@@ -192,8 +161,8 @@ function ExerciseAdd({ openModal, handleCloseModal, exerciseTypes, selectedList,
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleCloseModal} color="primary">Hủy</Button>
-                <Button color="primary" variant="contained" onClick={handleAdd}>Thêm</Button>
+                <Button onClick={handleCloseModal} variant='outlined' color="primary">Hủy</Button>
+                <Button color="primary" variant="contained" onClick={handleAdd} disabled={handleCheckEmpty()}>Thêm</Button>
             </DialogActions>
         </Dialog>
     );

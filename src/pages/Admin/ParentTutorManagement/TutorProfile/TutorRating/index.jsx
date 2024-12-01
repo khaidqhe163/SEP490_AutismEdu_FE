@@ -2,7 +2,8 @@ import { Avatar, Box, Button, DialogActions, IconButton, Menu, MenuItem, Paginat
 import React, { useEffect, useState } from 'react'
 import StarIcon from '@mui/icons-material/Star';
 import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime'
+import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/vi';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
@@ -50,6 +51,7 @@ function TutorRating({ tutorId }) {
     const totalPages = Math.ceil(pagination.total / pagination.pageSize);
 
     dayjs.extend(relativeTime);
+    dayjs.locale('vi');
 
     return (
         dataReviewStats && (
@@ -149,7 +151,7 @@ function TutorRating({ tutorId }) {
                                     </Stack>
                                 </Box>
                             </Stack>
-                            <Typography width={'15%'} textAlign={'right'}><small>{dayjs(new Date(r?.createdDate)).fromNow()}</small></Typography>
+                            <Typography width={'15%'} textAlign={'right'}><small>{dayjs(new Date(r?.createdDate))?.fromNow()}</small></Typography>
 
                         </Stack>
 

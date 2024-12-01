@@ -74,6 +74,7 @@ function ExerciseCreation({ setExercises, exerciseType, open, handleClose }) {
                     }
                 }
                 , (error) => {
+                    enqueueSnackbar(error.error[0], { variant: 'error' });
                     console.log(error);
                 });
             } catch (error) {

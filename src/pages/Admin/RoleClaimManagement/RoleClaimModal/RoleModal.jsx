@@ -33,25 +33,25 @@ function RoleModal({ roles, setRoles }) {
     const handleAddRole = async () => {
         try {
             await services.RoleManagementAPI.addRole({ name: role }, (res) => {
-                enqueueSnackbar("Thêm vai trò thành công!", { variant: "success" });
-                setOpen(false);
+                if (res?.result) {
+                    setRoles((prev) => [res.result, ...prev]);
+                    enqueueSnackbar("Thêm vai trò thành công!", { variant: "success" });
+                    setOpen(false);
+                }
             }
-                , (err) => {
-                    enqueueSnackbar("Thêm vai trò thất bại!", { variant: "error" });
-                    console.log(err);
+                , (error) => {
+                    // enqueueSnackbar("Thêm vai trò thất bại!", { variant: "error" });
+                    enqueueSnackbar(error.error[0], { variant: "error" });
+                    console.log(error);
+                    setOpen(false);
                 });
-            await services.RoleManagementAPI.getRoles((res) => {
-                setRoles(res.result);
-            }, (err) => {
-                console.log(err);
-            });
         } catch (error) {
             console.log(error);
         }
     }
     return (
         <div>
-            <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpen}>Add Role</Button>
+            <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpen}>Tạo vai trò</Button>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -60,16 +60,16 @@ function RoleModal({ roles, setRoles }) {
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Create new role
+                        Tạo vai trò
                     </Typography>
                     <Box mt="20px">
-                        <TextField size='small' id="outlined-basic" label="Role" variant="outlined"
+                        <TextField size='small' id="outlined-basic" label="Vai trò" variant="outlined"
                             value={role}
                             onChange={(e) => { setRole(e.target.value) }}
                             sx={{
                                 width: "100%"
                             }} />
-                        <Button variant='contained' sx={{ marginTop: "20px" }} onClick={handleAddRole}>Add</Button>
+                        <Button variant='contained' sx={{ marginTop: "20px" }} onClick={handleAddRole}>Tạo</Button>
                     </Box>
                 </Box>
             </Modal>

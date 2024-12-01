@@ -5,10 +5,16 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import ExerciseTypeList from './ExerciseTypeList';
 import SyllabusManagement from './SyllabusManagement';
+import { useLocation } from 'react-router-dom';
 
 function ExerciseManagement() {
-
-    const [value, setValue] = useState('1');
+    const location = useLocation();
+    const [value, setValue] = useState(() => {
+        console.log(location.pathname);
+        
+        const syllabus = location.state?.syllabus;
+        return syllabus ?? '1';
+    });
 
     const handleChange = (event, newValue) => {
         setValue(newValue);

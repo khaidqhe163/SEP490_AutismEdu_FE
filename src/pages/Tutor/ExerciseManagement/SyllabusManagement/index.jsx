@@ -11,9 +11,14 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { enqueueSnackbar } from 'notistack';
 import LoadingComponent from '~/components/LoadingComponent';
+import { useLocation } from 'react-router-dom';
 
 export default function SyllabusManagement() {
-    const [openCreation, setOpenCreation] = useState(false);
+    const location = useLocation();
+    const [openCreation, setOpenCreation] = useState(() => {
+        const syllabus = location.state?.syllabus;
+        return !!syllabus;
+    });
     const [openAssign, setOpenAssign] = useState(false);
     const [listSyllabus, setListSyllabus] = useState([]);
     const [valueSyllabus, setValueSyllabus] = useState('1');
@@ -22,7 +27,6 @@ export default function SyllabusManagement() {
     const [selectedAssign, setSelectedAssign] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    console.log(listSyllabus);
     useEffect(() => {
         handleGetAllSyllabus();
     }, []);
@@ -36,7 +40,7 @@ export default function SyllabusManagement() {
                 }
             }, (error) => {
                 console.log(error);
-            }, { orderBy: 'ageFrom', sort: 'asc'});
+            }, { orderBy: 'ageFrom', sort: 'asc' });
         } catch (error) {
             console.log(error);
         } finally {

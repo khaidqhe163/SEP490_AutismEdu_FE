@@ -12,6 +12,8 @@ import CurriculumManage from './CurriculumManagement';
 import AvailableTimeManagement from './AvailableTimeManagement';
 import CertificateManagement from './CertificateManagement';
 import WorkExperienceManagement from './WorkExperienceManagement';
+import ReviewsIcon from '@mui/icons-material/Reviews';
+import ReviewMe from './ReviewMe';
 
 function TutorSetting() {
     const navigate = useNavigate();
@@ -35,6 +37,7 @@ function TutorSetting() {
                         <Tab iconPosition='start' icon={<EditCalendarIcon />} label="Thiết lập thời gian rảnh" value="3" />
                         <Tab iconPosition='start' icon={<DescriptionIcon />} label="Chứng chỉ" value="4" />
                         <Tab iconPosition='start' icon={<WorkIcon />} label="Kinh nghiệm làm việc" value="5" />
+                        <Tab iconPosition='start' icon={<ReviewsIcon />} label="Đánh giá về tôi" value="6" />
                     </TabList>
                 </Box>
                 <TabPanel value="1">
@@ -44,6 +47,7 @@ function TutorSetting() {
                 <TabPanel value="3"><AvailableTimeManagement /></TabPanel>
                 <TabPanel value="4"><CertificateManagement /></TabPanel>
                 <TabPanel value='5'><WorkExperienceManagement /></TabPanel>
+                <TabPanel value='6'><ReviewMe /></TabPanel>
             </TabContext>
         </Box>
     );

@@ -51,7 +51,6 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
     const handleOpenModal = () => setOpenModal(true);
     const handleCloseModal = () => setOpenModal(false);
 
-    // Formik setup
     const formik = useFormik({
         initialValues: {
             ageFrom: ageFrom,
@@ -83,6 +82,7 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
                         setSelectedClone([]);
                         setSelectedList([]);
                         formik.resetForm();
+                        handleBack();
                     }
                 }, (error) => {
                     enqueueSnackbar(error.error[0], { variant: 'error' });
@@ -96,14 +96,6 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
         },
         enableReinitialize: true,
     });
-
-    const handleAgeFromChange = (value) => {
-        setAgeFrom(parseInt(value));
-    };
-
-    const handleAgeEndChange = (value) => {
-        setAgeEnd(parseInt(value));
-    };
 
     const handleDeleteItem = (id) => {
         console.log(id);

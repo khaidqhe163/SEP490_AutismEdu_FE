@@ -3,10 +3,13 @@ import { Box, Button, Divider, FormControl, InputLabel, MenuItem, Modal, Select,
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom';
 
 function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFilterSchedule, selectedKey }) {
     const [syllabusId, setSyllabusId] = useState('');
     const [exerciseType, setExerciseType] = useState('');
+    const [eTypePrev, setETypePrev] = useState(0);
+    const [syllabusIdPrev, setSyllabusIdPrev] = useState(0);
     const [exercise, setExercise] = useState('');
     const [listSyllabus, setListSyllabus] = useState([]);
     const [listExerciseType, setListExerciseType] = useState([]);
@@ -16,8 +19,8 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
     const [isValidate, setValidate] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedContent, setSelectedContent] = useState('');
-    
-    console.log(schedule);
+    const nav = useNavigate();
+    // console.log(schedule);
 
     useEffect(() => {
         if (listSyllabus?.length !== 0 && schedule?.syllabusId && schedule?.exerciseType && schedule?.exercise) {
@@ -123,7 +126,7 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
     }, []);
 
     useEffect(() => {
-        if (schedule) {
+        if (schedule?.syllabusId && schedule?.exerciseType && schedule?.exercise) {
             setSyllabusId(schedule.syllabusId || '');
             setExerciseType(schedule.exerciseType?.id || '');
             setExercise(schedule.exercise?.id || '');
@@ -136,7 +139,10 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
             const eTypeData = listSyllabus.find((s) => s.id === syllabusId)?.exerciseTypes || [];
             setListExerciseType(eTypeData);
 
-            if (!initialized) {
+            if (initialized && syllabusIdPrev !== 0) {
+                setExerciseType('');
+                setExercise('');
+            } else if (!initialized) {
                 setExerciseType('');
                 setExercise('');
             }
@@ -147,19 +153,20 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
         if (exerciseType) {
             const eData = listExerciseType.find((e) => e.id === exerciseType)?.exercises || [];
             setListExercise(eData);
-            console.log(eData);
 
-            if (!initialized) {
+            if (initialized && eTypePrev !== 0) {
+                setExercise('');
+            } else if (!initialized) {
                 setExercise('');
             }
         }
     }, [exerciseType, initialized, listExerciseType]);
 
-    console.log({
-        syllabusId,
-        exerciseType,
-        exercise
-    });
+    // console.log({
+    //     syllabusId,
+    //     exerciseType,
+    //     exercise
+    // });
 
     function formatTime(timeString) {
         const [hours, minutes] = timeString.split(":");
@@ -204,7 +211,6 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
                 "exerciseTypeId": exerciseType
             }, (res) => {
                 if (res?.result) {
-                    console.log(filterSchedule);
 
                     const updateData = filterSchedule[selectedKey].map((s) => {
                         if (s.id === res.result?.id) {
@@ -214,7 +220,6 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
                             return s;
                         }
                     });
-                    console.log(updateData);
 
                     setFilterSchedule((prev) => ({ ...prev, [selectedKey]: updateData }));
                     enqueueSnackbar("Gán bài tập thành công!", { variant: 'success' });
@@ -248,6 +253,12 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
         setOpenDialog(false);
         setSelectedContent('');
     };
+
+    const isDisable = () => {
+        return !(syllabusId && exerciseType && exercise);
+    };
+    // console.log(isValidate);
+    // console.log(isDisable());
 
     return (
         <>
@@ -292,9 +303,10 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
                                     <InputLabel>Độ tuổi</InputLabel>
                                     <Select
                                         value={syllabusId}
-                                        onChange={(e) => setSyllabusId(e.target.value)}
+                                        onChange={(e) => setSyllabusId((prev) => { setSyllabusIdPrev(prev); return (e.target.value); })}
                                         sx={{ borderRadius: '8px' }}
                                     >
+                                        <MenuItem value={''} disabled>Độ tuổi</MenuItem>
                                         {listSyllabus?.map((s, index) => (
                                             <MenuItem value={s.id} key={index}>Từ {s.ageFrom} - {s.ageEnd}</MenuItem>
                                         ))}
@@ -306,7 +318,7 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
                                     <InputLabel>Loại bài tập</InputLabel>
                                     <Select
                                         value={exerciseType}
-                                        onChange={(e) => setExerciseType(e.target.value)}
+                                        onChange={(e) => { setExerciseType((prev) => { setETypePrev(prev); return (e.target.value) }); }}
                                         sx={{ borderRadius: '8px' }}
                                     >
                                         {listExerciseType?.map((t, index) => (
@@ -332,16 +344,22 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
                             {exercise && listExercise.length !== 0 && <Grid item xs={12}>
                                 <Button variant='text' onClick={() => handleOpenDialog(exercise)}>Xem chi tiết bài tập</Button>
                             </Grid>}
+                            {listSyllabus.length === 0 && (<Grid item xs={12} display={'flex'} direction={'column'} gap={1}>
+                                <Typography variant='caption' color={'red'}>Hiện tại bạn chưa tạo giáo trình nào. Bạn có muốn tạo không?</Typography>
+                                <Box>
+                                    <Button variant='contained' color='primary' size='small' onClick={() => nav('/autismtutor/exercise', { state: { syllabus: '2' } })}>Có</Button>
+                                </Box>
+                            </Grid>)}
                         </Grid>
                     </Stack>
 
                     <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 3 }}>
                         <Button variant="outlined" onClick={onClose} sx={{ px: 3 }}>Huỷ</Button>
-                        <Button variant="contained" color="primary" sx={{ px: 3 }} onClick={handleSubmit} disabled={isValidate}>Lưu</Button>
+                        <Button variant="contained" color="primary" sx={{ px: 3 }} onClick={handleSubmit} disabled={isValidate || isDisable()}>Lưu</Button>
                     </Stack>
                 </Box>
 
-            </Modal>
+            </Modal >
             <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
                 <DialogTitle textAlign={'center'}>Nội dung bài tập</DialogTitle>
                 <Divider />
