@@ -1,7 +1,4 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { FormHelperText, Grid, IconButton, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -34,16 +31,20 @@ export default function Career({ career, setCareer }) {
         const errors = {};
         if (!values.companyName) {
             errors.companyName = "Bắt buộc"
+        } else if (values.companyName.length > 150) {
+            errors.companyName = "Phải dưới 150 ký tự"
         }
         if (!values.position) {
             errors.position = "Bắt buộc"
+        } else if (values.position.length > 150) {
+            errors.position = "Phải dưới 150 ký tự"
         }
         if (!values.startDate) {
             errors.startDate = "Bắt buộc"
         }
-        if (!values.endDate) {
-            errors.endDate = "Bắt buộc"
-        }
+        // if (!values.endDate) {
+        //     errors.endDate = "Bắt buộc"
+        // }
         if ((values.startDate > values.endDate) && values.endDate) {
             errors.startDate = "Thời gian không hợp lệ"
         }
@@ -64,7 +65,12 @@ export default function Career({ career, setCareer }) {
             if (existWE) {
                 enqueueSnackbar("Bạn đã có kinh nghiệm này rồi", { variant: "error" })
             } else {
-                setCareer(pre => [...pre, values])
+                setCareer(pre => [...pre, {
+                    companyName: values.companyName.trim(),
+                    position: values.position.trim(),
+                    startDate: values.startDate,
+                    endDate: values.endDate === "" ? null : values.endDate
+                }])
                 setOpen(false);
                 formik.resetForm();
             }
@@ -80,7 +86,7 @@ export default function Career({ career, setCareer }) {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                    <Typography id="modal-modal-title" variant="h5" component="h2">
                         Thêm kinh nghiệm làm việc
                     </Typography>
                     <form onSubmit={formik.handleSubmit}>

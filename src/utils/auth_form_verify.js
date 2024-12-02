@@ -8,6 +8,9 @@ const checkValid = (value, field, setError, password) => {
         } else if (!emailRegex.test(value)) {
             setError("Email không hợp lệ");
             return false;
+        } else if (value.length > 320) {
+            setError("Email quá dài");
+            return false;
         } else {
             setError(null);
             return true;

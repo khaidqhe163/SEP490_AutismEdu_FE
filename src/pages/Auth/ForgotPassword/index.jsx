@@ -1,18 +1,17 @@
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput, Snackbar, SvgIcon } from '@mui/material';
+import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput } from '@mui/material';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import TrelloIcon from '~/assets/trello.svg?react';
-import PAGES from '~/utils/pages';
-import service from '~/plugins/services'
-import LoadingButton from '@mui/lab/LoadingButton';
-import { useSnackbar } from 'notistack';
+import service from '~/plugins/services';
 import checkValid from '~/utils/auth_form_verify';
-import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
+import PAGES from '~/utils/pages';
 function ForgotPassword() {
     const [emailError, setEmailError] = useState(null);
     const [submited, setSubmited] = useState(false);
@@ -71,8 +70,8 @@ function ForgotPassword() {
                                         <InputLabel htmlFor="email">Email</InputLabel>
                                         <OutlinedInput id="email" label="Email" variant="outlined" type='email'
                                             onChange={(e) => {
-                                                checkValid(e.target.value, 1, setEmailError);
-                                                setEmail(e.target.value)
+                                                checkValid(e.target.value.trim(), 1, setEmailError);
+                                                setEmail(e.target.value.trim())
                                             }}
                                             error={!!emailError}
                                             value={email}

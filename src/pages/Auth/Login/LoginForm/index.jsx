@@ -114,7 +114,7 @@ function LoginForm({ setVerify, setEmailVerify, onLoginSuccess }) {
                                 onChange={(e) => {
                                     if (!e.target.value.includes(" ")) {
                                         checkValid(e.target.value, 1, setEmailError);
-                                        setEmail(e.target.value);
+                                        setEmail(e.target.value.trim());
                                     }
                                 }}
                             />
@@ -136,7 +136,7 @@ function LoginForm({ setVerify, setEmailVerify, onLoginSuccess }) {
                                 onChange={(e) => {
                                     if (!e.target.value.includes(" ")) {
                                         checkValid(e.target.value, 2, setPasswordError);
-                                        setPassword(e.target.value);
+                                        setPassword(e.target.value.trim());
                                     }
                                 }}
                                 endAdornment={

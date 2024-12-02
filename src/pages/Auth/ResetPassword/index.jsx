@@ -180,11 +180,10 @@ function ResetPassword() {
                         Đặt lại mật khẩu
                     </LoadingButton>
                     <Typography textAlign={'center'} mt="20px">
-                        <Link to={PAGES.LOGIN} style={{ color: "#666cff" }}>
+                        <Link to={PAGES.ROOT + PAGES.LOGIN} style={{ color: "#666cff" }}>
                             <ArrowBackIosNewIcon sx={{ fontSize: "12px" }} /> Trở về đăng nhập
                         </Link>
                     </Typography>
-
                 </CardContent>
             </Card>
         </Box>

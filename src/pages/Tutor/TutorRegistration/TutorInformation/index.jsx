@@ -29,11 +29,13 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
             errors.email = "Bắt buộc"
         } else if (!emailRegex.test(values.email)) {
             errors.email = "Email của bạn không hợp lệ"
+        } else if (values.email.length > 320) {
+            errors.email = "Email phải dưới 320 kí tự"
         }
         if (!values.fullName) {
             errors.fullName = 'Bắt buộc';
-        } else if (values.fullName.length > 20) {
-            errors.fullName = 'Tên dưới 20 ký tự';
+        } else if (values.fullName.length > 100) {
+            errors.fullName = 'Tên dưới 100 ký tự';
         } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.fullName)) {
             errors.fullName = 'Tên không hợp lệ'
         }
@@ -47,6 +49,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
         }
         if (!values.province || !values.district || !values.commune || !values.homeNumber) {
             errors.address = 'Nhập đầy đủ địa chỉ';
+        } else if (values.homeNumber.length > 100) {
+            errors.address = 'Số nhà dưới 100 kí tự'
         }
         if (!values.identityCardNumber) {
             errors.identityCardNumber = "Bắt buộc"
@@ -55,6 +59,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
         }
         if (!values.issuingInstitution) {
             errors.issuingInstitution = "Bắt buộc"
+        } else if (!values.issuingInstitution.length > 100) {
+            errors.issuingInstitution = 'Nhỏ hơn 100 ký tự'
         }
 
         if (!values.issuingDate) {
@@ -88,7 +94,7 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
 
             setIdVerification({
                 certificateName: "Căn cước công dân",
-                issuingInstitution: values.issuingInstitution,
+                issuingInstitution: values.issuingInstitution.trim(),
                 issuingDate: values.issuingDate,
                 identityCardNumber: values.identityCardNumber,
                 medias: dataTransfer.files
@@ -98,16 +104,16 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
             const selectedDistrict = districts.find(p => p.idDistrict === values.district);
             setTutorInformation({
                 image: avatar,
-                fullName: values.fullName,
-                email: values.email,
+                fullName: values.fullName.trim(),
+                email: values.email.trim(),
                 phoneNumber: values.phoneNumber,
                 dateOfBirth: values.dateOfBirth,
                 province: selectedProvince || '',
                 district: selectedDistrict || '',
                 commune: selectedCommune || '',
-                homeNumber: values.homeNumber,
-                startAge: values.startAge,
-                endAge: values.endAge
+                homeNumber: values.homeNumber.trim(),
+                // startAge: values.startAge,
+                // endAge: values.endAge
             })
             handleNext();
         }
@@ -141,7 +147,6 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                 const province = dataP.find((p) => { return p.idProvince === tutorInformation.province.idProvince });
                 if (province) {
                     formik.setFieldValue("province", province.idProvince);
-                    handleGetDistrict(districts);
                     const dataD = await handleGetDistrict(province.idProvince);
                     const district = dataD.find((d) => { return d.idDistrict === tutorInformation.district.idDistrict });
                     if (district) {
@@ -183,6 +188,13 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
     const getMaxDate = () => {
         const today = new Date();
         const year = today.getFullYear() - 20;
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+    const getMinDate = () => {
+        const today = new Date();
+        const year = today.getFullYear() - 70;
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const day = String(today.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
@@ -248,7 +260,10 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                     </Grid>
                     <Grid item xs={3} textAlign="right">Ngày sinh</Grid>
                     <Grid item xs={9}>
-                        <TextField size='small' sx={{ width: "50%" }} type='date' inputProps={{ max: getMaxDate() }}
+                        <TextField size='small' sx={{ width: "50%" }} type='date' inputProps={{
+                            max: getMaxDate(),
+                            min: getMinDate()
+                        }}
                             value={formik.values.dateOfBirth}
                             onChange={formik.handleChange} name='dateOfBirth'
                         />
@@ -403,7 +418,10 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             name='issuingDate'
                             onChange={formik.handleChange}
                             type='date'
-                            inputProps={{ max: new Date().toISOString().split('T')[0] }}
+                            inputProps={{
+                                max: new Date().toISOString().split('T')[0],
+                                min: getMinDate()
+                            }}
                         />
                         {
                             formik.errors.issuingDate && (

@@ -42,11 +42,17 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                     submitForm.append(`Curriculums[${index}].ageEnd`, curriculum.ageEnd);
                     submitForm.append(`Curriculums[${index}].Description`, curriculum.description);
                 });
+                console.log(career);
                 career.forEach((experience, index) => {
                     submitForm.append(`WorkExperiences[${index}].CompanyName`, experience.companyName);
                     submitForm.append(`WorkExperiences[${index}].Position`, experience.position);
                     submitForm.append(`WorkExperiences[${index}].StartDate`, experience.startDate);
                     submitForm.append(`WorkExperiences[${index}].EndDate`, experience.endDate);
+                    // if (experience.endDate !== null) {
+                    //     submitForm.append(`WorkExperiences[${index}].EndDate`, experience.endDate);
+                    // } else {
+                    //     submitForm.append(`WorkExperiences[${index}].EndDate`, "");
+                    // }
                 });
                 certificate.forEach((cert, index) => {
                     submitForm.append(`Certificates[${index}].CertificateName`, cert.certificateName);
@@ -73,6 +79,7 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 await services.TutorManagementAPI.registerAsTutor(submitForm, (res) => {
                     handleNext();
                 }, (err) => {
+                    console.log(err);
                     enqueueSnackbar(err.error[0], { variant: "error" })
                 })
                 setLoading(false);

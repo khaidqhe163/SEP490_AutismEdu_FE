@@ -32,6 +32,8 @@ function MyChildren() {
             errors.fullName = "Bắt buộc"
         } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.fullName)) {
             errors.fullName = "Tên không hợp lệ!"
+        } else if (values.fullName.length > 100) {
+            errors.fullName = "Phải dưới 100 ký tự"
         }
         if (!values.gender) {
             errors.gender = "Bắt buộc"
@@ -49,7 +51,7 @@ function MyChildren() {
         initialValues: {
             fullName: '',
             dateOfBirth: '',
-            gender: '',
+            gender: ''
 
         },
         validate,
@@ -59,7 +61,7 @@ function MyChildren() {
                 const formData = new FormData();
 
                 formData.append("childId", children[currentChild].id);
-                formData.append("Name", values.fullName);
+                formData.append("Name", values.fullName.trim());
                 formData.append("isMale", values.gender);
                 formData.append("BirthDate", values.dateOfBirth);
                 if (avatar)
@@ -72,7 +74,7 @@ function MyChildren() {
                     enqueueSnackbar("Cập nhật thành công!", { variant: "success" });
                 }, (err) => {
                     console.log(err);
-                    enqueueSnackbar("Cập nhật thất bại!", { variant: "error" })
+                    enqueueSnackbar(err.error[0], { variant: "error" })
                 })
                 axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
                 setLoading(false);
@@ -125,6 +127,25 @@ function MyChildren() {
         } catch (error) {
             setLoading(false);
         }
+    }
+
+    const getMaxDate = () => {
+        const today = new Date();
+        const lastYear = new Date(today);
+        lastYear.setFullYear(today.getFullYear() - 1);
+        const year = lastYear.getFullYear();
+        const month = String(lastYear.getMonth() + 1).padStart(2, '0');
+        const day = String(lastYear.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+    const getMinDate = () => {
+        const today = new Date();
+        const fifteenYearsAgo = new Date(today);
+        fifteenYearsAgo.setFullYear(today.getFullYear() - 15, 0, 1);
+        const year = fifteenYearsAgo.getFullYear();
+        const month = String(fifteenYearsAgo.getMonth() + 1).padStart(2, '0');
+        const day = String(fifteenYearsAgo.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
     return (
         <Stack direction='row' justifyContent="center" py={5}>
@@ -180,18 +201,25 @@ function MyChildren() {
                                         </Grid>
                                         <Grid item xs={2}>Ngày sinh:</Grid>
                                         <Grid item xs={10}>
-                                            <TextField size='small' sx={{ width: "70%" }} fullWidth
-                                                onChange={formik.handleChange}
-                                                value={formik.values.dateOfBirth}
-                                                type='date'
-                                                name='dateOfBirth' />
-                                            {
-                                                formik.errors.dateOfBirth && (
-                                                    <FormHelperText error>
-                                                        {formik.errors.dateOfBirth}
-                                                    </FormHelperText>
-                                                )
-                                            }
+                                            <Box>
+                                                <TextField size='small' sx={{ width: "70%" }} fullWidth
+                                                    onChange={formik.handleChange}
+                                                    value={formik.values.dateOfBirth}
+                                                    type='date'
+                                                    name='dateOfBirth'
+                                                    inputProps={{
+                                                        max: getMaxDate(),
+                                                        min: getMinDate()
+                                                    }} />
+                                                {
+                                                    formik.errors.dateOfBirth && (
+                                                        <FormHelperText error>
+                                                            {formik.errors.dateOfBirth}
+                                                        </FormHelperText>
+                                                    )
+                                                }
+                                            </Box>
+                                            <Typography variant='caption'>Chỉ tạo được trẻ từ 1 đến 15 tuổi</Typography>
                                         </Grid>
                                         <Grid item xs={2}>Giới tính:</Grid>
                                         <Grid item xs={10}>

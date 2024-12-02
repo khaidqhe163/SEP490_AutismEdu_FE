@@ -23,7 +23,7 @@ const style = {
     bgcolor: 'background.paper',
     boxShadow: 24,
     overflowY: "auto",
-    p: 4,
+    p: 4
 };
 function ChildCreation({ setChildren, setCurrentChild, currentChild }) {
     const [open, setOpen] = useState(false);
@@ -44,6 +44,8 @@ function ChildCreation({ setChildren, setCurrentChild, currentChild }) {
             errors.fullName = "Bắt buộc"
         } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.fullName)) {
             errors.fullName = "Tên không hợp lệ!"
+        } else if (values.fullName.length > 100) {
+            errors.fullName = "Phải dưới 100 ký tự"
         }
         if (!values.gender) {
             errors.gender = "Bắt buộc"
@@ -60,7 +62,7 @@ function ChildCreation({ setChildren, setCurrentChild, currentChild }) {
         initialValues: {
             fullName: '',
             dateOfBirth: '',
-            gender: 'True',
+            gender: 'True'
         },
         validate,
         onSubmit: async (values) => {
@@ -68,7 +70,7 @@ function ChildCreation({ setChildren, setCurrentChild, currentChild }) {
                 setLoading(true);
                 const formData = new FormData();
 
-                formData.append("Name", values.fullName);
+                formData.append("Name", values.fullName.trim());
                 formData.append("isMale", values.gender);
                 formData.append("BirthDate", values.dateOfBirth);
                 formData.append("Media", avatar);
@@ -91,6 +93,25 @@ function ChildCreation({ setChildren, setCurrentChild, currentChild }) {
             }
         }
     });
+
+    const getMaxDate = () => {
+        const today = new Date();
+        const lastYear = new Date(today);
+        lastYear.setFullYear(today.getFullYear() - 1);
+        const year = lastYear.getFullYear();
+        const month = String(lastYear.getMonth() + 1).padStart(2, '0');
+        const day = String(lastYear.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+    const getMinDate = () => {
+        const today = new Date();
+        const fifteenYearsAgo = new Date(today);
+        fifteenYearsAgo.setFullYear(today.getFullYear() - 15, 0, 1);
+        const year = fifteenYearsAgo.getFullYear();
+        const month = String(fifteenYearsAgo.getMonth() + 1).padStart(2, '0');
+        const day = String(fifteenYearsAgo.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
     return (
         <>
             <Button variant='contained' startIcon={<AddIcon />} onClick={handleOpen}>Thêm thông tin trẻ</Button>
@@ -156,19 +177,23 @@ function ChildCreation({ setChildren, setCurrentChild, currentChild }) {
                             </Grid>
                             <Grid item xs={3} textAlign="right">Ngày sinh</Grid>
                             <Grid item xs={9}>
-                                <TextField size='small' type='date' value={formik.values.dateOfBirth}
-                                    name='dateOfBirth'
-                                    onChange={formik.handleChange}
-                                    inputProps={{
-                                        max: new Date().toISOString().split('T')[0]
-                                    }} />
-                                {
-                                    formik.errors.dateOfBirth && (
-                                        <FormHelperText error>
-                                            {formik.errors.dateOfBirth}
-                                        </FormHelperText>
-                                    )
-                                }
+                                <Box>
+                                    <TextField size='small' type='date' value={formik.values.dateOfBirth}
+                                        name='dateOfBirth'
+                                        onChange={formik.handleChange}
+                                        inputProps={{
+                                            max: getMaxDate(),
+                                            min: getMinDate()
+                                        }} />
+                                    {
+                                        formik.errors.dateOfBirth && (
+                                            <FormHelperText error>
+                                                {formik.errors.dateOfBirth}
+                                            </FormHelperText>
+                                        )
+                                    }
+                                </Box>
+                                <Typography variant='caption'>Chỉ tạo được trẻ từ 1 đến 15 tuổi</Typography>
                             </Grid>
                         </Grid>
                     </DialogContent>

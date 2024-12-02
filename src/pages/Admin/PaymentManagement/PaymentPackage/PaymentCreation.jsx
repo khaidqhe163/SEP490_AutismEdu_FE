@@ -66,11 +66,18 @@ export default function PaymentCreation({ change, setChange }) {
         } else if (values.title.length > 100) {
             errors.title = "Tên chỉ chứa tối đa 100 kí tự";
         }
+        if (values.description.length > 500) {
+            errors.description = "Phải dưới 500 ký tự"
+        }
         if (!values.duration) {
             errors.duration = "Bắt buộc";
         }
         if (!values.price) {
             errors.price = "Bắt buộc";
+        } else if (Number(values.price) < 10000) {
+            errors.price = "Giá tối thiểu là 10.000 vnđ"
+        } else if (Number(values.price) > 1000000000) {
+            errors.price = "Giá tối đa là 1.000.000.000 vnđ"
         }
         return errors
     }
@@ -91,7 +98,6 @@ export default function PaymentCreation({ change, setChange }) {
                     formik.resetForm();
                     handleClose();
                 }, (error) => {
-                    console.log(error);
                     enqueueSnackbar(error.error[0], { variant: "error" })
                 })
             } catch (error) {
@@ -131,9 +137,9 @@ export default function PaymentCreation({ change, setChange }) {
                             onChange={formik.handleChange}
                         />
                         {
-                            formik.errors.description && (
+                            formik.errors.title && (
                                 <FormHelperText error>
-                                    {formik.errors.description}
+                                    {formik.errors.title}
                                 </FormHelperText>
                             )
                         }
@@ -146,6 +152,9 @@ export default function PaymentCreation({ change, setChange }) {
                             value={formik.values.description}
                             onChange={formik.handleChange}
                         />
+                        <Typography sx={{ fontSize: '12px', textAlign: "right" }}>
+                            {formik.values.description.length} / 500
+                        </Typography>
                         {
                             formik.errors.description && (
                                 <FormHelperText error>
@@ -155,26 +164,27 @@ export default function PaymentCreation({ change, setChange }) {
                         }
                         <Stack direction='row' mt={2}>
                             <Box sx={{ width: "50%" }}>
-                                <Typography>Khoảng thời gian: </Typography>
+                                <Typography>Khoảng thời gian (tháng): </Typography>
                                 <TextField
                                     name='duration'
                                     onChange={formik.handleChange}
                                     value={formik.values.duration}
                                     type='Number'
                                     inputProps={{
-                                        min: 1
+                                        min: 1,
+                                        max: 1200
                                     }}
                                 />
                             </Box>
                             <Box sx={{ width: "50%" }}>
-                                <Typography>Giá</Typography>
+                                <Typography>Giá (VND)</Typography>
                                 <TextField
                                     variant="outlined"
                                     name="price"
                                     value={formik.values.price}
                                     onChange={handleChange}
                                     InputProps={{
-                                        inputComponent: NumericFormatCustom,
+                                        inputComponent: NumericFormatCustom
                                     }}
                                 />
                             </Box>

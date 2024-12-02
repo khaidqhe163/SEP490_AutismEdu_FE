@@ -17,7 +17,7 @@ const style = {
     bgcolor: 'background.paper',
     boxShadow: 24,
     overflowY: "auto",
-    p: 4,
+    p: 4
 };
 
 export default function CareerDetail({ career, setCareer, index, currentItem }) {
@@ -26,30 +26,47 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
     const handleClose = () => setOpen(false);
 
     React.useEffect(() => {
-        formik.setFieldValue("companyName", currentItem.companyName);
-        formik.setFieldValue("position", currentItem.position);
-        formik.setFieldValue("startDate", currentItem.startDate);
-        formik.setFieldValue("endDate", currentItem.endDate);
+        if (currentItem) {
+            formik.resetForm({
+                values: {
+                    companyName: currentItem.companyName,
+                    position: currentItem.position,
+                    startDate: currentItem.startDate,
+                    endDate: currentItem.endDate ? currentItem.endDate : ""
+                }
+            })
+        }
+        // formik.setFieldValue("companyName", currentItem.companyName);
+        // formik.setFieldValue("position", currentItem.position);
+        // formik.setFieldValue("startDate", currentItem.startDate);
+        // formik.setFieldValue("endDate", currentItem.endDate);
     }, [currentItem])
     const validate = values => {
         const errors = {};
         if (!values.companyName) {
             errors.companyName = "Bắt buộc"
+        } else if (values.companyName.length > 150) {
+            errors.companyName = "Phải dưới 150 ký tự"
         }
         if (!values.position) {
             errors.position = "Bắt buộc"
+        } else if (values.position.length > 150) {
+            errors.position = "Phải dưới 150 ký tự"
         }
         if (!values.startDate) {
             errors.startDate = "Bắt buộc"
         }
-        if (!values.endDate) {
-            errors.endDate = "Bắt buộc"
+        // if (!values.endDate) {
+        //     errors.endDate = "Bắt buộc"
+        // }
+        if ((values.startDate > values.endDate) && values.endDate) {
+            errors.startDate = "Thời gian không hợp lệ"
         }
         return errors;
     };
     const formik = useFormik({
         initialValues: {
-            companyName: currentItem.companyName || "",
+            companyName: currentItem.companyName || '',
             position: currentItem.position || '',
             startDate: currentItem.startDate || '',
             endDate: currentItem.endDate || ''
@@ -57,7 +74,12 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
         validate,
         onSubmit: async (values) => {
             const filterCar = career.filter((c, i) => i !== index);
-            setCareer([...filterCar, values])
+            setCareer([...filterCar, {
+                companyName: values.companyName.trim(),
+                position: values.position.trim(),
+                startDate: values.startDate,
+                endDate: values.endDate === "" ? null : values.endDate
+            }])
             setOpen(false);
             formik.resetForm();
         }
@@ -80,7 +102,7 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                    <Typography id="modal-modal-title" variant="h5" component="h2">
                         Kinh nghiệm làm việc
                     </Typography>
                     <form onSubmit={formik.handleSubmit}>
@@ -126,7 +148,7 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
                                     }
                                 </Box>
                                 <Box>
-                                    <Typography>Đến</Typography>
+                                    <Typography>Đến <Typography variant='caption'>(Không nhập nếu vẫn đang làm việc)</Typography></Typography>
                                     <TextField size='small' type='month'
                                         value={formik.values.endDate}
                                         name='endDate'
