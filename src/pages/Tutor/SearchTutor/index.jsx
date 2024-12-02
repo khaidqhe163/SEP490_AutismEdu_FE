@@ -12,7 +12,7 @@ import services from '~/plugins/services';
 import FormSearch from './FormSearch/FormSearch';
 
 function SearchTutor() {
-    
+
     const navigate = useNavigate();
     const location = useLocation();
     const searchVal = location.state?.searchVal;
@@ -130,16 +130,13 @@ function SearchTutor() {
                         <>
                             {selected !== "list" ? (
                                 tutors.map((t, index) => (
-                                    <Box key={index} sx={{ display:'flex', flexWrap:'wrap',width: '380px', height: 'auto', padding: "20px", borderRadius: "5px", transition: "transform 0.3s ease, box-shadow 0.3s ease", '&:hover': { transform: "scale(1.05) translateY(-10px)", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)" } }}>
+                                    <Box key={index} sx={{ display: 'flex', flexWrap: 'wrap', width: '380px', height: 'auto', padding: "20px", borderRadius: "5px", transition: "transform 0.3s ease, box-shadow 0.3s ease", '&:hover': { transform: "scale(1.05) translateY(-10px)", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)" } }}>
                                         <Card sx={{ height: "620px", width: '100%' }}>
                                             <CardMedia sx={{ height: 240, objectPosition: "top", objectFit: "cover" }} image={t.imageUrl} title="apeople" />
                                             <CardContent>
-                                                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                                                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                                                        <Rating name="read-only" value={t.reviewScore} readOnly />
-                                                        <Typography ml={2}>({t.totalReview} Đánh giá)</Typography>
-                                                    </Box>
-                                                    <IconButton><BookmarkBorderIcon /></IconButton>
+                                                <Box sx={{ display: "flex", alignItems: "center" }} my={1}>
+                                                    <Rating name="read-only" value={t.reviewScore} readOnly />
+                                                    <Typography ml={2}>({t.totalReview} Đánh giá)</Typography>
                                                 </Box>
                                                 <Typography gutterBottom variant="h4" component="div" sx={{ fontSize: "26px" }}>{t.fullName}</Typography>
                                                 <Box sx={{ display: "flex", alignItems: "center", gap: "5px", mt: 2 }}>
@@ -167,16 +164,13 @@ function SearchTutor() {
                             ) : (
                                 tutors.map((t, index) => (
                                     <Box key={index} sx={{ width: 'auto', padding: "20px", borderRadius: "5px", transition: "transform 0.3s ease, box-shadow 0.3s ease", '&:hover': { transform: "scale(1.05) translateY(-10px)", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)" } }}>
-                                        <Card sx={{ display: 'flex', justifyContent: 'center', minHeight: "500px", width:"1200px"}}>
+                                        <Card sx={{ display: 'flex', justifyContent: 'center', minHeight: "400px", width: "1200px" }}>
                                             <CardMedia sx={{ width: '40%', height: 'auto', borderRadius: '8px' }} image={t.imageUrl} title="Hanoi" />
                                             <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', padding: "20px" }}>
                                                 <CardContent sx={{ flexGrow: 1 }}>
-                                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                                                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                                                            <Rating name="read-only" value={t.reviewScore} readOnly />
-                                                            <Typography ml={2}>({t.totalReview} reviews)</Typography>
-                                                        </Box>
-                                                        <IconButton><BookmarkBorderIcon /></IconButton>
+                                                    <Box sx={{ display: "flex", alignItems: "center" }} my={1}>
+                                                        <Rating name="read-only" value={t.reviewScore} readOnly />
+                                                        <Typography ml={2}>({t.totalReview} Đánh giá)</Typography>
                                                     </Box>
                                                     <Typography gutterBottom variant="h4" component="div" sx={{ fontSize: "26px" }}>{t.fullName}</Typography>
                                                     <Box sx={{ display: "flex", alignItems: "center", gap: "5px", mt: 2 }}>

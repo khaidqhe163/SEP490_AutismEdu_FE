@@ -123,6 +123,14 @@ function CertificateManagement() {
     };
 
     const handleDialogClose = () => {
+        setCertificateData({
+            CertificateName: '',
+            IssuingInstitution: '',
+            IdentityCardNumber: '',
+            IssuingDate: '',
+            ExpirationDate: '',
+            Medias: []
+        });
         setOpenDialog(false);
     };
 
@@ -284,7 +292,7 @@ function CertificateManagement() {
                                 <TableRow key={certificate.id} hover>
                                     <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 10}</TableCell>
                                     <TableCell>{certificate?.certificateName}</TableCell>
-                                    <TableCell>{certificate?.createdDate && format(new Date(certificate.createdDate),'HH:mm dd/MM/yyyy')}</TableCell>
+                                    <TableCell>{certificate?.createdDate && format(new Date(certificate.createdDate), 'HH:mm dd/MM/yyyy')}</TableCell>
                                     <TableCell>
                                         <Button
                                             variant="outlined"

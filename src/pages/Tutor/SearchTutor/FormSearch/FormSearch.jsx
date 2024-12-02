@@ -48,27 +48,28 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
         const provinceData = event.target.value;
         let arrProvince = provinceData.split("|");
         let [provinceId, provinceName] = arrProvince;
-
-        setSelectedProvince(provinceId + "|" + provinceName);
+        setSelectedProvince((provinceId && provinceName) ? provinceId + "|" + provinceName : '');
         setSelectedDistrict('');
         setSelectedCommune('');
         setDistricts([]);
         setCommunes([]);
         setLoadingDistricts(true);
 
-        axios.get(`https://vietnam-administrative-division-json-server-swart.vercel.app/district?idProvince=${provinceId}`)
-            .then(response => {
-                setDistricts(response.data);
-                setLoadingDistricts(false);
-            })
-            .catch(error => {
-                console.error('Error fetching districts:', error);
-                setLoadingDistricts(false);
-            });
+        if (provinceId) {
+            axios.get(`https://vietnam-administrative-division-json-server-swart.vercel.app/district?idProvince=${provinceId}`)
+                .then(response => {
+                    setDistricts(response.data);
+                    setLoadingDistricts(false);
+                })
+                .catch(error => {
+                    console.error('Error fetching districts:', error);
+                    setLoadingDistricts(false);
+                });
+        }
 
         setSearchCriteria(prev => ({
             ...prev,
-            address: `${provinceName}`
+            address: `${provinceName ?? ''}`
         }));
     };
 
@@ -107,7 +108,7 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
 
         setSearchCriteria(prev => ({
             ...prev,
-            address: `${selectedProvince.split("|")[1]}|${selectedDistrict.split("|")[1]}|${communeName}` 
+            address: `${selectedProvince.split("|")[1]}|${selectedDistrict.split("|")[1]}|${communeName}`
         }));
     };
     function handleClick(event) {
@@ -289,6 +290,9 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                             label="Tỉnh/Thành phố"
                                             MenuProps={menuProps}
                                         >
+                                            <MenuItem key={0} value={""}>
+                                                Tất cả
+                                            </MenuItem>
                                             {provinces.map(province => (
                                                 <MenuItem key={province.idProvince} value={province.idProvince + "|" + province.name}>
                                                     {province.name}

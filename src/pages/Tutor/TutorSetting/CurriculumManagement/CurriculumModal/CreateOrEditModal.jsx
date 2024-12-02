@@ -13,11 +13,13 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
 
 
     const validationSchema = Yup.object({
-        ageFrom: Yup.number().required('Độ tuổi bắt đầu là bắt buộc').positive('Độ tuổi phải là số dương'),
+        ageFrom: Yup.number().required('Độ tuổi bắt đầu là bắt buộc').positive('Độ tuổi phải là số dương').min(1, 'Độ tuổi bắt đầu phải lớn hơn 0')
+        .max(14, 'Độ tuổi bắt đầu phải nhỏ hơn 14'),
         ageEnd: Yup.number()
             .required('Độ tuổi kết thúc là bắt buộc')
             .positive('Độ tuổi phải là số dương')
-            .moreThan(Yup.ref('ageFrom'), 'Độ tuổi kết thúc phải lớn hơn độ tuổi bắt đầu'),
+            .moreThan(Yup.ref('ageFrom'), 'Độ tuổi kết thúc phải lớn hơn độ tuổi bắt đầu')
+            .max(15, 'Độ tuổi kết thúc phải nhỏ hơn 15'),
         description: Yup.string().required('Nội dung chương trình học là bắt buộc').test('is-not-empty', 'Không được để trống', value => value !== '<p><br></p>' || value !== '<p> </p>'),
     });
 

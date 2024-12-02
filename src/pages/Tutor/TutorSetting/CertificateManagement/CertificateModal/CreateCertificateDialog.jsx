@@ -93,7 +93,7 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
             Medias: certificateData.Medias,
         },
         validationSchema: Yup.object({
-            CertificateName: Yup.string().required('Tên chứng chỉ là bắt buộc'),
+            CertificateName: Yup.string().required('Tên chứng chỉ là bắt buộc').max(150, 'Tên chứng chỉ không được vượt quá 150 ký tự'),
             IssuingInstitution: Yup.string().required('Nơi cấp là bắt buộc'),
             IssuingDate: Yup.date().required('Ngày cấp là bắt buộc'),
             ExpirationDate: Yup.date().nullable(),

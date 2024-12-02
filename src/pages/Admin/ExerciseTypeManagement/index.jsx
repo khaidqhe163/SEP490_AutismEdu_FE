@@ -127,6 +127,7 @@ const ExerciseTypeManagement = () => {
                     enqueueSnackbar('Tạo loại bài tập mới thành công!', { variant: 'success' });
                 }
             }, (error) => {
+                enqueueSnackbar(error.error[0], { variant: 'error' });
                 console.log(error);
             });
         } catch (error) {

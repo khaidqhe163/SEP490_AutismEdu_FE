@@ -14,32 +14,54 @@ import { enqueueSnackbar } from 'notistack';
 import LoadingComponent from '~/components/LoadingComponent';
 import '../../../../assets/css/ql-editor.css';
 
-const NumericFormatCustom = React.forwardRef(function NumericFormatCustom(props, ref) {
-    const { onChange, ...other } = props;
+// const NumericFormatCustom = React.forwardRef(function NumericFormatCustom(props, ref) {
+//     const { onChange, ...other } = props;
 
+//     return (
+//         <NumericFormat
+//             {...other}
+//             getInputRef={ref}
+//             onValueChange={(values) => {
+//                 onChange({
+//                     target: {
+//                         name: props.name,
+//                         value: values.value,
+//                     },
+//                 });
+//             }}
+//             thousandSeparator="."
+//             decimalSeparator=","
+//             valueIsNumericString
+//         />
+//     );
+// });
+
+// NumericFormatCustom.propTypes = {
+//     name: PropTypes.string.isRequired,
+//     onChange: PropTypes.func.isRequired,
+// };
+
+const NumericFormatCustom = (props) => {
+    const { inputRef, onChange, ...other } = props;
     return (
         <NumericFormat
             {...other}
-            getInputRef={ref}
+            getInputRef={inputRef}
+            thousandSeparator="."
+            decimalSeparator=","
+            allowNegative={false}
             onValueChange={(values) => {
                 onChange({
                     target: {
                         name: props.name,
-                        value: values.value,
+                        value: values.value, // Trả về giá trị không có dấu phân cách ngàn
                     },
                 });
             }}
-            thousandSeparator="."
-            decimalSeparator=","
-            valueIsNumericString
         />
     );
-});
-
-NumericFormatCustom.propTypes = {
-    name: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired,
 };
+
 
 function EditProfile() {
     const [openConfirm, setOpenConfirm] = useState(false);
@@ -54,8 +76,7 @@ function EditProfile() {
     const [loadingDistricts, setLoadingDistricts] = useState(false);
     const [loadingCommunes, setLoadingCommunes] = useState(false);
     const [tutor, setTutor] = useState(null);
-    console.log(tutorInfo);
-    
+
     const [defaultTutor, setDefaultTutor] = useState(null);
     const [loading, setLoading] = useState(false);
     const menuProps = {
@@ -67,8 +88,8 @@ function EditProfile() {
         },
     };
 
-    const [isSaveDisabled, setIsSaveDisabled] = useState(true); 
-    const [errors, setErrors] = useState({}); 
+    const [isSaveDisabled, setIsSaveDisabled] = useState(true);
+    const [errors, setErrors] = useState({});
 
     const validateForm = () => {
 
@@ -86,33 +107,45 @@ function EditProfile() {
         if (priceFrom < 10000) {
             newErrors.priceFrom = 'Học phí từ phải lớn hơn bằng 10,000';
         }
-        if (priceFrom > 100000000) {
-            newErrors.priceFrom = 'Học phí quá lớn';
+        if (priceFrom > 10000000) {
+            newErrors.priceFrom = 'Học phí phải nhỏ hơn 10.000.000';
+        }
+        if (priceEnd > 10000000) {
+            newErrors.priceEnd = 'Học phí nhỏ hơn 10.000.000';
         }
         if (priceEnd <= priceFrom) {
             newErrors.priceEnd = 'Học phí đến phải lớn hơn học phí từ';
         }
-        if (sessionHours <= 0) {
-            newErrors.sessionHours = 'Số giờ dạy phải lớn hơn 0';
+        if (sessionHours <= 0 || sessionHours > 10) {
+            newErrors.sessionHours = 'Số giờ dạy phải lớn hơn 0 và nhỏ hơn 10';
+        }
+        if (sessionHours > 10) {
+            newErrors.sessionHours = 'Số giờ dạy phải nhỏ hơn 10';
         }
         if (startAge < 0) {
             newErrors.startAge = 'Tuổi từ phải lớn hơn hoặc bằng 0';
         }
-        if (endAge <= startAge) {
+        if (endAge < startAge) {
             newErrors.endAge = 'Tuổi đến phải lớn hơn tuổi từ';
         }
-        const phoneRegex = /^[0-9]{10,11}$/; 
+        if (startAge > 15) {
+            newErrors.startAge = 'Tuổi bắt đầu phải nhỏ hơn 15 tuổi';
+        }
+        if (endAge > 15) {
+            newErrors.endAge = 'Tuổi đến phải nhỏ hơn 15 tuổi';
+        }
+        const phoneRegex = /^[0-9]{10,11}$/;
         if (phoneNumber && !phoneRegex.test(phoneNumber)) {
             newErrors.phoneNumber = 'Số điện thoại không hợp lệ. Phải là 10 hoặc 11 chữ số.';
         }
 
-        setErrors(newErrors); 
-        return Object.keys(newErrors).length === 0; 
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     useEffect(() => {
         if (tutor) {
-            setIsSaveDisabled(!validateForm()); 
+            setIsSaveDisabled(!validateForm());
         }
     }, [tutor]);
 
@@ -120,6 +153,7 @@ function EditProfile() {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         const nameList = ["priceFrom", "priceEnd", "sessionHours", "startAge", "endAge"];
+
         setTutor({
             ...tutor,
             [name]: nameList.includes(name) ? parseFloat(value) : value
@@ -304,13 +338,13 @@ function EditProfile() {
                     <TextField
                         fullWidth
                         required
-                        label="Học phí từ"
+                        label="Học phí từ (VNĐ)"
                         variant="outlined"
                         name="priceFrom"
                         value={tutor?.priceFrom || ''}
                         onChange={handleInputChange}
-                        type="number"
-                        error={!!errors.priceFrom} 
+                        type="text"
+                        error={!!errors.priceFrom}
                         InputProps={{
                             inputComponent: NumericFormatCustom,
                         }}
@@ -324,12 +358,12 @@ function EditProfile() {
                     <TextField
                         fullWidth
                         required
-                        label="Đến"
+                        label="Đến (VNĐ)"
                         variant="outlined"
                         name="priceEnd"
                         value={tutor?.priceEnd || ''}
                         onChange={handleInputChange}
-                        type="number"
+                        type="text"
                         error={!!errors.priceEnd}
                         InputProps={{
                             inputComponent: NumericFormatCustom,

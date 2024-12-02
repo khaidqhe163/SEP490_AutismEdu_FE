@@ -54,7 +54,7 @@ const QrModal = (props) => {
                     await savePayment(trans);
                     setIsPaid((prev) => {
                         if (!prev) {
-                            setShow(false); 
+                            setShow(false);
                         }
                         return true;
                     });
@@ -117,17 +117,19 @@ const QrModal = (props) => {
 
     return (
         <Box>
-            {isPaid && <Thank show={isPaid} handleClose={() => { setIsPaid(false);}} />}
+            {isPaid && <Thank show={isPaid} handleClose={() => { setIsPaid(false); }} />}
             {show && <Dialog open={show} onClose={() => setShow(false)} maxWidth="sm" fullWidth>
                 <DialogTitle sx={{ color: 'red', textAlign: 'center' }}>
                     Vui lòng không sửa nội dung chuyển khoản!
                 </DialogTitle>
                 <DialogContent>
-                    <img
-                        src={`https://img.vietqr.io/image/${bank.BANK_ID}-${bank.ACCOUNT_NO}-${bank.TEMPLATE}.png?amount=${bank.AMOUNT}&addInfo=${bank.DESCRIPTION}&accountName=${bank.ACCOUNT_NAME}`}
-                        alt="Error"
-                        style={{ width: '100%' }}
-                    />
+                    <Box display={'flex'} justifyContent={'center'}>
+                        <img
+                            src={`https://img.vietqr.io/image/${bank.BANK_ID}-${bank.ACCOUNT_NO}-${bank.TEMPLATE}.png?amount=${bank.AMOUNT}&addInfo=${bank.DESCRIPTION}&accountName=${bank.ACCOUNT_NAME}`}
+                            alt="Error"
+                            style={{ width: '100%' }}
+                        />
+                    </Box>
                 </DialogContent>
                 <DialogActions>
                     <Button variant="outlined" onClick={() => setShow(false)}>

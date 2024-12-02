@@ -23,9 +23,9 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
         },
         validationSchema: Yup.object({
             companyName: Yup.string()
-                .required("Tên công ty không được để trống"),
+                .required("Tên công ty không được để trống").max(150, 'Tên công ty không được vượt quá 150 ký tự'),
             position: Yup.string()
-                .required("Chức vụ không được để trống"),
+                .required("Chức vụ không được để trống").max(100, 'Tên chức vụ không được vượt quá 100 ký tự'),
             startDate: Yup.date()
                 .required("Ngày bắt đầu không được để trống")
                 .typeError("Ngày bắt đầu không hợp lệ"),
