@@ -30,12 +30,13 @@ function StudentExcercise({ studentProfile }) {
         try {
             await services.ScheduleAPI.getAssignSchedule((res) => {
                 setTotal(Math.floor(res.pagination.total / 10) + 1);
-                setSchedules(res.result.schedules);
+                setSchedules(res.result);
             }, (err) => {
                 console.log(err);
             }, {
                 pageNumber: currentPage,
-                studentProfileId: studentProfile.id
+                studentProfileId: studentProfile.id,
+                status: "PASSED"
             })
         } catch (error) {
             console.log(error);
