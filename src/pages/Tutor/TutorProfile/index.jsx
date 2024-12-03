@@ -42,7 +42,7 @@ function TutorProfile() {
     const [tutor, setTutor] = useState(null);
     const [loading, setLoading] = useState(false);
     const userInfo = useSelector(userInfor);
-    console.log(tutor);
+
     const handleChange = (event, newValue) => {
         switch (newValue) {
             case "1":
@@ -225,7 +225,7 @@ function TutorProfile() {
                             </Box>
                             <Box ml={1} sx={{ width: "55%" }}>
                                 <Typography ml={0.5} variant='h4'>{tutor?.fullName}</Typography>
-                                <Stack direction={"row"} alignItems={"center"}><StarIcon sx={{ color: 'gold', mr: 0.5 }} /> <Typography variant='subtitle1' fontWeight={"bold"}>{tutor?.reviewScore}</Typography><Typography variant='body1' ml={1}>({tutor?.totalReview} lượt đánh giá)</Typography></Stack>
+                                <Stack direction={"row"} alignItems={"center"} ml={0.5} ><Typography variant='subtitle1' fontWeight={"bold"}>{tutor?.reviewScore}</Typography><StarIcon sx={{ color: 'gold', mr: 0.5 }} /> <Typography variant='body1' ml={1}>({tutor?.totalReview} lượt đánh giá)</Typography></Stack>
                                 <Typography variant='body1' ml={0.5}>Đã tham gia: {tutor?.createdDate && formatDate(tutor?.createdDate)}</Typography>
                                 <Stack direction={"row"} alignItems={"center"} gap={2}>
                                     <Box sx={{ display: 'flex' }}>
@@ -239,7 +239,7 @@ function TutorProfile() {
                                 </Stack>
                             </Box>
                             <Box sx={{ width: "20%" }}>
-                                {id && tutor && <TutorRequestModal rejectChildIds={tutor?.rejectChildIds} tutorId={id} calculateAge={calculateAge} />}
+                                {id && tutor && userInfo && <TutorRequestModal rejectChildIds={tutor?.rejectChildIds} tutorId={id} calculateAge={calculateAge} />}
                             </Box>
                         </Box>
 
@@ -256,7 +256,7 @@ function TutorProfile() {
                                     </TabList>
                                 </Box>
                                 <>
-                                    <Box boxShadow={2} my={5} sx={{ borderRadius: "10px", maxHeight: "500px" }} pb={5}>
+                                    <Box boxShadow={2} my={5} sx={{ borderRadius: "10px", maxHeight: "500px", width:'100%'}} pb={5}>
                                         <Box bgcolor={'rgb(168 85 247)'} p={2} sx={{ borderBottom: "1px solid", borderColor: "lightgray", borderTopLeftRadius: "10px", borderTopRightRadius: "10px" }}>
                                             <Typography variant='h6' color={'white'} ml={2}>Tổng quan</Typography>
                                         </Box>
@@ -316,7 +316,7 @@ function TutorProfile() {
                                                         <Box>
                                                             <Typography variant='h6' fontSize={'medium'}>{cer.certificateName}</Typography>
                                                             <Typography variant='body1'>Cơ quan phát hành: {cer.issuingInstitution}</Typography>
-                                                            <Typography variant='body1'>Từ ngày {formatDateCer(cer.issuingDate)} {cer?.expirationDate && `đến ${formatDateCer(cer?.expirationDate)}`}</Typography>
+                                                            <Typography variant='body1'>Từ ngày {formatDateCer(cer.issuingDate)} {cer?.expirationDate ? `đến ${formatDateCer(cer?.expirationDate)}` : 'đến hiện tại'}</Typography>
                                                         </Box>
                                                     </Box>
                                                 ))
@@ -336,9 +336,9 @@ function TutorProfile() {
                                                                 <BusinessCenterOutlinedIcon fontSize='large' />
                                                             </Box>
                                                             <Box>
-                                                                <Typography variant='h6' fontSize={'medium'}>{work.companyName}</Typography>
-                                                                <Typography variant='body1'>Vị trí: {work.position}</Typography>
-                                                                <Typography variant='body2'>Từ ngày {formatDateCer(work.startDate)} {work?.endDate && `đến ${formatDateCer(work?.endDate)}`}</Typography>
+                                                                <Typography variant='h6' fontSize={'medium'}>{work?.companyName}</Typography>
+                                                                <Typography variant='body1'>Vị trí: {work?.position}</Typography>
+                                                                <Typography variant='body2'>Từ ngày {formatDateCer(work?.startDate)} {work?.endDate ? `đến ${formatDateCer(work?.endDate)}` : 'đến hiện tại'}</Typography>
                                                             </Box>
                                                         </Box>
                                                     ))
@@ -412,7 +412,7 @@ function TutorProfile() {
                                             </Box>
                                         </Stack>
                                         <Divider ref={reviewRef} />
-                                        {id && <TutorRating tutorId={id} userInfo={userInfo} />}
+                                        {id && userInfo &&<TutorRating tutorId={id} userInfo={userInfo} />}
                                     </Box>
                                 </>
 

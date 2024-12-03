@@ -20,7 +20,6 @@ function CertificateDetail() {
         setOpenImageDialog(false);
         setSelectedImage(null);
     };
-    console.log(certificate);
 
     useEffect(() => {
         fetchCertificateDetail();
@@ -103,7 +102,7 @@ function CertificateDetail() {
                     </Grid>
                     <Grid item xs={8}>
                         <Typography sx={{ fontWeight: 'bold', color: '#616161' }}>
-                            {certificate.expirationDate ? new Date(certificate.expirationDate).toLocaleDateString() : 'Chưa có'}
+                            {certificate.expirationDate ? new Date(certificate.expirationDate).toLocaleDateString() : 'Hiện tại'}
                         </Typography>
                     </Grid>
 

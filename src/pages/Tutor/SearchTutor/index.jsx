@@ -20,7 +20,7 @@ function SearchTutor() {
     const [searchCriteria, setSearchCriteria] = useState({
         searchValue: searchVal ?? "",
         address: city?.split("|")[1] ?? "",
-        selectedRating: 5,
+        selectedRating: 0,
         ageRange: [0, 15]
     });
 

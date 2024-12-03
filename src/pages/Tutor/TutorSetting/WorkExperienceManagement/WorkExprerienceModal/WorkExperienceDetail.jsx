@@ -93,7 +93,7 @@ const WorkExperienceDetail = ({ open, onClose, workExperience }) => {
                             <Typography>
                                 {workExperience.endDate
                                     ? new Date(workExperience.endDate).toLocaleDateString()
-                                    : 'Không có'}
+                                    : 'Hiện tại'}
                             </Typography>
                         </Grid>
 

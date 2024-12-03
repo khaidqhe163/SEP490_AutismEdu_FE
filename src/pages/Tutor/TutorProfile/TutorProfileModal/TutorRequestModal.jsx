@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import PAGES from '~/utils/pages';
 
 function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
+
     const [open, setOpen] = useState(false);
     const [childData, setChildData] = useState([]);
     const [selectedChild, setSelectedChild] = useState(null);
@@ -71,7 +72,7 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
 
                     if (res.result?.length === 0) {
                         enqueueSnackbar('Bạn cần tạo thêm thông tin trẻ!', { variant: 'warning' });
-                        nav('/autismedu/my-childlren');
+                        nav('/autismedu/my-childlren', { state: { isNot: true } });
                     } else {
                         // console.log(rejectChildIds);
                         // console.log(studyingList);
@@ -145,6 +146,9 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
     const checkChildValidate = (id) => {
         const rejectCase = rejectChildIds?.includes(id);
         const studyingCase = studyingList.some(s => s.childId === id);
+        console.log(rejectCase);
+        console.log(studyingCase);
+
         const resultStatus = rejectCase ? 'Từ chối' : studyingCase ? 'Đang học' : '';
         return resultStatus;
     };

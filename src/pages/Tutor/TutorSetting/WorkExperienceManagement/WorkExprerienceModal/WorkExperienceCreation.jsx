@@ -30,7 +30,7 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
                 .required("Ngày bắt đầu không được để trống")
                 .typeError("Ngày bắt đầu không hợp lệ"),
             endDate: Yup.date()
-                .required("Ngày kết thúc không được để trống")
+                // .required("Ngày kết thúc không được để trống")
                 .min(Yup.ref('startDate'), "Ngày kết thúc phải sau ngày bắt đầu")
                 .typeError("Ngày kết thúc không hợp lệ"),
         }),
@@ -96,6 +96,9 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
                         helperText={formik.touched.startDate && formik.errors.startDate}
                         margin="normal"
                         InputLabelProps={{ shrink: true }}
+                        inputProps={{
+                            max: new Date().toISOString().split('T')[0], 
+                        }}
                     />
                     <TextField
                         fullWidth

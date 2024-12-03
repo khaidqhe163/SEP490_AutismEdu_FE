@@ -1,29 +1,33 @@
 import { Box, Button, Grid, Modal, TextField, Typography, Divider } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 
-function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEditing }) {
+function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEditing, tutorProfile }) {
     const [formData, setFormData] = useState({
         ageFrom: initialData?.ageFrom || '',
         ageEnd: initialData?.ageEnd || '',
         description: initialData?.description || '',
     });
 
+    const [isDisabled, setIsDisabled] = useState(true);
 
     const validationSchema = Yup.object({
-        ageFrom: Yup.number().required('Độ tuổi bắt đầu là bắt buộc').positive('Độ tuổi phải là số dương').min(1, 'Độ tuổi bắt đầu phải lớn hơn 0')
-        .max(14, 'Độ tuổi bắt đầu phải nhỏ hơn 14'),
+        ageFrom: Yup.number()
+            .required('Độ tuổi bắt đầu là bắt buộc')
+            .positive('Độ tuổi phải là số dương')
+            .min(tutorProfile?.startAge, `Độ tuổi bắt đầu phải từ ${tutorProfile?.startAge} tuổi trở lên`)
+            .max(14, 'Độ tuổi bắt đầu phải nhỏ hơn 14'),
         ageEnd: Yup.number()
             .required('Độ tuổi kết thúc là bắt buộc')
             .positive('Độ tuổi phải là số dương')
             .moreThan(Yup.ref('ageFrom'), 'Độ tuổi kết thúc phải lớn hơn độ tuổi bắt đầu')
-            .max(15, 'Độ tuổi kết thúc phải nhỏ hơn 15'),
-        description: Yup.string().required('Nội dung chương trình học là bắt buộc').test('is-not-empty', 'Không được để trống', value => value !== '<p><br></p>' || value !== '<p> </p>'),
+            .max(tutorProfile?.endAge, `Độ tuổi kết thúc phải từ ${tutorProfile?.endAge} tuổi trở xuống`),
+        description: Yup.string()
+            .required('Nội dung chương trình học là bắt buộc')
+            .test('is-not-empty', 'Không được để trống', value => value !== '<p><br></p>' && value !== '<p> </p>'),
     });
-
-
 
     const style = {
         position: 'absolute',
@@ -34,15 +38,20 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
         bgcolor: 'background.paper',
         boxShadow: 24,
         p: 4,
-        borderRadius: '10px'
+        borderRadius: '10px',
     };
 
+    useEffect(() => {
+        const hasChanged = 
+            formData.ageFrom !== initialData?.ageFrom ||
+            formData.ageEnd !== initialData?.ageEnd ||
+            formData.description !== initialData?.description;
+
+        setIsDisabled(!hasChanged);
+    }, [formData, initialData]);
 
     const handleFormSubmit = (values) => {
-        console.log(values);
-
         if (isEditing) {
-            console.log(initialData.id);
             const data = initialData.originalCurriculum ? initialData.originalCurriculum.id : initialData.id;
             handleSubmit(values, data);
         } else {
@@ -50,7 +59,6 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
         }
         handleClose();
     };
-
 
     return (
         <Modal open={open} onClose={handleClose}>
@@ -81,6 +89,10 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
                                         value={values.ageFrom}
                                         error={touched.ageFrom && Boolean(errors.ageFrom)}
                                         helperText={touched.ageFrom && errors.ageFrom}
+                                        onChange={(e) => {
+                                            setFieldValue('ageFrom', e.target.value);
+                                            setFormData((prev) => ({ ...prev, ageFrom: e.target.value }));
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -93,6 +105,10 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
                                         value={values.ageEnd}
                                         error={touched.ageEnd && Boolean(errors.ageEnd)}
                                         helperText={touched.ageEnd && errors.ageEnd}
+                                        onChange={(e) => {
+                                            setFieldValue('ageEnd', e.target.value);
+                                            setFormData((prev) => ({ ...prev, ageEnd: e.target.value }));
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sx={{ height: '300px' }}>
@@ -100,7 +116,10 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
                                     <ReactQuill
                                         theme="snow"
                                         value={values.description}
-                                        onChange={(content) => setFieldValue('description', content)}
+                                        onChange={(content) => {
+                                            setFieldValue('description', content);
+                                            setFormData((prev) => ({ ...prev, description: content }));
+                                        }}
                                     />
                                     {touched.description && errors.description && (
                                         <Typography color="error" variant="body2" mt={1}>{errors.description}</Typography>
@@ -112,12 +131,12 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
                                     <Button variant="outlined" onClick={handleClose}>Hủy</Button>
                                 </Grid>
                                 <Grid item>
-                                    {/* {(initialData && isEditing) ? <Button disabled={false} variant="contained" color="primary" onClick={handleFormSubmit}>
-                                        Cập nhật
-                                    </Button> : <Button variant="contained" color="primary" onClick={handleFormSubmit}>
-                                        Tạo
-                                    </Button>} */}
-                                    <Button variant="contained" color="primary" type="submit">
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        type="submit"
+                                        disabled={isEditing ? isDisabled : false}
+                                    >
                                         {isEditing ? "Cập nhật" : "Tạo"}
                                     </Button>
                                 </Grid>

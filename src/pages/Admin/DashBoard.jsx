@@ -23,13 +23,13 @@ function DashBoard() {
     const [newParents, setNewParents] = useState(0);
     const [totalRevenue, setTotalRevenue] = useState(0);
 
-    useEffect(() => {
-        console.log("Total Users:", totalUsers);
-        console.log("Parents With Profiles:", parentsWithProfiles);
-        console.log("Total Tutors:", totalTutors);
-        console.log("New Parents:", newParents);
-        console.log("Total Revenue:", totalRevenue);
-    }, [totalUsers, parentsWithProfiles, totalTutors, newParents, totalRevenue]);
+    // useEffect(() => {
+    //     console.log("Total Users:", totalUsers);
+    //     console.log("Parents With Profiles:", parentsWithProfiles);
+    //     console.log("Total Tutors:", totalTutors);
+    //     console.log("New Parents:", newParents);
+    //     console.log("Total Revenue:", totalRevenue);
+    // }, [totalUsers, parentsWithProfiles, totalTutors, newParents, totalRevenue]);
 
     const adminInfo = useSelector(adminInfor);
 
@@ -64,6 +64,7 @@ function DashBoard() {
         endDate: format(new Date(now.getFullYear(), now.getMonth() + 1, 0), 'yyyy-MM-dd'),
     });
 
+    console.log(filterPackagePayment);
 
     const handleYearChange = (event) => {
         setMonthlyRevenue([

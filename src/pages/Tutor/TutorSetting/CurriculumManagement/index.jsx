@@ -12,11 +12,12 @@ import DeleteConfirmationModal from './CurriculumModal/DeleteConfirmationModal';
 
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
+import { useSelector } from 'react-redux';
+import { tutorInfor } from '~/redux/features/tutorSlice';
 
 function CurriculumManagement() {
     const [valueCurriculum, setValueCurriculum] = useState('1');
     const [curriculumData, setCurriculumData] = useState([]);
-
     const [openCreateEdit, setOpenCreateEdit] = useState(false);
     const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -24,7 +25,7 @@ function CurriculumManagement() {
     const [idDelete, setIdDelete] = useState(0);
     const [index, setIndex] = useState(0);
     const [showTable, setShowTable] = useState(false);
-    console.log(curriculumData);
+    const tutorInfo = useSelector(tutorInfor);
 
     useEffect(() => {
         handleGetCurriculums();
@@ -90,18 +91,13 @@ function CurriculumManagement() {
 
     const handleSubmitEdit = async (formData, originalCurriculumId) => {
         try {
-            console.log(formData);
-            console.log(originalCurriculumId);
-
             await services.CurriculumManagementAPI.createCurriculum({
                 ageFrom: formData.ageFrom,
                 ageEnd: formData.ageEnd,
                 description: formData.description,
                 originalCurriculumId
             }, (res) => {
-                console.log(res.result);
                 enqueueSnackbar("Cập nhật khung chương trình thành công!", { variant: "success" });
-                // setCurriculums([...curriculums, formData]);
                 setOpenCreateEdit(false);
             }, (error) => {
                 enqueueSnackbar(error.error[0], { variant: 'error' });
@@ -219,12 +215,13 @@ function CurriculumManagement() {
                 </>
             )}
 
-            {openCreateEdit && <CreateOrEditModal
+            {openCreateEdit && tutorInfo && <CreateOrEditModal
                 open={openCreateEdit}
                 handleClose={() => { setOpenCreateEdit(false); setCurrentEditIndex(null); }}
                 handleSubmit={isEditing ? handleSubmitEdit : handleSubmitCreate}
                 initialData={isEditing ? currentEditIndex : null}
                 isEditing={isEditing}
+                tutorProfile={tutorInfo?.tutorProfile}
             />}
 
             {openDeleteConfirm && <DeleteConfirmationModal

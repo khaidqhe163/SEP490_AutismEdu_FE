@@ -237,7 +237,7 @@ function WorkExperienceManagement() {
                                     <TableCell sx={{ fontWeight: 'bold' }}>Tên công ty/doanh nghiệp</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Vị trí</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Thời gian bắt đầu</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Thời gian kết đầu</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Thời gian kết thúc</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
                                     {/* <TableCell sx={{ fontWeight: 'bold' }}>Phản hồi</TableCell> */}
                                     <TableCell sx={{ fontWeight: 'bold' }}>Hành động</TableCell>
@@ -261,7 +261,7 @@ function WorkExperienceManagement() {
                                         </TableCell>
                                         <TableCell>{certificate?.position}</TableCell>
                                         <TableCell>{certificate?.startDate && new Date(certificate.startDate).toLocaleDateString()}</TableCell>
-                                        <TableCell>{certificate?.endDate && new Date(certificate.endDate).toLocaleDateString()}</TableCell>
+                                        <TableCell>{certificate?.endDate ? new Date(certificate.endDate).toLocaleDateString():'Hiện tại'}</TableCell>
                                         <TableCell>
                                             <Button
                                                 variant="outlined"

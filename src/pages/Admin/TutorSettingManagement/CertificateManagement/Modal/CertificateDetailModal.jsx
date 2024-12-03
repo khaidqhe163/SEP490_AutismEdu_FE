@@ -90,7 +90,7 @@ function CertificateDetailModal({ open, onClose, certificate }) {
                         </Grid>
                         <Grid item xs={8}>
                             <Typography sx={{ fontWeight: 'bold', color: '#616161' }}>
-                                {certificate.expirationDate ? new Date(certificate.expirationDate).toLocaleDateString() : 'Chưa có'}
+                                {certificate.expirationDate ? new Date(certificate.expirationDate).toLocaleDateString() : 'Hiện tại'}
                             </Typography>
                         </Grid>
 

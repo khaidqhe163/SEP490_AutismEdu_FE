@@ -9,6 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import LoadingComponent from '~/components/LoadingComponent';
 import ModalUploadAvatar from '~/pages/Tutor/TutorRegistration/TutorInformation/ModalUploadAvatar';
 import axios from '~/plugins/axios';
@@ -26,7 +27,10 @@ const style = {
     p: 4,
 };
 function ChildCreation({ setChildren, setCurrentChild, currentChild }) {
-    const [open, setOpen] = useState(false);
+    const location = useLocation();
+    const [open, setOpen] = useState(() => {
+        return location.state?.isNot ?? false;
+    });
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [loading, setLoading] = useState(false);

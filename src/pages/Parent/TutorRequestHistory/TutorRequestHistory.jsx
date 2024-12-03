@@ -79,7 +79,7 @@ const TutorRequestHistory = () => {
   const totalPages = Math.ceil(pagination.total / pagination.pageSize);
 
   return (
-    <Box sx={{ p: 5, width: "90%", mx: "auto", gap: 2, height: "600px" }}>
+    <Box sx={{ p: 5, width: "90%", mx: "auto", gap: 2, height: "650px" }}>
       <Typography variant='h4' sx={{ mb: 3 }} textAlign={'center'}>Lịch sử yêu cầu đã gửi</Typography>
       <Stack direction={'row'} justifyContent={'space-between'} alignItems="center" sx={{ width: "100%", mb: 2 }} spacing={3}>
         <Stack direction={'row'} justifyContent={'flex-end'} spacing={2} sx={{ flex: 1 }}>

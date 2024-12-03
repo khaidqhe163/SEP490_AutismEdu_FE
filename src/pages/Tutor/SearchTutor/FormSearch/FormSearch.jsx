@@ -354,20 +354,40 @@ function FormSearch({ selected, setSelected, showFilters, handleSearch, handleFi
                                             onChange={handleRatingChange}
                                             label="Đánh giá"
                                         >
-                                            <MenuItem value={1} sx={{ display: 'flex', alignItems: 'center' }}>
-                                                <Stack direction={"row"} alignItems={"center"}><StarIcon sx={{ color: 'gold', mr: 1 }} /> <Typography variant='span'>1</Typography></Stack>
-                                            </MenuItem>
-                                            <MenuItem value={2} sx={{ display: 'flex', alignItems: 'center' }}>
-                                                <Stack direction={"row"} alignItems={"center"}><StarIcon sx={{ color: 'gold', mr: 1 }} /> <Typography variant='span'>2</Typography></Stack>
-                                            </MenuItem>
-                                            <MenuItem value={3} sx={{ display: 'flex', alignItems: 'center' }}>
-                                                <Stack direction={"row"} alignItems={"center"}><StarIcon sx={{ color: 'gold', mr: 1 }} /> <Typography variant='span'>3</Typography></Stack>
-                                            </MenuItem>
-                                            <MenuItem value={4} sx={{ display: 'flex', alignItems: 'center' }}>
-                                                <Stack direction={"row"} alignItems={"center"}><StarIcon sx={{ color: 'gold', mr: 1 }} /> <Typography variant='span'>4</Typography></Stack>
+                                            <MenuItem value={0} sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <Stack direction={"row"} alignItems={"center"}>
+                                                    <Typography variant='span'>Tất cả</Typography>
+                                                </Stack>
                                             </MenuItem>
                                             <MenuItem value={5} sx={{ display: 'flex', alignItems: 'center' }}>
-                                                <Stack direction={"row"} alignItems={"center"}><StarIcon sx={{ color: 'gold', mr: 1 }} /> <Typography variant='span'>5</Typography></Stack>
+                                                <Stack direction={"row"} alignItems={"center"}>
+                                                    <StarIcon sx={{ color: 'gold', mr: 1 }} />
+                                                    <Typography variant='span'>5</Typography>
+                                                </Stack>
+                                            </MenuItem>
+                                            <MenuItem value={4} sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <Stack direction={"row"} alignItems={"center"}>
+                                                    <StarIcon sx={{ color: 'gold', mr: 1 }} />
+                                                    <Typography variant='span'>4</Typography>
+                                                </Stack>
+                                            </MenuItem>
+                                            <MenuItem value={3} sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <Stack direction={"row"} alignItems={"center"}>
+                                                    <StarIcon sx={{ color: 'gold', mr: 1 }} />
+                                                    <Typography variant='span'>3</Typography>
+                                                </Stack>
+                                            </MenuItem>
+                                            <MenuItem value={2} sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <Stack direction={"row"} alignItems={"center"}>
+                                                    <StarIcon sx={{ color: 'gold', mr: 1 }} />
+                                                    <Typography variant='span'>2</Typography>
+                                                </Stack>
+                                            </MenuItem>
+                                            <MenuItem value={1} sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <Stack direction={"row"} alignItems={"center"}>
+                                                    <StarIcon sx={{ color: 'gold', mr: 1 }} />
+                                                    <Typography variant='span'>1</Typography>
+                                                </Stack>
                                             </MenuItem>
                                         </Select>
                                     </FormControl>
