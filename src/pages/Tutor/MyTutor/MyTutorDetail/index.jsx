@@ -10,6 +10,8 @@ import ReportTutor from './ReportTutor';
 import StudentChart from './StudentChart';
 import StudentProgressReport from './StudentProgressReport';
 import StudentSchedule from './StudentSchedule';
+import PAGES from '~/utils/pages';
+import StudentExcercise from './StudentExercise';
 const StyledTabs = styled((props) => (
     <Tabs
         {...props}
@@ -82,13 +84,13 @@ function MyTutorDetail() {
                 pb: "10px"
             }}>
                 <Breadcrumbs aria-label="breadcrumb">
-                    <Link underline="hover" color="inherit" href="/">
+                    <Link underline="hover" color="inherit" to={PAGES.ROOT + PAGES.HOME}>
                         Trang chủ
                     </Link>
                     <Link
                         underline="hover"
                         color="inherit"
-                        href="/material-ui/getting-started/installation/"
+                        to={PAGES.ROOT + PAGES.MY_TUTOR}
                     >
                         Gia sư của tôi
                     </Link>
@@ -126,14 +128,16 @@ function MyTutorDetail() {
                         <StyledTab value="1" label="Lịch học" />
                         <StyledTab value="2" label="Sổ liên lạc" />
                         <StyledTab value="3" label="Biểu đồ đánh gía" />
-                        <StyledTab value="4" label="Thông tin học sinh" />
+                        <StyledTab value="4" label="Bài tập" />
+                        <StyledTab value="5" label="Thông tin học sinh" />
                     </StyledTabs>
                 </Box>
             </Box>
             {1 === Number(tab) && <StudentSchedule studentProfile={studentProfile} />}
             {2 === Number(tab) && <StudentProgressReport />}
             {3 === Number(tab) && <StudentChart studentProfile={studentProfile} />}
-            {4 === Number(tab) && <ChildInformation studentProfile={studentProfile} />}
+            {4 === Number(tab) && <StudentExcercise studentProfile={studentProfile} />}
+            {5 === Number(tab) && <ChildInformation studentProfile={studentProfile} />}
             <Divider sx={{ width: "80%", margin: "auto", mt: "100px" }} />
         </Box >
     )

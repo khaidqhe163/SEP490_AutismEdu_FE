@@ -3,14 +3,14 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import LoadingComponent from '~/components/LoadingComponent';
+import AssignExercise from '~/pages/Tutor/Calendar/CalendarModal/AssignExercise';
+import Evaluate from '~/pages/Tutor/Calendar/CalendarModal/Evaluate';
+import ViewDetailModal from '~/pages/Tutor/Calendar/CalendarModal/ViewDetailModal';
+import CalenderButtons from '~/pages/Tutor/Calendar/CalenderButtons/CalenderButtons';
+import ChangeSlotModal from '~/pages/Tutor/Calendar/ChangeSlotModal';
 import services from '~/plugins/services';
 import { tutorInfor } from '~/redux/features/tutorSlice';
-import AssignExercise from './CalendarModal/AssignExercise';
-import Evaluate from './CalendarModal/Evaluate';
-import ViewDetailModal from './CalendarModal/ViewDetailModal';
-import CalenderButtons from './CalenderButtons/CalenderButtons';
-import ChangeSlotModal from './ChangeSlotModal';
-function Calendar() {
+function StudentSchedule({ studentProfile }) {
     const { id } = useParams();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isEvaluateModalOpen, setEvaluateModalOpen] = useState(false);
@@ -26,10 +26,10 @@ function Calendar() {
     const [isChange, setIsChange] = useState(true);
     const [isDetailModalOpen, setDetailModalOpen] = useState(false);
     useEffect(() => {
-        if (weekInYears.length !== 0) {
+        if (weekInYears.length !== 0 && studentProfile) {
             getSchedule();
         }
-    }, [weekInYears, isChange, currentWeek])
+    }, [weekInYears, isChange, currentWeek, studentProfile])
 
     const getSchedule = async () => {
         try {
@@ -49,7 +49,7 @@ function Calendar() {
             }, (err) => {
                 console.log(err);
             }, {
-                studentProfileId: 0,
+                studentProfileId: id,
                 startDate: formatDate(weekInYears[currentWeek].monday),
                 endDate: formatDate(weekInYears[currentWeek].sunday)
             })
@@ -60,46 +60,59 @@ function Calendar() {
     }
 
     useEffect(() => {
-        if (tutorInformation) {
-            const startYear = new Date(tutorInformation.createdDate).getFullYear();
+        if (studentProfile) {
+            const year = studentProfile.status === 0 ? new Date(studentProfile.updatedDate).getFullYear() : new Date().getFullYear();
+            const weeks = generateMondaysAndSundays(year);
+            setWeekInYears(weeks);
+            const updatedDate = studentProfile.status === 0 ? resetTime(new Date(studentProfile.updatedDate)) : resetTime(new Date());
+            setCurrentWeek(weeks.findIndex(week => updatedDate >= resetTime(week.monday) && updatedDate <= resetTime(week.sunday)));
+            const startYear = new Date(studentProfile.createdDate).getFullYear();
             const currentYear = new Date().getFullYear();
             const years = [];
-            for (let year = startYear; year <= currentYear; year++) {
-                years.push(year);
+            for (let y = startYear; y <= currentYear; y++) {
+                years.push(y);
             }
             years.reverse();
             setListYears(years);
         }
-    }, [tutorInformation])
-    useEffect(() => {
-        const year = new Date().getFullYear();
-        const weeks = generateMondaysAndSundays(year);
-        const today = resetTime(new Date());
-        const index = weeks.findIndex(week => today >= resetTime(week.monday) && today <= resetTime(week.sunday));
-        setCurrentWeek(index);
-        setWeekInYears(weeks);
-    }, [])
+    }, [studentProfile])
 
     function generateMondaysAndSundays(year) {
         const result = [];
+        const updatedDate = new Date(studentProfile?.updatedDate);
+        updatedDate.setHours(0, 0, 0, 0);
+        const createdDate = new Date(studentProfile?.createdDate);
+        createdDate.setHours(0, 0, 0, 0);
         let date = new Date(year, 0, 1);
         while (date.getDay() !== 0) {
             date.setDate(date.getDate() + 1);
         }
         let monday = new Date(date);
         monday.setDate(monday.getDate() - 6);
-
+        monday.setHours(0, 0, 0, 0)
         while (monday.getFullYear() === year || (monday.getFullYear() < year && monday.getMonth() === 11)) {
             const sunday = new Date(monday);
             sunday.setDate(monday.getDate() + 6);
+            sunday.setHours(0, 0, 0, 0);
             result.push({
                 monday: new Date(monday), sunday: new Date(sunday),
                 mondayText: `${String(monday.getDate()).padStart(2, '0')}/${String(monday.getMonth() + 1).padStart(2, '0')}`,
-                sundayText: `${String(sunday.getDate()).padStart(2, '0')}/${String(sunday.getMonth() + 1).padStart(2, '0')}`
+                sundayText: `${String(sunday.getDate()).padStart(2, '0')}/${String(sunday.getMonth() + 1).padStart(2, '0')}`,
             });
             monday.setDate(monday.getDate() + 7);
         }
-        return result;
+
+        let learntWeeks;
+        if (studentProfile.status !== 1) {
+            learntWeeks = result.filter((r) => {
+                return r.sunday.getTime() >= createdDate.getTime() && r.monday.getTime() <= updatedDate.getTime();
+            })
+        } else {
+            learntWeeks = result.filter((r) => {
+                return r.sunday.getTime() >= createdDate.getTime();
+            })
+        }
+        return learntWeeks;
     }
 
     function resetTime(date) {
@@ -349,4 +362,4 @@ function Calendar() {
     )
 }
 
-export default Calendar
+export default StudentSchedule

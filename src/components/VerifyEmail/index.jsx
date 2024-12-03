@@ -6,14 +6,11 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import TrelloIcon from '~/assets/trello.svg?react';
 import service from '~/plugins/services';
 function VerifyEmail({ email, setVerify, submitState }) {
     const [loading, setLoading] = useState(false);
-    // const { email } = useParams();
     const [submited, setSubmited] = useState(submitState);
-    const nav = useNavigate();
     useEffect(() => {
         if (loading) {
             handleSubmit();
@@ -50,8 +47,8 @@ function VerifyEmail({ email, setVerify, submitState }) {
                             My App
                         </Typography>
                     </Box>
-                    <Typography variant='h5' sx={{ color: "text.secondary", mt: "20px" }}>Verify your account! 👋</Typography>
-                    <Typography sx={{ mt: "10px" }}>Please verify your account to be able to log into the system.</Typography>
+                    <Typography variant='h5' sx={{ color: "text.secondary", mt: "20px" }}>Xác thực tài khoản! 👋</Typography>
+                    <Typography sx={{ mt: "10px" }}>Làm ơn xác thực tài khoản của bạn để có thể đăng nhập vào hệ thống.</Typography>
                     <Box mt="30px">
                         {submited ? (
                             <Typography>Check your email ({email})</Typography>
@@ -60,12 +57,12 @@ function VerifyEmail({ email, setVerify, submitState }) {
                         )}
                     </Box>
                     <LoadingButton variant='contained' sx={{ width: "100%", marginTop: "20px" }} onClick={() => setLoading(true)}
-                        loading={loading} loadingIndicator="Sending..."
+                        loading={loading} loadingIndicator="Đang gửi..."
                     >
-                        {submited ? "Resend" : "Send"}
+                        {submited ? "Gửi lại" : "Gửi"}
                     </LoadingButton>
                     <Typography textAlign={'center'} mt="20px" onClick={() => { setVerify(false) }} sx={{ cursor: "pointer" }}>
-                        <ArrowBackIosNewIcon sx={{ fontSize: "12px" }} /> Back to previous page
+                        <ArrowBackIosNewIcon sx={{ fontSize: "12px" }} /> Trở lại đăng ký
                     </Typography>
                 </CardContent>
             </Card>

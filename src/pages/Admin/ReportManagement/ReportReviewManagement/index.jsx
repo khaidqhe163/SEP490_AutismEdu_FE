@@ -59,7 +59,7 @@ function ReportReviewManagement() {
     }
     return (
         <Paper variant='elevation' sx={{ p: 3 }}>
-            <Typography variant='h4'>Quản lý bài viết</Typography>
+            <Typography variant='h4'>Quản lý đơn tố cáo đánh giá</Typography>
             <Box sx={{ display: "flex", gap: 5 }} mt={5}>
                 <FormControl sx={{ width: '150px' }}>
                     <InputLabel id="status">Trạng thái đơn</InputLabel>
@@ -74,7 +74,7 @@ function ReportReviewManagement() {
                 </FormControl>
                 <TextField
                     sx={{ width: "350px" }}
-                    label="Tìm kiếm theo tên hoặc email gia sư"
+                    label=""
                     value={searchName}
                     onChange={(e) => setSearchName(e.target.value)}
                 />

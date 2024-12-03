@@ -70,7 +70,6 @@ export default function ScoreRangeUpdate({ scoreRanges, setScoreRanges, currentS
             }
         }
     })
-    console.log(currentScoreRange);
     React.useEffect(() => {
         if (currentScoreRange) {
             formik.resetForm({
@@ -80,10 +79,6 @@ export default function ScoreRangeUpdate({ scoreRanges, setScoreRanges, currentS
                     maxScore: currentScoreRange.maxScore || ""
                 }
             })
-            // formik.setFieldValue("description", currentScoreRange.description);
-            // formik.setFieldValue("minScore", currentScoreRange.minScore);
-            // formik.setFieldValue("maxScore", currentScoreRange.maxScore);
-            // formik.setErrors = {}
         }
     }, [currentScoreRange])
     return (
@@ -98,7 +93,7 @@ export default function ScoreRangeUpdate({ scoreRanges, setScoreRanges, currentS
             >
                 <Box sx={style}>
                     <Typography variant="h6" component="h2" mb={3}>
-                        Tạo một đánh giá mới
+                        Cập nhật đánh giá
                     </Typography>
                     <form onSubmit={formik.handleSubmit}>
                         <Typography >Mô tả</Typography>
@@ -110,6 +105,7 @@ export default function ScoreRangeUpdate({ scoreRanges, setScoreRanges, currentS
                             value={formik.values.description}
                             onChange={formik.handleChange}
                         />
+                        <Typography sx={{ textAlign: "right", fontSize: "12px" }}>{formik.values.description.length} / 300</Typography>
                         {
                             formik.errors.description && (
                                 <FormHelperText error>

@@ -1,6 +1,7 @@
 import { Avatar, Box, Chip, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import CompleteTutoring from '../CompleteTutoring';
 import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 
 function StudentInformation({ studentProfile, setStudentProfile }) {
     const [status, setStatus] = useState(1);
@@ -32,6 +33,8 @@ function StudentInformation({ studentProfile, setStudentProfile }) {
         const formattedAddress = `${addressParts[3]} - ${addressParts[2]} - ${addressParts[1]} - ${addressParts[0]}`;
         return formattedAddress;
     }
+
+    console.log(studentProfile);
     return (
         <Box sx={{ px: 5 }}>
             {
@@ -51,19 +54,25 @@ function StudentInformation({ studentProfile, setStudentProfile }) {
                 width: "100%",
                 margin: "auto",
                 mt: "20px",
-                gap: 2,
+                gap: 2
             }}>
                 <Box sx={{
                     width: "60%",
-                    height: "100px",
+                    height: "100px"
                 }}>
-                    <Typography variant='h4'>
+                    <Typography variant='h5'>Thời gian học:
+                        <Typography>
+                            {format(studentProfile.createdDate, "dd/MM/yyyy")} -
+                            {studentProfile.updatedDate ? format(studentProfile.updatedDate, "dd/MM/yyyy"): "Hiện tại"}
+                        </Typography>
+                    </Typography>
+                    <Typography variant='h5' mt={2}>
                         {status === 1 ? "Tình trạng ban đầu" : "Kết quả cuối cùng"}
                     </Typography>
-                    <Typography mt={2} sx={{ whiteSpace: "break-spaces" }}>
+                    <Typography sx={{ whiteSpace: "break-spaces" }}>
                         {status === 1 ? studentProfile?.initialAssessmentResults.condition : studentProfile?.finalAssessmentResults.condition}
                     </Typography>
-                    <Typography variant='h4' mt={2}>
+                    <Typography variant='h5' mt={2}>
                         Bảng đánh giá
                     </Typography>
                     <TableContainer component={Paper} sx={{ mt: 2 }}>
@@ -133,7 +142,7 @@ function StudentInformation({ studentProfile, setStudentProfile }) {
                     </Box>
                     {
                         studentProfile?.status === 1 && (
-                            <CompleteTutoring studentProfile={studentProfile} setStudentProfile={setStudentProfile}/>
+                            <CompleteTutoring studentProfile={studentProfile} setStudentProfile={setStudentProfile} />
                         )
                     }
                 </Box>

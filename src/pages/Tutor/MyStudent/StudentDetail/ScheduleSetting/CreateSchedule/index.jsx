@@ -350,7 +350,9 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
                             })
                         }
                     </Box>
-                    <Button variant='contained' sx={{ mt: 5 }} onClick={handleCreateTimeSlot}>Thêm khung giờ</Button>
+                    <Button variant='contained' sx={{ mt: 5 }} onClick={handleCreateTimeSlot}
+                        disabled={listSchedule.length === 0}
+                    >Thêm khung giờ</Button>
                 </Box>
             </Modal>
         </>

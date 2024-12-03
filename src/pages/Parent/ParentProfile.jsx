@@ -20,8 +20,10 @@ function ParentProfile() {
         const errors = {};
         if (!values.fullName) {
             errors.fullName = 'Bắt buộc';
-        } else if (values.fullName.length > 20) {
-            errors.fullName = 'Tên dưới 20 ký tự';
+        } else if (values.fullName.length > 100) {
+            errors.fullName = 'Tên dưới 100 ký tự';
+        } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.fullName)) {
+            errors.fullName = "Tên không hợp lệ!"
         }
         if (!values.phoneNumber) {
             errors.phoneNumber = 'Bắt buộc';
@@ -39,6 +41,8 @@ function ParentProfile() {
         }
         if (!values.homeNumber) {
             errors.address = 'Bắt buộc';
+        } else if (values.homeNumber.length > 100) {
+            errors.homeNumber = 'Phải dưới 100 ký tự'
         }
         return errors;
     }
@@ -49,7 +53,7 @@ function ParentProfile() {
             district: '',
             commune: '',
             homeNumber: '',
-            phoneNumber: '',
+            phoneNumber: ''
         },
         validate,
         onSubmit: async (values) => {
@@ -57,9 +61,9 @@ function ParentProfile() {
             const selectedProvince = provinces.find(p => p.idProvince === values.province);
             const selectedDistrict = districts.find(p => p.idDistrict === values.district);
             const formData = new FormData();
-            formData.append("FullName", values.fullName)
+            formData.append("FullName", values.fullName.trim())
             formData.append("PhoneNumber", values.phoneNumber)
-            formData.append("Address", `${selectedProvince.name}|${selectedDistrict.name}|${selectedCommune.name}|${values.homeNumber}`)
+            formData.append("Address", `${selectedProvince.name}|${selectedDistrict.name}|${selectedCommune.name}|${values.homeNumber.trim()}`)
             if (avatar) {
                 formData.append("Image", avatar)
             }
@@ -77,9 +81,17 @@ function ParentProfile() {
     useEffect(() => {
         getDataProvince();
         if (userInformation) {
-            formik.setFieldValue("fullName", userInformation?.fullName || "");
-            formik.setFieldValue("phoneNumber", userInformation?.phoneNumber || "");
-            formik.setFieldValue("dateOfBirth", userInformation?.dateOfBirth || "");
+            formik.resetForm({
+                values: {
+                    fullName: userInformation?.fullName || "",
+                    phoneNumber: userInformation?.phoneNumber || "",
+                    dateOfBirth: userInformation?.dateOfBirth || "",
+                    homeNumber: userInformation?.address?.split("|")[3] || "",
+                    province: "",
+                    district: "",
+                    commune: ""
+                }
+            })
             if (userInformation.image)
                 setAvatar(userInformation.image)
         }
@@ -94,7 +106,6 @@ function ParentProfile() {
                 const province = dataP.find((p) => { return p.name === address[0] });
                 if (province) {
                     formik.setFieldValue("province", province.idProvince);
-                    handleGetDistrict(districts);
                     const dataD = await handleGetDistrict(province.idProvince);
                     const district = dataD.find((d) => { return d.name === address[1] });
                     if (district) {
@@ -103,7 +114,6 @@ function ParentProfile() {
                         const commune = dataC.find((c) => { return c.name === address[2] });
                         if (commune) {
                             formik.setFieldValue("commune", commune.idCommune);
-                            formik.setFieldValue("homeNumber", address[3])
                         }
                     }
                 }
@@ -153,13 +163,13 @@ function ParentProfile() {
             const selectedProvince = provinces.find((p) => {
                 return p.idProvince === formik.values.province;
             })
-
-            if ((formik.values.province !== "" || formik.values.district !== ""
-                || formik.values.commune !== "") && userInformation.address) {
+            if (!userInformation.address && formik.values.district && formik.values.province
+                && formik.values.commune
+            ) {
                 setChange(false);
                 return;
             }
-            if (userInformation.address) {
+            if (userInformation.address && provinces && districts && communes && selectedProvince) {
                 const address = userInformation.address.split("|");
                 if (selectedProvince.name !== address[0]) {
                     setChange(false);
@@ -179,7 +189,7 @@ function ParentProfile() {
                     setChange(false);
                     return;
                 }
-                if (formik.values.homeNumber.trim() !== address[3]) {
+                if (formik.values.homeNumber?.trim() !== address[3]) {
                     setChange(false);
                     return;
                 }
@@ -187,6 +197,7 @@ function ParentProfile() {
             setChange(true);
         }
     }, [formik])
+
     return (
         <Box sx={{ bgcolor: "#efefef", width: "100%", py: "20px" }}>
             <Box sx={{

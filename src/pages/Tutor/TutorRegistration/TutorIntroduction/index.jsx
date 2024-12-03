@@ -62,14 +62,19 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
         if (!values.fromPrice) {
             errors.fromPrice = "Bắt buộc"
         }
-        else if (values.fromPrice.length > 0 && values.fromPrice.length < 6) {
-            errors.fromPrice = "Số tiền quá nhỏ"
+        else if (Number(values.fromPrice) < 10000) {
+            errors.fromPrice = "Số tiền phải lớn hơn 10.000 đồng"
+        } else if (Number(values.fromPrice) > 10000000) {
+            errors.fromPrice = "Số tiền phải dưới 10.000.000 đồng"
         }
         if (!values.endPrice) {
             errors.endPrice = "Bắt buộc"
         }
         else if (Number(values.endPrice) < 10000) {
-            errors.endPrice = "Số tiền quá nhỏ"
+            errors.endPrice = "Số tiền phải lớn hơn 10.000 đồng"
+        }
+        else if (Number(values.endPrice) > 10000000) {
+            errors.endPrice = "Số tiền phải dưới 10.000.000 đồng"
         }
         else if (Number(values.endPrice) < Number(values.fromPrice)) {
             errors.endPrice = "Phải lớn hơn số tiền bắt đầu"
@@ -192,7 +197,7 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                     <Box mt={2} sx={{ width: "60%" }}>
                         <Typography mt={4} mb={2}>Độ tuổi dạy</Typography>
                         <Stack direction='row' alignItems='center' gap={3}>
-                            <TextField size='small' label="Từ" type='number' inputProps={{ min: 0, max: 15 }}
+                            <TextField size='small' label="Từ" type='number' inputProps={{ min: 1, max: 15 }}
                                 name='startAge'
                                 value={formik.values.startAge}
                                 onChange={(e) => {
@@ -203,7 +208,7 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                                 }}
                             />
                             <RemoveIcon />
-                            <TextField size='small' label="Đến" type='number' inputProps={{ min: 0, max: 15 }}
+                            <TextField size='small' label="Đến" type='number' inputProps={{ min: 1, max: 15 }}
                                 name='endAge'
                                 value={formik.values.endAge}
                                 onChange={(e) => {
@@ -220,7 +225,7 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                                 </FormHelperText>
                             )
                         }
-                        <Typography mt={4} mb={2}>Học phí</Typography>
+                        <Typography mt={4} mb={2}>Học phí (VNĐ)</Typography>
                         <Stack direction='row' gap={3}>
                             <Box>
                                 <TextField
@@ -231,7 +236,7 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                                     value={value.fromPrice}
                                     onChange={handleChange}
                                     InputProps={{
-                                        inputComponent: NumericFormatCustom,
+                                        inputComponent: NumericFormatCustom
                                     }}
                                 />
                                 {
@@ -264,8 +269,8 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                             </Box>
                         </Stack>
 
-                        <Typography mt={4} mb={2}>Số tiếng một buổi học</Typography>
-                        <TextField size='small' type='number' inputProps={{ min: 0, step: 0.5 }}
+                        <Typography mt={4} mb={2}>Số tiếng một buổi học (tiếng)</Typography>
+                        <TextField size='small' type='number' inputProps={{ min: 0.5, step: 0.5, max: 10 }}
                             name='sessionHours'
                             value={formik.values.sessionHours}
                             onChange={formik.handleChange}

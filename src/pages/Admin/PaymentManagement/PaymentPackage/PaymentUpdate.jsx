@@ -54,7 +54,7 @@ NumericFormatCustom.propTypes = {
     name: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
 };
-export default function PaymentUpdate({ paymentPackage, setStatus, status, setPaymetPackages, paymentPackages }) {
+export default function PaymentUpdate({ paymentPackage, setStatus, status, setPaymentPackages, paymentPackages }) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -67,6 +67,11 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
         const errors = {}
         if (!values.title) {
             errors.title = "Bắt buộc";
+        } else if (values.title.length > 100) {
+            errors.title = "Tên chỉ chứa tối đa 100 kí tự";
+        }
+        if (values.description.length > 500) {
+            errors.description = "Phải dưới 500 ký tự"
         }
         if (!values.duration) {
             errors.duration = "Bắt buộc";
@@ -74,7 +79,9 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
         if (!values.price) {
             errors.price = "Bắt buộc";
         } else if (Number(values.price) < 10000) {
-            errors.price = "Giá tiền nhỏ nhất là 10.000"
+            errors.price = "Giá tối thiểu là 10.000 vnđ"
+        } else if (Number(values.price) > 1000000000) {
+            errors.price = "Giá tối đa là 1.000.000.000 vnđ"
         }
         return errors
     }
@@ -91,14 +98,20 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
             try {
                 setLoading(true);
                 await services.PackagePaymentAPI.createPaymentPackage(values, (res) => {
-                    if (status === "Hide") {
-                        const filterArr = paymentPackages.map((r) => {
-                            if (res.result.originalId === r.id) return res.result
-                            return r.id !== values.originalId;
+                    if (status === "Show") {
+                        const filterArr = paymentPackages.filter((r) => {
+                            return r.id !== res.result.original.id;
                         })
-                        setPaymetPackages(filterArr);
+                        setPaymentPackages(filterArr);
+                    } else {
+                        const filterArr = paymentPackages.map((r) => {
+                            if (r.id === res.result.original.id) {
+                                return res.result
+                            } else
+                                return r
+                        })
+                        setPaymentPackages(filterArr);
                     }
-                    else setStatus("Hide");
                     enqueueSnackbar("Cập nhật gói thanh toán thành công", { variant: "success" });
                     handleClose();
                 }, (error) => {
@@ -206,6 +219,9 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
                             value={formik.values.description}
                             onChange={formik.handleChange}
                         />
+                        <Typography sx={{ fontSize: '12px', textAlign: "right" }}>
+                            {formik.values.description.length} / 500
+                        </Typography>
                         {
                             formik.errors.description && (
                                 <FormHelperText error>
@@ -215,7 +231,7 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
                         }
                         <Stack direction='row' mt={2}>
                             <Box sx={{ width: "50%" }}>
-                                <Typography>Khoảng thời gian: </Typography>
+                                <Typography>Khoảng thời gian (tháng): </Typography>
                                 <TextField
                                     name='duration'
                                     onChange={formik.handleChange}
@@ -223,12 +239,12 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
                                     type='Number'
                                     inputProps={{
                                         min: 1,
-                                        max: 1000
+                                        max: 1200
                                     }}
                                 />
                             </Box>
                             <Box sx={{ width: "50%" }}>
-                                <Typography>Giá</Typography>
+                                <Typography>Giá (VNĐ)</Typography>
                                 <TextField
                                     variant="outlined"
                                     name="price"

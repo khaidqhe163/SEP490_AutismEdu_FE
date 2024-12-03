@@ -1,10 +1,9 @@
 import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
-import GoogleIcon from '@mui/icons-material/Google';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { LoadingButton } from '@mui/lab';
-import { Box, Button, Divider, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
+import { Box, Divider, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -16,6 +15,7 @@ import { Link } from 'react-router-dom';
 import HtmlTooltip from '~/components/HtmlTooltip';
 import services from '~/plugins/services';
 import PAGES from '~/utils/pages';
+import GoogleLogin from '../../Login/GoogleLogin';
 function RegisterForm({ setVerify, setEmailVerify }) {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -49,8 +49,12 @@ function RegisterForm({ setVerify, setEmailVerify }) {
         }
         if (!values.fullName) {
             errors.fullName = 'Bắt buộc';
-        } else if (values.fullName.length > 20) {
-            errors.fullName = 'Tên dưới 20 ký tự';
+        }
+        else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.fullName)) {
+            errors.fullName = "Tên không hợp lệ!"
+        }
+        else if (values.fullName.length > 100) {
+            errors.fullName = 'Tên dưới 100 ký tự';
         }
         if (!values.phoneNumber) {
             errors.phoneNumber = 'Bắt buộc';
@@ -68,6 +72,8 @@ function RegisterForm({ setVerify, setEmailVerify }) {
         }
         if (!values.homeNumber) {
             errors.homeNumber = 'Bắt buộc';
+        } else if (values.homeNumber.length > 100) {
+            errors.homeNumber = 'Phải dưới 100 ký tự'
         }
         if (!values.password) {
             errors.password = 'Bắt buộc';
@@ -103,12 +109,13 @@ function RegisterForm({ setVerify, setEmailVerify }) {
             const selectedProvince = provinces.find(p => p.idProvince === values.province);
             const selectedDistrict = districts.find(p => p.idDistrict === values.district);
             const submitData = {
-                email: values.email,
-                fullName: values.fullName,
-                password: values.password,
-                address: `${selectedProvince.name}|${selectedDistrict.name}|${selectedCommune.name}|${values.homeNumber}`,
+                email: values.email.trim(),
+                fullName: values.fullName.trim(),
+                password: values.password.trim(),
+                address: `${selectedProvince.name}|${selectedDistrict.name}|${selectedCommune.name}|${values.homeNumber.trim()}`,
                 phoneNumber: values.phoneNumber
             }
+            console.log(submitData);
             setLoading(true);
             await services.AuthenticationAPI.register(submitData, (res) => {
                 enqueueSnackbar("Đăng ký thành công!", { variant: "success" });
@@ -338,6 +345,11 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                                     value={formik.values.password}
                                     type={showPassword ? 'text' : 'password'}
                                     onChange={formik.handleChange}
+                                    onKeyDown={(e) => {
+                                        if (e.key === " ") {
+                                            e.preventDefault();
+                                        }
+                                    }}
                                     endAdornment={
                                         <InputAdornment position="end">
                                             <IconButton
@@ -420,11 +432,7 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                     </form>
                     <Typography sx={{ textAlign: "center", mt: "20px" }}>Bạn đã có tài khoản? <Link to={PAGES.ROOT + PAGES.LOGIN} style={{ color: "#666cff" }}>Đăng nhập</Link></Typography>
                     <Divider sx={{ mt: "15px" }}>hoặc</Divider>
-                    <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <IconButton>
-                            <GoogleIcon sx={{ color: "#dd4b39 " }} />
-                        </IconButton>
-                    </Box>
+                    <GoogleLogin />
                 </CardContent>
             </Card>
         </Box>

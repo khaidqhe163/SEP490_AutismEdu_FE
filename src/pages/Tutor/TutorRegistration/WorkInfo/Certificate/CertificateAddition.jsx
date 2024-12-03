@@ -42,9 +42,13 @@ export default function CertificateAddition({ certificate, setCertificate }) {
         const errors = {};
         if (!values.degreeName) {
             errors.degreeName = "Bắt buộc"
+        } else if (values.degreeName.length > 150) {
+            errors.degreeName = "Phải dưới 150 ký tự"
         }
         if (!values.placeOfCertificate) {
             errors.placeOfCertificate = "Bắt buộc"
+        } else if (values.placeOfCertificate.length > 150) {
+            errors.placeOfCertificate = "Phải dưới 150 ký tự"
         }
         if (!values.degreeDate) {
             errors.degreeDate = "Bắt buộc"
@@ -77,8 +81,8 @@ export default function CertificateAddition({ certificate, setCertificate }) {
             setCertificate(pre => [...pre, {
                 certificateName: values.degreeName.trim(),
                 issuingInstitution: values.placeOfCertificate.trim(),
-                issuingDate: values.degreeDate.trim(),
-                expirationDate: values.expriredDate.trim() === "" ? null : values.expriredDate.trim(),
+                issuingDate: values.degreeDate,
+                expirationDate: values.expriredDate === "" ? null : values.expriredDate,
                 medias: dataTransfer.files
             }])
             setOpen(false);
@@ -96,7 +100,7 @@ export default function CertificateAddition({ certificate, setCertificate }) {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                    <Typography id="modal-modal-title" variant="h5" component="h2">
                         Thêm bằng cấp hoặc chứng chỉ
                     </Typography>
                     <form onSubmit={formik.handleSubmit}>

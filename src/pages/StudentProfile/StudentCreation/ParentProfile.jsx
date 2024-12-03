@@ -41,6 +41,7 @@ function ParentProfile({ parent, hasAccount, formik,
             console.log(error);
         }
     }
+
     return (
         <>
             <Card sx={{ px: 2 }}>

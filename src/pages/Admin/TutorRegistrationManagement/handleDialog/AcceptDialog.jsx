@@ -51,6 +51,7 @@ function AcceptDialog({ id, status, setTutorInformation, setCurriculums, setCert
             setLoading(false);
             handleClose();
         } catch (error) {
+            enqueueSnackbar("Cập nhật thất bại!");
             setLoading(false);
         }
     }

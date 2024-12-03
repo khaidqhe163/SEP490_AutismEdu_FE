@@ -83,6 +83,7 @@ function PaymentPackage() {
             setOpenConfirm(false);
         }
     }
+    console.log(paymentPackages);
     return (
         <Paper variant='elevation' sx={{ p: 3 }}>
             <Typography variant='h4'>Quản lý gói thanh toán</Typography>
@@ -138,7 +139,7 @@ function PaymentPackage() {
                                                         onClick={() => { setOpenConfirm(true); setCurrentPackage(s) }}
                                                     >Ẩn</Button>
                                             }
-                                            <PaymentUpdate paymentPackages={paymentPackages} paymentPackage={s} setStatus={setStatus} status={status} setPaymetPackages={paymentPackages} />
+                                            <PaymentUpdate paymentPackages={paymentPackages} paymentPackage={s} setStatus={setStatus} status={status} setPaymentPackages={setPaymetPackages} />
                                         </TableCell>
                                     </TableRow>
                                 )

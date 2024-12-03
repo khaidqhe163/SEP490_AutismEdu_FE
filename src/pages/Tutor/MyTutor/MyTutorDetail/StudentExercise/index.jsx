@@ -30,13 +30,12 @@ function StudentExcercise({ studentProfile }) {
         try {
             await services.ScheduleAPI.getAssignSchedule((res) => {
                 setTotal(Math.floor(res.pagination.total / 10) + 1);
-                setSchedules(res.result);
+                setSchedules(res.result.schedules);
             }, (err) => {
                 console.log(err);
             }, {
                 pageNumber: currentPage,
-                studentProfileId: studentProfile.id,
-                status: "PASSED"
+                studentProfileId: studentProfile.id
             })
         } catch (error) {
             console.log(error);
@@ -57,7 +56,7 @@ function StudentExcercise({ studentProfile }) {
     };
 
     return (
-        <Box sx={{ px: 5, py: 3 }}>
+        <Box sx={{ width: "80%", mx: "auto", pt: 3 }}>
             <Typography variant='h4'>Lịch sử học tập của trẻ</Typography>
             <TableContainer component={Paper} sx={{ mt: 2 }}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">

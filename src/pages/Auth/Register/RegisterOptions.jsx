@@ -7,7 +7,6 @@ import PAGES from '~/utils/pages';
 function RegisterOptions() {
     const [isVisible, setIsVisible] = useState(false);
     useEffect(() => {
-        // Delay to ensure animation starts after render
         setTimeout(() => setIsVisible(true), 100);
     }, []);
 
@@ -32,7 +31,7 @@ function RegisterOptions() {
                     }}
                 >
                     <img src={parentLogin} alt='parentlogin' style={{ maxWidth: "80%", maxHeight: "80%" }} />
-                    <Typography color="white">Đăng ký cho bố mẹ</Typography>
+                    <Typography color="white">Đăng ký cho phụ huynh</Typography>
                 </Box>
             </Link>
             <Link to={PAGES.TUTORREGISTRATION}>

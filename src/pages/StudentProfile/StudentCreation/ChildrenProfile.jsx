@@ -1,6 +1,24 @@
 import { Box, Card, CardContent, CardMedia, FormControl, FormHelperText, Grid, MenuItem, Select, TextField, Typography } from '@mui/material';
 import ModalUploadAvatar from '~/pages/Tutor/TutorRegistration/TutorInformation/ModalUploadAvatar';
 function ChildrenProfile({ childrenInfo, currentChild, hasAccount, formik, setAvatar, avatar }) {
+    const getMaxDate = () => {
+        const today = new Date();
+        const lastYear = new Date(today);
+        lastYear.setFullYear(today.getFullYear() - 1);
+        const year = lastYear.getFullYear();
+        const month = String(lastYear.getMonth() + 1).padStart(2, '0');
+        const day = String(lastYear.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+    const getMinDate = () => {
+        const today = new Date();
+        const fifteenYearsAgo = new Date(today);
+        fifteenYearsAgo.setFullYear(today.getFullYear() - 15, 0, 1);
+        const year = fifteenYearsAgo.getFullYear();
+        const month = String(fifteenYearsAgo.getMonth() + 1).padStart(2, '0');
+        const day = String(fifteenYearsAgo.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
     return (
         <Card sx={{ mt: 3, px: 2 }}>
             <CardContent sx={{ px: 0 }}>
@@ -86,7 +104,8 @@ function ChildrenProfile({ childrenInfo, currentChild, hasAccount, formik, setAv
                                         name='dateOfBirth'
                                         onChange={formik.handleChange}
                                         inputProps={{
-                                            max: new Date().toISOString().split('T')[0]
+                                            max: getMaxDate(),
+                                            min: getMinDate()
                                         }} />
                                     {
                                         formik.errors.dateOfBirth && (

@@ -1,10 +1,12 @@
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import ContactPageOutlinedIcon from '@mui/icons-material/ContactPageOutlined';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
-import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Avatar, Divider, Drawer } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
@@ -13,14 +15,11 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import * as React from 'react';
-import ContactPageOutlinedIcon from '@mui/icons-material/ContactPageOutlined';
-import { Link, useLocation } from 'react-router-dom';
-import PAGES from '~/utils/pages';
-import services from '~/plugins/services';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link, useLocation } from 'react-router-dom';
+import services from '~/plugins/services';
 import { listStudent, setListStudent } from '~/redux/features/listStudent';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import PAGES from '~/utils/pages';
 export default function TutorSideBar({ openMenu }) {
     const [openStudent, setOpenStudent] = React.useState(true);
     const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -32,8 +31,26 @@ export default function TutorSideBar({ openMenu }) {
         getListStudent();
     }, []);
     React.useEffect(() => {
-        if (location.pathname.includes('/autismtutor/exercise')) {
+        if (location.pathname === PAGES.MY_STUDENT) {
+            setSelectedIndex(0);
+        }
+        else if (location.pathname.includes(PAGES.CALENDAR)) {
+            setSelectedIndex(1);
+        }
+        else if (location.pathname.includes(PAGES.TUTOR_REQUEST)) {
+            setSelectedIndex(2);
+        }
+        else if (location.pathname.includes(PAGES.STUDENT_CREATION)) {
+            setSelectedIndex(3);
+        }
+        else if (location.pathname.includes('/autismtutor/exercise')) {
             setSelectedIndex(5);
+        }
+        else if (location.pathname.includes(PAGES.TUTOR_SETTING)) {
+            setSelectedIndex(6);
+        }
+        else if (location.pathname.includes(PAGES.ASSESSMENT_GUILD)) {
+            setSelectedIndex(7);
         }
     }, [location]);
 
@@ -69,7 +86,6 @@ export default function TutorSideBar({ openMenu }) {
     const handleOpenStudent = () => {
         setOpenStudent(!openStudent);
     };
-    console.log(listStudents);
     return (
         <Drawer variant="permanent" open={openMenu} sx={{
             width: openMenu ? 300 : 80,
@@ -110,7 +126,7 @@ export default function TutorSideBar({ openMenu }) {
                         onClick={(event) => handleListItemClick(event, 1)}
                     >
                         <ListItemIcon sx={listIconStyle}>
-                            <CalendarMonthOutlinedIcon sx={{ color: "#4CAF50" }}/>
+                            <CalendarMonthOutlinedIcon sx={{ color: "#4CAF50" }} />
                         </ListItemIcon>
                         <ListItemText
                             primary="Lịch dạy"
@@ -124,7 +140,7 @@ export default function TutorSideBar({ openMenu }) {
                         onClick={(event) => handleListItemClick(event, 2)}
                     >
                         <ListItemIcon sx={listIconStyle}>
-                            <ContactPageOutlinedIcon sx={{ color: "#FF9800" }}/>
+                            <ContactPageOutlinedIcon sx={{ color: "#FF9800" }} />
                         </ListItemIcon>
                         <ListItemText
                             primary="Yêu cầu dạy"
@@ -139,7 +155,7 @@ export default function TutorSideBar({ openMenu }) {
                         onClick={(event) => handleListItemClick(event, 3)}
                     >
                         <ListItemIcon sx={listIconStyle}>
-                            <PersonAddIcon sx={{ color: "#9C27B0" }}/>
+                            <PersonAddIcon sx={{ color: "#9C27B0" }} />
                         </ListItemIcon>
                         <ListItemText
                             primary="Tạo hồ sơ học sinh"
@@ -151,7 +167,7 @@ export default function TutorSideBar({ openMenu }) {
                     selected={selectedIndex === 4}
                 >
                     <ListItemIcon sx={listIconStyle}>
-                        <GroupOutlinedIcon sx={{ color: "#E91E63" }}/>
+                        <GroupOutlinedIcon sx={{ color: "#E91E63" }} />
                     </ListItemIcon>
                     <ListItemText primary="Học sinh" style={textStyle} />
                     {openMenu && (openStudent ? <ExpandLess /> : <ExpandMore />)}
@@ -183,7 +199,7 @@ export default function TutorSideBar({ openMenu }) {
                         onClick={(event) => handleListItemClick(event, 5)}
                     >
                         <ListItemIcon sx={listIconStyle}>
-                            <MenuBookOutlinedIcon sx={{ color: "#FFA726" }}/>
+                            <MenuBookOutlinedIcon sx={{ color: "#FFA726" }} />
                         </ListItemIcon>
                         <ListItemText primary="Bài tập" style={textStyle} />
                     </ListItemButton>
@@ -194,7 +210,7 @@ export default function TutorSideBar({ openMenu }) {
                     <ListItemButton selected={selectedIndex === 6}
                         onClick={(event) => handleListItemClick(event, 6)}>
                         <ListItemIcon sx={listIconStyle}>
-                            <SettingsOutlinedIcon sx={{ color: "#607D8B" }}/>
+                            <SettingsOutlinedIcon sx={{ color: "#607D8B" }} />
                         </ListItemIcon>
                         <ListItemText primary="Cài đặt" style={textStyle} />
                     </ListItemButton>
@@ -203,7 +219,7 @@ export default function TutorSideBar({ openMenu }) {
                     <ListItemButton selected={selectedIndex === 7}
                         onClick={(event) => handleListItemClick(event, 7)}>
                         <ListItemIcon sx={listIconStyle}>
-                            <HelpOutlineIcon sx={{ color: "#3F51B5" }}/>
+                            <HelpOutlineIcon sx={{ color: "#3F51B5" }} />
                         </ListItemIcon>
                         <ListItemText primary="Tiêu chí đánh giá" style={textStyle} />
                     </ListItemButton>

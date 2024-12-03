@@ -11,9 +11,9 @@ import ProgressReport from './ProgressReport';
 import StudentInformation from './StudentInformation';
 import ScheduleSetting from './ScheduleSetting';
 import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
-import Calendar from '../../Calendar';
 import StudentExcercise from './StudentExcercise';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import StudentSchedule from './StudentSchedule';
 function StudentDetail() {
     const [tab, setTabs] = useState(0);
     const { id } = useParams();
@@ -77,7 +77,7 @@ function StudentDetail() {
             </Box>
             <Divider sx={{ width: "100%" }} />
             {
-                tab === 0 && studentProfile?.status !== 3 && <Calendar />
+                tab === 0 && studentProfile?.status !== 3 && <StudentSchedule studentProfile={studentProfile} />
             }
             {
                 tab === 1 && studentProfile?.status !== 3 && <ProgressReport studentProfile={studentProfile} />

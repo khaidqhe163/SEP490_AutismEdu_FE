@@ -41,7 +41,7 @@ function ConfirmDeleteCurriculum({ curriculum, setCurriculum, index }) {
                 <DialogActions>
                     <Button onClick={handleDelete}>Xoá</Button>
                     <Button onClick={handleClose} autoFocus>
-                        Huỷ bỏ
+                        Huỷ
                     </Button>
                 </DialogActions>
             </Dialog>

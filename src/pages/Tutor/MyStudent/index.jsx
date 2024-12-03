@@ -9,11 +9,22 @@ function MyStudent() {
     const [status, setStatus] = useState(1);
     const dispatch = useDispatch();
     const [listStudents, setListStudents] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [total, setTotal] = useState(0);
     useEffect(() => {
         getListStudent();
     }, [])
+
     useEffect(() => {
         getListStudent();
+    }, [currentPage])
+
+    useEffect(() => {
+        if (currentPage === 1) {
+            getListStudent();
+        } else {
+            setCurrentPage(1);
+        }
     }, [status])
 
     const getListStudent = async () => {
@@ -23,18 +34,22 @@ function MyStudent() {
                 statusText = 'Teaching'
             } else if (status === 0) {
                 statusText = 'Stop'
-            } else {
-                statusText = 'Pending'
             }
             await services.StudentProfileAPI.getListStudent((res) => {
-                setListStudents(res.result);
-                if (status === 1) {
+                setTotal(res.pagination.total)
+                if (currentPage === 1) {
+                    setListStudents(res.result);
+                } else {
+                    setListStudents([...listStudents, ...res.result]);
+                }
+                if (status === 1 && currentPage === 1) {
                     dispatch(setListStudent(res.result))
                 }
             }, (error) => {
                 console.log(error);
             }, {
-                status: statusText
+                status: statusText,
+                pageNumber: currentPage
             })
         } catch (error) {
             console.log(error);
@@ -50,19 +65,17 @@ function MyStudent() {
         const splitedAdd = d.split("|");
         return `${splitedAdd[3]} - ${splitedAdd[2]} - ${splitedAdd[1]} - ${splitedAdd[0]}`
     }
+
     return (
         <Box sx={{
             px: "50px",
-            pt: '30px',
+            py: '30px'
         }}>
             <Box mb={3}>
                 <Chip label="Đang học" variant={status === 1 ? "filled" : "outlined"}
                     onClick={() => setStatus(1)}
                     sx={{ cursor: "pointer", mr: 2 }}
                 />
-                <Chip label="Đang chờ" variant={status === 3 ? "filled" : "outlined"}
-                    onClick={() => setStatus(3)}
-                    sx={{ cursor: "pointer", mr: 2 }} />
                 <Chip label="Đã hoàn thành" variant={status === 0 ? "filled" : "outlined"}
                     onClick={() => setStatus(0)}
                     sx={{ cursor: "pointer" }} />
@@ -118,6 +131,17 @@ function MyStudent() {
                     })
                 }
             </Stack>
+            <Box sx={{ textAlign: "center", mt: 2 }}>
+                {
+                    (currentPage * 10 < total) && (
+                        <Button onClick={() => setCurrentPage(currentPage + 1)}
+                            variant='contained'
+                            color='success'
+                        >Xem thêm
+                        </Button>
+                    )
+                }
+            </Box>
         </Box>
     )
 }

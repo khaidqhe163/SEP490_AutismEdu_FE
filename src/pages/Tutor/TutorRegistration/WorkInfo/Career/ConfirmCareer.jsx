@@ -39,9 +39,9 @@ function ConfirmCareer({ career, setCareer, index }) {
                     Bạn có muốn gỡ kinh nghiệm làm việc này
                 </DialogTitle>
                 <DialogActions>
-                    <Button onClick={handleDelete}>Delete</Button>
+                    <Button onClick={handleDelete}>Xoá</Button>
                     <Button onClick={handleClose} autoFocus>
-                        Cancle
+                        Huỷ
                     </Button>
                 </DialogActions>
             </Dialog>

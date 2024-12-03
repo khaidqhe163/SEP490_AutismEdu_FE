@@ -38,19 +38,31 @@ export default function CertificateDetail({ certificate, setCertificate, index, 
     const cIInput = React.useRef();
 
     React.useEffect(() => {
-        formik.setFieldValue("degreeName", currentItem.certificateName);
-        formik.setFieldValue("placeOfCertificate", currentItem.issuingInstitution);
-        formik.setFieldValue("degreeDate", currentItem.issuingDate);
-        formik.setFieldValue("expriredDate", currentItem.expirationDate);
+        formik.resetForm({
+            values: {
+                degreeName: currentItem.certificateName,
+                placeOfCertificate: currentItem.issuingInstitution,
+                degreeDate: currentItem.issuingDate,
+                expriredDate: currentItem.expirationDate ? currentItem.expirationDate : ""
+            }
+        })
+        // formik.setFieldValue("degreeName", currentItem.certificateName);
+        // formik.setFieldValue("placeOfCertificate", currentItem.issuingInstitution);
+        // formik.setFieldValue("degreeDate", currentItem.issuingDate);
+        // formik.setFieldValue("expriredDate", currentItem.expirationDate);
         setImages(Array.from(currentItem.medias))
     }, [currentItem])
     const validate = values => {
         const errors = {};
         if (!values.degreeName) {
             errors.degreeName = "Bắt buộc"
+        } else if (values.degreeName.length > 150) {
+            errors.degreeName = "Phải dưới 150 ký tự"
         }
         if (!values.placeOfCertificate) {
             errors.placeOfCertificate = "Bắt buộc"
+        } else if (values.placeOfCertificate.length > 150) {
+            errors.placeOfCertificate = "Phải dưới 150 ký tự"
         }
         if (!values.degreeDate) {
             errors.degreeDate = "Bắt buộc"
@@ -88,8 +100,8 @@ export default function CertificateDetail({ certificate, setCertificate, index, 
             setCertificate([...filterCer, {
                 certificateName: values.degreeName.trim(),
                 issuingInstitution: values.placeOfCertificate.trim(),
-                issuingDate: values.degreeDate.trim(),
-                expirationDate: values.expriredDate.trim(),
+                issuingDate: values.degreeDate,
+                expirationDate: values.expriredDate === "" ? null : values.expriredDate,
                 medias: dataTransfer.files
             }])
             setOpen(false);
@@ -116,7 +128,7 @@ export default function CertificateDetail({ certificate, setCertificate, index, 
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                    <Typography id="modal-modal-title" variant="h5" component="h2">
                         Thêm bằng cấp hoặc chứng chỉ
                     </Typography>
                     <form onSubmit={formik.handleSubmit}>
@@ -181,21 +193,24 @@ export default function CertificateDetail({ certificate, setCertificate, index, 
                             </Grid>
                             <Grid item xs={3} textAlign="right">Tải ảnh</Grid>
                             <Grid item xs={9}>
-                                <TextField size='small' type='file' inputProps={{
-                                    multiple: true,
-                                    accept: "image/png, image/jpeg",
-                                }}
-                                    onChange={(e) => {
-                                        if (e.target.files.length > 5) {
-                                            enqueueSnackbar("Chỉ chọn tối đa 5 ảnh", { variant: "error" });
-                                            e.target.value = "";
-                                        } else {
-                                            setImages(Array.from(e.target.files))
-                                        }
+                                <Box>
+                                    <TextField size='small' type='file' inputProps={{
+                                        multiple: true,
+                                        accept: "image/png, image/jpeg"
                                     }}
-                                    key={images?.length}
-                                    ref={cIInput}
-                                />
+                                        onChange={(e) => {
+                                            if (e.target.files.length > 5) {
+                                                enqueueSnackbar("Chỉ chọn tối đa 5 ảnh", { variant: "error" });
+                                                e.target.value = "";
+                                            } else {
+                                                setImages(Array.from(e.target.files))
+                                            }
+                                        }}
+                                        key={images?.length}
+                                        ref={cIInput}
+                                    />
+                                </Box>
+                                <Typography variant='caption'>(Tối đa 5 ảnh)</Typography>
                                 {
                                     images.length === 0 && (
                                         <FormHelperText error>
