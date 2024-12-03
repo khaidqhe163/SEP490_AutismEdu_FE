@@ -6,14 +6,11 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import TrelloIcon from '~/assets/trello.svg?react';
 import service from '~/plugins/services';
 function VerifyEmail({ email, setVerify, submitState }) {
     const [loading, setLoading] = useState(false);
-    // const { email } = useParams();
     const [submited, setSubmited] = useState(submitState);
-    const nav = useNavigate();
     useEffect(() => {
         if (loading) {
             handleSubmit();
@@ -65,7 +62,7 @@ function VerifyEmail({ email, setVerify, submitState }) {
                         {submited ? "Gửi lại" : "Gửi"}
                     </LoadingButton>
                     <Typography textAlign={'center'} mt="20px" onClick={() => { setVerify(false) }} sx={{ cursor: "pointer" }}>
-                        <ArrowBackIosNewIcon sx={{ fontSize: "12px" }} /> Trở lại đăng nhập
+                        <ArrowBackIosNewIcon sx={{ fontSize: "12px" }} /> Trở lại đăng ký
                     </Typography>
                 </CardContent>
             </Card>

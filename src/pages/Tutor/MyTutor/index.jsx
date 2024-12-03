@@ -12,10 +12,19 @@ import PAGES from '~/utils/pages';
 function MyTutor() {
     const [status, setStatus] = React.useState(1);
     const [listTutor, setListTutor] = React.useState([]);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [total, setTotal] = React.useState(0);
     const nav = useNavigate();
     React.useEffect(() => {
-        getStudentProfile();
+        if (currentPage === 1) {
+            getStudentProfile();
+        } else {
+            setCurrentPage(1);
+        }
     }, [status])
+    React.useEffect(() => {
+        getStudentProfile();
+    }, [currentPage])
     const getStudentProfile = async () => {
         let apiStatus = "Teaching";
         if (status === 1) {
@@ -25,11 +34,17 @@ function MyTutor() {
         }
         try {
             await services.StudentProfileAPI.getMyTutor((res) => {
-                setListTutor(res.result)
+                setTotal(res.pagination.total)
+                if (currentPage === 1) {
+                    setListTutor(res.result);
+                } else {
+                    setListTutor([...listTutor, ...res.result]);
+                }
             }, (err) => {
                 console.log(err);
             }, {
-                status: apiStatus
+                status: apiStatus,
+                pageNumber: currentPage
             })
         } catch (error) {
             console.log(error);
@@ -89,6 +104,17 @@ function MyTutor() {
                         })
                     }
                 </Stack>
+                <Box sx={{ textAlign: "center", mt: 2 }}>
+                    {
+                        (currentPage * 10 < total) && (
+                            <Button onClick={() => setCurrentPage(currentPage + 1)}
+                                variant='contained'
+                                color='success'
+                            >Xem thêm
+                            </Button>
+                        )
+                    }
+                </Box>
             </Box>
         </Stack>
 

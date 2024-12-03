@@ -48,7 +48,6 @@ function CompleteTutoring({ studentProfile, setStudentProfile }) {
             })
             setLoading(false);
         } catch (error) {
-            console.log(error);
             setLoading(false)
         }
     }
@@ -114,7 +113,7 @@ function CompleteTutoring({ studentProfile, setStudentProfile }) {
         try {
             setLoading(true);
             await services.StudentProfileAPI.closeTutoring({
-                ...formik.values,
+                finalCondition: formik.values.finalCondition.trim(),
                 studentProfileId: id,
                 finalAssessmentResults: selectedAssessment
             }, (res) => {

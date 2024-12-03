@@ -39,9 +39,9 @@ function ConfirmDeleteDialog({ certificate, setCertificate, index }) {
                     Bạn có muốn gỡ chứng chỉ này
                 </DialogTitle>
                 <DialogActions>
-                    <Button onClick={handleDelete}>Delete</Button>
+                    <Button onClick={handleDelete}>Xoá</Button>
                     <Button onClick={handleClose} autoFocus>
-                        Cancle
+                        Huỷ
                     </Button>
                 </DialogActions>
             </Dialog>

@@ -54,7 +54,7 @@ NumericFormatCustom.propTypes = {
     name: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
 };
-export default function PaymentUpdate({ paymentPackage, setStatus, status, setPaymetPackages, paymentPackages }) {
+export default function PaymentUpdate({ paymentPackage, setStatus, status, setPaymentPackages, paymentPackages }) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -98,14 +98,20 @@ export default function PaymentUpdate({ paymentPackage, setStatus, status, setPa
             try {
                 setLoading(true);
                 await services.PackagePaymentAPI.createPaymentPackage(values, (res) => {
-                    if (status === "Hide") {
-                        const filterArr = paymentPackages.map((r) => {
-                            if (res.result.originalId === r.id) return res.result
-                            return r.id !== values.originalId;
+                    if (status === "Show") {
+                        const filterArr = paymentPackages.filter((r) => {
+                            return r.id !== res.result.original.id;
                         })
-                        setPaymetPackages(filterArr);
+                        setPaymentPackages(filterArr);
+                    } else {
+                        const filterArr = paymentPackages.map((r) => {
+                            if (r.id === res.result.original.id) {
+                                return res.result
+                            } else
+                                return r
+                        })
+                        setPaymentPackages(filterArr);
                     }
-                    else setStatus("Hide");
                     enqueueSnackbar("Cập nhật gói thanh toán thành công", { variant: "success" });
                     handleClose();
                 }, (error) => {

@@ -56,7 +56,7 @@ function StudentExcercise({ studentProfile }) {
     };
 
     return (
-        <Box sx={{ px: 5, py: 3 }}>
+        <Box sx={{ width: "80%", mx: "auto", pt: 3 }}>
             <Typography variant='h4'>Lịch sử học tập của trẻ</Typography>
             <TableContainer component={Paper} sx={{ mt: 2 }}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">

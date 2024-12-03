@@ -11,6 +11,7 @@ function TutorWorkExperience({ workExperiences, setWorkExperiences }) {
             dateObj.getFullYear();
         return formattedDate;
     }
+    console.log(workExperiences);
     return (
         <Paper sx={{ p: 2, mt: 3 }}>
             <Stack direction='row' mb={2} gap={2} bgcolor="#FFF3E0" p={1} borderRadius="5px"
@@ -44,7 +45,7 @@ function TutorWorkExperience({ workExperiences, setWorkExperiences }) {
                                     <Grid item xs={4} style={{ fontWeight: "bold" }}>Vị trí:</Grid>
                                     <Grid item xs={8}>{w.position}</Grid>
                                     <Grid item xs={4} style={{ fontWeight: "bold" }}>Thời gian làm việc:</Grid>
-                                    <Grid item xs={8}>{formatDate(w.startDate)} - {formatDate(w.endDate)}</Grid>
+                                    <Grid item xs={8}>{formatDate(w.startDate)} - {w.endDate ? formatDate(w.endDate) : "Hiện tại"}</Grid>
                                     {
                                         w.requestStatus === 0 && (
                                             <>

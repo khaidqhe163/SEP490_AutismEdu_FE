@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 import { listStudent } from '~/redux/features/listStudent';
-import { tutorInfor } from '~/redux/features/tutorSlice';
 import ViewDetailModal from './ScheduleModal/ViewDetailModal';
 function StudentSchedule({ studentProfile }) {
     const { id } = useParams();
@@ -13,12 +12,10 @@ function StudentSchedule({ studentProfile }) {
     const [listYears, setListYears] = useState([]);
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
     const [currentWeek, setCurrentWeek] = useState(0);
-    const [schedules, setSchedule] = useState([]);
     const [filterSchedule, setFilterSchedule] = useState(null);
     const [loading, setLoading] = useState(false);
     const [currentStudent, setCurrentStudent] = useState(0);
     const listStudents = useSelector(listStudent);
-    const [selectedKey, setSelectedKey] = useState('');
     const [aSchedule, setASchedule] = useState(null);
     const [isDetailModalOpen, setDetailModalOpen] = useState(false);
 
@@ -32,22 +29,11 @@ function StudentSchedule({ studentProfile }) {
         try {
             setLoading(true);
             await services.ScheduleAPI.getSchedule((res) => {
-                if (listYears.length !== 0) {
-                    const startYear = new Date(studentProfile.createdDate).getFullYear();
-                    const maxYear = new Date(res.result.maxDate).getFullYear();
-                    const years = [];
-                    for (let year = startYear; year <= maxYear; year++) {
-                        years.push(year);
-                    }
-                    years.reverse();
-                    setListYears(years);
-                }
                 organizeSchedulesByDay(res.result.schedules)
-                setSchedule(res.result)
             }, (err) => {
                 console.log(err);
             }, {
-                studentProfileId: currentStudent,
+                studentProfileId: id,
                 startDate: formatDate(weekInYears[currentWeek].monday),
                 endDate: formatDate(weekInYears[currentWeek].sunday)
             })
@@ -58,61 +44,66 @@ function StudentSchedule({ studentProfile }) {
     }
 
     useEffect(() => {
-        if (id) {
-            setCurrentStudent(id)
-        }
-    }, [id])
-    useEffect(() => {
         if (studentProfile) {
+            const year = studentProfile.status === 0 ? new Date(studentProfile.updatedDate).getFullYear() : new Date().getFullYear();
+            const weeks = generateMondaysAndSundays(year);
+            setWeekInYears(weeks);
+            const updatedDate = studentProfile.status === 0 ? resetTime(new Date(studentProfile.updatedDate)) : resetTime(new Date());
+            setCurrentWeek(weeks.findIndex(week => updatedDate >= resetTime(week.monday) && updatedDate <= resetTime(week.sunday)));
             const startYear = new Date(studentProfile.createdDate).getFullYear();
             const currentYear = new Date().getFullYear();
             const years = [];
-            for (let year = startYear; year <= currentYear; year++) {
-                years.push(year);
+            for (let y = startYear; y <= currentYear; y++) {
+                years.push(y);
             }
             years.reverse();
             setListYears(years);
         }
     }, [studentProfile])
-    useEffect(() => {
-        const year = new Date().getFullYear();
-        const weeks = generateMondaysAndSundays(year);
-        setWeekInYears(weeks);
-        const today = resetTime(new Date());
-        setCurrentWeek(weeks.findIndex(week => today >= resetTime(week.monday) && today <= resetTime(week.sunday)));
-        if (id) {
-            setCurrentStudent(id);
-        }
-    }, [])
 
     useEffect(() => {
         if (weekInYears.length !== 0) {
             getSchedule();
         }
-    }, [currentStudent, weekInYears, currentWeek])
+    }, [weekInYears, currentWeek])
 
     function generateMondaysAndSundays(year) {
         const result = [];
+        const updatedDate = new Date(studentProfile?.updatedDate);
+        updatedDate.setHours(0, 0, 0, 0);
+        const createdDate = new Date(studentProfile?.createdDate);
+        createdDate.setHours(0, 0, 0, 0);
         let date = new Date(year, 0, 1);
         while (date.getDay() !== 0) {
             date.setDate(date.getDate() + 1);
         }
         let monday = new Date(date);
         monday.setDate(monday.getDate() - 6);
-
+        monday.setHours(0, 0, 0, 0)
         while (monday.getFullYear() === year || (monday.getFullYear() < year && monday.getMonth() === 11)) {
             const sunday = new Date(monday);
             sunday.setDate(monday.getDate() + 6);
+            sunday.setHours(0, 0, 0, 0);
             result.push({
                 monday: new Date(monday), sunday: new Date(sunday),
                 mondayText: `${String(monday.getDate()).padStart(2, '0')}/${String(monday.getMonth() + 1).padStart(2, '0')}`,
-                sundayText: `${String(sunday.getDate()).padStart(2, '0')}/${String(sunday.getMonth() + 1).padStart(2, '0')}`
+                sundayText: `${String(sunday.getDate()).padStart(2, '0')}/${String(sunday.getMonth() + 1).padStart(2, '0')}`,
             });
             monday.setDate(monday.getDate() + 7);
         }
-        return result;
-    }
 
+        let learntWeeks;
+        if (studentProfile.status !== 1) {
+            learntWeeks = result.filter((r) => {
+                return r.sunday.getTime() >= createdDate.getTime() && r.monday.getTime() <= updatedDate.getTime();
+            })
+        } else {
+            learntWeeks = result.filter((r) => {
+                return r.sunday.getTime() >= createdDate.getTime();
+            })
+        }
+        return learntWeeks;
+    }
 
     const formatDate = (date) => {
         const year = date.getFullYear();
@@ -185,7 +176,6 @@ function StudentSchedule({ studentProfile }) {
     };
 
     const handleViewDetail = (f, keys) => {
-        setSelectedKey(keys);
         setASchedule(f);
         setDetailModalOpen(true);
     };
@@ -291,7 +281,7 @@ function StudentSchedule({ studentProfile }) {
                                                     <Box key={f.id} sx={{
                                                         height: "auto", width: "100%", bgcolor: "#eee9ff", p: 2,
                                                         mb: 1, borderRadius: '10px',
-                                                        mt: 2,
+                                                        mt: 2
                                                     }}>
                                                         <Typography sx={{ color: "#7850d4" }}>Mã: {f.studentProfile?.studentCode}</Typography>
                                                         <Typography sx={{ color: "#7850d4", fontWeight: "bold" }}>({formatTime(f.start)} - {formatTime(f.end)})</Typography>

@@ -110,11 +110,17 @@ function StudentCreation() {
                 errors.email = "Bắt buộc"
             } else if (!emailRegex.test(values.email)) {
                 errors.email = "Email của bạn không hợp lệ"
+            } else if (values.email.length > 320) {
+                errors.email = "Phải dưới 320 ký tự"
             }
             if (!values.parentName) {
                 errors.parentName = 'Bắt buộc';
-            } else if (values.parentName.length > 20) {
-                errors.parentName = 'Tên dưới 20 ký tự';
+            }
+            else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.parentName)) {
+                errors.parentName = "Tên không hợp lệ!"
+            }
+            else if (values.parentName.length > 100) {
+                errors.parentName = 'Tên dưới 100 ký tự';
             }
             if (!values.phoneNumber) {
                 errors.phoneNumber = 'Bắt buộc';
@@ -132,11 +138,15 @@ function StudentCreation() {
             }
             if (!values.homeNumber) {
                 errors.homeNumber = 'Bắt buộc';
+            } else if (values.homeNumber.length > 100) {
+                errors.homeNumber = 'Phải dưới 100 ký tự'
             }
             if (!values.childName) {
                 errors.childName = "Bắt buộc"
-            } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.fullName)) {
+            } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.childName)) {
                 errors.childName = "Tên không hợp lệ!"
+            } else if (values.childName.length > 100) {
+                errors.childName = "Phải dưới 100 ký tự"
             }
             if (!values.gender) {
                 errors.gender = "Bắt buộc"
@@ -195,11 +205,11 @@ function StudentCreation() {
         }
         const formData = new FormData();
         if (hasAccount === "false") {
-            formData.append("Email", formik.values.email);
-            formData.append("ParentFullName", formik.values.parentName);
-            formData.append("Address", `${selectedProvince.name}|${selectedDistrict.name}|${selectedCommune.name}|${formik.values.homeNumber}`);
+            formData.append("Email", formik.values.email.trim());
+            formData.append("ParentFullName", formik.values.parentName.trim());
+            formData.append("Address", `${selectedProvince.name}|${selectedDistrict.name}|${selectedCommune.name}|${formik.values.homeNumber.trim()}`);
             formData.append("PhoneNumber", formik.values.phoneNumber);
-            formData.append("ChildName", formik.values.childName);
+            formData.append("ChildName", formik.values.childName.trim());
             formData.append("isMale", formik.values.gender);
             formData.append("BirthDate", formik.values.dateOfBirth);
             formData.append("Media", avatar);
@@ -213,7 +223,7 @@ function StudentCreation() {
             }
             formData.append("ChildId", children[currentChild].id);
         }
-        formData.append("InitialCondition", initialCondition);
+        formData.append("InitialCondition", initialCondition.trim());
         selectedAssessment.forEach((s, index) => {
             formData.append(`InitialAssessmentResults[${index}].QuestionId`, s.questionId);
             formData.append(`InitialAssessmentResults[${index}].OptionId`, s.optionId);
@@ -224,7 +234,6 @@ function StudentCreation() {
             formData.append(`ScheduleTimeSlots[${index}].To`, l.to)
         })
         try {
-            // setLoading(true);
             axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
             await services.StudentProfileAPI.createStudentProfile(formData,
                 (res) => {
@@ -238,7 +247,6 @@ function StudentCreation() {
         } catch (error) {
             enqueueSnackbar("Tạo hồ sơ thất bại!", { variant: "error" })
         } finally {
-            // setLoading(false);
             setOpenConfirm(false);
         }
     }
@@ -365,7 +373,7 @@ function StudentCreation() {
                             {
                                 children.length !== 0 && (
                                     <Stack direction='row' alignItems="center" gap={3} sx={{ mt: 2 }}>
-                                        <Typography sx={{ fontWeight: "bold", fontSize: "20px", color:"#b15fec" }}>
+                                        <Typography sx={{ fontWeight: "bold", fontSize: "20px", color: "#b15fec" }}>
                                             Chọn trẻ:
                                         </Typography>
                                         <FormControl size='small' sx={{ width: "300px" }}>

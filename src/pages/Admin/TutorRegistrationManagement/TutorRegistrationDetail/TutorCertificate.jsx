@@ -85,6 +85,13 @@ function TutorCertificate({ id, certificates, setCertificates }) {
         }
     };
 
+    const formatDate = (date) => {
+        const dateObj = new Date(date);
+        const formattedDate = dateObj.getDate().toString().padStart(2, '0') + '/' +
+            (dateObj.getMonth() + 1).toString().padStart(2, '0') + '/' +
+            dateObj.getFullYear();
+        return formattedDate;
+    }
     return (
         <>
             <Paper variant='elevation' sx={{ p: 2 }}>
@@ -121,12 +128,12 @@ function TutorCertificate({ id, certificates, setCertificates }) {
                                         <Grid item xs={3} style={{ fontWeight: "bold" }}>Nơi cấp:</Grid>
                                         <Grid item xs={9}>{c.issuingInstitution}</Grid>
                                         <Grid item xs={3} style={{ fontWeight: "bold" }}>Ngày cấp:</Grid>
-                                        <Grid item xs={9}>{c.issuingDate}</Grid>
+                                        <Grid item xs={9}>{formatDate(c.issuingDate)}</Grid>
                                         {
                                             c.expirationDate && (
                                                 <>
                                                     <Grid item xs={3} style={{ fontWeight: "bold" }}>Ngày hết hạn:</Grid>
-                                                    <Grid item xs={9}>{c.expirationDate}</Grid>
+                                                    <Grid item xs={9}>{formatDate(c.expirationDate)}</Grid>
                                                 </>
                                             )
                                         }

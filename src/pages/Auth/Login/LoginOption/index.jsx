@@ -31,7 +31,7 @@ function LoginOption() {
                     }}
                 >
                     <img src={parentLogin} alt='parentlogin' style={{ maxWidth: "80%", maxHeight: "80%" }} />
-                    <Typography color="white">Đăng nhập cho bố mẹ</Typography>
+                    <Typography color="white">Đăng nhập cho phụ huynh</Typography>
                 </Box>
             </Link>
             <Link to={PAGES.TUTOR_LOGIN}>

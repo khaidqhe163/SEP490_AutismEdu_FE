@@ -110,11 +110,12 @@ function RegisterForm({ setVerify, setEmailVerify }) {
             const selectedDistrict = districts.find(p => p.idDistrict === values.district);
             const submitData = {
                 email: values.email.trim(),
-                fullName: values.fullName.trin(),
+                fullName: values.fullName.trim(),
                 password: values.password.trim(),
-                address: `${selectedProvince.name}|${selectedDistrict.name}|${selectedCommune.name}|${values.homeNumber}`,
-                phoneNumber: values.phoneNumber.trim()
+                address: `${selectedProvince.name}|${selectedDistrict.name}|${selectedCommune.name}|${values.homeNumber.trim()}`,
+                phoneNumber: values.phoneNumber
             }
+            console.log(submitData);
             setLoading(true);
             await services.AuthenticationAPI.register(submitData, (res) => {
                 enqueueSnackbar("Đăng ký thành công!", { variant: "success" });

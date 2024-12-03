@@ -42,17 +42,15 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                     submitForm.append(`Curriculums[${index}].ageEnd`, curriculum.ageEnd);
                     submitForm.append(`Curriculums[${index}].Description`, curriculum.description);
                 });
-                console.log(career);
                 career.forEach((experience, index) => {
                     submitForm.append(`WorkExperiences[${index}].CompanyName`, experience.companyName);
                     submitForm.append(`WorkExperiences[${index}].Position`, experience.position);
                     submitForm.append(`WorkExperiences[${index}].StartDate`, experience.startDate);
-                    submitForm.append(`WorkExperiences[${index}].EndDate`, experience.endDate);
-                    // if (experience.endDate !== null) {
-                    //     submitForm.append(`WorkExperiences[${index}].EndDate`, experience.endDate);
-                    // } else {
-                    //     submitForm.append(`WorkExperiences[${index}].EndDate`, "");
-                    // }
+                    if (experience.endDate !== null) {
+                        submitForm.append(`WorkExperiences[${index}].EndDate`, experience.endDate);
+                    } else {
+                        submitForm.append(`WorkExperiences[${index}].EndDate`, "");
+                    }
                 });
                 certificate.forEach((cert, index) => {
                     submitForm.append(`Certificates[${index}].CertificateName`, cert.certificateName);
@@ -63,7 +61,7 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                     } else {
                         submitForm.append(`Certificates[${index}].ExpirationDate`, "");
                     }
-                    Array.from(cert.medias).forEach((file, fileIndex) => {
+                    Array.from(cert.medias).forEach((file) => {
                         submitForm.append(`Certificates[${index}].Medias`, file);
                     });
                 });
@@ -72,14 +70,13 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 submitForm.append(`Certificates[${certificate.length}].issuingInstitution`, IdVerification.issuingInstitution);
                 submitForm.append(`Certificates[${certificate.length}].issuingDate`, IdVerification.issuingDate);
                 submitForm.append(`Certificates[${certificate.length}].identityCardNumber`, IdVerification.identityCardNumber);
-                Array.from(IdVerification.medias).forEach((file, fileIndex) => {
+                Array.from(IdVerification.medias).forEach((file) => {
                     submitForm.append(`Certificates[${certificate.length}].Medias`, file);
                 });
                 axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
                 await services.TutorManagementAPI.registerAsTutor(submitForm, (res) => {
                     handleNext();
                 }, (err) => {
-                    console.log(err);
                     enqueueSnackbar(err.error[0], { variant: "error" })
                 })
                 setLoading(false);
@@ -88,7 +85,6 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 enqueueSnackbar("Bạn chưa có bằng cấp hoặc kinh nghiệm làm việc", { variant: "error" })
             }
         } catch (error) {
-            console.log(error);
             setLoading(false)
         }
     }
