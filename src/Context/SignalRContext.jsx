@@ -23,7 +23,7 @@ export const SignalRProvider = ({ children }) => {
         }
         if (userId) {
             const newConnection = new signalR.HubConnectionBuilder()
-                .withUrl(`https://localhost:5000/hub/notifications?userId=${userId}`)
+                .withUrl(`${import.meta.env.VITE_BASE_URL}hub/notifications?userId=${userId}`)
                 .withAutomaticReconnect()
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
