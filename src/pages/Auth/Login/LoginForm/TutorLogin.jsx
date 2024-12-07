@@ -44,7 +44,7 @@ function TutorLogin() {
             services.UserManagementAPI.getUserById(userId, (res) => {
                 dispatch(setTutorInformation(res.result))
                 enqueueSnackbar("Đăng nhập thành công!", { variant: "success" });
-                nav(`${PAGES.MY_STUDENT}`)
+                nav(PAGES.MY_STUDENT)
             }, (error) => {
                 enqueueSnackbar(error.error[0], { variant: "error" });
                 setLoading(false);
@@ -73,7 +73,6 @@ function TutorLogin() {
                         Cookies.set('access_token', res.result.accessToken, { expires: 30 })
                         Cookies.set('refresh_token', res.result.refreshToken, { expires: 365 })
                         const decodedToken = jwtDecode(res.result.accessToken);
-                        console.log(decodedToken);
                         setUserId(decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
                     }, (err) => {
                         enqueueSnackbar(err.error[0], { variant: "error" });
