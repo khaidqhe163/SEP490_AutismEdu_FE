@@ -256,7 +256,7 @@ function TutorProfile() {
                                     </TabList>
                                 </Box>
                                 <>
-                                    <Box boxShadow={2} my={5} sx={{ borderRadius: "10px", maxHeight: "500px", width:'100%'}} pb={5}>
+                                    <Box boxShadow={2} my={5} sx={{ borderRadius: "10px", maxHeight: "500px", width: '100%' }} pb={5}>
                                         <Box bgcolor={'rgb(168 85 247)'} p={2} sx={{ borderBottom: "1px solid", borderColor: "lightgray", borderTopLeftRadius: "10px", borderTopRightRadius: "10px" }}>
                                             <Typography variant='h6' color={'white'} ml={2}>Tổng quan</Typography>
                                         </Box>
@@ -412,7 +412,7 @@ function TutorProfile() {
                                             </Box>
                                         </Stack>
                                         <Divider ref={reviewRef} />
-                                        {id && userInfo &&<TutorRating tutorId={id} userInfo={userInfo} />}
+                                        {id && userInfo && <TutorRating tutorId={id} userInfo={userInfo} />}
                                     </Box>
                                 </>
 

@@ -10,7 +10,7 @@ function ExerciseTypeCreation({ open, handleClose, handleCreateExerciseType }) {
             isHide: true,
         },
         validationSchema: Yup.object({
-            exerciseTypeName: Yup.string().required('Tên loại bài tập không được để trống'),
+            exerciseTypeName: Yup.string().required('Tên loại bài tập không được để trống').max(100,'Tên loại bài tập không quá 100 ký tự'),
         }),
         onSubmit: (values) => {
             handleCreateExerciseType(values);
