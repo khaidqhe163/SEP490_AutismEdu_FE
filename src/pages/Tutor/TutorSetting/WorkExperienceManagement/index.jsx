@@ -63,8 +63,8 @@ function WorkExperienceManagement() {
 
     const [pagination, setPagination] = useState({
         pageNumber: 1,
-        pageSize: 10,
-        total: 10,
+        pageSize: 5,
+        total: 5,
     });
 
     const [open, setOpen] = useState(false);
@@ -126,6 +126,10 @@ function WorkExperienceManagement() {
         setFilters({
             ...filters,
             [key]: event.target.value,
+        });
+        setPagination({
+            ...pagination,
+            pageNumber: 1,
         });
     };
 
@@ -246,7 +250,7 @@ function WorkExperienceManagement() {
                             <TableBody>
                                 {workExperienceList?.map((certificate, index) => (
                                     <TableRow key={certificate?.id} hover>
-                                        <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 10}</TableCell>
+                                        <TableCell>{index + 1 + (pagination?.pageNumber - 1) * pagination?.pageSize}</TableCell>
                                         <TableCell>
                                             <Tooltip title={certificate?.companyName || ''} placement="top">
                                                 <Box sx={{
@@ -261,7 +265,7 @@ function WorkExperienceManagement() {
                                         </TableCell>
                                         <TableCell>{certificate?.position}</TableCell>
                                         <TableCell>{certificate?.startDate && new Date(certificate.startDate).toLocaleDateString()}</TableCell>
-                                        <TableCell>{certificate?.endDate ? new Date(certificate.endDate).toLocaleDateString():'Hiện tại'}</TableCell>
+                                        <TableCell>{certificate?.endDate ? new Date(certificate.endDate).toLocaleDateString() : 'Hiện tại'}</TableCell>
                                         <TableCell>
                                             <Button
                                                 variant="outlined"
@@ -343,7 +347,7 @@ function WorkExperienceManagement() {
             />
 
             <LoadingComponent open={loading} setOpen={setLoading} />
-            {workExpDialogOpen&& <WorkExperienceDetail open={workExpDialogOpen} onClose={()=>setWorkExpDialogOpen(false)} workExperience={selectedWorkExp}/>}
+            {workExpDialogOpen && <WorkExperienceDetail open={workExpDialogOpen} onClose={() => setWorkExpDialogOpen(false)} workExperience={selectedWorkExp} />}
         </Box>
     );
 }

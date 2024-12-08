@@ -14,9 +14,6 @@ import { enqueueSnackbar } from 'notistack';
 
 function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
 
-    console.log(selectedExerciseType);
-
-
     const [dataFilter, setDataFilter] = useState({
         search: '',
         orderBy: 'createdDate',
@@ -71,6 +68,10 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
     const handleChangeDataFilter = (e) => {
         const { name, value } = e.target;
         setDataFilter((prev) => ({ ...prev, [name]: value }));
+        setPagination({
+            ...pagination,
+            pageNumber: 1,
+        });
     }
 
     const handleOpenDialog = (content) => {

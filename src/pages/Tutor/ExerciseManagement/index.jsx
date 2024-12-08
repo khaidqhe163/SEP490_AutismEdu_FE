@@ -10,8 +10,6 @@ import { useLocation } from 'react-router-dom';
 function ExerciseManagement() {
     const location = useLocation();
     const [value, setValue] = useState(() => {
-        console.log(location.pathname);
-        
         const syllabus = location.state?.syllabus;
         return syllabus ?? '1';
     });

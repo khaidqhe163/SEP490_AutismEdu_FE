@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Button,
     Dialog,
@@ -11,8 +11,10 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
+import LoadingComponent from '~/components/LoadingComponent';
 
-const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExperienceList }) => {
+const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExperienceList}) => {
+    const [loading, setLoading] = useState(false);
     const formik = useFormik({
         initialValues: {
             companyName: "",
@@ -36,19 +38,27 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
         }),
         onSubmit: async (values, { resetForm }) => {
             try {
+                setLoading(true);
+                const existCompanyName = workExperienceList.find((e) => e?.companyName === values?.companyName);
+                if (existCompanyName) {
+                    enqueueSnackbar("Kinh nghiệm làm việc đã tồn tại!", { variant: 'error' });
+                    return;
+                }
                 await services.WorkExperiencesAPI.createWorkExperience(values, (res) => {
                     if (res?.result) {
                         setWorkExperienceList([res.result, ...workExperienceList]);
-                        enqueueSnackbar('Kinh nghiệm làm việc của bạn đã được thêm thành công!', { variant: 'success' })
-                        onClose();
-                        resetForm();
+                        enqueueSnackbar('Kinh nghiệm làm việc của bạn đã được thêm thành công!', { variant: 'success' });
                     }
+                    onClose();
+                    resetForm();
                 }, (error => {
                     console.log(error);
                 }))
             } catch (error) {
                 console.log(error);
 
+            } finally{
+                setLoading(false);
             }
         },
     });
@@ -97,7 +107,7 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
                         margin="normal"
                         InputLabelProps={{ shrink: true }}
                         inputProps={{
-                            max: new Date().toISOString().split('T')[0], 
+                            max: new Date().toISOString().split('T')[0],
                         }}
                     />
                     <TextField
@@ -123,6 +133,7 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
                     Lưu
                 </Button>
             </DialogActions>
+            <LoadingComponent open={loading} setOpen={setLoading} />
         </Dialog>
     );
 };

@@ -103,6 +103,10 @@ function CurriculumEditedTable({ setShowTable }) {
             ...filters,
             [key]: event.target.value,
         });
+        setPagination({
+            ...pagination,
+            pageNumber: 1,
+        });
     };
 
     const totalPages = Math.ceil(pagination.total / pagination.pageSize);

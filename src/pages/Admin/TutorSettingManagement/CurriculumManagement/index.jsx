@@ -67,6 +67,7 @@ const CurriculumManagement = () => {
       await services.CurriculumManagementAPI.getCurriculums((res) => {
         if (res?.result) {
           setCurriculumList(res.result);
+          setPagination(res.pagination);
         }
       }, (error) => {
         console.log(error);
@@ -124,6 +125,11 @@ const CurriculumManagement = () => {
     setFilters({
       ...filters,
       [key]: event.target.value,
+    });
+    setPagination({
+      pageNumber: 1,
+      pageSize: 5,
+      total: 10,
     });
   };
 
@@ -248,7 +254,7 @@ const CurriculumManagement = () => {
                     <TableRow key={curriculum.id} hover>
                       <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 5}</TableCell>
                       <TableCell>{curriculum?.submitter?.email ?? curriculum?.tutorRegistrationRequest?.email}</TableCell>
-                      <TableCell>{curriculum?.submitter?.fullName??curriculum?.tutorRegistrationRequest?.fullName}</TableCell>
+                      <TableCell>{curriculum?.submitter?.fullName ?? curriculum?.tutorRegistrationRequest?.fullName}</TableCell>
                       <TableCell>
                         <IconButton disabled={!curriculum?.description} color="primary" onClick={() => {
                           setSelectedCurriculum(curriculum);

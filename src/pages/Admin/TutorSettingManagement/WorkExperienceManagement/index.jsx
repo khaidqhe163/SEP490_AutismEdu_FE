@@ -28,8 +28,8 @@ const WorkExperienceManagement = () => {
     });
     const [pagination, setPagination] = useState({
         pageNumber: 1,
-        pageSize: 10,
-        total: 0,
+        pageSize: 5,
+        total: 5,
     });
 
     React.useEffect(() => {
@@ -66,6 +66,10 @@ const WorkExperienceManagement = () => {
         setFilters({
             ...filters,
             [key]: event.target.value,
+        });
+        setPagination({
+            ...pagination,
+            pageNumber: 1,
         });
     };
 
@@ -122,7 +126,6 @@ const WorkExperienceManagement = () => {
         console.log(`Rejected request ID: ${id} with reason: ${reason}`);
     };
 
-
     return (
         <Box
             sx={{
@@ -150,7 +153,6 @@ const WorkExperienceManagement = () => {
                 <Stack direction={'row'} justifyContent={'space-between'} alignItems="center" sx={{ width: "100%", mb: 2 }} spacing={3}>
                     <Box sx={{ flex: 2, mr: 3 }}>
                         <TextField
-                            //search theo email
                             disabled
                             fullWidth
                             size='small'
