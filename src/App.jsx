@@ -14,7 +14,6 @@ import { adminRoutes, publicRoutes, tutorRoutes, UnLayoutRoutes } from "./routes
 import PAGES from "./utils/pages";
 import { SignalRProvider } from "./Context/SignalRContext";
 import { setAdminInformation } from "./redux/features/adminSlice";
-import { enqueueSnackbar } from "notistack";
 import PaymentPackageManagement from "./pages/Tutor/PaymentPackageManagement/PaymentPackageManagement";
 function App() {
   const dispatch = useDispatch();

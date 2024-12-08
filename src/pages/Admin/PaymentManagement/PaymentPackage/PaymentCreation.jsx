@@ -87,7 +87,7 @@ export default function PaymentCreation({ change, setChange }) {
             try {
                 await services.PackagePaymentAPI.createPaymentPackage(values, (res) => {
                     setChange(!change);
-                    enqueueSnackbar("Tạo gói thành toán thành công", { variant: "success" });
+                    enqueueSnackbar("Tạo gói thành toán thành công!", { variant: "success" });
                     formik.resetForm();
                     handleClose();
                 }, (error) => {
@@ -119,7 +119,7 @@ export default function PaymentCreation({ change, setChange }) {
                 onClose={handleClose}
             >
                 <Box sx={style}>
-                    <Typography variant="h6" component="h2" mb={3}>
+                    <Typography textAlign={'center'} variant="h4" mb={3}>
                         Tạo gói thanh toán mới
                     </Typography>
                     <form onSubmit={formik.handleSubmit}>
