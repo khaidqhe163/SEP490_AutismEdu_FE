@@ -44,6 +44,10 @@ const PaymentHistory = () => {
             ...filters,
             [key]: event.target.value,
         });
+        setPagination({
+            ...pagination,
+            pageNumber: 1,
+        });
     };
 
     React.useEffect(() => {
@@ -79,6 +83,7 @@ const PaymentHistory = () => {
         setSelectedPayment(item);
         setOpenDialogDetail(true);
     };
+
 
     return (
         <Box
@@ -121,6 +126,9 @@ const PaymentHistory = () => {
                         value={filters.startDate}
                         onChange={handleFilterChange('startDate')}
                         InputLabelProps={{ shrink: true }}
+                        inputProps={{
+                            max: new Date().toISOString().split('T')[0], 
+                        }}
                     />
                     <TextField
                         size="small"
@@ -129,6 +137,9 @@ const PaymentHistory = () => {
                         value={filters.endDate}
                         onChange={handleFilterChange('endDate')}
                         InputLabelProps={{ shrink: true }}
+                        inputProps={{
+                            max: new Date().toISOString().split('T')[0], 
+                        }}
                     />
                     <FormControl size="small">
                         <InputLabel sx={{ background: 'white', px: 1 }}>Thứ tự</InputLabel>
@@ -139,7 +150,8 @@ const PaymentHistory = () => {
                     </FormControl>
                 </Stack>
             </Stack>
-            {paymentHistoryList !== 0 ? <Box>
+            {paymentHistoryList.length !== 0 ? 
+            <Box>
                 <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: 2 }}>
                     <Table>
                         <TableHead>

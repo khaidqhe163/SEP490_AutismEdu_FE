@@ -99,7 +99,12 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
             ExpirationDate: Yup.date().nullable(),
             Medias: Yup.array().min(1, 'Phải có ít nhất một ảnh'),
         }),
-        onSubmit: async () => {
+        onSubmit: async (values) => {
+            const existCerName = certificateList.find((c) => c?.certificateName === values?.CertificateName);
+                if (existCerName) {
+                    enqueueSnackbar("Chứng chỉ đã tồn tại!", { variant: 'error' });
+                    return;
+                }
             await handleSubmitCertificate();
             onClose();
         },

@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, DialogActions, IconButton, Menu, MenuItem, Pagination, Rating, Stack, TextField, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import StarIcon from '@mui/icons-material/Star';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import dayjs from 'dayjs';
@@ -15,7 +15,8 @@ import { enqueueSnackbar } from 'notistack';
 import ReportIcon from '@mui/icons-material/Report';
 import ReportModal from './ReportReview';
 function TutorRating({ tutorId, userInfo }) {
-
+    console.log('re-render rating');
+    
     const [idDelete, setIdDelete] = useState(-1);
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -435,4 +436,4 @@ function TutorRating({ tutorId, userInfo }) {
     )
 }
 
-export default TutorRating;
+export default memo(TutorRating);

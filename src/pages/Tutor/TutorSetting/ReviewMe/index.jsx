@@ -61,6 +61,10 @@ function ReviewMe() {
             ...filters,
             [key]: event.target.value,
         });
+        setPagination({
+            ...pagination,
+            pageNumber: 1,
+        });
     };
 
 

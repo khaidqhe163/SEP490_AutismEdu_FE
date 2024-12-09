@@ -111,6 +111,10 @@ const CertificateManagement = () => {
             ...filters,
             [key]: event.target.value,
         });
+        setPagination({
+            ...pagination,
+            pageNumber: 1,
+        });
     };
 
     const statusText = (status) => {
@@ -260,9 +264,18 @@ const CertificateManagement = () => {
                                 {certificateList.map((certificate, index) => (
                                     <TableRow key={certificate.id} hover>
                                         <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 5}</TableCell>
-                                        <TableCell>{certificate?.submitter?.email??certificate?.tutorRegistrationRequest?.email}</TableCell>
-                                        <TableCell>{certificate?.submitter?.fullName??certificate?.tutorRegistrationRequest?.fullName}</TableCell>
-                                        <TableCell>{certificate?.certificateName}</TableCell>
+                                        <TableCell>{certificate?.submitter?.email ?? certificate?.tutorRegistrationRequest?.email}</TableCell>
+                                        <TableCell>{certificate?.submitter?.fullName ?? certificate?.tutorRegistrationRequest?.fullName}</TableCell>
+                                        <TableCell
+                                            sx={{
+                                                maxWidth: 200,
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                        >
+                                            {certificate?.certificateName}
+                                        </TableCell>
                                         <TableCell>{certificate?.createdDate && format(new Date(certificate.createdDate), "HH:mm dd/MM/yyyy")}</TableCell>
                                         <TableCell>
                                             <Button

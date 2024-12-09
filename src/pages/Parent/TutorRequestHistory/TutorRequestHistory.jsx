@@ -23,7 +23,7 @@ const TutorRequestHistory = () => {
   });
 
   useEffect(() => {
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
     handleGetRequestList();
   }, [filters, pagination.pageNumber]);
 
@@ -62,6 +62,10 @@ const TutorRequestHistory = () => {
 
   const handleFilterChange = (field) => (event) => {
     setFilters({ ...filters, [field]: event.target.value });
+    setPagination({
+      ...pagination,
+      pageNumber: 1,
+    });
   };
 
   const handlePageChange = (event, value) => {
@@ -141,7 +145,7 @@ const TutorRequestHistory = () => {
                   <TableCell>{request.tutor?.fullName}</TableCell>
                   <TableCell>{request?.childInformation?.name}</TableCell>
                   <TableCell>{request?.description}</TableCell>
-                  <TableCell>{new Date(request.createdDate).toLocaleDateString()}</TableCell>
+                  <TableCell>{request.createdDate && new Date(request.createdDate)?.toLocaleDateString()}</TableCell>
                   <TableCell sx={{ maxWidth: 200 }}>{statusTypeReject(request?.rejectType) || 'N/A'}</TableCell>
                   <TableCell>
 

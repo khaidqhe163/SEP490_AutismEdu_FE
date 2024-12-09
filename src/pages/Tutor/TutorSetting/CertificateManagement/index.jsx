@@ -57,8 +57,8 @@ function CertificateManagement() {
 
     const [pagination, setPagination] = useState({
         pageNumber: 1,
-        pageSize: 10,
-        total: 10,
+        pageSize: 5,
+        total: 5,
     });
 
     const [open, setOpen] = useState(false);
@@ -115,6 +115,10 @@ function CertificateManagement() {
         setFilters({
             ...filters,
             [key]: event.target.value,
+        });
+        setPagination({
+            ...pagination,
+            pageNumber: 1,
         });
     };
 
@@ -290,8 +294,17 @@ function CertificateManagement() {
                         <TableBody>
                             {certificateList.map((certificate, index) => (
                                 <TableRow key={certificate.id} hover>
-                                    <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 10}</TableCell>
-                                    <TableCell>{certificate?.certificateName}</TableCell>
+                                    <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 5}</TableCell>
+                                    <TableCell
+                                        sx={{
+                                            maxWidth: 200,
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                        }}
+                                    >
+                                        {certificate?.certificateName}
+                                    </TableCell>
                                     <TableCell>{certificate?.createdDate && format(new Date(certificate.createdDate), 'HH:mm dd/MM/yyyy')}</TableCell>
                                     <TableCell>
                                         <Button

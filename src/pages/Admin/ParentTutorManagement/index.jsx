@@ -26,6 +26,10 @@ function ParentTutorManagement() {
 
     const handleChangeFilters = (key) => (e) => {
         setFilters((prev) => ({ ...prev, [key]: e.target.value }));
+        setPagination({
+            ...pagination,
+            pageNumber: 1,
+        });
     };
 
     useEffect(() => {
@@ -60,8 +64,6 @@ function ParentTutorManagement() {
     };
 
     const userProfile = (id, role) => {
-        console.log(role);
-        
         if (id && ['Tutor', 'Parent'].includes(role)) {
             const isTutor = role === 'Tutor';
             if (isTutor) {
