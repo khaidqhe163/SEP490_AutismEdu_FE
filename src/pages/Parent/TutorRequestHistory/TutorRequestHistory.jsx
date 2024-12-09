@@ -94,7 +94,7 @@ const TutorRequestHistory = () => {
   const totalPages = Math.ceil(pagination.total / pagination.pageSize);
 
   return (
-    <Box sx={{ p: 5, width: "90%", mx: "auto", gap: 2, height: "650px" }}>
+    <Box sx={{ p: 5, width: "90%", mx: "auto", gap: 2, height: requestList.length < 5 ? '700px' : "auto" }}>
       <Typography variant='h4' sx={{ mb: 3 }} textAlign={'center'}>Lịch sử yêu cầu đã gửi</Typography>
       <Stack direction={'row'} justifyContent={'space-between'} alignItems="center" sx={{ width: "100%", mb: 2 }} spacing={3}>
         <Stack direction={'row'} justifyContent={'flex-end'} spacing={2} sx={{ flex: 1 }}>
@@ -155,7 +155,7 @@ const TutorRequestHistory = () => {
                   <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 5}</TableCell>
                   <TableCell>{request.tutor?.fullName}</TableCell>
                   <TableCell>{request?.childInformation?.name}</TableCell>
-                  <TableCell sx={{maxWidth: 250}}>
+                  <TableCell sx={{ maxWidth: 250 }}>
                     {request?.description ?
                       (
                         <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
