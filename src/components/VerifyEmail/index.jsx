@@ -11,17 +11,32 @@ import service from '~/plugins/services';
 function VerifyEmail({ email, setVerify, submitState }) {
     const [loading, setLoading] = useState(false);
     const [submited, setSubmited] = useState(submitState);
+    const [time, setTime] = useState(0);
+    const [isRunning, setIsRunning] = useState(false);
     useEffect(() => {
         if (loading) {
             handleSubmit();
         }
     }, [loading])
 
+    useEffect(() => {
+        let timer;
+        if (isRunning && time > 0) {
+            timer = setTimeout(() => {
+                setTime((prevTime) => prevTime - 1);
+            }, 1000);
+        } else if (time === 0) {
+            setIsRunning(false);
+        }
+        return () => clearTimeout(timer);
+    }, [time, isRunning]);
     const handleSubmit = async () => {
         await service.AuthenticationAPI.verifyAccount({
             email
         }, (res) => {
             enqueueSnackbar("Kiểm tra emai của bạn!", { variant: "success" });
+            setTime(60);
+            setIsRunning(true);
         }, (err) => {
             enqueueSnackbar(err.error[0], { variant: "error" });
         })
@@ -54,8 +69,9 @@ function VerifyEmail({ email, setVerify, submitState }) {
                     </Box>
                     <LoadingButton variant='contained' sx={{ width: "100%", marginTop: "20px" }} onClick={() => setLoading(true)}
                         loading={loading} loadingIndicator="Đang gửi..."
+                        disabled={time !== 0}
                     >
-                        {submited ? "Gửi lại" : "Gửi"}
+                        {submited ? "Gửi lại" : "Gửi"} {time !== 0 && `(${time}s)`}
                     </LoadingButton>
                     <Typography textAlign={'center'} mt="20px" onClick={() => { setVerify(false) }} sx={{ cursor: "pointer" }}>
                         <ArrowBackIosNewIcon sx={{ fontSize: "12px" }} /> Trở lại đăng ký
