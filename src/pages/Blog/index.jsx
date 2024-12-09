@@ -91,7 +91,10 @@ function Blog() {
                     <Typography sx={{ color: 'text.primary' }}>Danh sách blog</Typography>
                 </Breadcrumbs>
                 <Typography variant='h2' mt={5}>Blog</Typography>
-            </Box >
+                {(!blogs || blogs.length === 0) &&
+                    <Typography mt={5} color="black">Không có bài viết nào.</Typography>
+                }
+            </Box>
             <Stack direction='row' sx={{ width: "80%", margin: "auto", position: "relative", top: "-200px" }} justifyContent="space-between">
                 <Box sx={{ width: '60%' }}>
                     {

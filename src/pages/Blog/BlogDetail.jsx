@@ -29,12 +29,13 @@ function BlogDetail() {
                     nav(PAGES.ROOT + PAGES.BLOG_LIST)
                 }
             }, (err) => {
-                console.log(err);
+                nav(PAGES.ROOT + PAGES.HOME)
             })
             setLoading(false);
         } catch (error) {
             enqueueSnackbar("Lỗi hệ thống", { variant: "error" });
             setLoading(false);
+            nav(PAGES.ROOT + PAGES.HOME)
         }
     }
     const formatDate = (date) => {

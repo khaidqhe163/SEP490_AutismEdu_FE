@@ -18,7 +18,8 @@ function ForgotPassword() {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
-
+    const [time, setTime] = useState(0);
+    const [isRunning, setIsRunning] = useState(false);
     const INPUT_CSS = {
         width: "100%",
         borderRadius: "15px",
@@ -27,22 +28,34 @@ function ForgotPassword() {
         }
     };
     useEffect(() => {
-        if (loading) {
-            handleSubmit();
+        let timer;
+        if (isRunning && time > 0) {
+            timer = setTimeout(() => {
+                setTime((prevTime) => prevTime - 1);
+            }, 1000);
+        } else if (time === 0) {
+            setIsRunning(false);
         }
-    }, [loading])
-
+        return () => clearTimeout(timer);
+    }, [time, isRunning]);
     const handleSubmit = async () => {
         if (emailError === null) {
-            await service.AuthenticationAPI.forgotPassword({
-                email: email
-            }, (res) => {
-                setSubmited(true);
-            }, (err) => {
-                enqueueSnackbar(err.error[0], { variant: "error" });
+            try {
+                setLoading(true)
+                await service.AuthenticationAPI.forgotPassword({
+                    email: email
+                }, (res) => {
+                    setSubmited(true);
+                    setTime(60);
+                    setIsRunning(true);
+                }, (err) => {
+                    enqueueSnackbar(err.error[0], { variant: "error" });
+                })
+            } catch (error) {
+                enqueueSnackbar("Lỗi hệ thống", { variant: "error" });
+            } finally {
                 setLoading(false)
-            })
-            setLoading(false)
+            }
         }
     }
     return (
@@ -90,7 +103,7 @@ function ForgotPassword() {
                                     onClick={() => {
                                         const isValidEmail = checkValid(email, 1, setEmailError);
                                         if (isValidEmail) {
-                                            setLoading(true);
+                                            handleSubmit();
                                         }
                                     }}>
                                     Gửi
@@ -101,16 +114,16 @@ function ForgotPassword() {
                     {
                         submited === true && (
                             <>
-                                <Typography mt={"12px"}>The reset link has been sent to email <span style={{ color: "#3795BD" }}>{email}</span></Typography>
+                                <Typography mt={"12px"}>Link đặt lại mật khẩu đã được gửi tới <span style={{ color: "#3795BD" }}>{email}</span></Typography>
                                 <LoadingButton loading={loading} loadingIndicator="Đang chạy..."
                                     onClick={() => {
-                                        setLoading(true);
-                                    }}>
-                                    Gửi lại
+                                        handleSubmit();
+                                    }} disabled={time !== 0}>
+                                    Gửi lại {time !== 0 && `(${time}s)`}
                                 </LoadingButton>
                                 <Button onClick={() => {
                                     setSubmited(false)
-                                }}>Đổi email</Button>
+                                }} disabled={time !== 0}>Đổi email</Button>
                             </>
                         )
                     }
