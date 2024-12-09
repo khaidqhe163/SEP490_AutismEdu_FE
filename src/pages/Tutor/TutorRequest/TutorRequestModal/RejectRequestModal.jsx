@@ -7,8 +7,9 @@ const RejectRequestModal = ({ open, onClose, onConfirm }) => {
     const validationSchema = Yup.object().shape({
         reason: Yup.string()
             .required('Lý do không được để trống')
-            .min(5, 'Lý do phải có ít nhất 5 ký tự'),
-        rejectType: Yup.string().required('Loại từ chối không được để trống'), 
+            .min(5, 'Lý do phải có ít nhất 5 ký tự')
+            .max(500, 'Không được nhập quá 500 ký tự'),
+        rejectType: Yup.string().required('Loại từ chối không được để trống'),
     });
 
     return (
@@ -18,7 +19,7 @@ const RejectRequestModal = ({ open, onClose, onConfirm }) => {
             </DialogTitle>
             <DialogContent>
                 <Formik
-                    initialValues={{ rejectType: 1,reason: ''  }} 
+                    initialValues={{ rejectType: 1, reason: '' }}
                     validationSchema={validationSchema}
                     onSubmit={(values) => {
                         onConfirm(values);
@@ -84,7 +85,7 @@ const RejectRequestModal = ({ open, onClose, onConfirm }) => {
                                     type="submit"
                                     color="primary"
                                     variant="contained"
-                                    disabled={!values.reason || !!errors.reason || !values.rejectType || !!errors.rejectType} 
+                                    disabled={!values.reason || !!errors.reason || !values.rejectType || !!errors.rejectType}
                                 >
                                     Xác nhận
                                 </Button>

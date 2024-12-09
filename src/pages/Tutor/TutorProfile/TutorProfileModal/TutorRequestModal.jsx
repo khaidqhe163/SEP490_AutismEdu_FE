@@ -8,11 +8,12 @@ import { userInfor } from '~/redux/features/userSlice';
 import { useNavigate } from 'react-router-dom';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
-import { format } from 'date-fns';
+import { format, max } from 'date-fns';
 import PAGES from '~/utils/pages';
+import LoadingComponent from '~/components/LoadingComponent';
 
 function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
-
+    const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [childData, setChildData] = useState([]);
     const [selectedChild, setSelectedChild] = useState(null);
@@ -113,6 +114,7 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
         };
 
         try {
+            setLoading(true);
             await services.TutorRequestAPI.createTutorRequest(requestData, (res) => {
                 setChildData([]);
                 enqueueSnackbar("Gửi yêu cầu tới gia sư thành công!", { variant: "success" });
@@ -126,11 +128,18 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
             });
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
 
     const validationSchema = Yup.object({
-        note: Yup.string().min(10, 'Phải nhập tối thiểu 10 ký tự').required('Vui lòng nhập ghi chú'),
+        note: Yup.string()
+            .trim('Không được để trống hoặc chứa toàn khoảng trắng')
+            .strict()
+            .min(10, 'Phải nhập tối thiểu 10 ký tự')
+            .max(1000, 'Không được nhập quá 1000 ký tự')
+            .required('Vui lòng nhập ghi chú')
     });
 
     const formatDate = (dateString) => {
@@ -276,8 +285,13 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                                                 helperText={touched.note && errors.note}
                                                 fullWidth
                                             />
+                                            <Box textAlign="right">
+                                                <Typography variant="caption" color={values.note.length > 1000 ? 'error' : 'textSecondary'}>
+                                                    {`${values.note.length}/1000`}
+                                                </Typography>
+                                            </Box>
                                             <Box mt={3} display="flex" justifyContent="right">
-                                                <Button variant="contained" color="inherit" onClick={handleClose} sx={{ mr: 2 }}>
+                                                <Button variant="outlined" color="inherit" onClick={handleClose} sx={{ mr: 2 }}>
                                                     Hủy
                                                 </Button>
                                                 <Button variant="contained" color="primary" type="submit">
@@ -291,6 +305,7 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                         </Grid>
 
                     </Grid>
+                    <LoadingComponent open={loading} setOpen={setLoading} />
                 </Box>
             </Modal>
         </>

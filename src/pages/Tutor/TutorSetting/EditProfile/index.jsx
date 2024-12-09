@@ -54,7 +54,7 @@ const NumericFormatCustom = (props) => {
                 onChange({
                     target: {
                         name: props.name,
-                        value: values.value, // Trả về giá trị không có dấu phân cách ngàn
+                        value: values.value, 
                     },
                 });
             }}
@@ -100,6 +100,7 @@ function EditProfile() {
             startAge,
             endAge,
             phoneNumber,
+            aboutMe
         } = tutor;
 
         const newErrors = {};
@@ -137,6 +138,12 @@ function EditProfile() {
         const phoneRegex = /^[0-9]{10,11}$/;
         if (phoneNumber && !phoneRegex.test(phoneNumber)) {
             newErrors.phoneNumber = 'Số điện thoại không hợp lệ. Phải là 10 hoặc 11 chữ số.';
+        }
+        if (aboutMe.length > 5000) {
+            newErrors.aboutMe = 'Không được vượt quá 5000 ký tự';
+        }
+        if (specificAddress.length > 100) {
+            newErrors.specificAddress = 'Không được vượt quá 100 ký tự';
         }
 
         setErrors(newErrors);
@@ -531,14 +538,20 @@ function EditProfile() {
                         value={specificAddress}
                         onChange={(e) => handleChangeSpecificAddress(e)}
                     />
+                    {errors.specificAddress && (
+                        <FormHelperText error sx={{ textAlign: 'right' }}>{errors.specificAddress}</FormHelperText>
+                    )}
                 </Grid>
 
-                <Grid item xs={12} mb={0} sx={{ height: '350px' }}>
+                <Grid item xs={12} mt={0} sx={{ height: '350px' }}>
                     <Typography variant='h6' mb={2}>Giới thiệu về tôi</Typography>
                     <ReactQuill
                         value={tutor?.aboutMe || ''}
                         onChange={handleQuillChange}
                     />
+                    {errors.aboutMe && (
+                        <FormHelperText error sx={{ textAlign: 'right' }}>{errors.aboutMe}</FormHelperText>
+                    )}
                 </Grid>
 
                 <Grid item xs={12} mt={2}>

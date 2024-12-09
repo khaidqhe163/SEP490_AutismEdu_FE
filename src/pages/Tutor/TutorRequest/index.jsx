@@ -48,6 +48,10 @@ function TutorRequest() {
             ...filters,
             [key]: event.target.value,
         });
+        setPagination({
+            ...pagination,
+            pageNumber: 1,
+        });
     };
 
     const handleOpenModal = async (request) => {
@@ -461,27 +465,7 @@ function TutorRequest() {
                                                 )}
                                             </Box>
 
-                                            <Dialog open={openDialog} onClose={handleCloseDialog}>
-                                                <DialogTitle>Tình trạng của trẻ hiện tại</DialogTitle>
-                                                <DialogContent>
-                                                    <Typography
-                                                        variant='body1'
-                                                        sx={{
-                                                            overflowWrap: 'break-word',
-                                                            wordBreak: 'break-word',
-                                                            maxWidth: '500px',
-                                                            lineHeight: 1.5,
-                                                        }}
-                                                    >
-                                                        {currentNote}
-                                                    </Typography>
-                                                </DialogContent>
-                                                <DialogActions>
-                                                    <Button onClick={handleCloseDialog} color="primary">
-                                                        Đóng
-                                                    </Button>
-                                                </DialogActions>
-                                            </Dialog>
+
                                         </Grid>
 
                                     </Grid>
@@ -497,6 +481,7 @@ function TutorRequest() {
                                     </Button>
                                 </AccordionActions>
                             )}
+
                         </Accordion>
                     ))) : <Typography variant='subtitle1'>Hiện tại chưa có yêu cầu nào.</Typography>
                 }
@@ -520,6 +505,27 @@ function TutorRequest() {
             </Stack>)}
 
             <LoadingComponent open={loading} setOpen={setLoading} />
+            <Dialog open={openDialog} onClose={handleCloseDialog}>
+                <DialogTitle>Tình trạng của trẻ hiện tại</DialogTitle>
+                <DialogContent>
+                    <Typography
+                        variant='body1'
+                        sx={{
+                            overflowWrap: 'break-word',
+                            wordBreak: 'break-word',
+                            maxWidth: '500px',
+                            lineHeight: 1.5,
+                        }}
+                    >
+                        {currentNote}
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog} color="primary">
+                        Đóng
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Stack>
     );
 }

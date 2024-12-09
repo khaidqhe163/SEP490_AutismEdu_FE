@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Button, Pagination, FormControl, InputLabel, Select, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Divider } from '@mui/material';
+import { Box, Typography, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Button, Pagination, FormControl, InputLabel, Select, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Divider, Modal } from '@mui/material';
 import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
 
@@ -7,6 +7,8 @@ import LoadingComponent from '~/components/LoadingComponent';
 const TutorRequestHistory = () => {
 
   const [selectedContent, setSelectedContent] = useState('');
+  const [modalDescription, setModalDescription] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [requestList, setRequestList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -48,6 +50,15 @@ const TutorRequestHistory = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleOpenModal = (description) => {
+    setModalDescription(description);
+    setModalOpen(true);
   };
 
   const handleCloseDialog = () => {
@@ -144,7 +155,33 @@ const TutorRequestHistory = () => {
                   <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 5}</TableCell>
                   <TableCell>{request.tutor?.fullName}</TableCell>
                   <TableCell>{request?.childInformation?.name}</TableCell>
-                  <TableCell>{request?.description}</TableCell>
+                  <TableCell sx={{maxWidth: 250}}>
+                    {request?.description ?
+                      (
+                        <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
+                          <Box sx={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            maxWidth: 250
+                          }}>
+                            {request?.description}
+                          </Box>
+                          {request?.description.length > 35 && (
+                            <Button
+                              variant="text"
+                              size="small"
+                              onClick={() => handleOpenModal(request?.description)}
+                              sx={{ textTransform: 'none', color: 'primary.main' }}
+                            >
+                              Xem thêm
+                            </Button>
+                          )}
+                        </Box>
+                      )
+                      : '-'}
+
+                  </TableCell>
                   <TableCell>{request.createdDate && new Date(request.createdDate)?.toLocaleDateString()}</TableCell>
                   <TableCell sx={{ maxWidth: 200 }}>{statusTypeReject(request?.rejectType) || 'N/A'}</TableCell>
                   <TableCell>
@@ -212,6 +249,19 @@ const TutorRequestHistory = () => {
           <Button onClick={handleCloseDialog} variant='outlined' color="primary">Đóng</Button>
         </DialogActions>
       </Dialog>
+      <Modal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      >
+        <Box sx={{ backgroundColor: 'white', padding: 4, maxWidth: 600, width: '100%' }}>
+          <Typography variant="h6" mb={2}>Nội dung</Typography>
+          <Typography variant="body2" color="text.secondary">{modalDescription}</Typography>
+          <Box mt={2} display={'flex'} justifyContent={'flex-end'}>
+            <Button variant="contained" onClick={handleCloseModal}>Đóng</Button>
+          </Box>
+        </Box>
+      </Modal>
       <LoadingComponent open={loading} setOpen={setLoading} />
     </Box>
   );
