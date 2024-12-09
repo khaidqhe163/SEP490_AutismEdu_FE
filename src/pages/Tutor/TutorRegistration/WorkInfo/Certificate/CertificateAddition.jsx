@@ -23,7 +23,7 @@ const style = {
     bgcolor: 'background.paper',
     boxShadow: 24,
     overflowY: "auto",
-    p: 4,
+    p: 4
 };
 
 export default function CertificateAddition({ certificate, setCertificate }) {
@@ -59,7 +59,7 @@ export default function CertificateAddition({ certificate, setCertificate }) {
         if (values.expriredDate && values.degreeDate >= values.expriredDate) {
             errors.expriredDate = "Ngày hết lớn hơn ngày cấp"
         }
-        const existCertificate = certificate.find((e) => e.certificateName === values.degreeName);
+        const existCertificate = certificate.find((e) => e.certificateName.toLowerCase() === values.degreeName.toLowerCase().trim());
         if (existCertificate) {
             errors.degreeName = "Bạn đã thêm chứng chỉ này rồi"
         }

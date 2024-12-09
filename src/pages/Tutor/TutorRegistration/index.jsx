@@ -13,7 +13,7 @@ import CompleteRegistration from './CompleteRegistration';
 
 const steps = ['Thông tin cá nhân', 'Thông tin gia sư', 'Bằng cấp / chứng chỉ'];
 function TutorRegistration() {
-    const [activeStep, setActiveStep] = React.useState(1);
+    const [activeStep, setActiveStep] = React.useState(2);
     const [tutorInformation, setTutorInformation] = useState(null);
     const [certificate, setCertificate] = useState([]);
     const [IdVerification, setIdVerification] = useState(null);
@@ -54,10 +54,6 @@ function TutorRegistration() {
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    const handleReset = () => {
-        setActiveStep(0);
     };
 
     return (

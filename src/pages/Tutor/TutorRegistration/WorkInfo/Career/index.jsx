@@ -57,7 +57,8 @@ export default function Career({ career, setCareer }) {
         validate,
         onSubmit: async (values) => {
             const existWE = career.find((c) => {
-                return c.companyName === values.companyName && c.position === values.position
+                return c.companyName.toLowerCase().trim() === values.companyName.toLowerCase().trim()
+                    && c.position.toLowerCase().trim() === values.position.toLowerCase().trim()
             })
             if (existWE) {
                 enqueueSnackbar("Bạn đã có kinh nghiệm này rồi", { variant: "error" })

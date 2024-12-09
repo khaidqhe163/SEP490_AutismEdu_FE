@@ -69,7 +69,8 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
         onSubmit: async (values) => {
             const filterCar = career.filter((c, i) => i !== index);
             const existCareer = career.find((c, i) => {
-                return c.companyName === values.companyName.trim() && c.position === values.position.trim()
+                return c.companyName.toLowerCase() === values.companyName.toLowerCase().trim()
+                    && c.position.trim() === values.position.toLowerCase().trim()
                     && i !== index;
             })
             if (existCareer) {

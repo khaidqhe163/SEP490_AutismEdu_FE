@@ -312,11 +312,28 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                                 <ListSubheader component="div" id="nested-list-subheader">
                                     <Stack direction="row" sx={{ alignItems: "center" }} gap={3}>
                                         <Typography variant='h6'>Thêm khung chương trình</Typography>
-                                        <Curriculum curriculum={curriculum} setCurriculum={setCurriculum}
-                                            endAge={formik.values.endAge}
-                                            startAge={formik.values.startAge}
-                                        />
+                                        {
+                                            curriculum.length < 5 && (
+                                                <Curriculum curriculum={curriculum} setCurriculum={setCurriculum}
+                                                    endAge={formik.values.endAge}
+                                                    startAge={formik.values.startAge}
+                                                />
+                                            )
+                                        }
                                     </Stack>
+                                    <Typography
+                                        variant="caption"
+                                        style={{
+                                            color: "#ff9800",
+                                            fontStyle: "italic",
+                                            fontSize: "12px",
+                                            marginTop: "8px",
+                                            lineHeight: "1.5",
+                                            display: "block"
+                                        }}
+                                    >
+                                        Tối đa 5 khung chương trình! Bạn có thể tạo thêm khung chương trình sau khi được hệ thống chấp nhận.
+                                    </Typography>
                                 </ListSubheader>
                             }
                         >

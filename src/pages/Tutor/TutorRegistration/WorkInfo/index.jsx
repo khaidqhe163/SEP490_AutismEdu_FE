@@ -85,6 +85,7 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 enqueueSnackbar("Bạn chưa có bằng cấp hoặc kinh nghiệm làm việc", { variant: "error" })
             }
         } catch (error) {
+            enqueueSnackbar("Lỗi hệ thống, đăng ký thất bại!", {variant:"error"})
             setLoading(false)
         }
     }
@@ -92,15 +93,42 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
         <>
             <Box>
                 <Box>
+                    <Typography
+                        mt={2}
+                        style={{
+                            backgroundColor: "#fff4e6",
+                            border: "1px solid #ffa502",
+                            color: "#d62828",
+                            fontWeight: "bold",
+                            fontSize: "16px",
+                            display: "flex",
+                            alignItems: "center",
+                            padding: "10px",
+                            borderRadius: "8px",
+                            gap: "8px"
+                        }}
+                    >
+                        <span style={{ fontSize: "20px" }}>⚠️</span>
+                        <i>
+                            Bạn chỉ có thể đăng ký tối đa
+                            <b style={{ color: "red" }}> 5 bằng cấp/chứng chỉ</b>
+                            và
+                            <b style={{ color: "red" }}> 5 kinh nghiệm làm việc</b>. Bạn có thể thêm những bằng cấp/chứng chỉ hoặc kinh nghiệm làm việc khác khi được hệ thống phê duyệt!
+                        </i>
+                    </Typography>
                     <List
-                        sx={{ maxWidth: 450, bgcolor: 'background.paper' }}
+                        sx={{ maxWidth: 450, bgcolor: 'background.paper', mt:3 }}
                         component="nav"
                         aria-labelledby="nested-list-subheader"
                         subheader={
                             <ListSubheader component="div" id="nested-list-subheader">
                                 <Stack direction="row" sx={{ alignItems: "center" }} gap={3}>
                                     <Typography variant='h6'>Thêm bằng cấp hoặc chứng chỉ</Typography>
-                                    <CertificateAddition certificate={certificate} setCertificate={setCertificate} />
+                                    {
+                                        certificate && certificate.length < 5 && (
+                                            <CertificateAddition certificate={certificate} setCertificate={setCertificate} />
+                                        )
+                                    }
                                 </Stack>
                             </ListSubheader>
                         }
@@ -128,7 +156,11 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                             <ListSubheader component="div" id="nested-list-subheader">
                                 <Stack direction="row" sx={{ alignItems: "center" }} gap={3}>
                                     <Typography variant='h6'>Thêm kinh nghiệm làm việc</Typography>
-                                    <Career career={career} setCareer={setCareer} />
+                                    {
+                                        career && career.length < 5 && (
+                                            <Career career={career} setCareer={setCareer} />
+                                        )
+                                    }
                                 </Stack>
                             </ListSubheader>
                         }

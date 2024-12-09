@@ -74,7 +74,8 @@ export default function CertificateDetail({ certificate, setCertificate, index, 
             errors.expirationDate = "Ngày hết lớn hơn ngày cấp"
         }
         const existCertificate = certificate.find((e) => {
-            return e.certificateName === values.degreeName && e.certificateName !== currentItem.certificateName
+            return e.certificateName.toLowerCase() === values.degreeName.toLowerCase().trim()
+                && e.certificateName.toLowerCase() !== currentItem.certificateName.toLowerCase().trim()
         }
         );
         if (existCertificate) {
