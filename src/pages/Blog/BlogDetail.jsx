@@ -22,6 +22,9 @@ function BlogDetail() {
             setLoading(true);
             await services.BlogAPI.getBlogDetail(id, (res) => {
                 setBlog(res.result)
+                if (!res.result.isPublished) {
+                    nav(PAGES.ROOT + PAGES.HOME)
+                }
                 if (!res.result) {
                     nav(PAGES.ROOT + PAGES.BLOG_LIST)
                 }

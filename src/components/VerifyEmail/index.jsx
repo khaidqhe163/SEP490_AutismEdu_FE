@@ -21,13 +21,9 @@ function VerifyEmail({ email, setVerify, submitState }) {
         await service.AuthenticationAPI.verifyAccount({
             email
         }, (res) => {
-            enqueueSnackbar("Check your email!", { variant: "success" });
+            enqueueSnackbar("Kiểm tra emai của bạn!", { variant: "success" });
         }, (err) => {
-            console.log(err);
-            if (err.code === 500) {
-                enqueueSnackbar("Failed to reset password!", { variant: "error" });
-            }
-            else enqueueSnackbar(err.error[0], { variant: "error" });
+            enqueueSnackbar(err.error[0], { variant: "error" });
         })
         setLoading(false);
         setSubmited(true);

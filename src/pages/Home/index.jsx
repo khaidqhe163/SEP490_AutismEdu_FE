@@ -1,9 +1,7 @@
-import { Box, Typography } from '@mui/material';
-import AboutMe from './AboutMe';
+import { Box } from '@mui/material';
 import BigCity from './BigCity';
 import Blog from './Blog';
 import CarouselComponent from './CarouselComponent';
-import Center from './Center';
 import TutorComponent from './Tutor';
 function Home() {
     return (
@@ -12,7 +10,6 @@ function Home() {
             <BigCity />
             <TutorComponent />
             <Blog />
-            <AboutMe />
         </Box>
     )
 }

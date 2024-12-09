@@ -171,73 +171,84 @@ function Blog() {
                             } else return null;
                         })
                     }
-                    <Pagination count={totalPage || 1} page={currentPage} color="secondary" sx={{ mt: 5 }} onChange={handleChangePage} />
-                </Box>
-                <Box sx={{
-                    border: "5px solid #c09de8", width: "30%",
-                    backgroundColor: "white", borderRadius: "5px",
-                    p: 2,
-                    alignSelf: 'flex-start'
-                }}>
-                    <FormControl sx={{ width: '100%' }} variant="outlined">
-                        <OutlinedInput
-                            placeholder='Tìm kiếm ...'
-                            value={searchName}
-                            onChange={(e) => setSearchName(e.target.value)}
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        edge="end"
-                                        onClick={handleSearch}
-                                    >
-                                        <SearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                        />
-                    </FormControl>
-                    <Typography variant='h5' mt={5}>Bài viết gần đây</Typography>
-                    <Divider sx={{ width: "100%", mt: 2, backgroundColor: "gray" }} />
                     {
-                        recentBlog && recentBlog.length !== 0 && recentBlog.map((r) => {
-                            return (
-                                <Link to={PAGES.ROOT + PAGES.BLOG_LIST + `/${r.id}`} key={r.id}>
-                                    <Stack direction='row' gap={2} sx={{ cursor: "pointer", mt: 2 }}>
-                                        <Box sx={{
-                                            backgroundImage: `url('${r.urlImageDisplay}')`,
-                                            width: "70px",
-                                            height: "70px",
-                                            backgroundSize: "cover",
-                                            backgroundPosition: "center",
-                                            borderRadius: "10px"
-                                        }}>
-                                        </Box>
-                                        <Box sx={{ width: "70%" }}>
-                                            <Typography sx={{
-                                                fontSize: "16px", display: '-webkit-box',
-                                                WebkitLineClamp: 1,
-                                                WebkitBoxOrient: 'vertical',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                            }}>
-                                                {r.title}
-                                            </Typography>
-                                            <Stack direction='row' gap={5}>
-                                                <Stack direction='row' mt={2} gap={1}>
-                                                    <AccessTimeIcon /> <Typography>{formatDate(r.publishDate)}</Typography>
-                                                </Stack>
-                                                <Stack direction='row' mt={2} gap={1}>
-                                                    <RemoveRedEyeIcon /> <Typography>{r.viewCount}</Typography>
-                                                </Stack>
-                                            </Stack>
-                                        </Box>
-                                    </Stack>
-                                </Link>
-                            )
-                        })
+                        blogs.length !== 0 && (
+                            <Pagination count={totalPage || 1} page={currentPage} color="secondary" sx={{ mt: 5 }} onChange={handleChangePage} />
+                        )
                     }
-
                 </Box>
+
+
+                {
+                    recentBlog.length !== 0 && (
+                        <>
+                            <Box sx={{
+                                border: "5px solid #c09de8", width: "30%",
+                                backgroundColor: "white", borderRadius: "5px",
+                                p: 2,
+                                alignSelf: 'flex-start'
+                            }}>
+                                <FormControl sx={{ width: '100%' }} variant="outlined">
+                                    <OutlinedInput
+                                        placeholder='Tìm kiếm ...'
+                                        value={searchName}
+                                        onChange={(e) => setSearchName(e.target.value)}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    edge="end"
+                                                    onClick={handleSearch}
+                                                >
+                                                    <SearchIcon />
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                </FormControl>
+                                <Typography variant='h5' mt={5}>Bài viết gần đây</Typography>
+                                <Divider sx={{ width: "100%", mt: 2, backgroundColor: "gray" }} />
+                                {
+                                    recentBlog && recentBlog.length !== 0 && recentBlog.map((r) => {
+                                        return (
+                                            <Link to={PAGES.ROOT + PAGES.BLOG_LIST + `/${r.id}`} key={r.id}>
+                                                <Stack direction='row' gap={2} sx={{ cursor: "pointer", mt: 2 }}>
+                                                    <Box sx={{
+                                                        backgroundImage: `url('${r.urlImageDisplay}')`,
+                                                        width: "70px",
+                                                        height: "70px",
+                                                        backgroundSize: "cover",
+                                                        backgroundPosition: "center",
+                                                        borderRadius: "10px"
+                                                    }}>
+                                                    </Box>
+                                                    <Box sx={{ width: "70%" }}>
+                                                        <Typography sx={{
+                                                            fontSize: "16px", display: '-webkit-box',
+                                                            WebkitLineClamp: 1,
+                                                            WebkitBoxOrient: 'vertical',
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis',
+                                                        }}>
+                                                            {r.title}
+                                                        </Typography>
+                                                        <Stack direction='row' gap={5}>
+                                                            <Stack direction='row' mt={2} gap={1}>
+                                                                <AccessTimeIcon /> <Typography>{formatDate(r.publishDate)}</Typography>
+                                                            </Stack>
+                                                            <Stack direction='row' mt={2} gap={1}>
+                                                                <RemoveRedEyeIcon /> <Typography>{r.viewCount}</Typography>
+                                                            </Stack>
+                                                        </Stack>
+                                                    </Box>
+                                                </Stack>
+                                            </Link>
+                                        )
+                                    })
+                                }
+                            </Box>
+                        </>
+                    )
+                }
             </Stack>
             <LoadingComponent open={loading} />
         </Box>
