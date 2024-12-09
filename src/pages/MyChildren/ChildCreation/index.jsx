@@ -48,8 +48,8 @@ function ChildCreation({ setChildren, setCurrentChild, currentChild }) {
             errors.fullName = "Bắt buộc"
         } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.fullName)) {
             errors.fullName = "Tên không hợp lệ!"
-        } else if (values.fullName.length > 100) {
-            errors.fullName = "Phải dưới 100 ký tự"
+        } else if (values.fullName.length > 50) {
+            errors.fullName = "Phải dưới 50 ký tự"
         }
         if (!values.gender) {
             errors.gender = "Bắt buộc"

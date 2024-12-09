@@ -53,8 +53,8 @@ function RegisterForm({ setVerify, setEmailVerify }) {
         else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.fullName)) {
             errors.fullName = "Tên không hợp lệ!"
         }
-        else if (values.fullName.length > 100) {
-            errors.fullName = 'Tên dưới 100 ký tự';
+        else if (values.fullName.length > 50) {
+            errors.fullName = 'Tên dưới 50 ký tự';
         }
         if (!values.phoneNumber) {
             errors.phoneNumber = 'Bắt buộc';
