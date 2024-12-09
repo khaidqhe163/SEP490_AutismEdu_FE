@@ -4,7 +4,6 @@ import DoneIcon from '@mui/icons-material/Done';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import { Box, List, ListItem, ListItemIcon, ListItemText, Modal, Stack, Typography } from '@mui/material';
-import AssessmentGuild from '~/components/AssessmentGuild';
 function ProgressReportDetail({ open, setOpen, selectedItem }) {
     const handleClose = () => setOpen(false);
     const formatDate = (date) => {

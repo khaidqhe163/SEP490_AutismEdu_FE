@@ -13,7 +13,7 @@ import DeleteConfirmationModal from './RatingModal/DeleteConfirmationModal';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 import ReportIcon from '@mui/icons-material/Report';
-import ReportModal from './ReportModal';
+import ReportModal from './ReportReview';
 function TutorRating({ tutorId, userInfo }) {
 
     const [idDelete, setIdDelete] = useState(-1);

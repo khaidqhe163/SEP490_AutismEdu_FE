@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import axios from "~/plugins/axios";
+import axios from "~/plugins/axiosConfig";
 import * as React from 'react';
 import { Visibility as VisibilityIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import {

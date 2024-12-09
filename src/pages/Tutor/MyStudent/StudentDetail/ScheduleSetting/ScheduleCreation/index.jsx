@@ -45,7 +45,7 @@ const MenuProps = {
         },
     },
 };
-function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
+function ScheduleCreation({ setListTimeSlots, id, listTimeSlots }) {
     const [open, setOpen] = useState(false);
     const [dayOfWeek, setDayOfWeek] = useState([]);
     const [startTime, setStartTime] = useState("");
@@ -359,4 +359,4 @@ function CreateSchedule({ setListTimeSlots, id, listTimeSlots }) {
     )
 }
 
-export default CreateSchedule
+export default ScheduleCreation

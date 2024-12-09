@@ -4,10 +4,10 @@ import { Box, IconButton, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import ConfirmDialog from '~/components/ConfirmDialog';
 import services from '~/plugins/services';
-import CreateSchedule from './CreateSchedule';
+import CreateSchedule from './ScheduleCreation';
 import { enqueueSnackbar } from 'notistack';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import UpdateSchedule from './UpdateSchedule';
+import UpdateSchedule from './TimeSlotUpdate';
 const days = [
     {
         id: 1,

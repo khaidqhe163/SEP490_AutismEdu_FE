@@ -1,4 +1,4 @@
-import axios from "~/plugins/axios";
+import axios from "~/plugins/axiosConfig";
 import { initializeService } from "~/services/BaseService";
 import { AuthenticationAPI } from "~/services/AuthenticationAPI";
 import { UserManagementAPI } from "~/services/UserManagementAPI";

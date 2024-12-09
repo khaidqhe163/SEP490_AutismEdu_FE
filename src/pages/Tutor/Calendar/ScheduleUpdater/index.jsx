@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 
-function ChangeSlotModal({ schedule, setIsChange }) {
+function ScheduleUpdater({ schedule, setIsChange }) {
     const [open, setOpen] = useState(false);
     const [date, setDate] = useState("");
     const [startTime, setStartTime] = useState("");
@@ -152,24 +152,24 @@ function ChangeSlotModal({ schedule, setIsChange }) {
         }
     }
 
-    const checkTime = () => {
-        const startDate = new Date(date);
-        const endDate = new Date(date);
-        const [startHour, startMinute] = startTime.split(":").map(Number);
-        const [endHour, endMinute] = endTime.split(":").map(Number);
-        startDate.setHours(startHour, startMinute, "00");
-        endDate.setHours(endHour, endMinute, "00");
-        const now = new Date();
-        if (now >= startDate && now <= endDate) {
-            setTimeError("Thời gian không hợp lệ!");
-            return true;
-        } else if (now > endDate) {
-            setTimeError("Thời gian không hợp lệ!");
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // const checkTime = () => {
+    //     const startDate = new Date(date);
+    //     const endDate = new Date(date);
+    //     const [startHour, startMinute] = startTime.split(":").map(Number);
+    //     const [endHour, endMinute] = endTime.split(":").map(Number);
+    //     startDate.setHours(startHour, startMinute, "00");
+    //     endDate.setHours(endHour, endMinute, "00");
+    //     const now = new Date();
+    //     if (now >= startDate && now <= endDate) {
+    //         setTimeError("Thời gian không hợp lệ!");
+    //         return true;
+    //     } else if (now > endDate) {
+    //         setTimeError("Thời gian không hợp lệ!");
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
     return (
         <>
             <Button sx={{ mt: 2, fontSize: "12px", borderColor: '#218eed' }} variant='outlined' size='medium' onClick={handleOpen}>Đổi lịch</Button>
@@ -235,4 +235,4 @@ function ChangeSlotModal({ schedule, setIsChange }) {
     )
 }
 
-export default ChangeSlotModal
+export default ScheduleUpdater

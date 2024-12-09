@@ -115,7 +115,6 @@ function RegisterForm({ setVerify, setEmailVerify }) {
                 address: `${selectedProvince.name}|${selectedDistrict.name}|${selectedCommune.name}|${values.homeNumber.trim()}`,
                 phoneNumber: values.phoneNumber
             }
-            console.log(submitData);
             setLoading(true);
             await services.AuthenticationAPI.register(submitData, (res) => {
                 enqueueSnackbar("Đăng ký thành công!", { variant: "success" });
@@ -156,7 +155,6 @@ function RegisterForm({ setVerify, setEmailVerify }) {
             console.log(error);
         }
     }
-
     return (
         <Box sx={{ bgcolor: "#f7f7f9", display: "flex", alignItems: "center", justifyContent: "center", py: "50px" }}>
             <Card sx={{

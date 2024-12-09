@@ -7,7 +7,7 @@ import AssignExercise from '~/pages/Tutor/Calendar/CalendarModal/AssignExercise'
 import Evaluate from '~/pages/Tutor/Calendar/CalendarModal/Evaluate';
 import ViewDetailModal from '~/pages/Tutor/Calendar/CalendarModal/ViewDetailModal';
 import CalenderButtons from '~/pages/Tutor/Calendar/CalenderButtons/CalenderButtons';
-import ChangeSlotModal from '~/pages/Tutor/Calendar/ChangeSlotModal';
+import ChangeSlotModal from '~/pages/Tutor/Calendar/ScheduleUpdater';
 import services from '~/plugins/services';
 import { tutorInfor } from '~/redux/features/tutorSlice';
 function StudentSchedule({ studentProfile }) {

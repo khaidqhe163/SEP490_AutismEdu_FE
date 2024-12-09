@@ -9,7 +9,7 @@ import AssignExercise from './CalendarModal/AssignExercise';
 import Evaluate from './CalendarModal/Evaluate';
 import ViewDetailModal from './CalendarModal/ViewDetailModal';
 import CalenderButtons from './CalenderButtons/CalenderButtons';
-import ChangeSlotModal from './ChangeSlotModal';
+import ChangeSlotModal from './ScheduleUpdater';
 function Calendar() {
     const { id } = useParams();
     const [isModalOpen, setModalOpen] = useState(false);

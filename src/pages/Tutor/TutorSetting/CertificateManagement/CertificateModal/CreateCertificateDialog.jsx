@@ -4,7 +4,7 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import axios from "~/plugins/axios";
+import axios from "~/plugins/axiosConfig";
 import {
     Box,
     Button,

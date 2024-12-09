@@ -32,8 +32,8 @@ const NumericFormatCustom = React.forwardRef(
                     onChange({
                         target: {
                             name: props.name,
-                            value: values.value,
-                        },
+                            value: values.value
+                        }
                     });
                 }}
                 isAllowed={(values) => {
@@ -45,12 +45,12 @@ const NumericFormatCustom = React.forwardRef(
                 valueIsNumericString
             />
         );
-    },
+    }
 );
 
 NumericFormatCustom.propTypes = {
     name: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired
 };
 export default function PaymentCreation({ change, setChange }) {
     const [open, setOpen] = React.useState(false);

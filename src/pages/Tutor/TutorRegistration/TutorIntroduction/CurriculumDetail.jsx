@@ -21,16 +21,20 @@ const style = {
     bgcolor: 'background.paper',
     boxShadow: 24,
     overflowY: "auto",
-    p: 4,
+    p: 4
 };
 
 export default function CurriculumDetail({ curriculum, setCurriculum, endAge, startAge, index, currentCurriculum }) {
     const [open, setOpen] = React.useState(false);
     const [editorContent, setEditorContent] = React.useState(currentCurriculum.description || "");
+    const [change, setChange] = React.useState(true);
+    const [editorErr, setEditorErr] = React.useState("");
+    const [content, setContent] = React.useState("");
     React.useEffect(() => {
         formik.setFieldValue("startAge", currentCurriculum.ageFrom);
         formik.setFieldValue("endAge", currentCurriculum.ageEnd);
-        setEditorContent(currentCurriculum.description)
+        setEditorContent(currentCurriculum.description);
+        setContent(currentCurriculum.content || "")
     }, [currentCurriculum])
     const handleOpen = () => {
         if (endAge === "" || startAge === "") {
@@ -75,13 +79,20 @@ export default function CurriculumDetail({ curriculum, setCurriculum, endAge, st
         validate,
         onSubmit: (values) => {
             const filterCur = curriculum.filter((c, i) => i !== index);
-            if (editorContent) {
-                setCurriculum([...filterCur,
-                {
+            const existCur = curriculum.find((c, i) => {
+                return c.ageFrom === values.startAge && c.ageEnd === values.endAge
+                    && index !== i;
+            })
+            if (existCur) {
+                enqueueSnackbar("Khung chương trình này đã tồn tại!", { variant: "error" })
+            }
+            else if (editorContent) {
+                setCurriculum([{
                     ageFrom: values.startAge,
                     ageEnd: values.endAge,
-                    description: editorContent
-                }
+                    description: editorContent,
+                    content: content
+                }, ...filterCur
                 ])
                 handleClose();
                 formik.resetForm();
@@ -89,6 +100,38 @@ export default function CurriculumDetail({ curriculum, setCurriculum, endAge, st
             }
         }
     });
+
+    React.useEffect(() => {
+        if (formik.values.startAge !== currentCurriculum.ageFrom) {
+            setChange(false);
+            return;
+        }
+        if (formik.values.endAge !== currentCurriculum.ageEnd) {
+            setChange(false);
+            return;
+        }
+        if (editorContent !== currentCurriculum.description) {
+            setChange(false);
+            return;
+        }
+        setChange(true);
+    }, [formik])
+
+    const handleChangeEdit = (content, delta, source, editor) => {
+        const plainText = editor.getText().trim();
+        setEditorContent(plainText)
+        if (plainText === "") {
+            setEditorContent("")
+            setEditorErr("Vui lòng nhập khung chương trình!");
+            setContent("");
+        }
+        else {
+            if (plainText.length > 2000) setEditorErr("Nội dung quá dài!");
+            else setEditorErr("");
+            setEditorContent(content);
+            setContent(plainText);
+        }
+    };
     return (
         <Box>
             <ListItemButton>
@@ -149,7 +192,7 @@ export default function CurriculumDetail({ curriculum, setCurriculum, endAge, st
                                 <Box mt={2} sx={{ height: "400px", width: "100%" }}>
                                     <ReactQuill
                                         value={editorContent}
-                                        onChange={setEditorContent}
+                                        onChange={handleChangeEdit}
                                         theme="snow"
                                         modules={{
                                             toolbar: toolbarOptions
@@ -157,18 +200,23 @@ export default function CurriculumDetail({ curriculum, setCurriculum, endAge, st
                                         style={{ height: "300px" }}
                                     />
                                 </Box>
-                                {
-                                    !editorContent && (
-                                        <FormHelperText error>
-                                            Vui lòng nhập khung chương trình
-                                        </FormHelperText>
-                                    )
-                                }
+                                <Box textAlign="right" display="flex" sx={{ justifyContent: "space-between" }}>
+                                    <Box>
+                                        {
+                                            editorErr && (
+                                                <FormHelperText error>
+                                                    {editorErr}
+                                                </FormHelperText>
+                                            )
+                                        }
+                                    </Box>
+                                    <Typography variant='caption' alignSelf="end">{content.length} / 2000</Typography>
+                                </Box>
                             </Grid>
 
                         </Grid>
                         <Box sx={{ display: "flex", justifyContent: "end", gap: 2 }}>
-                            <Button variant='contained' type='submit'>Lưu</Button>
+                            <Button variant='contained' type='submit' disabled={change}>Lưu</Button>
                             <Button onClick={handleClose}>Huỷ</Button>
                         </Box>
                     </form>

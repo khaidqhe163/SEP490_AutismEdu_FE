@@ -13,7 +13,7 @@ import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
-import axios from '~/plugins/axios';
+import axios from '~/plugins/axiosConfig';
 import services from '~/plugins/services';
 
 const IncompatibilityWithRequirement = 1;

@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import { useFormik } from 'formik';
 import * as React from 'react';
 import ConfirmCareer from './ConfirmCareer';
+import { enqueueSnackbar } from 'notistack';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -24,7 +25,7 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
+    const [change, setChange] = React.useState(true);
     React.useEffect(() => {
         if (currentItem) {
             formik.resetForm({
@@ -36,10 +37,6 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
                 }
             })
         }
-        // formik.setFieldValue("companyName", currentItem.companyName);
-        // formik.setFieldValue("position", currentItem.position);
-        // formik.setFieldValue("startDate", currentItem.startDate);
-        // formik.setFieldValue("endDate", currentItem.endDate);
     }, [currentItem])
     const validate = values => {
         const errors = {};
@@ -56,9 +53,6 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
         if (!values.startDate) {
             errors.startDate = "Bắt buộc"
         }
-        // if (!values.endDate) {
-        //     errors.endDate = "Bắt buộc"
-        // }
         if ((values.startDate > values.endDate) && values.endDate) {
             errors.startDate = "Thời gian không hợp lệ"
         }
@@ -74,16 +68,45 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
         validate,
         onSubmit: async (values) => {
             const filterCar = career.filter((c, i) => i !== index);
-            setCareer([...filterCar, {
-                companyName: values.companyName.trim(),
-                position: values.position.trim(),
-                startDate: values.startDate,
-                endDate: values.endDate === "" ? null : values.endDate
-            }])
-            setOpen(false);
-            formik.resetForm();
+            const existCareer = career.find((c, i) => {
+                return c.companyName === values.companyName.trim() && c.position === values.position.trim()
+                    && i !== index;
+            })
+            if (existCareer) {
+                enqueueSnackbar("Bạn đã có kinh nghiệm này rồi!", { variant: "error" })
+            } else {
+                setCareer([{
+                    companyName: values.companyName.trim(),
+                    position: values.position.trim(),
+                    startDate: values.startDate,
+                    endDate: values.endDate === "" ? null : values.endDate
+                }, ...filterCar])
+                setOpen(false);
+                formik.resetForm();
+            }
         }
     });
+
+    React.useEffect(() => {
+        if (formik.values.companyName !== currentItem.companyName) {
+            setChange(false);
+            return;
+        }
+        if (formik.values.position !== currentItem.position) {
+            setChange(false);
+            return;
+        }
+        if (formik.values.startDate !== currentItem.startDate) {
+            setChange(false);
+            return;
+        }
+        if ((formik.values.endDate !== currentItem.endDate) &&
+            (formik.values.endDate !== "" || currentItem.endDate !== null)) {
+            setChange(false);
+            return;
+        }
+        setChange(true);
+    }, [formik])
     return (
         <div>
             <ListItemButton key={index} >
@@ -169,7 +192,7 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
                             </Grid>
                         </Grid>
                         <Box sx={{ display: "flex", justifyContent: "end", gap: 2 }}>
-                            <Button variant='contained' type='submit'>Lưu</Button>
+                            <Button variant='contained' type='submit' disabled={change}>Lưu</Button>
                             <Button onClick={handleClose}>Huỷ</Button>
                         </Box>
                     </form>

@@ -5,7 +5,7 @@ import ReactQuill, { Quill } from 'react-quill';
 import { useNavigate } from 'react-router-dom';
 import '~/assets/css/texteditor.css';
 import UploadImage from '~/components/UploadImage';
-import axios from '~/plugins/axios';
+import axios from '~/plugins/axiosConfig';
 import services from '~/plugins/services';
 import PAGES from '~/utils/pages';
 import 'react-quill/dist/quill.snow.css'

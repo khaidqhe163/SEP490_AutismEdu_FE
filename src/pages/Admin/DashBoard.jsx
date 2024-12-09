@@ -1,36 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { Box, FormControl, Grid, InputLabel, MenuItem, Paper, Select, TextField, Typography } from '@mui/material';
-import { Bar, Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Person, People, School, Group } from '@mui/icons-material';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-import Diversity1Icon from '@mui/icons-material/Diversity1';
+import { School } from '@mui/icons-material';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import { format } from 'date-fns';
-import services from '~/plugins/services';
-import { adminInfor, setAdminInformation } from '~/redux/features/adminSlice';
-import { useSelector } from 'react-redux';
+import Diversity1Icon from '@mui/icons-material/Diversity1';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Tooltip } from 'chart.js';
+import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
+import { Bar, Doughnut } from 'react-chartjs-2';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import StatCard from '~/components/StatsCard';
+import services from '~/plugins/services';
+import { adminInfor } from '~/redux/features/adminSlice';
+import PAGES from '~/utils/pages';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
 function DashBoard() {
-
+    const adminInformation = useSelector(adminInfor);
+    const nav = useNavigate();
     const [totalUsers, setTotalUsers] = useState(0);
     const [parentsWithProfiles, setParentsWithProfiles] = useState(0);
     const [totalTutors, setTotalTutors] = useState(0);
     const [newParents, setNewParents] = useState(0);
     const [totalRevenue, setTotalRevenue] = useState(0);
 
-    // useEffect(() => {
-    //     console.log("Total Users:", totalUsers);
-    //     console.log("Parents With Profiles:", parentsWithProfiles);
-    //     console.log("Total Tutors:", totalTutors);
-    //     console.log("New Parents:", newParents);
-    //     console.log("Total Revenue:", totalRevenue);
-    // }, [totalUsers, parentsWithProfiles, totalTutors, newParents, totalRevenue]);
-
+    useEffect(() => {
+        if (adminInformation) {
+            if (adminInformation?.role === 'Admin') {
+                nav(PAGES.USERMANAGEMENT);
+            } else if (adminInformation?.role === 'Staff') {
+                nav(PAGES.PARENT_TUTOR_MAMAGEMENT);
+            }
+        }
+    }, [adminInformation])
     const adminInfo = useSelector(adminInfor);
 
     const [paymentPackages, setPaymentPackages] = useState([]);

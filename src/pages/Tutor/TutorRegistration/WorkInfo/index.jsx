@@ -2,7 +2,7 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, List, L
 import { enqueueSnackbar } from 'notistack';
 import { useRef, useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
-import axios from "~/plugins/axios";
+import axios from "~/plugins/axiosConfig";
 import services from '~/plugins/services';
 import Career from './Career';
 import CareerDetail from './Career/CareerDetail';

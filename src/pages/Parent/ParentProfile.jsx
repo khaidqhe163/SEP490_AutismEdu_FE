@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import axiosInstance from "~/plugins/axios";
+import axiosInstance from "~/plugins/axiosConfig";
 import services from '~/plugins/services';
 import { setUserInformation, userInfor } from '~/redux/features/userSlice';
 import ModalUploadAvatar from '../Tutor/TutorRegistration/TutorInformation/ModalUploadAvatar';

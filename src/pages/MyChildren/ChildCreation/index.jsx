@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import LoadingComponent from '~/components/LoadingComponent';
 import ModalUploadAvatar from '~/pages/Tutor/TutorRegistration/TutorInformation/ModalUploadAvatar';
-import axios from '~/plugins/axios';
+import axios from '~/plugins/axiosConfig';
 import services from '~/plugins/services';
 const style = {
     position: 'absolute',

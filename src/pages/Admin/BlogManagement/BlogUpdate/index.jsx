@@ -7,7 +7,7 @@ import 'react-quill/dist/quill.snow.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import '~/assets/css/texteditor.css';
 import UploadImage from '~/components/UploadImage';
-import axios from '~/plugins/axios';
+import axios from '~/plugins/axiosConfig';
 import services from '~/plugins/services';
 import PAGES from '~/utils/pages';
 import CircleIcon from '@mui/icons-material/Circle';

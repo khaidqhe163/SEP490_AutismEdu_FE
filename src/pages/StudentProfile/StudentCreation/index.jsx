@@ -9,7 +9,7 @@ import InitialCondition from './InitialCondition';
 import ParentProfile from './ParentProfile';
 import StudentShedule from './StudentShedule';
 import { useFormik } from 'formik';
-import axios from '~/plugins/axios';
+import axios from '~/plugins/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import PAGES from '~/utils/pages';
 import ConfirmDialog from '~/components/ConfirmDialog';
@@ -43,7 +43,6 @@ function StudentCreation() {
     useEffect(() => {
         if (selectedRequest !== "" && typeof selectedRequest === 'number' && listTutorRequest.length !== 0) {
             if (listTutorRequest[selectedRequest]) {
-                console.log(listTutorRequest[selectedRequest]);
                 setParent(listTutorRequest[selectedRequest].parent)
                 setChildren([listTutorRequest[selectedRequest].childInformation])
             }

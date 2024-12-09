@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { NumericFormat } from 'react-number-format';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import Curriculum from './CurriculumAddition';
 import CurriculumDetail from './CurriculumDetail';
 import '~/assets/css/ql-editor.css'
@@ -47,7 +47,7 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
         fromPrice: "",
         endPrice: ""
     });
-
+    const [contentLength, setContentLength] = useState("");
     const validate = (values) => {
         const errors = {};
         if (!values.startAge || !values.endAge) {
@@ -58,6 +58,8 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
 
         if (!values.description) {
             errors.description = "Bắt buộc"
+        } else if (contentLength.length > 5000) {
+            errors.description = "Giới thiệu quá dài!";
         }
         if (!values.fromPrice) {
             errors.fromPrice = "Bắt buộc"
@@ -133,6 +135,12 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                     endPrice: tutorIntroduction.priceEnd ? tutorIntroduction.priceEnd : ""
                 });
             }
+            if (tutorIntroduction.description) {
+                const quill = new Quill(document.createElement("div"));
+                quill.root.innerHTML = tutorIntroduction.description;
+                const plainText = quill.getText();
+                setContentLength(plainText.trim());
+            }
         }
     }, [tutorIntroduction])
     const toolbarOptions = [
@@ -155,8 +163,10 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
         const plainText = editor.getText().trim();
         if (plainText === '') {
             formik.setFieldValue("description", "")
+            setContentLength("");
         } else {
             formik.setFieldValue("description", content)
+            setContentLength(plainText)
         }
     };
     const handleChange = (event) => {
@@ -186,13 +196,19 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                                 toolbar: toolbarOptions
                             }}
                         />
-                        {
-                            formik.errors.description && (
-                                <FormHelperText error>
-                                    {formik.errors.description}
-                                </FormHelperText>
-                            )
-                        }
+                        <Box textAlign="right" display="flex" sx={{ justifyContent: "space-between" }}>
+                            <Box>
+                                {
+                                    formik.errors.description && (
+                                        <FormHelperText error>
+                                            {formik.errors.description}
+                                        </FormHelperText>
+                                    )
+                                }
+                            </Box>
+                            <Typography variant='caption' alignSelf="end">{contentLength.length} / 5000</Typography>
+                        </Box>
+                        <Typography></Typography>
                     </Box>
                     <Box mt={2} sx={{ width: "60%" }}>
                         <Typography mt={4} mb={2}>Độ tuổi dạy</Typography>
@@ -304,30 +320,32 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                                 </ListSubheader>
                             }
                         >
-                            {
-                                curriculum === null || curriculum.length === 0 ? (
-                                    <ListItem>Bạn chưa thêm khung chương trình nào</ListItem>
-                                ) : (
-                                    curriculum?.map((c, index) => {
-                                        return (
-                                            <>
-                                                <CurriculumDetail key={index} index={index} currentCurriculum={c}
-                                                    curriculum={curriculum} setCurriculum={setCurriculum}
-                                                    startAge={formik.values.startAge}
-                                                    endAge={formik.values.endAge}
-                                                />
-                                                {
-                                                    (Number(c.ageFrom) < Number(formik.values.startAge) || Number(c.ageEnd) > Number(formik.values.endAge)) && (
-                                                        <FormHelperText error sx={{ mb: 2 }}>
-                                                            Khung chương trình nằm ngoài độ tuổi dạy
-                                                        </FormHelperText>
-                                                    )
-                                                }
-                                            </>
-                                        )
-                                    })
-                                )
-                            }
+                            <Box maxHeight="350px" overflow="auto">
+                                {
+                                    curriculum === null || curriculum.length === 0 ? (
+                                        <ListItem>Bạn chưa thêm khung chương trình nào</ListItem>
+                                    ) : (
+                                        curriculum?.map((c, index) => {
+                                            return (
+                                                <>
+                                                    <CurriculumDetail key={index} index={index} currentCurriculum={c}
+                                                        curriculum={curriculum} setCurriculum={setCurriculum}
+                                                        startAge={formik.values.startAge}
+                                                        endAge={formik.values.endAge}
+                                                    />
+                                                    {
+                                                        (Number(c.ageFrom) < Number(formik.values.startAge) || Number(c.ageEnd) > Number(formik.values.endAge)) && (
+                                                            <FormHelperText error sx={{ mb: 2 }}>
+                                                                Khung chương trình nằm ngoài độ tuổi dạy
+                                                            </FormHelperText>
+                                                        )
+                                                    }
+                                                </>
+                                            )
+                                        })
+                                    )
+                                }
+                            </Box>
                         </List>
                     </Box>
                 </Stack>

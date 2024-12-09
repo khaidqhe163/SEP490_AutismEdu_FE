@@ -1,9 +1,8 @@
-import { Box, Button, Checkbox, Divider, FormControl, FormHelperText, IconButton, List, ListItemText, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import services from '~/plugins/services';
-import CloseIcon from '@mui/icons-material/Close';
-import { enqueueSnackbar } from 'notistack';
 import WarningIcon from '@mui/icons-material/Warning';
+import { Box, Button, FormControl, FormHelperText, ListItemText, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import services from '~/plugins/services';
 const days = [
     {
         id: 1,
@@ -35,7 +34,7 @@ const days = [
     }
 ];
 
-function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, open, setOpen }) {
+function TimeSlotUpdate({ setListTimeSlots, selectedTimeSlot, listTimeSlots, open, setOpen }) {
     const [dayOfWeek, setDayOfWeek] = useState(0);
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
@@ -89,7 +88,6 @@ function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, ope
 
     useEffect(() => {
         if (dayOfWeek !== 0) {
-            console.log(existSlots);
             const weekDay = days.find((day) => {
                 return day.day === dayOfWeek;
             })
@@ -310,4 +308,4 @@ function UpdateSchedule({ setListTimeSlots, selectedTimeSlot, listTimeSlots, ope
     )
 }
 
-export default UpdateSchedule
+export default TimeSlotUpdate

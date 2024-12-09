@@ -33,7 +33,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import LoadingComponent from '~/components/LoadingComponent';
 import { format } from 'date-fns';
 import ReportIcon from '@mui/icons-material/Report';
-import ReportModal from '../../TutorProfile/TutorRating/ReportModal';
+import ReportModal from '../../TutorProfile/TutorRating/ReportReview';
 
 function ReviewMe() {
     const [filters, setFilters] = useState({

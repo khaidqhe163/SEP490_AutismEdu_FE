@@ -4,7 +4,7 @@ import { useState } from 'react';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 
-function ReportModal({ open, setOpen, currentReport }) {
+function ReportReview({ open, setOpen, currentReport }) {
     const [loading, setLoading] = useState(false);
     const [description, setDescription] = useState("");
     const handleSubmit = async () => {
@@ -64,4 +64,4 @@ function ReportModal({ open, setOpen, currentReport }) {
     )
 }
 
-export default ReportModal
+export default ReportReview

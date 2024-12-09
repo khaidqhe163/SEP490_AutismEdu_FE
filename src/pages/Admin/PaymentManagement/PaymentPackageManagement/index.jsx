@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import ConfirmDialog from '~/components/ConfirmDialog';
 import services from '~/plugins/services';
 import PaymentCreation from './PaymentCreation';
-import PaymentUpdate from './PaymentUpdate';
-function PaymentPackage() {
+import PaymentUpdate from './PaymentUpdater';
+function PaymentPackageManagement() {
     const [paymentPackages, setPaymetPackages] = useState([]);
     const [change, setChange] = useState(true);
     const [openConfirm, setOpenConfirm] = useState(false);
@@ -157,4 +157,4 @@ function PaymentPackage() {
     )
 }
 
-export default PaymentPackage
+export default PaymentPackageManagement

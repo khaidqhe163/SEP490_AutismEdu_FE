@@ -16,15 +16,19 @@ function GoogleLogin() {
     const nav = useNavigate();
     useEffect(() => {
         if (userId) {
-            services.UserManagementAPI.getUserById(userId, (res) => {
-                dispatch(setUserInformation(res.result))
-                enqueueSnackbar("Đăng nhập thành công!", { variant: "success" });
-                nav(`${PAGES.ROOT}`)
-            }, (error) => {
-                enqueueSnackbar(error.error[0], { variant: "error" });
-            })
+            getUserById();
         }
     }, [userId])
+
+    const getUserById = () => {
+        services.UserManagementAPI.getUserById(userId, (res) => {
+            dispatch(setUserInformation(res.result))
+            enqueueSnackbar("Đăng nhập thành công!", { variant: "success" });
+            nav(`${PAGES.ROOT}`)
+        }, (error) => {
+            enqueueSnackbar(error.error[0], { variant: "error" });
+        })
+    }
     const login = useGoogleLogin({
         onSuccess: credentialResponse => {
             services.AuthenticationAPI.loginGoogle({

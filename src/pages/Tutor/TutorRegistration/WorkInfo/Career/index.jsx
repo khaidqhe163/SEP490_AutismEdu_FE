@@ -42,9 +42,6 @@ export default function Career({ career, setCareer }) {
         if (!values.startDate) {
             errors.startDate = "Bắt buộc"
         }
-        // if (!values.endDate) {
-        //     errors.endDate = "Bắt buộc"
-        // }
         if ((values.startDate > values.endDate) && values.endDate) {
             errors.startDate = "Thời gian không hợp lệ"
         }
@@ -65,12 +62,12 @@ export default function Career({ career, setCareer }) {
             if (existWE) {
                 enqueueSnackbar("Bạn đã có kinh nghiệm này rồi", { variant: "error" })
             } else {
-                setCareer(pre => [...pre, {
+                setCareer(pre => [{
                     companyName: values.companyName.trim(),
                     position: values.position.trim(),
                     startDate: values.startDate,
                     endDate: values.endDate === "" ? null : values.endDate
-                }])
+                }, ...pre])
                 setOpen(false);
                 formik.resetForm();
             }

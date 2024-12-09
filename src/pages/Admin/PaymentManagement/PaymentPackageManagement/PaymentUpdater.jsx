@@ -1,16 +1,16 @@
-import * as React from 'react';
+import CircleIcon from '@mui/icons-material/Circle';
+import { FormHelperText, Stack, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
 import { useFormik } from 'formik';
-import { FormControl, FormHelperText, MenuItem, Select, Stack, TextField } from '@mui/material';
-import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
+import * as React from 'react';
 import { NumericFormat } from 'react-number-format';
 import LoadingComponent from '~/components/LoadingComponent';
-import CircleIcon from '@mui/icons-material/Circle';
+import services from '~/plugins/services';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -54,7 +54,7 @@ NumericFormatCustom.propTypes = {
     name: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
 };
-export default function PaymentUpdate({ paymentPackage, setStatus, status, setPaymentPackages, paymentPackages }) {
+export default function PaymentUpdater({ paymentPackage, setStatus, status, setPaymentPackages, paymentPackages }) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);

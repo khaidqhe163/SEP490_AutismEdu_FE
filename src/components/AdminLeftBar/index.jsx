@@ -46,6 +46,8 @@ function AdminLeftBar() {
             setSelectedIndex(0);
         } else if (location.pathname.includes("/user-management")) {
             setSelectedIndex(1);
+        } else if (location.pathname.includes("/admin/parent-tutor-management")) {
+            setSelectedIndex(1);
         }
         else if (location.pathname.includes("/role-claim-management")) {
             setSelectedIndex(2);
@@ -93,15 +95,15 @@ function AdminLeftBar() {
         }
     }, [location])
 
-    useEffect(() => {
-        if (adminInformation?.role === 'Admin') {
-            nav(PAGES.USERMANAGEMENT);
-            setSelectedIndex(1);
-        } else if (adminInformation?.role === 'Staff') {
-            nav(PAGES.PARENT_TUTOR_MAMAGEMENT);
-            setSelectedIndex(1);
-        }
-    }, [adminInformation])
+    // useEffect(() => {
+    //     if (adminInformation?.role === 'Admin') {
+    //         nav(PAGES.USERMANAGEMENT);
+    //         setSelectedIndex(1);
+    //     } else if (adminInformation?.role === 'Staff') {
+    //         nav(PAGES.PARENT_TUTOR_MAMAGEMENT);
+    //         setSelectedIndex(1);
+    //     }
+    // }, [adminInformation])
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
     };

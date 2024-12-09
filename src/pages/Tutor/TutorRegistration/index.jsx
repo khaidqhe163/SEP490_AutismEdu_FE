@@ -13,7 +13,7 @@ import CompleteRegistration from './CompleteRegistration';
 
 const steps = ['Thông tin cá nhân', 'Thông tin gia sư', 'Bằng cấp / chứng chỉ'];
 function TutorRegistration() {
-    const [activeStep, setActiveStep] = React.useState(0);
+    const [activeStep, setActiveStep] = React.useState(1);
     const [tutorInformation, setTutorInformation] = useState(null);
     const [certificate, setCertificate] = useState([]);
     const [IdVerification, setIdVerification] = useState(null);
@@ -31,7 +31,7 @@ function TutorRegistration() {
         }
     }, [])
     useEffect(() => {
-        const handleBeforeUnload = (event) => {
+        const saveDraft = () => {
             if (!isSubmit) {
                 const { image, ...draftInformation } = tutorInformation
                 const draftData = {
@@ -43,9 +43,9 @@ function TutorRegistration() {
             }
         };
 
-        window.addEventListener('beforeunload', handleBeforeUnload);
+        window.addEventListener('beforeunload', saveDraft);
         return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload);
+            window.removeEventListener('beforeunload', saveDraft);
         };
     }, [tutorInformation, tutorIntroduction, career])
     const handleNext = () => {

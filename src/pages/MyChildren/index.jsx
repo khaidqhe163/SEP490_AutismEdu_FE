@@ -1,18 +1,17 @@
-import { Avatar, Box, Button, Chip, FormHelperText, Grid, MenuItem, Select, Stack, TextField, Typography } from '@mui/material'
-import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react'
-import childrenImg from '~/assets/images/children.png'
 import FaceIcon from '@mui/icons-material/Face';
 import Face3Icon from '@mui/icons-material/Face3';
-import AddIcon from '@mui/icons-material/Add';
-import ChildCreation from './ChildCreation';
-import { userInfor } from '~/redux/features/userSlice';
-import { useSelector } from 'react-redux';
-import services from '~/plugins/services';
+import { Box, Button, Chip, FormHelperText, Grid, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import childrenImg from '~/assets/images/children.png';
 import LoadingComponent from '~/components/LoadingComponent';
+import axios from '~/plugins/axiosConfig';
+import services from '~/plugins/services';
+import { userInfor } from '~/redux/features/userSlice';
 import ModalUploadAvatar from '../Tutor/TutorRegistration/TutorInformation/ModalUploadAvatar';
-import axios from '~/plugins/axios';
+import ChildCreation from './ChildCreation';
 function MyChildren() {
     const [children, setChildren] = useState([]);
     const userInfo = useSelector(userInfor);
@@ -52,7 +51,6 @@ function MyChildren() {
             fullName: '',
             dateOfBirth: '',
             gender: ''
-
         },
         validate,
         onSubmit: async (values) => {
@@ -73,7 +71,6 @@ function MyChildren() {
                     }))
                     enqueueSnackbar("Cập nhật thành công!", { variant: "success" });
                 }, (err) => {
-                    console.log(err);
                     enqueueSnackbar(err.error[0], { variant: "error" })
                 })
                 axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });

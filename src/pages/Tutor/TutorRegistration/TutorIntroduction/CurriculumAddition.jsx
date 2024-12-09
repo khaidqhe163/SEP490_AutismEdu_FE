@@ -25,6 +25,8 @@ const style = {
 export default function Curriculum({ curriculum, setCurriculum, endAge, startAge }) {
     const [open, setOpen] = React.useState(false);
     const [editorContent, setEditorContent] = React.useState("");
+    const [editorErr, setEditorErr] = React.useState("Vui lòng nhập khung chương trình!");
+    const [content, setContent] = React.useState("");
     const handleOpen = () => {
         if (endAge === "" || startAge === "") {
             enqueueSnackbar("Vui lòng nhập độ tuổi dạy", { variant: "warning" })
@@ -35,10 +37,12 @@ export default function Curriculum({ curriculum, setCurriculum, endAge, startAge
         formik.resetForm();
         setEditorContent("");
         setOpen(false);
+        setEditorErr(true);
+        setContent("");
+        setEditorErr("Vui lòng nhập khung chương trình!")
     }
     const validate = values => {
         const errors = {};
-        console.log(values);
         if (!values.startAge || !values.endAge) {
             errors.rangeAge = 'Vui lòng nhập độ tuổi';
         } else if (Number(values.startAge) >= Number(values.endAge)) {
@@ -70,8 +74,22 @@ export default function Curriculum({ curriculum, setCurriculum, endAge, startAge
         },
         validate,
         onSubmit: (values) => {
-            if (editorContent) {
-                setCurriculum(pre => [...pre, { ageFrom: values.startAge, ageEnd: values.endAge, description: editorContent }])
+            let existCur = false;
+            curriculum.forEach((f) => {
+                if (f.ageFrom === values.startAge && f.ageEnd === values.endAge) {
+                    existCur = true;
+                }
+            })
+            if (existCur) {
+                enqueueSnackbar("Khung chương trình này đã tồn tại!", { variant: "error" })
+            }
+            if (!editorErr && !existCur) {
+                setCurriculum(pre => [...pre, {
+                    ageFrom: values.startAge,
+                    ageEnd: values.endAge,
+                    description: editorContent,
+                    content: content
+                }])
                 handleClose();
                 formik.resetForm();
                 setEditorContent("");
@@ -79,14 +97,27 @@ export default function Curriculum({ curriculum, setCurriculum, endAge, startAge
         }
     });
 
+    const handleChangeEdit = (content, delta, source, editor) => {
+        const plainText = editor.getText().trim();
+        setEditorContent(plainText)
+        if (plainText === "") {
+            setEditorContent("")
+            setEditorErr("Vui lòng nhập khung chương trình!");
+            setContent("");
+        }
+        else {
+            if (plainText.length > 2000) setEditorErr("Nội dung quá dài!");
+            else setEditorErr("");
+            setEditorContent(content);
+            setContent(plainText);
+        }
+    };
     return (
         <div>
             <IconButton onClick={handleOpen}><AddCircleOutlineIcon /></IconButton>
             <Modal
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h5" component="h2">
@@ -131,7 +162,7 @@ export default function Curriculum({ curriculum, setCurriculum, endAge, startAge
                                 <Box mt={2} sx={{ height: "400px", width: "100%" }}>
                                     <ReactQuill
                                         value={editorContent}
-                                        onChange={setEditorContent}
+                                        onChange={handleChangeEdit}
                                         theme="snow"
                                         modules={{
                                             toolbar: toolbarOptions
@@ -139,13 +170,19 @@ export default function Curriculum({ curriculum, setCurriculum, endAge, startAge
                                         style={{ height: "300px" }}
                                     />
                                 </Box>
-                                {
-                                    !editorContent && (
-                                        <FormHelperText error>
-                                            Vui lòng nhập khung chương trình
-                                        </FormHelperText>
-                                    )
-                                }
+                                <Box textAlign="right" display="flex" sx={{ justifyContent: "space-between" }}>
+                                    <Box>
+                                        {
+                                            editorErr && (
+                                                <FormHelperText error>
+                                                    {editorErr}
+                                                </FormHelperText>
+                                            )
+                                        }
+                                    </Box>
+                                    <Typography variant='caption' alignSelf="end">{content.length} / 2000</Typography>
+                                </Box>
+
                             </Grid>
 
                         </Grid>

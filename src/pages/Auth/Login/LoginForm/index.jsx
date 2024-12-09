@@ -42,16 +42,20 @@ function LoginForm({ setVerify, setEmailVerify, onLoginSuccess }) {
 
     useEffect(() => {
         if (userId) {
-            services.UserManagementAPI.getUserById(userId, (res) => {
-                dispatch(setUserInformation(res.result))
-                enqueueSnackbar("Đăng nhập thành công!", { variant: "success" });
-                onLoginSuccess();
-            }, (error) => {
-                enqueueSnackbar(error.error[0], { variant: "error" });
-            })
-            setLoading(false)
+            handleGetUserInformation();
         }
     }, [userId])
+
+    const handleGetUserInformation = () => {
+        services.UserManagementAPI.getUserById(userId, (res) => {
+            dispatch(setUserInformation(res.result))
+            enqueueSnackbar("Đăng nhập thành công!", { variant: "success" });
+            onLoginSuccess();
+        }, (error) => {
+            enqueueSnackbar(error.error[0], { variant: "error" });
+        })
+        setLoading(false)
+    }
     const handleSubmit = async () => {
         setLoading(true);
         if (passwordError !== null || emailError !== null) {

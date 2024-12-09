@@ -23,8 +23,6 @@ function UpdateProgressReport({ open, setOpen, report, progressReports, setProgr
     const [openConfirm, setOpenConfirm] = useState(false);
     useEffect(() => {
         if (report && open) {
-            console.log(report);
-            console.log(open);
             handleGetAsessment();
         } else {
             setAssessment([]);
@@ -35,14 +33,12 @@ function UpdateProgressReport({ open, setOpen, report, progressReports, setProgr
 
     const handleGetAsessment = async () => {
         try {
-            console.log("zoday1");
             setLoading(true);
             await services.AssessmentManagementAPI.listAssessment((res) => {
                 const filterAssessment = res.result.questions.filter((a) => {
                     const choosenAss = report.assessmentResults.find((r) => r.questionId === a.id);
                     return !!choosenAss;
                 });
-                console.log(filterAssessment);
                 setAssessment(filterAssessment);
                 const initialAssessment = filterAssessment.map((r, index) => {
                     return {
