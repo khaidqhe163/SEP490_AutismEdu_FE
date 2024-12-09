@@ -22,6 +22,7 @@ function Blog() {
             }, (err) => {
                 console.log(err);
             }, {
+                isPublished: true
             })
         } catch (error) {
             enqueueSnackbar("Lỗi hệ thống", { variant: "error" });
@@ -56,42 +57,48 @@ function Blog() {
                             <ButtonIcon text={"ĐỌC THÊM"} action={() => { nav(PAGES.ROOT + PAGES.BLOG_LIST) }} />
                         </Grid>
                     </Grid>
+                    {
+                        blogs.length === 0 && <Typography>Chưa có bài viết nào.</Typography>
+                    }
                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} textAlign={"left"}>
-                        <Grid item xs={12} md={6}>
-                            <Card sx={{
-                                height: "100%",
-                                paddingBottom: '20px',
-                                transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                                '&:hover': {
-                                    transform: "scale(1.02) translateY(-10px)",
-                                    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-                                    cursor: "pointer"
-                                }
-                            }}>
-                                <CardMedia
-                                    component="img"
-                                    sx={{ height: "60%" }}
-                                    image={blogs[0] ? blogs[0].urlImageDisplay : "/"}
-                                    alt="Live from space album cover"
-                                />
-                                <Box sx={{ display: 'flex', flexDirection: 'column', height: "40%" }}>
-                                    <CardContent sx={{ flex: '1 0 auto' }}>
-                                        <Typography component="div" variant="h4">
-                                            {blogs[0] ? blogs[0].title : ""}
-                                        </Typography>
-                                        <Typography component="div">
-                                            {blogs[0] ? blogs[0].description : ""}
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />}
-                                            onClick={() => { if (blogs[0]) { nav(PAGES.ROOT + PAGES.BLOG_LIST + `/${blogs[0].id}`) } }}
-                                        >Tìm hiểu thêm </Button>
-                                    </CardActions>
-                                </Box>
-
-                            </Card>
-                        </Grid>
+                        {
+                            blogs.length !== 0 && (
+                                <Grid item xs={12} md={6}>
+                                    <Card sx={{
+                                        height: "100%",
+                                        paddingBottom: '20px',
+                                        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                                        '&:hover': {
+                                            transform: "scale(1.02) translateY(-10px)",
+                                            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+                                            cursor: "pointer"
+                                        }
+                                    }}>
+                                        <CardMedia
+                                            component="img"
+                                            sx={{ height: "60%" }}
+                                            image={blogs[0] ? blogs[0].urlImageDisplay : "/"}
+                                            alt="Live from space album cover"
+                                        />
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', height: "40%" }}>
+                                            <CardContent sx={{ flex: '1 0 auto' }}>
+                                                <Typography component="div" variant="h4">
+                                                    {blogs[0] ? blogs[0].title : ""}
+                                                </Typography>
+                                                <Typography component="div">
+                                                    {blogs[0] ? blogs[0].description : ""}
+                                                </Typography>
+                                            </CardContent>
+                                            <CardActions>
+                                                <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />}
+                                                    onClick={() => { if (blogs[0]) { nav(PAGES.ROOT + PAGES.BLOG_LIST + `/${blogs[0].id}`) } }}
+                                                >Tìm hiểu thêm </Button>
+                                            </CardActions>
+                                        </Box>
+                                    </Card>
+                                </Grid>
+                            )
+                        }
                         <Grid item xs={12} md={6}>
                             <Grid container m={0} spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} textAlign={"left"} sx={{ height: "100%" }}>
                                 {

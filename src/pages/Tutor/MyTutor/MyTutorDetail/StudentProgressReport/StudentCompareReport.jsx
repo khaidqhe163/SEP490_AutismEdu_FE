@@ -1,4 +1,4 @@
-import { Box, Grid, Modal, Stack, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Divider, Grid, Modal, Stack, Tab, Tabs, Typography } from '@mui/material'
 import React from 'react'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
@@ -13,6 +13,7 @@ function StudentCompareReport({ open, setOpen, selectedItem, compareItem }) {
         setValue(newValue);
     };
     const handleClose = () => setOpen(false);
+
     const getAssessmentPoint = (question, type) => {
         if (!compareItem || !question || !selectedItem) {
             return "";
@@ -55,6 +56,13 @@ function StudentCompareReport({ open, setOpen, selectedItem, compareItem }) {
             return NOT_CHANGE
         }
     }
+    const formatDate = (date) => {
+        if (!date) {
+            return "";
+        }
+        const d = new Date(date);
+        return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
+    }
     return (
         open && <Modal
             open={open}
@@ -74,8 +82,8 @@ function StudentCompareReport({ open, setOpen, selectedItem, compareItem }) {
             }}>
                 <Typography sx={{ textAlign: "center" }} variant='h5'>So sánh 2 sổ liên lạc</Typography>
                 <Stack direction='row' mt={5}>
-                    <Typography sx={{ width: "50%", textAlign: "center" }}>20/20/2024 - 20/20/2024</Typography>
-                    <Typography sx={{ width: "50%", textAlign: "center" }}>20/20/2024 - 20/20/2024</Typography>
+                    <Typography sx={{ width: "50%", textAlign: "center" }}>{formatDate(selectedItem.from)} - {formatDate(selectedItem.to)}</Typography>
+                    <Typography sx={{ width: "50%", textAlign: "center" }}>{formatDate(compareItem.from)} - {formatDate(compareItem.to)}</Typography>
                 </Stack>
                 <Box sx={{ width: '100%', mt: 2 }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -87,66 +95,110 @@ function StudentCompareReport({ open, setOpen, selectedItem, compareItem }) {
                         </Tabs>
                     </Box>
                 </Box>
-                <Box px="100px">
-                    {
-                        selectedItem && (selectedItem.assessmentResults.length >= compareItem.assessmentResults.length) && selectedItem.assessmentResults.map((s) => {
-                            return (
-                                <Grid container mt={2} sx={{ borderBottom: "1px solid gray" }} key={s.id}>
-                                    <Grid item xs={3}>
-                                        <Stack direction='row' justifyContent='end'>
-                                            <Typography textAlign='right'>{s.point}</Typography>
-                                        </Stack>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography sx={{ textAlign: "center", px: 2 }}>{s.question}</Typography>
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                        <Stack direction='row' justifyContent='start' gap={5}>
-                                            <Typography textAlign='left'>{getAssessmentPoint(s.question, 1)}</Typography>
-                                            {
-                                                getAssessmentChange(s.question) === DESC &&
-                                                <ArrowDownwardIcon sx={{ color: "red" }} />
-                                            }
-                                            {
-                                                getAssessmentChange(s.question) === ASC &&
-                                                <ArrowUpwardIcon sx={{ color: "green" }} />
-                                            }
-                                        </Stack>
-                                    </Grid>
-                                </Grid>
-                            )
-                        })
-                    }
-                    {
-                        compareItem && (compareItem.assessmentResults.length > selectedItem.assessmentResults.length) && compareItem.assessmentResults.map((s) => {
-                            return (
-                                <Grid container mt={2} sx={{ borderBottom: "1px solid gray" }} key={s.id}>
-                                    <Grid item xs={3}>
-                                        <Stack direction='row' justifyContent='end'>
-                                            <Typography textAlign='right'>{getAssessmentPoint(s.question, 2)}</Typography>
-                                        </Stack>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography sx={{ textAlign: "center", px: 2 }}>{s.question}</Typography>
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                        <Stack direction='row' justifyContent='start' gap={5}>
-                                            <Typography textAlign='left'>{s.point}</Typography>
-                                            {
-                                                getAssessmentChange(s.question) === DESC &&
-                                                <ArrowDownwardIcon sx={{ color: "red" }} />
-                                            }
-                                            {
-                                                getAssessmentChange(s.question) === ASC &&
-                                                <ArrowUpwardIcon sx={{ color: "green" }} />
-                                            }
-                                        </Stack>
-                                    </Grid>
-                                </Grid>
-                            )
-                        })
-                    }
-                </Box>
+                {
+                    value === "1" && (
+                        <Box px="100px">
+                            {
+                                selectedItem && (selectedItem.assessmentResults.length >= compareItem.assessmentResults.length) && selectedItem.assessmentResults.map((s) => {
+                                    return (
+                                        <Grid container mt={2} sx={{ borderBottom: "1px solid gray" }} key={s.id}>
+                                            <Grid item xs={3}>
+                                                <Stack direction='row' justifyContent='end'>
+                                                    <Typography textAlign='right'>{s.point}</Typography>
+                                                </Stack>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ textAlign: "center", px: 2 }}>{s.question}</Typography>
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                <Stack direction='row' justifyContent='start' gap={5}>
+                                                    <Typography textAlign='left'>{getAssessmentPoint(s.question, 1)}</Typography>
+                                                    {
+                                                        getAssessmentChange(s.question) === DESC &&
+                                                        <ArrowDownwardIcon sx={{ color: "red" }} />
+                                                    }
+                                                    {
+                                                        getAssessmentChange(s.question) === ASC &&
+                                                        <ArrowUpwardIcon sx={{ color: "green" }} />
+                                                    }
+                                                </Stack>
+                                            </Grid>
+                                        </Grid>
+                                    )
+                                })
+                            }
+                            {
+                                compareItem && (compareItem.assessmentResults.length > selectedItem.assessmentResults.length) && compareItem.assessmentResults.map((s) => {
+                                    return (
+                                        <Grid container mt={2} sx={{ borderBottom: "1px solid gray" }} key={s.id}>
+                                            <Grid item xs={3}>
+                                                <Stack direction='row' justifyContent='end'>
+                                                    <Typography textAlign='right'>{getAssessmentPoint(s.question, 2)}</Typography>
+                                                </Stack>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ textAlign: "center", px: 2 }}>{s.question}</Typography>
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                <Stack direction='row' justifyContent='start' gap={5}>
+                                                    <Typography textAlign='left'>{s.point}</Typography>
+                                                    {
+                                                        getAssessmentChange(s.question) === DESC &&
+                                                        <ArrowDownwardIcon sx={{ color: "red" }} />
+                                                    }
+                                                    {
+                                                        getAssessmentChange(s.question) === ASC &&
+                                                        <ArrowUpwardIcon sx={{ color: "green" }} />
+                                                    }
+                                                </Stack>
+                                            </Grid>
+                                        </Grid>
+                                    )
+                                })
+                            }
+                        </Box>
+                    )
+                }
+                {
+                    value === '2' && (
+                        <Stack direction='row' justifyContent="center" gap={3} mt={2}>
+                            <Box width="50%" px={5}>
+                                <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem?.achieved}</Typography>
+                            </Box>
+                            <Divider orientation='vertical' flexItem />
+                            <Box width="50%" px={5}>
+                                <Typography sx={{ whiteSpace: "break-spaces" }}>{compareItem?.achieved}</Typography>
+                            </Box>
+                        </Stack>
+                    )
+                }
+                {
+                    value === '3' && (
+                        <Stack direction='row' justifyContent="center" gap={3} mt={2}>
+                            <Box width="50%" px={5}>
+                                <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem?.failed}</Typography>
+                            </Box>
+                            <Divider orientation='vertical' flexItem />
+                            <Box width="50%" px={5}>
+                                <Typography sx={{ whiteSpace: "break-spaces" }}>{compareItem?.failed}</Typography>
+                            </Box>
+                        </Stack>
+                    )
+                }
+                {
+                    value === '4' && (
+                        <Stack direction='row' justifyContent="center" gap={3} mt={2}>
+                            <Box width="50%" px={5}>
+                                <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem?.noteFromTutor || "Không có ghi chú!"}</Typography>
+                            </Box>
+                            <Divider orientation='vertical' flexItem />
+                            <Box width="50%" px={5}>
+                                <Typography sx={{ whiteSpace: "break-spaces" }}>{compareItem?.noteFromTutor || "Không có ghi chú!"}</Typography>
+                            </Box>
+                        </Stack>
+                    )
+                }
+
             </Box>
         </Modal>
     )

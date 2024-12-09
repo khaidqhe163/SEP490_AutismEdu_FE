@@ -18,6 +18,8 @@ function ChangePassword() {
         const errors = {};
         if (!values.oldPassword) {
             errors.oldPassword = "Bắt buộc"
+        } else if (values.oldPassword.length > 15) {
+            errors.oldPassword = "Mật khẩu quá 15 ký tự"
         }
         if (!values.newPassword) {
             errors.newPassword = 'Bắt buộc';
@@ -25,6 +27,8 @@ function ChangePassword() {
             errors.newPassword = 'Mật khẩu không hợp lệ'
         } else if (values.oldPassword === values.newPassword) {
             errors.newPassword = 'Mật khẩu mới phải khác mật khẩu cũ'
+        } else if (values.newPassword.length > 15) {
+            errors.newPassword = "Mật khẩu quá 15 ký tự"
         }
         if (!values.cfPassword) {
             errors.cfPassword = 'Bắt buộc';

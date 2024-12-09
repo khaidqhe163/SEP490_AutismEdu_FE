@@ -159,7 +159,7 @@ function LoginAdmin() {
                             </FormControl>
                         </Box>
                         <LoadingButton variant='contained' sx={{ width: "100%", marginTop: "20px" }} type='submit'
-                            loading={loading} loadingIndicator="Sending..."
+                            loading={loading} loadingIndicator="Đang chạy..."
                         >
                             Đăng nhập
                         </LoadingButton>

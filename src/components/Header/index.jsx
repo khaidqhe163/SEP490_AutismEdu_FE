@@ -740,7 +740,11 @@ function Header() {
                                                             ":hover": {
                                                                 bgcolor: "white"
                                                             }
-                                                        }} onClick={() => handleReadOne(n.id)}>
+                                                        }} onClick={() => {
+                                                            if (!n.isRead)
+                                                                handleReadOne(n.id)
+                                                        }
+                                                        }>
                                                             <Box sx={{ width: "90%" }}>
                                                                 <Typography>
                                                                     {n.message}

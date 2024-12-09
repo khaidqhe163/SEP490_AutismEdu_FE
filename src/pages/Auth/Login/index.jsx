@@ -9,12 +9,11 @@ function Login() {
   const [emailVerify, setEmailVerify] = useState('');
   const location = useLocation(); 
   const nav = useNavigate();
-  const tutorId = location.state?.tutorId; 
-  console.log('tutorId: ' + tutorId);
+  const tutorId = location.state?.tutorId;
 
   const handleLoginSuccess = () => {
     if (tutorId) {
-      nav(`${PAGES.ROOT}/tutor-profile/${tutorId}`); 
+      nav(`${PAGES.ROOT}/tutor-profile/${tutorId}`);
     } else {
       nav(`${PAGES.ROOT}`);
     }

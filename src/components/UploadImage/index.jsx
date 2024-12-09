@@ -1,7 +1,6 @@
-import { Box, Button, FormHelperText, IconButton, Modal, Typography } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
 import UploadIcon from '@mui/icons-material/Upload';
-import PermMediaIcon from '@mui/icons-material/PermMedia';
+import { Box, Button, FormHelperText, Modal } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import ReactCrop, { centerCrop, convertToPixelCrop, makeAspectCrop } from 'react-image-crop';
 
 function UploadImage({ setImage, aspectRatio, minDimension }) {
@@ -197,7 +196,7 @@ function UploadImage({ setImage, aspectRatio, minDimension }) {
                                     handleClose()
                                 }}
                             >
-                                Crop Image
+                                Cắt hình ảnh
                             </Button>
                             {crop && (
                                 <canvas

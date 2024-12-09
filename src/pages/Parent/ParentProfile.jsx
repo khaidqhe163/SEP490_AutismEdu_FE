@@ -20,8 +20,8 @@ function ParentProfile() {
         const errors = {};
         if (!values.fullName) {
             errors.fullName = 'Bắt buộc';
-        } else if (values.fullName.length > 100) {
-            errors.fullName = 'Tên dưới 100 ký tự';
+        } else if (values.fullName.length > 50) {
+            errors.fullName = 'Tên dưới 50 ký tự';
         } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.fullName)) {
             errors.fullName = "Tên không hợp lệ!"
         }
@@ -42,7 +42,7 @@ function ParentProfile() {
         if (!values.homeNumber) {
             errors.address = 'Bắt buộc';
         } else if (values.homeNumber.length > 100) {
-            errors.homeNumber = 'Phải dưới 100 ký tự'
+            errors.address = 'Phải dưới 100 ký tự'
         }
         return errors;
     }
