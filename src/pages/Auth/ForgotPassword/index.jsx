@@ -85,7 +85,7 @@ function ForgotPassword() {
                                         }
                                     </FormControl>
                                 </Box>
-                                <LoadingButton loading={loading} loadingIndicator="Sending..." variant='contained'
+                                <LoadingButton loading={loading} loadingIndicator="Đang chạy..." variant='contained'
                                     sx={{ width: "100%", marginTop: "20px" }}
                                     onClick={() => {
                                         const isValidEmail = checkValid(email, 1, setEmailError);
@@ -102,7 +102,7 @@ function ForgotPassword() {
                         submited === true && (
                             <>
                                 <Typography mt={"12px"}>The reset link has been sent to email <span style={{ color: "#3795BD" }}>{email}</span></Typography>
-                                <LoadingButton loading={loading} loadingIndicator="Sending..."
+                                <LoadingButton loading={loading} loadingIndicator="Đang chạy..."
                                     onClick={() => {
                                         setLoading(true);
                                     }}>

@@ -42,7 +42,7 @@ function ParentProfile() {
         if (!values.homeNumber) {
             errors.address = 'Bắt buộc';
         } else if (values.homeNumber.length > 100) {
-            errors.homeNumber = 'Phải dưới 100 ký tự'
+            errors.address = 'Phải dưới 100 ký tự'
         }
         return errors;
     }

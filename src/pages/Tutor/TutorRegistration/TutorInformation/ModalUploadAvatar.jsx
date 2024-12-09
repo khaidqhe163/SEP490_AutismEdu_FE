@@ -199,7 +199,7 @@ function ModalUploadAvatar({ setAvatar }) {
                                     handleClose()
                                 }}
                             >
-                                Crop Image
+                                Cắt hình ảnh
                             </Button>
                             {crop && (
                                 <canvas
@@ -210,7 +210,7 @@ function ModalUploadAvatar({ setAvatar }) {
                                         border: "1px solid black",
                                         objectFit: "contain",
                                         width: 150,
-                                        height: 150,
+                                        height: 150
                                     }}
                                 />
                             )}

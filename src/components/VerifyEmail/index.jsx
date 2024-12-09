@@ -1,12 +1,12 @@
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
 import { LoadingButton } from '@mui/lab';
-import { Box, SvgIcon } from '@mui/material';
+import { Box } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import TrelloIcon from '~/assets/trello.svg?react';
 import service from '~/plugins/services';
 function VerifyEmail({ email, setVerify, submitState }) {
     const [loading, setLoading] = useState(false);
@@ -38,18 +38,18 @@ function VerifyEmail({ email, setVerify, submitState }) {
             }}>
                 <CardContent>
                     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1 }}>
-                        <SvgIcon component={TrelloIcon} inheritViewBox sx={{ color: 'blue' }} />
+                        <EscalatorWarningIcon sx={{ color: "#394ef4", fontSize: "40px" }} />
                         <Typography sx={{ fontSize: 20, fontWeight: "bold", color: "text.secondary" }}>
-                            My App
+                            AutismEdu
                         </Typography>
                     </Box>
                     <Typography variant='h5' sx={{ color: "text.secondary", mt: "20px" }}>Xác thực tài khoản! 👋</Typography>
                     <Typography sx={{ mt: "10px" }}>Làm ơn xác thực tài khoản của bạn để có thể đăng nhập vào hệ thống.</Typography>
                     <Box mt="30px">
                         {submited ? (
-                            <Typography>Check your email ({email})</Typography>
+                            <Typography>Kiểm tra email ({email})</Typography>
                         ) : (
-                            <Typography>Send verify link to {email} </Typography>
+                            <Typography>Gửi link xác thực tới {email} </Typography>
                         )}
                     </Box>
                     <LoadingButton variant='contained' sx={{ width: "100%", marginTop: "20px" }} onClick={() => setLoading(true)}
