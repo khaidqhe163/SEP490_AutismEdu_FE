@@ -205,10 +205,10 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
                                             textOverflow: 'ellipsis',
                                             whiteSpace: 'nowrap',
                                             maxWidth: '100%',
-                                            color: 'primary.main', 
-                                            cursor:'pointer',
+                                            color: 'primary.main',
+                                            cursor: 'pointer',
                                             '&:hover': {
-                                                textDecoration: 'underline' 
+                                                textDecoration: 'underline'
                                             }
                                         }}>
                                             {exercise.exerciseName}
@@ -242,13 +242,25 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
             <LoadingComponent open={loading} setOpen={setLoading} />
 
             <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-                <DialogTitle textAlign={'center'}>Nội dung bài tập</DialogTitle>
+                <DialogTitle variant='h5' textAlign={'center'}>Nội dung bài tập</DialogTitle>
                 <Divider />
                 <DialogContent>
-                    <Box width={'100%'} dangerouslySetInnerHTML={{ __html: selectedContent }} />
+                    <Box
+                        width={'100%'}
+                        maxHeight={'400px'} // Đặt chiều cao tối đa
+                        overflowY={'auto'} // Kích hoạt thanh cuộn dọc
+                        overflowX={'hidden'} // Ẩn thanh cuộn ngang
+                        sx={{
+                            padding: 2, // (Tùy chọn) Thêm khoảng cách bên trong
+                            border: '1px solid #ccc', // (Tùy chọn) Viền để phân tách nội dung
+                            borderRadius: '4px', // (Tùy chọn) Bo góc khối nội dung
+                            wordBreak: 'break-word', // Ngắt dòng khi từ quá dài
+                            overflowWrap: 'break-word', // (Dự phòng) Ngắt dòng khi câu quá dài
+                        }}
+                        dangerouslySetInnerHTML={{ __html: selectedContent }}
+                    />
                 </DialogContent>
                 <Divider />
-
                 <DialogActions>
                     <Button onClick={handleCloseDialog} variant='contained' color="primary">Đóng</Button>
                 </DialogActions>

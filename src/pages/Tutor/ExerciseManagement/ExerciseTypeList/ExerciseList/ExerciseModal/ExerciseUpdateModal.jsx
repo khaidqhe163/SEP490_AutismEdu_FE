@@ -5,9 +5,10 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-
+import ImageResize from 'quill-image-resize-module-react';
+Quill.register('modules/imageResize', ImageResize);
 function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCloseEditDialog, selectedExercise, setSelectedExercise, exerciseTypeName, selectedExerciseType }) {
     const [loading, setLoading] = useState(false);
     console.log(selectedExercise);
@@ -36,12 +37,23 @@ function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCl
 
     const validationSchema = Yup.object({
         exerciseName: Yup.string()
+            .trim('Không được để trống hoặc chứa toàn khoảng trắng')
+            .strict()
             .required("Tên bài tập là bắt buộc")
-            .min(3, "Tên bài tập phải có ít nhất 3 ký tự"),
+            .min(3, "Tên bài tập phải có ít nhất 3 ký tự")
+            .max(150, "Không được vượt quá 150 ký tự"),
         description: Yup.string()
             .required("Nội dung là bắt buộc")
             .test(
-                'is-not-empty',
+                'max-length',
+                'Không được vượt quá 1000 ký tự',
+                (value) => {
+                    const strippedContent = (value || '').replace(/<(.|\n)*?>/g, '').trim();
+                    return strippedContent.length <= 1000;
+                }
+            )
+            .test(
+                'min-length',
                 'Nội dung phải có ít nhất 5 ký tự',
                 (value) => {
                     const strippedContent = (value || '').replace(/<(.|\n)*?>/g, '').trim();
@@ -61,7 +73,7 @@ function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCl
             try {
                 setLoading(true);
                 const dataUpdate = {
-                    exerciseName: values.exerciseName,
+                    exerciseName: values?.exerciseName?.trim(),
                     description: values.description,
                     exerciseTypeId: selectedExerciseType.id,
                     originalId: selectedExercise?.original ? selectedExercise.original?.id : selectedExercise?.id
@@ -88,9 +100,9 @@ function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCl
         <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
             <DialogTitle variant='h5' textAlign={'center'}>Chỉnh sửa bài tập</DialogTitle>
             <Divider />
-            <DialogContent>
+            <DialogContent sx={{ height: '520px' }}>
                 <form onSubmit={formik.handleSubmit}>
-                    <Grid container spacing={3}>
+                    <Grid container spacing={2}>
                         <Grid item xs={4}>
                             <Typography variant="body1" fontWeight={600} textAlign={'right'}>Tên loại bài tập:</Typography>
                         </Grid>
@@ -119,16 +131,27 @@ function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCl
                         <Grid item xs={8} sx={{ height: '350px' }}>
                             <ReactQuill
                                 theme="snow"
-                                modules={{ toolbar: toolbarOptions }}
+                                modules={{
+                                    toolbar: toolbarOptions,
+                                    clipboard: {
+                                        matchVisual: false
+                                    },
+                                    imageResize: {
+                                        parchment: Quill.import('parchment'),
+                                        modules: ['Resize', 'DisplaySize']
+                                    }
+                                }}
                                 value={formik.values.description}
                                 onChange={(value) => formik.setFieldValue('description', value)}
                                 onBlur={() => formik.setFieldTouched('description', true)}
                             />
-                            {formik.touched.description && formik.errors.description && (
+                            {formik.touched.description && formik.errors.description ? (
                                 <Typography color="error" variant="body2" sx={{ mt: 1 }}>
                                     {formik.errors.description}
                                 </Typography>
-                            )}
+                            ) : <Typography variant="body2" sx={{ mt: 1 }}>
+                                {formik.values.description.replace(/<(.|\n)*?>/g, '').trim().length} / 1000
+                            </Typography>}
                         </Grid>
                     </Grid>
                 </form>

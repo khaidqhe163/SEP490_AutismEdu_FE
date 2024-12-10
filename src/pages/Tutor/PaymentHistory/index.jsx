@@ -180,7 +180,7 @@ const PaymentHistory = () => {
                                     </TableCell>
                                     <TableCell>
                                         {item?.paymentDate
-                                            ? format(new Date(item?.paymentDate), 'HH:mm dd-MM-yyyy')
+                                            ? format(new Date(item?.paymentDate), 'HH:mm dd/MM/yyyy')
                                             : 'N/A'}
                                     </TableCell>
                                     <TableCell>{item?.bankTransactionId || 'Không có'}</TableCell>

@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, DialogActions, IconButton, Menu, MenuItem, Pagination, Rating, Stack, TextField, Typography } from '@mui/material'
+import { Avatar, Box, Button, DialogActions, FormHelperText, IconButton, Menu, MenuItem, Pagination, Rating, Stack, TextField, Typography } from '@mui/material'
 import React, { memo, useEffect, useState } from 'react'
 import StarIcon from '@mui/icons-material/Star';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
@@ -16,7 +16,11 @@ import ReportIcon from '@mui/icons-material/Report';
 import ReportModal from './ReportReview';
 function TutorRating({ tutorId, userInfo }) {
     console.log('re-render rating');
-    
+    const [ratingData, setRatingData] = useState({
+        rateScore: 0,
+        description: '',
+        tutorId: tutorId
+    });
     const [idDelete, setIdDelete] = useState(-1);
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -34,14 +38,39 @@ function TutorRating({ tutorId, userInfo }) {
         pageSize: 10,
         total: 10,
     });
-    const [ratingData, setRatingData] = useState({
-        rateScore: 0,
-        description: '',
-        tutorId: tutorId
-    });
+
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [isSaveDisabled, setIsSaveDisabled] = useState(true);
+
+    const [isDisabled, setIsDisabled] = useState(true);
+    const [errors, setErrors] = useState({});
+
+    const validateForm = () => {
+        const {
+            description
+        } = ratingData;
+
+        const newErrors = {};
+
+        if (isEditing) {
+            if (tempContent.trim().length > 500) {
+                newErrors.tempContent = 'Không được vượt quá 500 ký tự';
+            }
+        } else {
+            if (description.trim().length > 500) {
+                newErrors.description = 'Không được vượt quá 500 ký tự';
+            }
+        }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    useEffect(() => {
+        if (ratingData.description || tempContent) {
+            setIsDisabled(!validateForm());
+        }
+    }, [ratingData.description, tempContent]);
 
     useEffect(() => {
         handleGetDataReviewStats();
@@ -68,7 +97,7 @@ function TutorRating({ tutorId, userInfo }) {
     const handleChangeRatingData = (e) => {
         const { name, value } = e.target;
         setRatingData((prev) => ({ ...prev, [name]: value }));
-    }
+    };
 
     const handleOpenMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -145,7 +174,9 @@ function TutorRating({ tutorId, userInfo }) {
     const handleSubmitRating = async () => {
         try {
             setLoading(true);
-            await services.ReviewManagementAPI.createReview(ratingData, async (res) => {
+            await services.ReviewManagementAPI.createReview({
+                ...ratingData, description: ratingData?.description?.trim()
+            }, async (res) => {
                 if (res?.result) {
                     const addData = [res.result, ...dataReviewStats.reviews];
                     setDataReviewStats((prev) => ({ ...prev, reviews: addData }));
@@ -154,12 +185,14 @@ function TutorRating({ tutorId, userInfo }) {
                     await handleGetDataReviewStats();
                 }
             }, (error) => {
+                enqueueSnackbar(error.error[0], { variant: 'error' });
                 console.log(error);
             });
         } catch (error) {
             console.log(error);
 
         } finally {
+            setIsDisabled(true);
             setLoading(false);
         }
     };
@@ -168,7 +201,7 @@ function TutorRating({ tutorId, userInfo }) {
         try {
             const updateData = {
                 rateScore: tempRating,
-                description: tempContent
+                description: tempContent.trim()
             };
             setLoading(true);
             await services.ReviewManagementAPI.updateReview(selectedReview?.id, updateData, async (res) => {
@@ -186,6 +219,7 @@ function TutorRating({ tutorId, userInfo }) {
         } catch (error) {
             console.log(error);
         } finally {
+            setIsDisabled(true);
             setSelectedReview(null);
             setIsEditing(false);
             setLoading(false);
@@ -207,6 +241,9 @@ function TutorRating({ tutorId, userInfo }) {
 
     dayjs.extend(relativeTime);
     dayjs.locale('vi');
+
+    console.log(dataReviewStats?.reviews);
+    
 
     return (
         dataReviewStats && (
@@ -294,140 +331,150 @@ function TutorRating({ tutorId, userInfo }) {
                 </Stack>
                 <Typography mt={3} variant='h4'>Đánh giá</Typography>
                 {userInfo && !isRevewExist && isLearned && <Stack direction='row' mt={3} sx={{ alignItems: "start" }}>
-                <Box sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    width: "30%"
-                }}>
-                    <Avatar alt="Remy Sharp"
-                        sx={{
-                            width: "50px",
-                            height: "50px"
-                        }}
-                        src={userInfo?.imageUrl} />
-                    <Typography variant='h6'>{userInfo?.fullName}</Typography>
-                </Box>
-                <Stack direction='column' sx={{
-                    width: "70%",
-                    gap: 3
-                }}>
-                    <Rating
-                        name="rateScore"
-                        value={ratingData.rateScore}
-                        onChange={handleChangeRatingData}
-                    />
-                    <TextField
-                        id="outlined-multiline-static"
-                        label="Đánh giá"
-                        name='description'
-                        multiline
-                        rows={4}
-                        sx={{ width: "100%" }}
-                        value={ratingData.description || ''}
-                        onChange={handleChangeRatingData}
-                    />
-                    <Button variant='contained' disabled={!ratingData.rateScore || !ratingData.description} onClick={handleSubmitRating}>Đăng</Button>
-                </Stack>
-            </Stack>}
-
-{
-    (dataReviewStats && dataReviewStats?.reviews?.length !== 0) ? dataReviewStats?.reviews?.map((r, index) => (
-        <Box bgcolor="#e4e9fd" p={2} sx={{ borderRadius: "5px", mt: 3 }} key={index}>
-            <Stack direction='row' mb={2} sx={{ justifyContent: "space-between", alignItems: 'center' }}>
-                <Stack direction='row' width={'80%'} sx={{ alignItems: "center", gap: 2 }}>
-                    <Avatar src={r?.parent?.imageUrl || ''} alt="Remy Sharp" sx={{ width: "50px", height: "50px" }} />
-                    <Box>
-                        <Typography variant='h6'>{r?.parent?.fullName || 'Khai XYZ'}</Typography>
-                        <Stack direction="row" alignItems="center">
-                            {isEditing && (r?.id === selectedReview?.id) ? (
-                                <Rating
-                                    value={tempRating}
-                                    onChange={(e, newRating) => setTempRating(newRating)}
-                                />
-                            ) : (
-                                <Rating value={r?.rateScore} readOnly />
-                            )}
-                        </Stack>
+                    <Box sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        width: "30%"
+                    }}>
+                        <Avatar alt="Remy Sharp"
+                            sx={{
+                                width: "50px",
+                                height: "50px"
+                            }}
+                            src={userInfo?.imageUrl} />
+                        <Typography variant='h6'>{userInfo?.fullName}</Typography>
                     </Box>
-                </Stack>
-                <Typography width={'15%'} textAlign={'right'}><small>{dayjs(new Date(r?.createdDate))?.fromNow()}</small></Typography>
+                    <Stack direction='column' sx={{
+                        width: "70%",
+                        gap: 3
+                    }}>
+                        <Rating
+                            name="rateScore"
+                            value={ratingData.rateScore}
+                            onChange={handleChangeRatingData}
+                        />
+                        <Box>
+                            <TextField
+                                id="outlined-multiline-static"
+                                label="Đánh giá"
+                                name='description'
+                                multiline
+                                rows={4}
+                                sx={{ width: "100%" }}
+                                value={ratingData.description || ''}
+                                onChange={handleChangeRatingData}
+                            />
+                            {errors.description ? (
+                                <FormHelperText error>{errors.description}</FormHelperText>
+                            ) : <Typography variant='caption'>{ratingData?.description?.trim()?.length}/500</Typography>}
+                        </Box>
+                        <Button variant='contained' disabled={!ratingData.rateScore || isDisabled} onClick={handleSubmitRating}>Đăng</Button>
+                    </Stack>
+                </Stack>}
 
                 {
-                    userInfo && (
-                        <IconButton onClick={handleOpenMenu} size='medium'>
-                            <MoreHorizIcon />
-                        </IconButton>
-                    )
+                    (dataReviewStats && dataReviewStats?.reviews?.length !== 0) ? dataReviewStats?.reviews?.map((r, index) => (
+                        <Box bgcolor="#e4e9fd" p={2} sx={{ borderRadius: "5px", mt: 3 }} key={index}>
+                            <Stack direction='row' mb={2} sx={{ justifyContent: "space-between", alignItems: 'center' }}>
+                                <Stack direction='row' width={'80%'} sx={{ alignItems: "center", gap: 2 }}>
+                                    <Avatar src={r?.parent?.imageUrl || ''} alt="Remy Sharp" sx={{ width: "50px", height: "50px" }} />
+                                    <Box>
+                                        <Typography variant='h6'>{r?.parent?.fullName || 'Khai XYZ'}</Typography>
+                                        <Stack direction="row" alignItems="center">
+                                            {isEditing && (r?.id === selectedReview?.id) ? (
+                                                <Rating
+                                                    value={tempRating}
+                                                    onChange={(e, newRating) => setTempRating(newRating)}
+                                                />
+                                            ) : (
+                                                <Rating value={r?.rateScore} readOnly />
+                                            )}
+                                        </Stack>
+                                    </Box>
+                                </Stack>
+                                <Typography width={'15%'} textAlign={'right'}><small>{dayjs(new Date(r?.createdDate))?.fromNow()}</small></Typography>
+
+                                {
+                                    userInfo && (
+                                        <IconButton onClick={handleOpenMenu} size='medium'>
+                                            <MoreHorizIcon />
+                                        </IconButton>
+                                    )
+                                }
+                                <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
+                                    {userInfo?.id === r?.parent?.id && (
+                                        <>
+                                            <MenuItem onClick={() => handleEditClick(r)}>
+                                                <EditIcon fontSize="small" color='primary' sx={{ mr: 1 }} />
+                                                Chỉnh sửa
+                                            </MenuItem>
+                                            <MenuItem onClick={() => { handleClickOpen(r?.id); handleCloseMenu(); }}>
+                                                <DeleteIcon fontSize="small" color='error' sx={{ mr: 1 }} />
+                                                Xoá
+                                            </MenuItem>
+                                        </>
+                                    )}
+                                    {
+                                        userInfo && (userInfo?.id !== r?.parent?.id) && (
+                                            <MenuItem onClick={() => { setOpenReportReview(true); setCurrentReport(r); handleCloseMenu(); }}>
+                                                <ReportIcon fontSize="small" color='warning' sx={{ mr: 1 }} />
+                                                Tố cáo
+                                            </MenuItem>
+                                        )
+                                    }
+                                </Menu>
+                            </Stack>
+
+                            {isEditing && (r?.id === selectedReview?.id) ? (
+                                <Box>
+                                    <TextField
+                                        multiline
+                                        fullWidth
+                                        value={tempContent}
+                                        onChange={(e) => setTempContent(e.target.value)}
+                                        sx={{ mt: 1 }}
+                                    />
+                                    {errors.tempContent ?
+                                        <FormHelperText error>{errors.tempContent}</FormHelperText>
+                                        : <Typography variant='caption'>{tempContent?.trim()?.length}/500</Typography>}
+                                </Box>
+                            ) : (
+                                <Typography variant='subtitle1'>{r?.description}</Typography>
+                            )}
+
+                            {(isEditing && (r?.id === selectedReview?.id)) && (
+                                <DialogActions>
+                                    <Button onClick={handleCancle} variant='outlined' color='inherit'>Hủy</Button>
+                                    <Button
+                                        onClick={handleSaveEdit}
+                                        color="primary"
+                                        variant="contained"
+                                        disabled={isSaveDisabled || isDisabled || !tempContent}
+                                    >
+                                        Lưu
+                                    </Button>
+                                </DialogActions>
+                            )}
+
+                        </Box>
+
+                    )) : <Typography my={5} variant='subtitle1' textAlign={'center'}>Hiện tại chưa có đánh giá nào về gia sư.</Typography>
                 }
-                <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
-                    {userInfo?.id === r?.parent?.id && (
-                        <>
-                            <MenuItem onClick={() => handleEditClick(r)}>
-                                <EditIcon fontSize="small" color='primary' sx={{ mr: 1 }} />
-                                Chỉnh sửa
-                            </MenuItem>
-                            <MenuItem onClick={() => { handleClickOpen(r?.id); handleCloseMenu(); }}>
-                                <DeleteIcon fontSize="small" color='error' sx={{ mr: 1 }} />
-                                Xoá
-                            </MenuItem>
-                        </>
-                    )}
-                    {
-                        userInfo && (userInfo?.id !== r?.parent?.id) && (
-                            <MenuItem onClick={() => { setOpenReportReview(true); setCurrentReport(r); handleCloseMenu(); }}>
-                                <ReportIcon fontSize="small" color='warning' sx={{ mr: 1 }} />
-                                Tố cáo
-                            </MenuItem>
-                        )
-                    }
-                </Menu>
-            </Stack>
 
-            {isEditing && (r?.id === selectedReview?.id) ? (
-                <TextField
-                    multiline
-                    fullWidth
-                    value={tempContent}
-                    onChange={(e) => setTempContent(e.target.value)}
-                    sx={{ mt: 1 }}
-                />
-            ) : (
-                <Typography variant='subtitle1'>{r?.description}</Typography>
-            )}
+                {
+                    (dataReviewStats && dataReviewStats?.reviews?.length !== 0) &&
+                    <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
+                        <Pagination
+                            count={totalPages}
+                            page={pagination.pageNumber}
+                            onChange={handlePageChange}
+                            color="primary"
+                        />
+                    </Stack>
+                }
 
-            {(isEditing && (r?.id === selectedReview?.id)) && (
-                <DialogActions>
-                    <Button onClick={handleCancle}>Hủy</Button>
-                    <Button
-                        onClick={handleSaveEdit}
-                        color="primary"
-                        variant="contained"
-                        disabled={isSaveDisabled}
-                    >
-                        Lưu
-                    </Button>
-                </DialogActions>
-            )}
-
-        </Box>
-
-    )) : <Typography my={5} variant='subtitle1' textAlign={'center'}>Hiện tại chưa có đánh giá nào về gia sư.</Typography>
-}
-
-{
-    (dataReviewStats && dataReviewStats?.reviews?.length !== 0) &&
-        <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
-            <Pagination
-                count={totalPages}
-                page={pagination.pageNumber}
-                onChange={handlePageChange}
-                color="primary"
-            />
-        </Stack>
-}
-
-{ open && <DeleteConfirmationModal id={idDelete} open={open} handleClose={handleClose} dataReviewStats={dataReviewStats} setDataReviewStats={setDataReviewStats} handleGetDataReviewStats={handleGetDataReviewStats} /> }
+                {open && <DeleteConfirmationModal id={idDelete} open={open} handleClose={handleClose} dataReviewStats={dataReviewStats} setDataReviewStats={setDataReviewStats} handleGetDataReviewStats={handleGetDataReviewStats} />}
 
                 <LoadingComponent open={loading} setOpen={setLoading} />
                 <ReportModal open={openReportReview} setOpen={setOpenReportReview} currentReport={currentReport} />

@@ -39,7 +39,7 @@ const PaymentHistoryDetail = ({ open, onClose, paymentHistory }) => {
                             {
                                 label: 'Thời gian thanh toán',
                                 value: paymentHistory?.paymentDate
-                                    ? format(new Date(paymentHistory.paymentDate), 'HH:mm dd-MM-yyyy')
+                                    ? format(new Date(paymentHistory.paymentDate), 'HH:mm dd/MM/yyyy')
                                     : null,
                             },
                             { label: 'Mã giao dịch ngân hàng', value: paymentHistory.bankTransactionId },

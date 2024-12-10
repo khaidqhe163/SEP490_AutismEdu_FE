@@ -9,15 +9,15 @@ import { enqueueSnackbar } from 'notistack';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-export default function SyllabusAssign({ handleBack, selectedAssign, setListSyllabus }) {
+export default function SyllabusAssign({ handleBack, selectedAssign, setListSyllabus, tutorProfile }) {
     const [loading, setLoading] = useState(false);
     const [exerciseTypes, setExerciseTypes] = useState([]);
     const [selectedList, setSelectedList] = useState([]);
     const [selectedClone, setSelectedClone] = useState([]);
     const [openModal, setOpenModal] = useState(false);
 
-    const [ageFrom, setAgeFrom] = useState(selectedAssign?.ageFrom || '');
-    const [ageEnd, setAgeEnd] = useState(selectedAssign?.ageEnd || '');
+    const [ageFrom, setAgeFrom] = useState(selectedAssign?.ageFrom ?? null);
+    const [ageEnd, setAgeEnd] = useState(selectedAssign?.ageEnd ?? null);
 
     console.log(selectedList);
 
@@ -60,11 +60,14 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
         validationSchema: Yup.object({
             ageFrom: Yup.number()
                 .required('Bắt buộc phải nhập')
-                .min(0, 'Tuổi phải lớn hơn 0'),
+                .min(tutorProfile?.startAge ?? 0, `Tuổi bắt đầu phải lớn hơn bằng ${tutorProfile?.startAge || 0}`)
+                .max(((tutorProfile?.endAge ?? 1) - 1), `Tuổi bắt đầu phải nhỏ hơn bằng ${((tutorProfile?.endAge ?? 1) - 1)}`)
+            ,
             ageEnd: Yup.number()
                 .required('Bắt buộc phải nhập')
                 .positive('Độ tuổi phải là số dương')
-                .moreThan(Yup.ref('ageFrom'), 'Độ tuổi kết thúc phải lớn hơn độ tuổi bắt đầu'),
+                .moreThan(Yup.ref('ageFrom'), 'Độ tuổi kết thúc phải lớn hơn độ tuổi bắt đầu')
+                .max(tutorProfile?.endAge, `Tuổi kết thúc phải nhỏ hơn bằng ${tutorProfile?.endAge ?? 1}`),
             syllabusExercises: Yup.array()
                 .min(1, 'Phải có ít nhất 1 loại bài tập và bài tập'),
         }),
@@ -112,8 +115,8 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
 
     useEffect(() => {
         if (selectedAssign) {
-            setAgeFrom(selectedAssign.ageFrom);
-            setAgeEnd(selectedAssign.ageEnd);
+            setAgeFrom(selectedAssign.ageFrom ?? null);
+            setAgeEnd(selectedAssign.ageEnd ?? null);
         }
     }, [selectedAssign]);
 
@@ -135,10 +138,12 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
                                     type="number"
                                     size="small"
                                     value={formik.values.ageFrom}
-                                    onChange={(e) => {
-                                        formik.handleChange(e);
-                                        setAgeFrom(parseInt(e.target.value));
-                                    }}
+                                    onChange={
+                                        (e) => {
+                                            const value = parseInt(e.target.value);
+                                            setAgeFrom(isNaN(value) ? null : value);
+                                        }
+                                    }
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.ageFrom && Boolean(formik.errors.ageFrom)}
                                     helperText={formik.touched.ageFrom && formik.errors.ageFrom}
@@ -152,10 +157,12 @@ export default function SyllabusAssign({ handleBack, selectedAssign, setListSyll
                                     type="number"
                                     size="small"
                                     value={formik.values.ageEnd}
-                                    onChange={(e) => {
-                                        formik.handleChange(e);
-                                        setAgeEnd(parseInt(e.target.value));
-                                    }}
+                                    onChange={
+                                        (e) => {
+                                            const value = parseInt(e.target.value);
+                                            setAgeEnd(isNaN(value) ? null : value);
+                                        }
+                                    }
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.ageEnd && Boolean(formik.errors.ageEnd)}
                                     helperText={formik.touched.ageEnd && formik.errors.ageEnd}

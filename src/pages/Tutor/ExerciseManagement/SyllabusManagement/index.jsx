@@ -12,8 +12,11 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import { enqueueSnackbar } from 'notistack';
 import LoadingComponent from '~/components/LoadingComponent';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { tutorInfor } from '~/redux/features/tutorSlice';
 
 export default function SyllabusManagement() {
+    const { tutorProfile } = useSelector(tutorInfor);
     const location = useLocation();
     const [openCreation, setOpenCreation] = useState(() => {
         const syllabus = location.state?.syllabus;
@@ -89,12 +92,12 @@ export default function SyllabusManagement() {
     };
 
 
-    if (openCreation) {
-        return (<SyllabusCreation handleBack={() => setOpenCreation(false)} setListSyllabus={setListSyllabus} />);
+    if (openCreation && tutorProfile) {
+        return (<SyllabusCreation handleBack={() => setOpenCreation(false)} setListSyllabus={setListSyllabus} tutorProfile={tutorProfile} />);
     }
 
-    if (openAssign) {
-        return (<SyllabusAssign handleBack={() => setOpenAssign(false)} selectedAssign={selectedAssign} setListSyllabus={setListSyllabus} />);
+    if (openAssign && tutorProfile) {
+        return (<SyllabusAssign handleBack={() => setOpenAssign(false)} selectedAssign={selectedAssign} setListSyllabus={setListSyllabus} tutorProfile={tutorProfile} />);
     }
 
     return (
