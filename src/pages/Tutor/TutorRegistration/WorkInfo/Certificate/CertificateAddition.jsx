@@ -90,6 +90,26 @@ export default function CertificateAddition({ certificate, setCertificate }) {
             setImages([])
         }
     });
+
+    const getMinDate = () => {
+        const today = new Date();
+        const fifteenYearsAgo = new Date(today);
+        fifteenYearsAgo.setFullYear(today.getFullYear() - 70, 0, 1);
+        const year = fifteenYearsAgo.getFullYear();
+        const month = String(fifteenYearsAgo.getMonth() + 1).padStart(2, '0');
+        const day = String(fifteenYearsAgo.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    const getMaxDate = () => {
+        const today = new Date();
+        const lastYear = new Date(today);
+        lastYear.setFullYear(today.getFullYear() + 70);
+        const year = lastYear.getFullYear();
+        const month = String(lastYear.getMonth() + 1).padStart(2, '0');
+        const day = String(lastYear.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
     return (
         <div>
             <IconButton onClick={handleOpen}><AddCircleOutlineIcon /></IconButton>
@@ -137,6 +157,7 @@ export default function CertificateAddition({ certificate, setCertificate }) {
                                     name='degreeDate'
                                     onChange={formik.handleChange}
                                     inputProps={{
+                                        min: getMinDate(),
                                         max: new Date().toISOString().split('T')[0]
                                     }} />
                                 {
@@ -153,7 +174,8 @@ export default function CertificateAddition({ certificate, setCertificate }) {
                                     name='expriredDate'
                                     disabled={!formik.values.degreeDate}
                                     inputProps={{
-                                        min: formik.values.degreeDate
+                                        min: formik.values.degreeDate,
+                                        max: getMaxDate()
                                     }}
                                     onChange={formik.handleChange} />
                                 {
@@ -168,7 +190,7 @@ export default function CertificateAddition({ certificate, setCertificate }) {
                             <Grid item xs={9}>
                                 <TextField size='small' type='file' inputProps={{
                                     multiple: true,
-                                    accept: "image/png, image/jpeg",
+                                    accept: "image/png, image/jpeg"
                                 }}
                                     onChange={(e) => {
                                         if (e.target.files.length > 5) {

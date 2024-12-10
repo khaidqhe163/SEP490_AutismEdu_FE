@@ -537,37 +537,6 @@ function Header() {
                                                 <Stack direction='row' sx={{ height: "100%" }} gap={1}>
                                                     <Box sx={{ width: "35%" }}>
                                                         <Typography variant='h4'>Đoạn chat</Typography>
-                                                        <FormControl
-                                                            sx={{
-                                                                mt: 4,
-                                                                "& .MuiOutlinedInput-root": {
-                                                                    bgcolor: "#FFFFFF",
-                                                                    borderRadius: "10px",
-                                                                    border: "1px solid #B388FF",
-                                                                    "&:hover": {
-                                                                        borderColor: "#7C4DFF"
-                                                                    },
-                                                                    "&.Mui-focused": {
-                                                                        borderColor: "#6200EA",
-                                                                        boxShadow: "0 0 5px #B388FF"
-                                                                    }
-                                                                },
-                                                                "& .MuiOutlinedInput-input": {
-                                                                    color: "#6200EA"
-                                                                },
-                                                            }}
-                                                            variant="outlined"
-                                                            fullWidth
-                                                            size="small"
-                                                        >
-                                                            <OutlinedInput
-                                                                startAdornment={<InputAdornment position='start'><SearchIcon /></InputAdornment>}
-                                                                inputProps={{
-                                                                    "aria-label": "Tìm kiếm phụ huynh"
-                                                                }}
-                                                                placeholder='Tìm kiếm phụ huynh'
-                                                            />
-                                                        </FormControl>
                                                         <Box sx={{
                                                             overflow: "hidden", height: "80%",
                                                             "&:hover": {
@@ -627,7 +596,6 @@ function Header() {
                                                                 }} />
                                                                 <Typography variant='h5' sx={{}}>{currentChat ? currentChat?.user?.fullName : "Mất kết nối"}</Typography>
                                                             </Stack>
-                                                            <Button sx={{ color: "red" }}>CHẶN</Button>
                                                         </Stack>
                                                         <Divider sx={{ mt: 1 }} />
                                                         <Box style={{
@@ -647,7 +615,7 @@ function Header() {
                                                                                     bgcolor: "#E0D1FF",
                                                                                     p: 2,
                                                                                     borderRadius: "15px",
-                                                                                    maxWidth: "70%",
+                                                                                    maxWidth: "70%"
                                                                                 }}>
                                                                                     <Typography>{m.content}</Typography>
                                                                                 </Box>
@@ -681,6 +649,11 @@ function Header() {
                                                                     value={text}
                                                                     onChange={setText}
                                                                     cleanOnEnter
+                                                                    onKeyDown={(event) => {
+                                                                        if (event.key === "Enter") {
+                                                                            sendMessages();
+                                                                        }
+                                                                    }}
                                                                     placeholder="Type a message"
                                                                 />
                                                             </Box>

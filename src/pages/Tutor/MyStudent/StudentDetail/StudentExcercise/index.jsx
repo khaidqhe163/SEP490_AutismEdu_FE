@@ -36,7 +36,7 @@ function StudentExcercise({ studentProfile }) {
             }, {
                 pageNumber: currentPage,
                 studentProfileId: studentProfile.id,
-                status: "PASSED"
+                status: "ALL"
             })
         } catch (error) {
             console.log(error);

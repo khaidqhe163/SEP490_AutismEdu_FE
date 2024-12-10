@@ -1,4 +1,5 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import CircleIcon from '@mui/icons-material/Circle';
+import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import ImageResize from 'quill-image-resize-module-react';
 import { useEffect, useRef, useState } from 'react';
@@ -6,12 +7,11 @@ import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import '~/assets/css/texteditor.css';
+import LoadingComponent from '~/components/LoadingComponent';
 import UploadImage from '~/components/UploadImage';
 import axios from '~/plugins/axiosConfig';
 import services from '~/plugins/services';
 import PAGES from '~/utils/pages';
-import CircleIcon from '@mui/icons-material/Circle';
-import LoadingComponent from '~/components/LoadingComponent';
 Quill.register('modules/imageResize', ImageResize);
 function BlogUpdate() {
     const { id } = useParams();

@@ -13,7 +13,7 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 800,
+    width: 850,
     maxHeight: "90vh",
     bgcolor: 'background.paper',
     boxShadow: 24,
@@ -108,6 +108,25 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
         }
         setChange(true);
     }, [formik])
+
+    const getMinDate = () => {
+        const currentDate = new Date();
+        const pastDate = new Date();
+        pastDate.setFullYear(currentDate.getFullYear() - 70);
+        return pastDate.toISOString().slice(0, 7);
+    }
+
+    const getMaxDate = () => {
+        const currentDate = new Date();
+        const futureDate = new Date();
+        futureDate.setFullYear(currentDate.getFullYear() + 70);
+        return futureDate.toISOString().slice(0, 7)
+    }
+
+    const getCurrentDate = () => {
+        const currentDate = new Date();
+        return currentDate.toISOString().slice(0, 7)
+    }
     return (
         <div>
             <ListItemButton key={index} >
@@ -162,7 +181,11 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
                                     <Typography>Từ</Typography>
                                     <TextField size='small' type='month' value={formik.values.startDate}
                                         name='startDate'
-                                        onChange={formik.handleChange} />
+                                        onChange={formik.handleChange}
+                                        inputProps={{
+                                            min: getMinDate(),
+                                            max: getCurrentDate()
+                                        }} />
                                     {
                                         formik.errors.startDate && (
                                             <FormHelperText error>
@@ -179,7 +202,8 @@ export default function CareerDetail({ career, setCareer, index, currentItem }) 
                                         onChange={formik.handleChange}
                                         disabled={formik.values.startDate === ""}
                                         inputProps={{
-                                            min: formik.values.startDate
+                                            min: formik.values.startDate,
+                                            max: getMaxDate()
                                         }}
                                     />
                                     {

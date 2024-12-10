@@ -12,7 +12,7 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 800,
+    width: 850,
     maxHeight: "90vh",
     bgcolor: 'background.paper',
     boxShadow: 24,
@@ -74,14 +74,25 @@ export default function Career({ career, setCareer }) {
             }
         }
     });
+    const getMinDate = () => {
+        const currentDate = new Date();
+        const pastDate = new Date();
+        pastDate.setFullYear(currentDate.getFullYear() - 70);
+        return pastDate.toISOString().slice(0, 7);
+    }
+
+    const getMaxDate = () => {
+        const currentDate = new Date();
+        const futureDate = new Date();
+        futureDate.setFullYear(currentDate.getFullYear() + 70);
+        return futureDate.toISOString().slice(0, 7)
+    }
     return (
         <div>
             <IconButton onClick={handleOpen}><AddCircleOutlineIcon /></IconButton>
             <Modal
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h5" component="h2">
@@ -121,6 +132,7 @@ export default function Career({ career, setCareer }) {
                                     <TextField size='small' type='month' value={formik.values.startDate}
                                         name='startDate'
                                         inputProps={{
+                                            min: getMinDate(),
                                             max: new Date().toISOString().slice(0, 7)
                                         }}
                                         onChange={formik.handleChange} />
@@ -133,14 +145,15 @@ export default function Career({ career, setCareer }) {
                                     }
                                 </Box>
                                 <Box>
-                                    <Typography>Đến</Typography>
+                                    <Typography>Đến <Typography variant='caption'>(Không nhập nếu vẫn đang làm việc)</Typography></Typography>
                                     <TextField size='small' type='month'
                                         value={formik.values.endDate}
                                         name='endDate'
                                         onChange={formik.handleChange}
                                         disabled={formik.values.startDate === ""}
                                         inputProps={{
-                                            min: formik.values.startDate
+                                            min: formik.values.startDate,
+                                            max: getMaxDate()
                                         }}
                                     />
                                     {

@@ -11,13 +11,14 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import AssessmentGuild from '~/components/AssessmentGuild';
 import TablePagging from '~/components/TablePagging';
+import ProgressReportDetail from '~/pages/Tutor/MyStudent/StudentDetail/ProgressReport/ProgressReportDetail';
 import services from '~/plugins/services';
 import StudentCompareReport from './StudentCompareReport';
-import ProgressReportDetail from '~/pages/Tutor/MyStudent/StudentDetail/ProgressReport/ProgressReportDetail';
+import emptyFolder from '~/assets/images/icon/emptyreport.gif'
 const ASC = 1;
 const DESC = 2;
 const NOT_CHANGE = 3;
-function StudentProgressReport({ studentProfile }) {
+function StudentProgressReport() {
     const { id } = useParams();
     const [progressReports, setProgressReports] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -123,24 +124,29 @@ function StudentProgressReport({ studentProfile }) {
         setOpenCompare(true);
         setCompareItem(index);
     }
-    const handleOpenDetail = (e, index) => {
+    const handleOpenDetail = (e) => {
         e.stopPropagation();
         setOpenDetail(true);
     }
 
     return (
         <Box px={5} pt={2} pb={3} sx={{ width: "80%", margin: "auto" }}>
-            <Stack direction='row' justifyContent="space-between">
-                <Typography variant='h4'>Tình trạng mới nhất</Typography>
-            </Stack>
             {
                 !currentReport && (
-                    <Typography>Học sinh này chưa có đánh giá nào</Typography>
+                    <Stack direction="row" justifyContent="center" mt="100px">
+                        <Box sx={{ textAlign: "center" }}>
+                            <img src={emptyFolder} style={{ height: "200px" }} />
+                            <Typography>Học sinh này chưa có đánh giá nào</Typography>
+                        </Box>
+                    </Stack>
                 )
             }
             {
                 currentReport && (
                     <>
+                        <Stack direction='row' justifyContent="space-between">
+                            <Typography variant='h4'>Tình trạng mới nhất</Typography>
+                        </Stack>
                         <Typography mt={2}>Thời gian: {formatDate(currentReport?.from)} - {formatDate(currentReport?.to)}</Typography>
                         <Stack direction="row" gap={2}>
                             <Card sx={{ minWidth: "33%" }}>
@@ -207,9 +213,9 @@ function StudentProgressReport({ studentProfile }) {
                                                             boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)"
                                                         }
                                                     }}>
-                                                        <Typography width="65%">{a.question}</Typography>
+                                                        <Typography width="60%" sx={{ fontSize: "13px" }}>{a.question}</Typography>
                                                         <Divider orientation='vertical' sx={{ height: "100%" }} />
-                                                        <Typography>{a.point} điểm</Typography>
+                                                        <Typography sx={{ fontSize: "13px" }}>{a.point} điểm</Typography>
                                                         {
                                                             getAssessmentChange(a.question) === DESC &&
                                                             <ArrowDownwardIcon sx={{ color: "red" }} />

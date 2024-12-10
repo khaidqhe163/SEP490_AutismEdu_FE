@@ -46,10 +46,6 @@ export default function CertificateDetail({ certificate, setCertificate, index, 
                 expriredDate: currentItem.expirationDate ? currentItem.expirationDate : ""
             }
         })
-        // formik.setFieldValue("degreeName", currentItem.certificateName);
-        // formik.setFieldValue("placeOfCertificate", currentItem.issuingInstitution);
-        // formik.setFieldValue("degreeDate", currentItem.issuingDate);
-        // formik.setFieldValue("expriredDate", currentItem.expirationDate);
         setImages(Array.from(currentItem.medias))
     }, [currentItem])
     const validate = values => {
@@ -111,6 +107,25 @@ export default function CertificateDetail({ certificate, setCertificate, index, 
         }
     });
 
+    const getMinDate = () => {
+        const today = new Date();
+        const fifteenYearsAgo = new Date(today);
+        fifteenYearsAgo.setFullYear(today.getFullYear() - 70, 0, 1);
+        const year = fifteenYearsAgo.getFullYear();
+        const month = String(fifteenYearsAgo.getMonth() + 1).padStart(2, '0');
+        const day = String(fifteenYearsAgo.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    const getMaxDate = () => {
+        const today = new Date();
+        const lastYear = new Date(today);
+        lastYear.setFullYear(today.getFullYear() + 70);
+        const year = lastYear.getFullYear();
+        const month = String(lastYear.getMonth() + 1).padStart(2, '0');
+        const day = String(lastYear.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
     return (
         <div>
             <ListItemButton >
@@ -166,6 +181,7 @@ export default function CertificateDetail({ certificate, setCertificate, index, 
                                     name='degreeDate'
                                     onChange={formik.handleChange}
                                     inputProps={{
+                                        min: getMinDate(),
                                         max: new Date().toISOString().split('T')[0]
                                     }} />
                                 {
@@ -182,7 +198,8 @@ export default function CertificateDetail({ certificate, setCertificate, index, 
                                     name='expriredDate'
                                     onChange={formik.handleChange}
                                     inputProps={{
-                                        min: formik.values.degreeDate
+                                        min: formik.values.degreeDate,
+                                        max: getMaxDate()
                                     }} />
                                 {
                                     formik.errors.expirationDate && (

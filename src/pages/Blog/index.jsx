@@ -9,6 +9,7 @@ import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 import LoadingComponent from '~/components/LoadingComponent';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import emptyBlog from '~/assets/images/icon/emptyblog.png'
 function Blog() {
     const nav = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -85,14 +86,19 @@ function Blog() {
                 height: "500px"
             }}>
                 <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 5 }}>
-                    <Link underline="hover" color="inherit" href="/">
+                    <Link underline="hover" color="inherit" to={PAGES.ROOT + PAGES.HOME}>
                         Trang chủ
                     </Link>
                     <Typography sx={{ color: 'text.primary' }}>Danh sách blog</Typography>
                 </Breadcrumbs>
                 <Typography variant='h2' mt={5}>Blog</Typography>
                 {(!blogs || blogs.length === 0) &&
-                    <Typography mt={5} color="black">Không có bài viết nào.</Typography>
+                    <Stack width="100%" alignItems="center" justifyContent="center">
+                        <Box sx={{ textAlign: "center" }}>
+                            <img src={emptyBlog} style={{ height: "200px" }} />
+                            <Typography mt={5} color="black">Không có bài viết nào!</Typography>
+                        </Box>
+                    </Stack>
                 }
             </Box>
             <Stack direction='row' sx={{ width: "80%", margin: "auto", position: "relative", top: "-200px" }} justifyContent="space-between">

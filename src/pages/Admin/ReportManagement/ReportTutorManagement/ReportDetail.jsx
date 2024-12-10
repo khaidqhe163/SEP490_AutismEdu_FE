@@ -87,7 +87,7 @@ function ReportDetail() {
                             <span style={{ color: report?.status === 1 ? "green" : report?.status === 2 ? "blue" : "red" }}>{getStatus(report?.status)}</span>
                         </Typography>
                     </Stack>
-                    <Typography sx={{ textAlign: "center", mt: 2 }}>{report?.title}</Typography>
+                    <Typography variant='h6' sx={{ textAlign: "center", mt: 5 }}>{report?.title}</Typography>
                     <Typography sx={{ whiteSpace: "break-spaces", px: 2 }}>{report?.description}</Typography>
                     <Typography mt={2} fontWeight="bold">Hình ảnh bằng chứng</Typography>
                     <Stack direction='row' gap={3} mt={2}>
