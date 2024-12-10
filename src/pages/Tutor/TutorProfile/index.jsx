@@ -239,7 +239,7 @@ function TutorProfile() {
                                 </Stack>
                             </Box>
                             <Box sx={{ width: "20%" }}>
-                                {id && tutor && userInfo && <TutorRequestModal rejectChildIds={tutor?.rejectChildIds} tutorId={id} calculateAge={calculateAge} />}
+                                {id && tutor && <TutorRequestModal rejectChildIds={tutor?.rejectChildIds} tutorId={id} calculateAge={calculateAge} />}
                             </Box>
                         </Box>
 

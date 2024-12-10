@@ -10,15 +10,16 @@ import LoadingComponent from '~/components/LoadingComponent';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { enqueueSnackbar } from 'notistack';
 
-export default function SyllabusCreation({ handleBack, setListSyllabus }) {
+export default function SyllabusCreation({ handleBack, setListSyllabus, tutorProfile }) {
+
     const [loading, setLoading] = useState(false);
     const [exerciseTypes, setExerciseTypes] = useState([]);
     const [selectedList, setSelectedList] = useState([]);
     const [selectedClone, setSelectedClone] = useState([]);
     const [openModal, setOpenModal] = useState(false);
 
-    const [ageFrom, setAgeFrom] = useState('');
-    const [ageEnd, setAgeEnd] = useState('');
+    const [ageFrom, setAgeFrom] = useState(null);
+    const [ageEnd, setAgeEnd] = useState(null);
 
 
     useEffect(() => {
@@ -26,8 +27,8 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
     }, []);
 
     useEffect(() => {
-        formik.setFieldValue('ageFrom', ageFrom);
-        formik.setFieldValue('ageEnd', ageEnd);
+        formik.setFieldValue('ageFrom', ageFrom ?? 0);
+        formik.setFieldValue('ageEnd', ageEnd ?? 0);
         formik.validateForm();
     }, [ageFrom, ageEnd]);
 
@@ -60,11 +61,14 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
         validationSchema: Yup.object({
             ageFrom: Yup.number()
                 .required('Bắt buộc phải nhập')
-                .min(0, 'Tuổi phải lớn hơn 0'),
+                .min(tutorProfile?.startAge ?? 0, `Tuổi bắt đầu phải lớn hơn bằng ${tutorProfile?.startAge || 0}`)
+                .max(((tutorProfile?.endAge ?? 1) - 1), `Tuổi bắt đầu phải nhỏ hơn bằng ${((tutorProfile?.endAge ?? 1) - 1)}`)
+            ,
             ageEnd: Yup.number()
                 .required('Bắt buộc phải nhập')
                 .positive('Độ tuổi phải là số dương')
-                .moreThan(Yup.ref('ageFrom'), 'Độ tuổi kết thúc phải lớn hơn độ tuổi bắt đầu'),
+                .moreThan(Yup.ref('ageFrom'), 'Độ tuổi kết thúc phải lớn hơn độ tuổi bắt đầu')
+                .max(tutorProfile?.endAge, `Tuổi kết thúc phải nhỏ hơn bằng ${tutorProfile?.endAge ?? 1}`),
             syllabusExercises: Yup.array()
                 .min(1, 'Phải có ít nhất 1 loại bài tập và bài tập'),
         }),
@@ -98,11 +102,8 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
     });
 
     const handleDeleteItem = (id) => {
-        console.log(id);
-
         const newList = selectedList.filter((s) => s.exerciseTypeId !== id);
         const newListClone = selectedClone.filter((s) => s.eType.id !== id);
-        console.table(newListClone);
 
         setSelectedList(newList);
         setSelectedClone(newListClone);
@@ -127,8 +128,8 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
                                     value={ageFrom}
                                     onChange={
                                         (e) => {
-                                            formik.handleChange(e);
-                                            setAgeFrom(parseInt(e.target.value));
+                                            const value = parseInt(e.target.value);
+                                            setAgeFrom(isNaN(value) ? null : value);
                                         }
                                     }
                                     onBlur={formik.handleBlur}
@@ -144,8 +145,8 @@ export default function SyllabusCreation({ handleBack, setListSyllabus }) {
                                     value={ageEnd}
                                     onChange={
                                         (e) => {
-                                            formik.handleChange(e);
-                                            setAgeEnd(parseInt(e.target.value));
+                                            const value = parseInt(e.target.value);
+                                            setAgeEnd(isNaN(value) ? null : value);
                                         }
                                     }
                                     onBlur={formik.handleBlur}

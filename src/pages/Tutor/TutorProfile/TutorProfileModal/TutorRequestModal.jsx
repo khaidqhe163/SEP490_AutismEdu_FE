@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Modal, Typography, TextField, MenuItem, Select, FormControl, Grid, Divider } from '@mui/material';
+import { Box, Button, Modal, Typography, TextField, MenuItem, Select, FormControl, Grid, Divider, DialogActions, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
@@ -8,11 +8,12 @@ import { userInfor } from '~/redux/features/userSlice';
 import { useNavigate } from 'react-router-dom';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
-import { format } from 'date-fns';
+import { format, max } from 'date-fns';
 import PAGES from '~/utils/pages';
+import LoadingComponent from '~/components/LoadingComponent';
 
 function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
-
+    const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [childData, setChildData] = useState([]);
     const [selectedChild, setSelectedChild] = useState(null);
@@ -38,7 +39,6 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
             enqueueSnackbar('Bạn cần cập nhật thêm thông tin cá nhân!', { variant: 'warning' });
             nav(PAGES.ROOT + PAGES.PARENT_PROFILE);
         } else {
-            // await handleGetStudyingList();
             await handleGetChildInformation();
         }
     };
@@ -74,10 +74,6 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                         enqueueSnackbar('Bạn cần tạo thêm thông tin trẻ!', { variant: 'warning' });
                         nav('/autismedu/my-childlren', { state: { isNot: true } });
                     } else {
-                        // console.log(rejectChildIds);
-                        // console.log(studyingList);
-                        // console.log(res.result);
-
                         const x = res.result?.sort((a, b) => (b.id - a.id))?.find((r) => !(rejectChildIds?.includes(r?.id) || studyingList.some((s) => (s?.childId === r?.id))));
 
                         if (!x) {
@@ -113,6 +109,7 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
         };
 
         try {
+            setLoading(true);
             await services.TutorRequestAPI.createTutorRequest(requestData, (res) => {
                 setChildData([]);
                 enqueueSnackbar("Gửi yêu cầu tới gia sư thành công!", { variant: "success" });
@@ -126,11 +123,18 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
             });
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
 
     const validationSchema = Yup.object({
-        note: Yup.string().min(10, 'Phải nhập tối thiểu 10 ký tự').required('Vui lòng nhập ghi chú'),
+        note: Yup.string()
+            .trim('Không được để trống hoặc chứa toàn khoảng trắng')
+            .strict()
+            .min(10, 'Phải nhập tối thiểu 10 ký tự')
+            .max(1000, 'Không được nhập quá 1000 ký tự')
+            .required('Vui lòng nhập ghi chú')
     });
 
     const formatDate = (dateString) => {
@@ -146,8 +150,6 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
     const checkChildValidate = (id) => {
         const rejectCase = rejectChildIds?.includes(id);
         const studyingCase = studyingList.some(s => s.childId === id);
-        console.log(rejectCase);
-        console.log(studyingCase);
 
         const resultStatus = rejectCase ? 'Từ chối' : studyingCase ? 'Đang học' : '';
         return resultStatus;
@@ -158,26 +160,18 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
             <Button onClick={handleOpen} startIcon={<ForwardToInboxIcon />} variant='contained' color='primary' size='large'>
                 Gửi yêu cầu
             </Button>
-            <Modal
+            <Dialog
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                maxWidth="md"
+                fullWidth
+                aria-labelledby="dialog-title"
+                aria-describedby="dialog-description"
             >
-                <Box sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 800,
-                    bgcolor: 'background.paper',
-                    boxShadow: 24,
-                    p: 4,
-                    borderRadius: '10px',
-                }}>
-                    <Typography textAlign={'center'} variant='h5' mb={2} id="modal-modal-title">Gửi yêu cầu cho gia sư</Typography>
-                    <Divider />
-                    <Grid container spacing={2} mt={2}>
+                <DialogTitle id="dialog-title" variant='h5' textAlign={'center'}>Gửi yêu cầu cho gia sư</DialogTitle>
+                <Divider />
+                <DialogContent>
+                    <Grid container spacing={2} mt={0}>
                         <Grid item xs={12} container spacing={2} alignItems="center">
                             <Grid item xs={4}>
                                 <Typography variant='subtitle1'>Chọn trẻ của bạn:</Typography>
@@ -276,8 +270,13 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                                                 helperText={touched.note && errors.note}
                                                 fullWidth
                                             />
+                                            <Box textAlign="right">
+                                                <Typography variant="caption" color={values.note.length > 1000 ? 'error' : 'textSecondary'}>
+                                                    {`${values.note.length}/1000`}
+                                                </Typography>
+                                            </Box>
                                             <Box mt={3} display="flex" justifyContent="right">
-                                                <Button variant="contained" color="inherit" onClick={handleClose} sx={{ mr: 2 }}>
+                                                <Button variant="outlined" color="inherit" onClick={handleClose} sx={{ mr: 2 }}>
                                                     Hủy
                                                 </Button>
                                                 <Button variant="contained" color="primary" type="submit">
@@ -291,8 +290,17 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                         </Grid>
 
                     </Grid>
-                </Box>
-            </Modal>
+                </DialogContent>
+                {/* <DialogActions>
+                    <Button onClick={handleClose} variant="outlined" color="inherit">
+                        Hủy
+                    </Button>
+                    <Button onClick={() => handleSaveRequest()} variant="contained" color="primary">
+                        Lưu
+                    </Button>
+                </DialogActions> */}
+                <LoadingComponent open={loading} setOpen={setLoading} />
+            </Dialog>
         </>
     );
 }

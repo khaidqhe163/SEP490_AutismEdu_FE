@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Button, Pagination, FormControl, InputLabel, Select, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Divider } from '@mui/material';
+import { Box, Typography, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Button, Pagination, FormControl, InputLabel, Select, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Divider, Modal } from '@mui/material';
 import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
 
@@ -7,6 +7,8 @@ import LoadingComponent from '~/components/LoadingComponent';
 const TutorRequestHistory = () => {
 
   const [selectedContent, setSelectedContent] = useState('');
+  const [modalDescription, setModalDescription] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [requestList, setRequestList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -50,6 +52,15 @@ const TutorRequestHistory = () => {
     }
   };
 
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleOpenModal = (description) => {
+    setModalDescription(description);
+    setModalOpen(true);
+  };
+
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setSelectedContent('');
@@ -83,7 +94,7 @@ const TutorRequestHistory = () => {
   const totalPages = Math.ceil(pagination.total / pagination.pageSize);
 
   return (
-    <Box sx={{ p: 5, width: "90%", mx: "auto", gap: 2, height: "650px" }}>
+    <Box sx={{ p: 5, width: "90%", mx: "auto", gap: 2, height: requestList.length < 5 ? '700px' : "auto" }}>
       <Typography variant='h4' sx={{ mb: 3 }} textAlign={'center'}>Lịch sử yêu cầu đã gửi</Typography>
       <Stack direction={'row'} justifyContent={'space-between'} alignItems="center" sx={{ width: "100%", mb: 2 }} spacing={3}>
         <Stack direction={'row'} justifyContent={'flex-end'} spacing={2} sx={{ flex: 1 }}>
@@ -124,94 +135,167 @@ const TutorRequestHistory = () => {
       </Stack>
 
       <Box>
-        <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 'bold' }}>STT</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Tên gia sư</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Tên trẻ</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Nội dung</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Ngày tạo</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Loại từ chối</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Lý do từ chối</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {requestList.map((request, index) => (
-                <TableRow key={request.id} hover>
-                  <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 5}</TableCell>
-                  <TableCell>{request.tutor?.fullName}</TableCell>
-                  <TableCell>{request?.childInformation?.name}</TableCell>
-                  <TableCell>{request?.description}</TableCell>
-                  <TableCell>{request.createdDate && new Date(request.createdDate)?.toLocaleDateString()}</TableCell>
-                  <TableCell sx={{ maxWidth: 200 }}>{statusTypeReject(request?.rejectType) || 'N/A'}</TableCell>
-                  <TableCell>
-
-                    {request?.rejectionReason ?
-                      (
-                        <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-                          <Box sx={{
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            maxWidth: 250
-                          }}>
-                            {request?.rejectionReason}
-                          </Box>
-                          {request?.rejectionReason.length > 35 && (
-                            <Button
-                              variant="text"
-                              size="small"
-                              onClick={() => handleOpenDialog(request?.rejectionReason)}
-                              sx={{ textTransform: 'none', color: 'primary.main' }}
-                            >
-                              Xem thêm
-                            </Button>
-                          )}
-                        </Box>
-                      )
-                      : '-'}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outlined"
-                      color={
-                        request.requestStatus === 1 ? 'success' :
-                          request.requestStatus === 0 ? 'error' :
-                            'warning'
-                      }
-                      size="small"
-                      sx={{ borderRadius: 2, textTransform: 'none' }}
-                    >
-                      {statusText(request.requestStatus)}
-                    </Button>
-                  </TableCell>
+        {requestList.length !== 0 ? <>
+          <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 'bold' }}>STT</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Tên gia sư</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Tên trẻ</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Nội dung</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Ngày tạo</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Loại từ chối</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Lý do từ chối</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
-          <Pagination
-            count={totalPages}
-            page={pagination.pageNumber}
-            onChange={handlePageChange}
-            color="primary"
-          />
-        </Stack>
+              </TableHead>
+              <TableBody>
+                {requestList.map((request, index) => (
+                  <TableRow key={request.id} hover>
+                    <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 5}</TableCell>
+                    <TableCell>{request.tutor?.fullName}</TableCell>
+                    <TableCell>{request?.childInformation?.name}</TableCell>
+                    <TableCell sx={{ maxWidth: 290 }}>
+                      {request?.description ?
+                        (
+                          <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
+                            <Box sx={{
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              maxWidth: 250
+                            }}>
+                              {request?.description}
+                            </Box>
+                            {request?.description.length > 35 && (
+                              <Button
+                                variant="text"
+                                size="small"
+                                onClick={() => handleOpenModal(request?.description)}
+                                sx={{ textTransform: 'none', color: 'primary.main' }}
+                              >
+                                Xem thêm
+                              </Button>
+                            )}
+                          </Box>
+                        )
+                        : '-'}
+
+                    </TableCell>
+                    <TableCell>{request.createdDate && new Date(request.createdDate)?.toLocaleDateString()}</TableCell>
+                    <TableCell sx={{ maxWidth: 200 }}>{statusTypeReject(request?.rejectType) || 'N/A'}</TableCell>
+                    <TableCell>
+
+                      {request?.rejectionReason ?
+                        (
+                          <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
+                            <Box sx={{
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              maxWidth: 250
+                            }}>
+                              {request?.rejectionReason}
+                            </Box>
+                            {request?.rejectionReason.length > 35 && (
+                              <Button
+                                variant="text"
+                                size="small"
+                                onClick={() => handleOpenDialog(request?.rejectionReason)}
+                                sx={{ textTransform: 'none', color: 'primary.main' }}
+                              >
+                                Xem thêm
+                              </Button>
+                            )}
+                          </Box>
+                        )
+                        : '-'}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outlined"
+                        color={
+                          request.requestStatus === 1 ? 'success' :
+                            request.requestStatus === 0 ? 'error' :
+                              'warning'
+                        }
+                        size="small"
+                        sx={{ borderRadius: 2, textTransform: 'none' }}
+                      >
+                        {statusText(request.requestStatus)}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
+            <Pagination
+              count={totalPages}
+              page={pagination.pageNumber}
+              onChange={handlePageChange}
+              color="primary"
+            />
+          </Stack></> : 'Hiện tại chưa có lịch sử yêu cầu nào được gửi!'}
       </Box>
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-        <DialogTitle textAlign={'center'}>Lý do từ chối</DialogTitle>
-        <Divider />
-        <DialogContent>
-          <Typography>{selectedContent}</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} variant='outlined' color="primary">Đóng</Button>
-        </DialogActions>
-      </Dialog>
+      <Modal
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="modal-reason-title"
+        aria-describedby="modal-reason-description"
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)'
+            , maxWidth: 600
+            , width: '100%',
+            boxShadow: 24,
+            p: 3,
+            borderRadius: '10px',
+            backgroundColor: 'white'
+          }}
+        >
+          <Typography
+            variant="h5"
+            textAlign="center"
+            gutterBottom
+          >
+            Lý do từ chối
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          <Typography variant="body1">{selectedContent}</Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              mt: 3,
+            }}
+          >
+            <Button onClick={handleCloseDialog} variant="outlined" color="primary">
+              Đóng
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+      <Modal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      >
+        <Box sx={{ backgroundColor: 'white', padding: 4, maxWidth: 600, width: '100%', borderRadius: '10px' }}>
+          <Typography variant="h5" mb={2} textAlign="center">Nội dung</Typography>
+          <Divider sx={{ mb: 2 }} />
+          <Typography variant="body1">{modalDescription}</Typography>
+          <Box mt={2} display={'flex'} justifyContent={'flex-end'}>
+            <Button variant="contained" onClick={handleCloseModal}>Đóng</Button>
+          </Box>
+        </Box>
+      </Modal>
       <LoadingComponent open={loading} setOpen={setLoading} />
     </Box>
   );
