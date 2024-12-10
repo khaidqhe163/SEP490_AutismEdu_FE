@@ -11,6 +11,8 @@ import { enqueueSnackbar } from 'notistack';
 import { format, max } from 'date-fns';
 import PAGES from '~/utils/pages';
 import LoadingComponent from '~/components/LoadingComponent';
+import ParentSetupProfile from './ParentSetupProfile';
+import ChildCreation from './ChildCreation';
 
 function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
     const [loading, setLoading] = useState(false);
@@ -18,18 +20,17 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
     const [childData, setChildData] = useState([]);
     const [selectedChild, setSelectedChild] = useState(null);
     const userInf = useSelector(userInfor);
-
     const [studyingList, setStudyingList] = useState([]);
-
+    const [modalOpen, setModalOpen] = useState(0);
     const nav = useNavigate();
 
     const menuProps = {
         PaperProps: {
             style: {
                 maxHeight: 200,
-                overflowY: 'auto',
-            },
-        },
+                overflowY: 'auto'
+            }
+        }
     };
 
     const handleOpen = async () => {
@@ -37,7 +38,9 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
             nav('/autismedu/login', { state: { tutorId } });
         } else if (!userInf?.address || !userInf?.phoneNumber) {
             enqueueSnackbar('Bạn cần cập nhật thêm thông tin cá nhân!', { variant: 'warning' });
-            nav(PAGES.ROOT + PAGES.PARENT_PROFILE);
+            setOpen(true)
+            // nav(PAGES.ROOT + PAGES.PARENT_PROFILE);
+            setModalOpen(1);
         } else {
             await handleGetChildInformation();
         }
@@ -71,9 +74,12 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                 if (res?.result) {
 
                     if (res.result?.length === 0) {
-                        enqueueSnackbar('Bạn cần tạo thêm thông tin trẻ!', { variant: 'warning' });
-                        nav('/autismedu/my-childlren', { state: { isNot: true } });
+                        if (open === false) {
+                            setOpen(true)
+                        }
+                        setModalOpen(2);
                     } else {
+                        setModalOpen(0);
                         const x = res.result?.sort((a, b) => (b.id - a.id))?.find((r) => !(rejectChildIds?.includes(r?.id) || studyingList.some((s) => (s?.childId === r?.id))));
 
                         if (!x) {
@@ -82,7 +88,6 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                                 ,
                                 { variant: 'warning' }
                             );
-
                             setOpen(false);
                         } else {
                             setSelectedChild(x);
@@ -119,7 +124,6 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
                     enqueueSnackbar(error.error[0], { variant: "error" });
                     handleClose();
                 }
-                console.log(error);
             });
         } catch (error) {
             console.log(error);
@@ -160,147 +164,164 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
             <Button onClick={handleOpen} startIcon={<ForwardToInboxIcon />} variant='contained' color='primary' size='large'>
                 Gửi yêu cầu
             </Button>
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                maxWidth="md"
-                fullWidth
-                aria-labelledby="dialog-title"
-                aria-describedby="dialog-description"
-            >
-                <DialogTitle id="dialog-title" variant='h5' textAlign={'center'}>Gửi yêu cầu cho gia sư</DialogTitle>
-                <Divider />
-                <DialogContent>
-                    <Grid container spacing={2} mt={0}>
-                        <Grid item xs={12} container spacing={2} alignItems="center">
-                            <Grid item xs={4}>
-                                <Typography variant='subtitle1'>Chọn trẻ của bạn:</Typography>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <FormControl fullWidth margin="dense">
-                                    <Select
-                                        MenuProps={menuProps}
-                                        value={selectedChild?.id || ''}
-                                        onChange={(e) => {
-                                            const selected = childData?.find(child => child?.id === e.target.value);
-                                            setSelectedChild(selected);
-                                        }}
-                                    >
-                                        {childData?.map(child => (
-                                            <MenuItem
-                                                key={child?.id}
-                                                value={child?.id}
-                                                disabled={rejectChildIds?.includes(child?.id) || studyingList.some(s => s?.childId === child?.id)}
+            {
+                modalOpen === 0 && (
+                    <Dialog
+                        open={open}
+                        onClose={handleClose}
+                        maxWidth="md"
+                        fullWidth
+                        aria-labelledby="dialog-title"
+                        aria-describedby="dialog-description"
+                    >
+                        <DialogTitle id="dialog-title" variant='h5' textAlign={'center'}>Gửi yêu cầu cho gia sư</DialogTitle>
+                        <Divider />
+                        <DialogContent>
+                            <Grid container spacing={2} mt={0}>
+                                <Grid item xs={12} container spacing={2} alignItems="center">
+                                    <Grid item xs={4}>
+                                        <Typography variant='subtitle1'>Chọn trẻ của bạn:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <FormControl fullWidth margin="dense">
+                                            <Select
+                                                MenuProps={menuProps}
+                                                value={selectedChild?.id || ''}
+                                                onChange={(e) => {
+                                                    const selected = childData?.find(child => child?.id === e.target.value);
+                                                    setSelectedChild(selected);
+                                                }}
                                             >
-                                                {child?.name} {isDisplayChild(child?.id) && <Typography ml={1} component={'span'} fontWeight={'bold'} color={checkChildValidate(child?.id) === 'Đang học' ? 'green' : 'red'}>({checkChildValidate(child?.id)})</Typography>}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12} container spacing={2} alignItems="center">
-                            <Grid item xs={4}>
-                                <Typography variant='subtitle1'>Số điện thoại:</Typography>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <Typography variant='subtitle1'>{userInf?.phoneNumber || '0338581585'}</Typography>
-                            </Grid>
-                        </Grid>
+                                                {childData?.map(child => (
+                                                    <MenuItem
+                                                        key={child?.id}
+                                                        value={child?.id}
+                                                        disabled={rejectChildIds?.includes(child?.id) || studyingList.some(s => s?.childId === child?.id)}
+                                                    >
+                                                        {child?.name} {isDisplayChild(child?.id) && <Typography ml={1} component={'span'} fontWeight={'bold'} color={checkChildValidate(child?.id) === 'Đang học' ? 'green' : 'red'}>({checkChildValidate(child?.id)})</Typography>}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} container spacing={2} alignItems="center">
+                                    <Grid item xs={4}>
+                                        <Typography variant='subtitle1'>Số điện thoại:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Typography variant='subtitle1'>{userInf?.phoneNumber || '0338581585'}</Typography>
+                                    </Grid>
+                                </Grid>
 
-                        <Grid item xs={12} container spacing={2} alignItems="center">
-                            <Grid item xs={4}>
-                                <Typography variant='subtitle1'>Tên trẻ:</Typography>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <Typography variant='subtitle1'>{selectedChild?.name || 'K'}</Typography>
-                            </Grid>
-                        </Grid>
+                                <Grid item xs={12} container spacing={2} alignItems="center">
+                                    <Grid item xs={4}>
+                                        <Typography variant='subtitle1'>Tên trẻ:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Typography variant='subtitle1'>{selectedChild?.name || 'K'}</Typography>
+                                    </Grid>
+                                </Grid>
 
-                        <Grid item xs={12} container spacing={2} alignItems="center">
-                            <Grid item xs={4}>
-                                <Typography variant='subtitle1'>Giới tính:</Typography>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <Typography variant='subtitle1'>{selectedChild?.gender && (selectedChild?.gender === 'Male' ? 'Nam' : 'Nữ')}</Typography>
-                            </Grid>
-                        </Grid>
+                                <Grid item xs={12} container spacing={2} alignItems="center">
+                                    <Grid item xs={4}>
+                                        <Typography variant='subtitle1'>Giới tính:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Typography variant='subtitle1'>{selectedChild?.gender && (selectedChild?.gender === 'Male' ? 'Nam' : 'Nữ')}</Typography>
+                                    </Grid>
+                                </Grid>
 
-                        <Grid item xs={12} container spacing={2} alignItems="center">
-                            <Grid item xs={4}>
-                                <Typography variant='subtitle1'>Ngày sinh:</Typography>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <Typography variant='subtitle1'>{selectedChild?.birthDate && formatDate(selectedChild?.birthDate)}</Typography>
-                            </Grid>
-                        </Grid>
+                                <Grid item xs={12} container spacing={2} alignItems="center">
+                                    <Grid item xs={4}>
+                                        <Typography variant='subtitle1'>Ngày sinh:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Typography variant='subtitle1'>{selectedChild?.birthDate && formatDate(selectedChild?.birthDate)}</Typography>
+                                    </Grid>
+                                </Grid>
 
-                        <Grid item xs={12} container spacing={2} alignItems="center">
-                            <Grid item xs={4}>
-                                <Typography variant='subtitle1'>Tuổi:</Typography>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <Typography variant='subtitle1'>{selectedChild?.birthDate && calculateAge(new Date(selectedChild?.birthDate))}</Typography>
-                            </Grid>
-                        </Grid>
+                                <Grid item xs={12} container spacing={2} alignItems="center">
+                                    <Grid item xs={4}>
+                                        <Typography variant='subtitle1'>Tuổi:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Typography variant='subtitle1'>{selectedChild?.birthDate && calculateAge(new Date(selectedChild?.birthDate))}</Typography>
+                                    </Grid>
+                                </Grid>
 
-                        <Grid item xs={12} container spacing={2}>
-                            <Grid item xs={4}>
-                                <Typography variant='subtitle1'>Tình trạng của trẻ hiện tại:</Typography>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <Formik
-                                    initialValues={{ note: '' }}
-                                    validationSchema={validationSchema}
-                                    onSubmit={(values) => {
-                                        handleSaveRequest(values.note);
-                                    }}
-                                >
-                                    {({ values, errors, touched, handleChange, handleBlur }) => (
-                                        <Form>
-                                            <TextField
-                                                name="note"
-                                                label="Tình trạng của trẻ hiện tại"
-                                                multiline
-                                                rows={6}
-                                                value={values.note}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                error={touched.note && Boolean(errors.note)}
-                                                helperText={touched.note && errors.note}
-                                                fullWidth
-                                            />
-                                            <Box textAlign="right">
-                                                <Typography variant="caption" color={values.note.length > 1000 ? 'error' : 'textSecondary'}>
-                                                    {`${values.note.length}/1000`}
-                                                </Typography>
-                                            </Box>
-                                            <Box mt={3} display="flex" justifyContent="right">
-                                                <Button variant="outlined" color="inherit" onClick={handleClose} sx={{ mr: 2 }}>
-                                                    Hủy
-                                                </Button>
-                                                <Button variant="contained" color="primary" type="submit">
-                                                    Lưu
-                                                </Button>
-                                            </Box>
-                                        </Form>
-                                    )}
-                                </Formik>
-                            </Grid>
-                        </Grid>
+                                <Grid item xs={12} container spacing={2}>
+                                    <Grid item xs={4}>
+                                        <Typography variant='subtitle1'>Tình trạng của trẻ hiện tại:</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Formik
+                                            initialValues={{ note: '' }}
+                                            validationSchema={validationSchema}
+                                            onSubmit={(values) => {
+                                                handleSaveRequest(values.note);
+                                            }}
+                                        >
+                                            {({ values, errors, touched, handleChange, handleBlur }) => (
+                                                <Form>
+                                                    <TextField
+                                                        name="note"
+                                                        label="Tình trạng của trẻ hiện tại"
+                                                        multiline
+                                                        rows={6}
+                                                        value={values.note}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        error={touched.note && Boolean(errors.note)}
+                                                        helperText={touched.note && errors.note}
+                                                        fullWidth
+                                                    />
+                                                    <Box textAlign="right">
+                                                        <Typography variant="caption" color={values.note.length > 1000 ? 'error' : 'textSecondary'}>
+                                                            {`${values.note.length}/1000`}
+                                                        </Typography>
+                                                    </Box>
+                                                    <Box mt={3} display="flex" justifyContent="right">
+                                                        <Button variant="outlined" color="inherit" onClick={handleClose} sx={{ mr: 2 }}>
+                                                            Hủy
+                                                        </Button>
+                                                        <Button variant="contained" color="primary" type="submit">
+                                                            Lưu
+                                                        </Button>
+                                                    </Box>
+                                                </Form>
+                                            )}
+                                        </Formik>
+                                    </Grid>
+                                </Grid>
 
-                    </Grid>
-                </DialogContent>
-                {/* <DialogActions>
-                    <Button onClick={handleClose} variant="outlined" color="inherit">
-                        Hủy
-                    </Button>
-                    <Button onClick={() => handleSaveRequest()} variant="contained" color="primary">
-                        Lưu
-                    </Button>
-                </DialogActions> */}
-                <LoadingComponent open={loading} setOpen={setLoading} />
-            </Dialog>
+                            </Grid>
+                        </DialogContent>
+                        <LoadingComponent open={loading} setOpen={setLoading} />
+                    </Dialog>
+                )
+            }
+            {
+                modalOpen === 1 && (
+                    <ParentSetupProfile handleClose={handleClose} loading={loading}
+                        setLoading={setLoading}
+                        setModalOpen={setModalOpen}
+                        open={open}
+                        handleGetChildInformation={handleGetChildInformation}
+                    />
+                )
+            }
+            {
+                modalOpen === 2 && (
+                    <ChildCreation handleClose={handleClose} loading={loading}
+                        setLoading={setLoading}
+                        setModalOpen={setModalOpen}
+                        open={open}
+                        setChild={setChildData}
+                        handleGetChildInformation={handleGetChildInformation}
+                    />
+                )
+            }
         </>
     );
 }

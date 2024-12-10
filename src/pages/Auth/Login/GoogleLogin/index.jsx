@@ -6,14 +6,11 @@ import { jwtDecode } from 'jwt-decode';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import services from '~/plugins/services';
 import { setUserInformation } from '~/redux/features/userSlice';
-import PAGES from '~/utils/pages';
-function GoogleLogin() {
+function GoogleLogin({ onLoginSuccess }) {
     const [userId, setUserId] = useState(null);
     const dispatch = useDispatch();
-    const nav = useNavigate();
     useEffect(() => {
         if (userId) {
             getUserById();
@@ -24,7 +21,7 @@ function GoogleLogin() {
         services.UserManagementAPI.getUserById(userId, (res) => {
             dispatch(setUserInformation(res.result))
             enqueueSnackbar("Đăng nhập thành công!", { variant: "success" });
-            nav(`${PAGES.ROOT}`)
+            onLoginSuccess();
         }, (error) => {
             enqueueSnackbar(error.error[0], { variant: "error" });
         })

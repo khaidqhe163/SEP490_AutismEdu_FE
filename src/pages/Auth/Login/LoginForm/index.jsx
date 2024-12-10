@@ -177,7 +177,7 @@ function LoginForm({ setVerify, setEmailVerify, onLoginSuccess }) {
 
                     <Typography sx={{ textAlign: "center", mt: "20px" }}>Bạn chưa có tài khoản? <Link to={PAGES.ROOT + PAGES.REGISTER} style={{ color: "#666cff" }}>Tạo tài khoản mới</Link></Typography>
                     <Divider sx={{ mt: "15px" }}>hoặc</Divider>
-                    <GoogleLogin />
+                    <GoogleLogin onLoginSuccess={onLoginSuccess} />
                 </CardContent>
             </Card>
         </Box>
