@@ -2,6 +2,7 @@ import { Box, Divider, Grid, Modal, Stack, Tab, Tabs, Typography } from '@mui/ma
 import React from 'react'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import { format } from 'date-fns';
 
 const ASC = 1;
 const DESC = 2;
@@ -82,8 +83,8 @@ function StudentCompareReport({ open, setOpen, selectedItem, compareItem }) {
             }}>
                 <Typography sx={{ textAlign: "center" }} variant='h5'>So sánh 2 sổ liên lạc</Typography>
                 <Stack direction='row' mt={5}>
-                    <Typography sx={{ width: "50%", textAlign: "center" }}>{formatDate(selectedItem.from)} - {formatDate(selectedItem.to)}</Typography>
-                    <Typography sx={{ width: "50%", textAlign: "center" }}>{formatDate(compareItem.from)} - {formatDate(compareItem.to)}</Typography>
+                    <Typography sx={{ width: "50%", textAlign: "center" }}>{format(selectedItem?.from, 'dd/MM/yyyy')} - {format(selectedItem?.to, 'dd/MM/yyyy')}</Typography>
+                    <Typography sx={{ width: "50%", textAlign: "center" }}>{format(compareItem?.from, 'dd/MM/yyyy')} - {format(compareItem?.to, 'dd/MM/yyyy')}</Typography>
                 </Stack>
                 <Box sx={{ width: '100%', mt: 2 }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

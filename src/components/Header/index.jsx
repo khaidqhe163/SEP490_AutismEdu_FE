@@ -21,6 +21,7 @@ import ButtonComponent from '../ButtonComponent';
 import Logo from '../Logo';
 import NavigationMobile from './NavigationMobile';
 import { jwtDecode } from 'jwt-decode';
+dayjs.locale('vi');
 function Header() {
     const [tab, setTab] = useState("1");
     const [anchorEl, setAnchorEl] = React.useState(null);

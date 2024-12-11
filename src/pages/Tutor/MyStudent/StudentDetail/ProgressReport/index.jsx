@@ -16,6 +16,7 @@ import ProgressReportDetail from './ProgressReportDetail';
 import AssessmentGuild from '~/components/AssessmentGuild';
 import TablePagging from '~/components/TablePagging';
 import UpdateProgressReport from './UpdateProgressReport';
+import { format } from 'date-fns';
 const ASC = 1;
 const DESC = 2;
 const NOT_CHANGE = 3;
@@ -86,7 +87,6 @@ function ProgressReport({ studentProfile }) {
             })
             setLoading(false);
         } catch (error) {
-            console.log(error);
             setLoading(false)
         }
     }
@@ -127,7 +127,7 @@ function ProgressReport({ studentProfile }) {
         setOpenCompare(true);
         setCompareItem(index);
     }
-    const handleOpenDetail = (e, index) => {
+    const handleOpenDetail = (e) => {
         e.stopPropagation();
         setOpenDetail(true);
     }
@@ -163,7 +163,7 @@ function ProgressReport({ studentProfile }) {
             {
                 currentReport && (
                     <>
-                        <Typography mt={2}>Thời gian: {formatDate(currentReport?.from)} - {formatDate(currentReport?.to)}</Typography>
+                        <Typography mt={2}>Thời gian: {format(currentReport?.from, 'dd/MM/yyyy')} - {format(currentReport?.to, 'dd/MM/yyyy')}</Typography>
                         <Stack direction="row" gap={2}>
                             <Card sx={{ minWidth: "33%" }}>
                                 <CardContent>

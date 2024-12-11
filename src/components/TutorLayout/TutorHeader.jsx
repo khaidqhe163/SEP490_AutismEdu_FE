@@ -23,7 +23,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { jwtDecode } from 'jwt-decode';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import Settings from '@mui/icons-material/Settings';
-
+dayjs.locale('vi');
 function TutorHeader({ openMenu, setOpenMenu }) {
     dayjs.extend(relativeTime);
     const nav = useNavigate();
@@ -35,7 +35,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
     const [openNotification, setOpenNotification] = useState(false);
     const { connection, openMessage, setOpenMessage, setCurrentChat, currentChat, conversations, setConversations } = useContext(SignalRContext);
     const [notifications, setNotifications] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
     const notificationRef = useRef(null);
     const notificationIconRef = useRef(null);
     const [isTrial, setTrial] = useState(true);

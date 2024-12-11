@@ -15,6 +15,7 @@ import ProgressReportDetail from '~/pages/Tutor/MyStudent/StudentDetail/Progress
 import services from '~/plugins/services';
 import StudentCompareReport from './StudentCompareReport';
 import emptyFolder from '~/assets/images/icon/emptyreport.gif'
+import { format } from 'date-fns';
 const ASC = 1;
 const DESC = 2;
 const NOT_CHANGE = 3;
@@ -147,7 +148,7 @@ function StudentProgressReport() {
                         <Stack direction='row' justifyContent="space-between">
                             <Typography variant='h4'>Tình trạng mới nhất</Typography>
                         </Stack>
-                        <Typography mt={2}>Thời gian: {formatDate(currentReport?.from)} - {formatDate(currentReport?.to)}</Typography>
+                        <Typography mt={2}>Thời gian: {format(currentReport?.from, 'dd/MM/yyyy')} - {format(currentReport?.to, 'dd/MM/yyyy')}</Typography>
                         <Stack direction="row" gap={2}>
                             <Card sx={{ minWidth: "33%" }}>
                                 <CardContent>

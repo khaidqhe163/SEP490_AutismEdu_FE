@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import ConfirmDialog from '~/components/ConfirmDialog';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
+import { format } from 'date-fns';
 function UpdateProgressReport({ open, setOpen, report, progressReports, setProgressReports, setSelectedItem,
     currentReport, setCurrentReport
 }) {
@@ -204,9 +205,9 @@ function UpdateProgressReport({ open, setOpen, report, progressReports, setProgr
                             </Typography>
                             <Stack direction='row' alignItems='center' gap={2} mt={3}>
                                 <Typography>Từ</Typography>
-                                <Typography>{formatDate(report?.from)}</Typography>
+                                <Typography>{format(report?.from, 'dd/MM/yyyy')}</Typography>
                                 <Typography>Đến</Typography>
-                                <Typography>{formatDate(report?.to)}</Typography>
+                                <Typography>{format(report?.to, 'dd/MM/yyyy')}</Typography>
                             </Stack>
 
                             <Stack direction='row' gap={2} mt={2}>
