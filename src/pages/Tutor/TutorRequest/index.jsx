@@ -448,7 +448,7 @@ function TutorRequest() {
                                                     {request?.description}
                                                 </Typography>
 
-                                                {request?.description.length > 200 && (
+                                                {request?.description?.length > 200 && (
                                                     <Typography
                                                         variant='body2'
                                                         component='span'

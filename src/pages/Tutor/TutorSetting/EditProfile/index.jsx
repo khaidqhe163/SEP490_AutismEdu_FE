@@ -27,7 +27,7 @@ const NumericFormatCustom = (props) => {
                 onChange({
                     target: {
                         name: props.name,
-                        value: values.value, 
+                        value: values.value,
                     },
                 });
             }}
@@ -112,7 +112,7 @@ function EditProfile() {
         if (phoneNumber && !phoneRegex.test(phoneNumber)) {
             newErrors.phoneNumber = 'Số điện thoại không hợp lệ. Phải là 10 hoặc 11 chữ số.';
         }
-        if (aboutMe.length > 5000) {
+        if (aboutMe.replace(/<(.|\n)*?>/g, '').trim().length > 5000) {
             newErrors.aboutMe = 'Không được vượt quá 5000 ký tự';
         }
         if (specificAddress.length > 100) {
@@ -512,7 +512,7 @@ function EditProfile() {
                         onChange={(e) => handleChangeSpecificAddress(e)}
                     />
                     {errors.specificAddress && (
-                        <FormHelperText error sx={{ textAlign: 'right' }}>{errors.specificAddress}</FormHelperText>
+                        <FormHelperText error>{errors.specificAddress}</FormHelperText>
                     )}
                 </Grid>
 
@@ -522,9 +522,11 @@ function EditProfile() {
                         value={tutor?.aboutMe || ''}
                         onChange={handleQuillChange}
                     />
-                    {errors.aboutMe && (
-                        <FormHelperText error sx={{ textAlign: 'right' }}>{errors.aboutMe}</FormHelperText>
-                    )}
+                    {errors.aboutMe ? (
+                        <FormHelperText error >{errors.aboutMe}</FormHelperText>
+                    ) : <Typography variant="body2" sx={{ mt: 1 }}>
+                        {tutor?.aboutMe.replace(/<(.|\n)*?>/g, '').trim().length} / 5000
+                    </Typography>}
                 </Grid>
 
                 <Grid item xs={12} mt={2}>

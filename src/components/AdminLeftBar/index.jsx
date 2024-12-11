@@ -19,6 +19,7 @@ import ReportIcon from '@mui/icons-material/Report';
 import SortIcon from '@mui/icons-material/Sort';
 import TocIcon from '@mui/icons-material/Toc';
 import WorkIcon from '@mui/icons-material/Work';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import { Box, Collapse, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -165,9 +166,9 @@ function AdminLeftBar() {
                                     selected={selectedIndex === 2}
                                     onClick={(event) => handleListItemClick(event, 2)}>
                                     <ListItemIcon>
-                                        <PeopleIcon />
+                                        <AdminPanelSettingsIcon />
                                     </ListItemIcon>
-                                    <ListItemText primary="Claims & Roles" />
+                                    <ListItemText primary="Vai trò" />
                                 </ListItemButton>
                             </Link>
                         )}

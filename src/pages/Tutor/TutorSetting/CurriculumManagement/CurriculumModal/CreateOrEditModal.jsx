@@ -26,7 +26,23 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
             .max(tutorProfile?.endAge, `Độ tuổi kết thúc phải từ ${tutorProfile?.endAge} tuổi trở xuống`),
         description: Yup.string()
             .required('Nội dung chương trình học là bắt buộc')
-            .test('is-not-empty', 'Không được để trống', value => value !== '<p><br></p>' && value !== '<p> </p>'),
+            .test('is-not-empty', 'Không được để trống', value => value !== '<p><br></p>' && value !== '<p> </p>')
+            .test(
+                'max-length',
+                'Không được vượt quá 2000 ký tự',
+                (value) => {
+                    const strippedContent = (value || '').replace(/<(.|\n)*?>/g, '').trim();
+                    return strippedContent.length <= 2000;
+                }
+            )
+            .test(
+                'min-length',
+                'Nội dung phải có ít nhất 5 ký tự',
+                (value) => {
+                    const strippedContent = (value || '').replace(/<(.|\n)*?>/g, '').trim();
+                    return strippedContent.length >= 5;
+                }
+            ),
     });
 
     const style = {
@@ -42,7 +58,7 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
     };
 
     useEffect(() => {
-        const hasChanged = 
+        const hasChanged =
             formData.ageFrom !== initialData?.ageFrom ||
             formData.ageEnd !== initialData?.ageEnd ||
             formData.description !== initialData?.description;
@@ -121,9 +137,11 @@ function CreateOrEditModal({ open, handleClose, handleSubmit, initialData, isEdi
                                             setFormData((prev) => ({ ...prev, description: content }));
                                         }}
                                     />
-                                    {touched.description && errors.description && (
+                                    {touched.description && errors.description ? (
                                         <Typography color="error" variant="body2" mt={1}>{errors.description}</Typography>
-                                    )}
+                                    ) : <Typography variant="body2" sx={{ mt: 1 }}>
+                                        {values.description.replace(/<(.|\n)*?>/g, '').trim().length} / 2000
+                                    </Typography>}
                                 </Grid>
                             </Grid>
                             <Grid container spacing={2} justifyContent="center" mt={8} sx={{ display: 'flex', justifyContent: 'flex-end' }}>

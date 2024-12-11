@@ -183,17 +183,19 @@ function ViewDetailModal({ isOpen, setModalOpen, schedule, setSchedule, tutorNam
             </Modal>
 
             <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-                <DialogTitle textAlign={'center'}>Ghi chú</DialogTitle>
+                <DialogTitle variant='h5' textAlign={'center'}>Ghi chú</DialogTitle>
+                <Divider/>
                 <DialogContent>
                     <Typography>{selectedContent}</Typography>
                 </DialogContent>
+                <Divider/>
                 <DialogActions>
                     <Button onClick={handleCloseDialog} variant='contained' color="primary">Đóng</Button>
                 </DialogActions>
             </Dialog>
 
             {selectedContentE && <Dialog open={openDialogE} onClose={handleCloseDialogE} maxWidth="md" fullWidth>
-                <DialogTitle textAlign={'center'}>Nội dung bài tập</DialogTitle>
+                <DialogTitle variant='h5' textAlign={'center'}>Nội dung bài tập</DialogTitle>
                 <Divider />
                 <DialogContent>
                     <Box mx={'auto'} width={'90%'} dangerouslySetInnerHTML={{ __html: selectedContentE }} />

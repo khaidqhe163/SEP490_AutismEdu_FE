@@ -203,7 +203,7 @@ function ReviewMe() {
                                             {review?.description}
                                         </Box>
                                     </TableCell>
-                                    <TableCell>{format(new Date(review?.createdDate), 'HH:mm dd-MM-yyyy')}</TableCell>
+                                    <TableCell>{format(new Date(review?.createdDate), 'HH:mm dd/MM/yyyy')}</TableCell>
                                     <TableCell>
                                         <IconButton color="primary" onClick={() => handleOpenDetail(review?.description ?? '')}>
                                             <VisibilityIcon />

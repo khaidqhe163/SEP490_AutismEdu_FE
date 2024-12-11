@@ -49,6 +49,10 @@ const ExerciseTypeManagement = () => {
             ...filters,
             [key]: event.target.value,
         });
+        setPagination({
+            ...pagination,
+            pageNumber: 1,
+        });
     };
 
     useEffect(() => {
@@ -115,7 +119,7 @@ const ExerciseTypeManagement = () => {
 
     const handleCreateExerciseType = async (exerciseTypeData) => {
         try {
-            await services.ExerciseManagementAPI.createExerciseType(exerciseTypeData, (res) => {
+            await services.ExerciseManagementAPI.createExerciseType({ ...exerciseTypeData, exerciseTypeName: exerciseTypeData?.exerciseTypeName?.trim() }, (res) => {
                 if (res?.result) {
                     if (pagination?.pageNumber === 1) {
                         const updatedList = [res.result, ...exerciseTypeList.slice(0, -1)];

@@ -9,6 +9,7 @@ import {
     Divider,
     FormControl,
     FormControlLabel,
+    FormHelperText,
     FormLabel,
     Grid,
     Modal,
@@ -23,7 +24,6 @@ import { enqueueSnackbar } from 'notistack';
 import LoadingComponent from '~/components/LoadingComponent';
 
 function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule, setFilterSchedule }) {
-
     console.log(schedule);
 
     const [loading, setLoading] = useState(false);
@@ -35,6 +35,24 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
     const [isValidate, setValidate] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedContent, setSelectedContent] = useState('');
+    const [isDisabled, setIsDisabled] = useState(true);
+    const [errors, setErrors] = useState({});
+
+    const validateForm = () => {
+
+        const newErrors = {};
+
+        if (note.trim().length > 500) {
+            newErrors.note = 'Không được vượt quá 500 ký tự';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    useEffect(() => {
+        setIsDisabled(!validateForm());
+    }, [note]);
 
     useEffect(() => {
         if (schedule) {
@@ -58,9 +76,8 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
                 "id": schedule?.id,
                 "attendanceStatus": attendance,
                 "passingStatus": evaluation,
-                note
+                note: note?.trim()
             };
-            console.log(data);
             await services.ScheduleAPI.updateScheduleChangeStatus(schedule?.id, data, (res) => {
 
                 if (res?.result) {
@@ -118,6 +135,11 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
         setSelectedContent('');
     };
 
+    const handleAttendance = (e) => {
+        setAttendance(Number(e.target.value));
+        setEvaluation(0);
+    };
+
 
     return (
         <>
@@ -162,14 +184,14 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
                             <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Loại bài tập:</Typography>
                         </Grid>
                         <Grid item xs={7}>
-                            <Typography variant='subtitle1'>{schedule?.exerciseType?.exerciseTypeName||'-'}</Typography>
+                            <Typography variant='subtitle1'>{schedule?.exerciseType?.exerciseTypeName || '-'}</Typography>
                         </Grid>
                         <Grid item xs={5}>
                             <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Bài tập:</Typography>
                         </Grid>
                         <Grid item xs={7}>
                             <Typography variant='subtitle1'>
-                                {schedule?.exercise?.exerciseName||'-'}
+                                {schedule?.exercise?.exerciseName || '-'}
                             </Typography>
                         </Grid>
                         <Grid item xs={5}>
@@ -186,7 +208,7 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
                                 <RadioGroup
                                     row
                                     value={attendance}
-                                    onChange={(e) => setAttendance(Number(e.target.value))}
+                                    onChange={(e) => handleAttendance(e)}
                                 >
                                     <FormControlLabel value={1} control={<Radio />} label="Có mặt" />
                                     <FormControlLabel value={0} control={<Radio />} label="Vắng" />
@@ -201,27 +223,31 @@ function Evaluate({ isOpen, setModalOpen, schedule, selectedKey, filterSchedule,
                                     value={evaluation}
                                     onChange={(e) => setEvaluation(Number(e.target.value))}
                                 >
-                                    <FormControlLabel value={1} control={<Radio />} label="Đạt" />
-                                    <FormControlLabel value={0} control={<Radio />} label="Chưa đạt" />
+                                    <FormControlLabel value={1} control={<Radio disabled={attendance === 0} />} label="Đạt" />
+                                    <FormControlLabel value={0} control={<Radio disabled={attendance === 0} />} label="Chưa đạt" />
                                 </RadioGroup>
                             </FormControl>
                         </Box>
                     </Stack>
 
-                    <TextField
-                        label="Ghi chú"
-                        multiline
-                        rows={4}
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
-                        variant="outlined"
-                        fullWidth
-                        sx={{ mb: 3 }}
-                    />
+                    <Stack direction="column" spacing={1} sx={{ mb: 3 }}>
+                        <TextField
+                            label="Ghi chú"
+                            multiline
+                            rows={4}
+                            value={note}
+                            onChange={(e) => setNote(e.target.value)}
+                            variant="outlined"
+                            fullWidth
+                        />
+                        {errors.note ? (
+                            <FormHelperText error>{errors.note}</FormHelperText>
+                        ) : <Typography variant='caption'>{note?.trim()?.length}/500</Typography>}
+                    </Stack>
 
                     <Stack direction="row" spacing={2} justifyContent="flex-end">
                         <Button variant="outlined" onClick={onClose} sx={{ px: 3 }}>Huỷ</Button>
-                        <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ px: 3 }} disabled={isValidate}>Lưu</Button>
+                        <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ px: 3 }} disabled={isValidate||isDisabled}>Lưu</Button>
                     </Stack>
                 </Box>
             </Modal >

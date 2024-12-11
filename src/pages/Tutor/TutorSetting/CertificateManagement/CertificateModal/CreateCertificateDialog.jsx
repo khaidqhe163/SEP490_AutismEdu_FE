@@ -57,6 +57,7 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
                 setCertificateList([res.result, ...certificateList]);
                 enqueueSnackbar('Chứng chỉ của bạn đã được tạo thành công!', { variant: 'success' })
             }, (error) => {
+                enqueueSnackbar(error.error[0], { variant: "error" });
                 console.log(error);
             })
         } catch (error) {
@@ -97,14 +98,11 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
             IssuingInstitution: Yup.string().required('Nơi cấp là bắt buộc'),
             IssuingDate: Yup.date().required('Ngày cấp là bắt buộc'),
             ExpirationDate: Yup.date().nullable(),
-            Medias: Yup.array().min(1, 'Phải có ít nhất một ảnh'),
+            Medias: Yup.array()
+                .min(1, 'Phải có ít nhất một ảnh')
+                .max(5, 'Không được tải lên quá 5 ảnh'),
         }),
         onSubmit: async (values) => {
-            const existCerName = certificateList.find((c) => c?.certificateName === values?.CertificateName);
-                if (existCerName) {
-                    enqueueSnackbar("Chứng chỉ đã tồn tại!", { variant: 'error' });
-                    return;
-                }
             await handleSubmitCertificate();
             onClose();
         },
@@ -131,6 +129,26 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
         setCertificateData({ ...certificateData, Medias: fileArray });
         formik.setFieldValue('Medias', uploadedImages);
     };
+
+    const getMinDate = () => {
+        const today = new Date();
+        const fifteenYearsAgo = new Date(today);
+        fifteenYearsAgo.setFullYear(today.getFullYear() - 70, 0, 1);
+        const year = fifteenYearsAgo.getFullYear();
+        const month = String(fifteenYearsAgo.getMonth() + 1).padStart(2, '0');
+        const day = String(fifteenYearsAgo.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    const getMaxDate = () => {
+        const today = new Date();
+        const lastYear = new Date(today);
+        lastYear.setFullYear(today.getFullYear() + 70);
+        const year = lastYear.getFullYear();
+        const month = String(lastYear.getMonth() + 1).padStart(2, '0');
+        const day = String(lastYear.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -188,6 +206,10 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
                                 helperText={formik.touched.IssuingDate && formik.errors.IssuingDate}
                                 variant="outlined"
                                 size="small"
+                                inputProps={{
+                                    min: getMinDate(),
+                                    max: new Date().toISOString().split('T')[0]
+                                }}
                             />
                         </Grid>
                     </Grid>
@@ -206,6 +228,11 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
                                 helperText={formik.touched.ExpirationDate && formik.errors.ExpirationDate}
                                 variant="outlined"
                                 size="small"
+                                disabled={!certificateData.IssuingDate}
+                                inputProps={{
+                                    min: certificateData.IssuingDate,
+                                    max: getMaxDate()
+                                }}
                             />
                         </Grid>
                     </Grid>

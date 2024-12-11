@@ -36,6 +36,7 @@ import LoadingComponent from '~/components/LoadingComponent';
 import WorkExperienceCreation from './WorkExprerienceModal/WorkExperienceCreation';
 import DeleteConfirmationModal from './WorkExprerienceModal/DeleteConfirmationModal';
 import WorkExperienceDetail from './WorkExprerienceModal/WorkExperienceDetail';
+import { format } from 'date-fns';
 
 function WorkExperienceManagement() {
     const [selectedContent, setSelectedContent] = useState('');
@@ -160,6 +161,10 @@ function WorkExperienceManagement() {
         }
     };
 
+    const formatDate = (dateString) => {
+        return format(new Date(dateString), 'dd/MM/yyyy');
+    };
+
     const totalPages = Math.ceil(pagination.total / pagination.pageSize);
 
     return (
@@ -264,8 +269,8 @@ function WorkExperienceManagement() {
                                             </Tooltip>
                                         </TableCell>
                                         <TableCell>{certificate?.position}</TableCell>
-                                        <TableCell>{certificate?.startDate && new Date(certificate.startDate).toLocaleDateString()}</TableCell>
-                                        <TableCell>{certificate?.endDate ? new Date(certificate.endDate).toLocaleDateString() : 'Hiện tại'}</TableCell>
+                                        <TableCell>{certificate?.startDate && formatDate(new Date(certificate.startDate), "dd/MM/yyyy")}</TableCell>
+                                        <TableCell>{certificate?.endDate ? formatDate(new Date(certificate.endDate), "dd/MM/yyyy") : 'Hiện tại'}</TableCell>
                                         <TableCell>
                                             <Button
                                                 variant="outlined"
