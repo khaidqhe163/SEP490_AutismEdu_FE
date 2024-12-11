@@ -126,7 +126,7 @@ function TutorProfile() {
     };
 
     const formatDateCer = (dateString) => {
-        return format(new Date(dateString), 'dd-MM-yyyy');
+        return format(new Date(dateString), 'dd/MM/yyyy');
     };
 
     const getCity = (address) => {

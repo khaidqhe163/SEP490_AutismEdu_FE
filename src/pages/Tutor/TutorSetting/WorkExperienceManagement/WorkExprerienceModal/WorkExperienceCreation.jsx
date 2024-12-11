@@ -13,8 +13,26 @@ import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 import LoadingComponent from '~/components/LoadingComponent';
 
-const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExperienceList}) => {
+const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExperienceList }) => {
     const [loading, setLoading] = useState(false);
+    const getMinDate = () => {
+        const currentDate = new Date();
+        const pastDate = new Date();
+        pastDate.setFullYear(currentDate.getFullYear() - 70);
+        return pastDate.toISOString().slice(0, 7);
+    }
+
+    const getMaxDate = () => {
+        const currentDate = new Date();
+        const futureDate = new Date();
+        futureDate.setFullYear(currentDate.getFullYear() + 70);
+        return futureDate.toISOString().slice(0, 7)
+    }
+
+    const getCurrentDate = () => {
+        const currentDate = new Date();
+        return currentDate.toISOString().slice(0, 7)
+    }
     const formik = useFormik({
         initialValues: {
             companyName: "",
@@ -28,22 +46,18 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
                 .required("Tên công ty không được để trống").max(150, 'Tên công ty không được vượt quá 150 ký tự'),
             position: Yup.string()
                 .required("Chức vụ không được để trống").max(100, 'Tên chức vụ không được vượt quá 100 ký tự'),
-            startDate: Yup.date()
-                .required("Ngày bắt đầu không được để trống")
-                .typeError("Ngày bắt đầu không hợp lệ"),
+                startDate: Yup.date()
+                .required("Không được để trống")
+                .min(getMinDate(), `Thời gian bắt đầu phải sau ${getMinDate()?.split('-')?.reverse()?.join('-')}`)
+                .max(getCurrentDate(), `Thời gian bắt đầu không được sau ${getCurrentDate()}`),
             endDate: Yup.date()
-                // .required("Ngày kết thúc không được để trống")
-                .min(Yup.ref('startDate'), "Ngày kết thúc phải sau ngày bắt đầu")
-                .typeError("Ngày kết thúc không hợp lệ"),
+                .min(Yup.ref('startDate'), "Thời gian kết thúc phải sau thời gian bắt đầu")
+                .max(getMaxDate(), `Thời gian kết thúc không được sau ${getMaxDate()?.split('-')?.reverse()?.join('-')}`)
+                .typeError("Thời gian kết thúc không hợp lệ"),
         }),
         onSubmit: async (values, { resetForm }) => {
             try {
                 setLoading(true);
-                const existCompanyName = workExperienceList.find((e) => e?.companyName === values?.companyName);
-                if (existCompanyName) {
-                    enqueueSnackbar("Kinh nghiệm làm việc đã tồn tại!", { variant: 'error' });
-                    return;
-                }
                 await services.WorkExperiencesAPI.createWorkExperience(values, (res) => {
                     if (res?.result) {
                         setWorkExperienceList([res.result, ...workExperienceList]);
@@ -52,16 +66,18 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
                     onClose();
                     resetForm();
                 }, (error => {
+                    enqueueSnackbar(error.error[0], { variant: "error" });
                     console.log(error);
                 }))
             } catch (error) {
                 console.log(error);
 
-            } finally{
+            } finally {
                 setLoading(false);
             }
         },
     });
+    
     const handleClose = () => {
         formik.resetForm();
         onClose();
@@ -69,9 +85,10 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle textAlign={'center'} variant='h5'>Thêm kinh nghiệm làm việc</DialogTitle>
-            <DialogContent>
-                <form onSubmit={formik.handleSubmit} noValidate>
+            <form onSubmit={formik.handleSubmit}>
+
+                <DialogTitle textAlign={'center'} variant='h5'>Thêm kinh nghiệm làm việc</DialogTitle>
+                <DialogContent>
                     <TextField
                         fullWidth
                         label="Tên công ty"
@@ -96,9 +113,9 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
                     />
                     <TextField
                         fullWidth
-                        label="Ngày bắt đầu"
+                        label="Thời gian làm việc bắt đầu"
                         name="startDate"
-                        type="date"
+                        type="month"
                         value={formik.values.startDate}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -106,15 +123,12 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
                         helperText={formik.touched.startDate && formik.errors.startDate}
                         margin="normal"
                         InputLabelProps={{ shrink: true }}
-                        inputProps={{
-                            max: new Date().toISOString().split('T')[0],
-                        }}
                     />
                     <TextField
                         fullWidth
-                        label="Ngày kết thúc"
+                        label="Đến"
                         name="endDate"
-                        type="date"
+                        type="month"
                         value={formik.values.endDate}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -122,17 +136,19 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
                         helperText={formik.touched.endDate && formik.errors.endDate}
                         margin="normal"
                         InputLabelProps={{ shrink: true }}
+                        disabled={formik.values.startDate === ""}
                     />
-                </form>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose} color="inherit" variant='outlined'>
-                    Hủy
-                </Button>
-                <Button onClick={formik.handleSubmit} color="primary" variant="contained">
-                    Lưu
-                </Button>
-            </DialogActions>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="inherit" variant='outlined'>
+                        Hủy
+                    </Button>
+                    <Button onClick={formik.handleSubmit} color="primary" variant="contained">
+                        Lưu
+                    </Button>
+                </DialogActions>
+            </form>
+
             <LoadingComponent open={loading} setOpen={setLoading} />
         </Dialog>
     );

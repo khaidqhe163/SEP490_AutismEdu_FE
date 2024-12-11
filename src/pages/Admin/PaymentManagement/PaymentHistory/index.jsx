@@ -33,11 +33,6 @@ const PaymentHistory = () => {
         paymentId: 0,
     });
 
-    console.log(filters);
-    
-
-    console.log(filters);
-    
 
     const [pagination, setPagination] = useState({
         pageNumber: 1,
@@ -49,6 +44,10 @@ const PaymentHistory = () => {
         setFilters({
             ...filters,
             [key]: event.target.value,
+        });
+        setPagination({
+            ...pagination,
+            pageNumber: 1,
         });
     };
 
@@ -134,7 +133,7 @@ const PaymentHistory = () => {
                     </FormControl>
                 </Stack>
             </Stack>
-            {paymentHistoryList !== 0 ? <Box>
+            {paymentHistoryList.length !== 0 ? <Box>
                 <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: 2 }}>
                     <Table>
                         <TableHead>
@@ -163,7 +162,7 @@ const PaymentHistory = () => {
                                     </TableCell>
                                     <TableCell>
                                         {item?.paymentDate
-                                            ? format(new Date(item?.paymentDate), 'HH:mm dd-MM-yyyy')
+                                            ? format(new Date(item?.paymentDate), 'HH:mm dd/MM/yyyy')
                                             : 'N/A'}
                                     </TableCell>
                                     <TableCell>{item?.bankTransactionId || 'Không có'}</TableCell>
@@ -189,7 +188,7 @@ const PaymentHistory = () => {
                         color="primary"
                     />
                 </Stack>
-            </Box> : 'Hiện tại không có giao dịch nào'}
+            </Box> : 'Hiện tại không có giao dịch nào!'}
             <LoadingComponent open={loading} setOpen={setLoading} />
             {openDialogDetail && selectedPayment && <PaymentHistoryDetail open={openDialogDetail} onClose={() => setOpenDialogDetail(false)} paymentHistory={selectedPayment} />}
         </Paper>

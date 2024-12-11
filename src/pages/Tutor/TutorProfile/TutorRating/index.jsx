@@ -243,7 +243,7 @@ function TutorRating({ tutorId, userInfo }) {
     dayjs.locale('vi');
 
     console.log(dataReviewStats?.reviews);
-    
+
 
     return (
         dataReviewStats && (
@@ -393,7 +393,7 @@ function TutorRating({ tutorId, userInfo }) {
                                         </Stack>
                                     </Box>
                                 </Stack>
-                                <Typography width={'15%'} textAlign={'right'}><small>{dayjs(new Date(r?.createdDate))?.fromNow()}</small></Typography>
+                                <Typography width={'15%'} textAlign={'right'}><small>{dayjs(new Date(r?.updatedDate ?? r?.createdDate))?.fromNow()}</small></Typography>
 
                                 {
                                     userInfo && (

@@ -187,7 +187,6 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
                             <TableRow>
                                 <TableCell sx={{ fontWeight: 'bold' }}>STT</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }}>Tên bài tập</TableCell>
-                                {/* <TableCell sx={{ fontWeight: 'bold' }}>Nội dung</TableCell> */}
                                 <TableCell sx={{ fontWeight: 'bold' }}>Ngày tạo</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }}>Hành động</TableCell>
                             </TableRow>
@@ -198,7 +197,7 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
                                     <TableCell>{index + 1}</TableCell>
                                     <TableCell
                                         onClick={() => handleOpenDialog(exercise.description)}
-                                        sx={{ width: '350px' }}
+                                        sx={{ maxWidth: '350px' }}
                                     >
                                         <Box sx={{
                                             overflow: 'hidden',

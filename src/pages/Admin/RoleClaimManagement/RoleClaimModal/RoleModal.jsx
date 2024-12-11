@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
-import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Divider, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 const style = {
@@ -30,6 +30,30 @@ function RoleModal({ roles, setRoles }) {
         }
     }, [open]);
 
+    const [isSaveDisabled, setIsSaveDisabled] = useState(true);
+    const [errors, setErrors] = useState({});
+
+    const validateForm = () => {
+
+
+        const newErrors = {};
+
+
+        if (role.length > 20) {
+            newErrors.role = 'Không được vượt quá 20 ký tự';
+        }
+        if (!role) {
+            newErrors.role = 'Không được để trống';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    useEffect(() => {
+        setIsSaveDisabled(!validateForm());
+    }, [role]);
+
     const handleAddRole = async () => {
         try {
             await services.RoleManagementAPI.addRole({ name: role }, (res) => {
@@ -40,7 +64,6 @@ function RoleModal({ roles, setRoles }) {
                 }
             }
                 , (error) => {
-                    // enqueueSnackbar("Thêm vai trò thất bại!", { variant: "error" });
                     enqueueSnackbar(error.error[0], { variant: "error" });
                     console.log(error);
                     setOpen(false);
@@ -49,31 +72,73 @@ function RoleModal({ roles, setRoles }) {
             console.log(error);
         }
     }
+
     return (
-        <div>
-            <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpen}>Tạo vai trò</Button>
+        <Box>
+            <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={handleOpen}>
+                Tạo vai trò
+            </Button>
             <Modal
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                <Box
+                    sx={{
+                        ...style,
+                        width: 400, 
+                        margin: 'auto', 
+                        p: 3,
+                        display: 'flex',
+                        flexDirection: 'column', 
+                        gap: 1, 
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        borderRadius: 2, 
+                    }}
+                >
+                    <Typography
+                        id="modal-modal-title"
+                        variant="h5"
+                        textAlign="center"
+                        sx={{ marginBottom: 0 }}
+                    >
                         Tạo vai trò
                     </Typography>
-                    <Box mt="20px">
-                        <TextField size='small' id="outlined-basic" label="Vai trò" variant="outlined"
-                            value={role}
-                            onChange={(e) => { setRole(e.target.value) }}
-                            sx={{
-                                width: "100%"
-                            }} />
-                        <Button variant='contained' sx={{ marginTop: "20px" }} onClick={handleAddRole}>Tạo</Button>
+                    <Divider />
+                    <TextField
+                        size="small"
+                        id="outlined-basic"
+                        label="Vai trò"
+                        variant="outlined"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        sx={{ width: "100%", marginTop: 2 }}
+                    />
+                    {errors.role && (
+                        <FormHelperText error>{errors.role}</FormHelperText>
+                    )}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end', 
+                            marginTop: 1,
+                        }}
+                    >
+                        <Button
+                            variant="contained"
+                            onClick={handleAddRole}
+                            disabled={isSaveDisabled}>
+                            Tạo
+                        </Button>
                     </Box>
                 </Box>
             </Modal>
-        </div>
+        </Box>
     );
 }
 

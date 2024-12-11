@@ -11,6 +11,7 @@ import ButtonIcon from '~/components/ButtonComponent/ButtonIcon';
 import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
 import { useNavigate } from 'react-router-dom';
+import PAGES from '~/utils/pages';
 function Tutor() {
     const [listTutor, setListTutor] = useState([]);
 
@@ -177,7 +178,11 @@ function Tutor() {
                 </Stack>
             </Stack >
             <Box mt={5} textAlign="center">
-                <ButtonIcon text={"XEM THÊM GiA SƯ"} width="400px" height="70px" fontSize="20px" />
+                <ButtonIcon
+                    action={() => {
+                        nav(PAGES.ROOT + PAGES.LISTTUTOR);
+                    }}
+                    text={"XEM THÊM GiA SƯ"} width="400px" height="70px" fontSize="20px" />
             </Box>
             <LoadingComponent open={loading} />
         </Box >

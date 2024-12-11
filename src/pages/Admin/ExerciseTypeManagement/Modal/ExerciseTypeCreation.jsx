@@ -10,7 +10,7 @@ function ExerciseTypeCreation({ open, handleClose, handleCreateExerciseType }) {
             isHide: true,
         },
         validationSchema: Yup.object({
-            exerciseTypeName: Yup.string().required('Tên loại bài tập không được để trống').max(100,'Tên loại bài tập không quá 100 ký tự'),
+            exerciseTypeName: Yup.string().required('Tên loại bài tập không được để trống').max(100, 'Tên loại bài tập không quá 100 ký tự'),
         }),
         onSubmit: (values) => {
             handleCreateExerciseType(values);
@@ -22,7 +22,7 @@ function ExerciseTypeCreation({ open, handleClose, handleCreateExerciseType }) {
     return (
         <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
             <DialogTitle textAlign={'center'} variant='h5'>Thêm loại bài tập</DialogTitle>
-            <Divider/>
+            <Divider />
             <DialogContent>
                 <form onSubmit={formik.handleSubmit}>
                     <Box mt={2} mb={2}>

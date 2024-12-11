@@ -24,7 +24,7 @@ const ExerciseTypeEdit = ({ open, onClose, exerciseTypeList, setExerciseTypeList
                 setLoading(true);
                 const newData = {
                     id: eType?.id,
-                    exerciseTypeName: values.exerciseTypeName,
+                    exerciseTypeName: values.exerciseTypeName?.trim(),
                 };
                 await services.ExerciseManagementAPI.updateExerciseType(eType?.id, newData, (res) => {
                     if (res?.result) {

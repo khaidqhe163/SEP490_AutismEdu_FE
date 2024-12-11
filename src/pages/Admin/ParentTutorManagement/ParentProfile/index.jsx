@@ -15,6 +15,7 @@ import LoadingComponent from '~/components/LoadingComponent';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { enqueueSnackbar } from 'notistack';
+import { format } from 'date-fns';
 
 const ParentProfile = () => {
     const { id } = useParams();
@@ -116,6 +117,7 @@ const ParentProfile = () => {
         </Box>
     );
 
+
     return user ? (
         <Box sx={{ p: 3, maxWidth: '800px', mx: 'auto' }}>
             <Paper elevation={3} sx={{ p: 4 }}>
@@ -177,7 +179,7 @@ const ParentProfile = () => {
                     </Grid>
                     <Grid item xs={8}>
                         <Typography>
-                            {new Date(user.createdDate).toLocaleString('vi-VN')}
+                            {user?.createdDate ? format(new Date(user?.createdDate), 'dd/MM/yyyy') : 'N/A'}
                         </Typography>
                     </Grid>
 
