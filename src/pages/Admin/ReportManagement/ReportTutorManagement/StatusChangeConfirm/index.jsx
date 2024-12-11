@@ -13,7 +13,11 @@ function StatusChangeConfirm({ id, status, open, setOpen, setReport, report }) {
             setLoading(true);
             if (reportResponse === "") {
                 setLoading(false);
-                enqueueSnackbar("Bạn chưa nhập lý do", { variant: "error" })
+                enqueueSnackbar("Bạn chưa nhập phản hồi", { variant: "error" })
+                return;
+            } else if (reportResponse.length > 500) {
+                setLoading(false);
+                enqueueSnackbar("Phản hồi dưới 500 ký tự", { variant: "error" })
                 return;
             }
             await services.ReportManagementAPI.changeReportStatus(id,
@@ -66,6 +70,7 @@ function StatusChangeConfirm({ id, status, open, setOpen, setReport, report }) {
                     value={reportResponse}
                     onChange={(e) => { setReportResponse(e.target.value) }}
                 />
+                <Typography sx={{ textAlign: "right" }}>{reportResponse.length} / 500</Typography>
                 <Box textAlign="right" mt={2}>
                     <Button onClick={() => setOpen(false)}>Huỷ bỏ</Button>
                     <Button onClick={handleSubmit}>{status === 1 ? "Tiếp nhận" : "Từ chối"}</Button>

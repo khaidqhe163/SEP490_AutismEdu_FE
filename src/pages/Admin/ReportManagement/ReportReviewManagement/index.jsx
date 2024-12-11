@@ -1,5 +1,6 @@
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, FormControl, IconButton, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { format } from 'date-fns';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,13 +11,22 @@ function ReportReviewManagement() {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState("pending");
-    const [searchName, setSearchName] = useState("");
     const [pagination, setPagination] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const nav = useNavigate();
     useEffect(() => {
         handleGetReports()
     }, [])
+    useEffect(() => {
+        if (currentPage === 1) {
+            handleGetReports();
+        } else {
+            setCurrentPage(1)
+        }
+    }, [status])
+    useEffect(() => {
+        handleGetReports();
+    }, [currentPage])
     const handleGetReports = async () => {
         try {
             setLoading(true);
@@ -36,11 +46,6 @@ function ReportReviewManagement() {
             enqueueSnackbar("Lỗi hệ thống", { variant: "error" });
             setLoading(false);
         }
-    }
-    const formatDate = (date) => {
-        if (!date) return "";
-        const d = new Date(date);
-        return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
     }
     const getStatus = (status) => {
         let statusString = "";
@@ -72,12 +77,6 @@ function ReportReviewManagement() {
                         <MenuItem value="reject">Đã từ chối</MenuItem>
                     </Select>
                 </FormControl>
-                <TextField
-                    sx={{ width: "350px" }}
-                    label=""
-                    value={searchName}
-                    onChange={(e) => setSearchName(e.target.value)}
-                />
             </Box>
             <TableContainer component={Paper} sx={{ mt: 5 }}>
                 <Table sx={{ minWidth: 650 }}>
@@ -113,7 +112,7 @@ function ReportReviewManagement() {
                                             {getStatus(b.status)}
                                         </TableCell>
                                         <TableCell align="center">
-                                            {formatDate(b.createdDate)}
+                                            {format(b?.createdDate || "01/01/2024", "dd/MM/yyyy")}
                                         </TableCell>
                                         <TableCell align="center">
                                             <IconButton onClick={() => nav('/admin/report-review-management/' + b.id)}>

@@ -44,13 +44,13 @@ function ReportTutor({ studentProfile }) {
         }
         if (!values.title) {
             errors.title = "Bắt buộc"
-        } else if (values.title.length > 100) {
-            errors.title = "Tiêu đề dưới 100 ký tự"
+        } else if (values.title.length > 150) {
+            errors.title = "Tiêu đề dưới 150 ký tự"
         }
         if (!values.description) {
             errors.description = "Bắt buộc"
-        } else if (values.description.length > 5000) {
-            errors.description = "Mô tả dưới 5000 ký tự"
+        } else if (values.description.length > 500) {
+            errors.description = "Mô tả dưới 500 ký tự"
         }
         return errors
     }
@@ -166,7 +166,7 @@ function ReportTutor({ studentProfile }) {
                                 </FormHelperText>
                             )
                         }
-                        <Typography textAlign="end">{formik.values.description.length} / 5000</Typography>
+                        <Typography textAlign="end">{formik.values.description.length} / 500</Typography>
                         <Typography mt={2}>Hình ảnh bằng chứng: </Typography>
                         <TextField fullWidth type='file' inputProps={{
                             multiple: true,
