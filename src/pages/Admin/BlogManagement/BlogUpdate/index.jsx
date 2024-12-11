@@ -50,6 +50,11 @@ function BlogUpdate() {
         try {
             await services.BlogAPI.getBlogDetail(id, (res) => {
                 setBlog(res.result);
+                const quill = new Quill(document.createElement("div"));
+                quill.clipboard.dangerouslyPasteHTML(res.result.content);
+                const plainText = quill.getText();
+                console.log(plainText);
+                setContentText(plainText.trim());
             }, (err) => {
                 enqueueSnackbar("Lỗi hệ thống!", { variant: "error" })
             })
@@ -118,6 +123,10 @@ function BlogUpdate() {
             enqueueSnackbar("Nội dung quá ngắn", { variant: "error" })
             return;
         }
+        else if (contentText.length > 5000) {
+            enqueueSnackbar("Nội dung quá dài", { variant: "error" })
+            return;
+        }
         try {
             setLoading(true);
             const form = new FormData();
@@ -160,6 +169,7 @@ function BlogUpdate() {
             <Box px="100px">
                 <TextField fullWidth sx={{ mt: 3, bgcolor: "white" }} placeholder='Thêm tiêu đề tại đây'
                     value={title} onChange={(e) => setTitle(e.target.value)} />
+                <Typography sx={{ textAlign: "right", fontSize: "12px" }}>{title.length} / 100</Typography>
                 <Stack direction='row' gap={4} alignItems='center' mt={3}>
                     <Typography fontSize="20px" color='black'>Ảnh bìa</Typography>
                     <UploadImage setImage={setImage} aspectRatio={16 / 9} minDimension={250} />
@@ -176,6 +186,7 @@ function BlogUpdate() {
                 <TextField fullWidth sx={{ mt: 3, bgcolor: "white" }} placeholder='Mô tả bài viết'
                     value={description} onChange={(e) => setDescription(e.target.value)}
                     multiline rows={5} />
+                <Typography sx={{ textAlign: "right", fontSize: "12px" }}>{description.length} / 300</Typography>
                 <ReactQuill
                     value={content}
                     name="description"
@@ -196,6 +207,7 @@ function BlogUpdate() {
                     onMouseDown={handleMouseDown}
                     ref={quillRef}
                 />
+                <Typography sx={{ textAlign: "right", fontSize: "12px" }}>{contentText.length} / 5000</Typography>
             </Box>
             <LoadingComponent open={loading} />
         </Box>

@@ -61,8 +61,12 @@ function StudentDetail() {
                     <Tab icon={<ManageHistoryIcon />} iconPosition="end" label="Cài đặt lịch học" />
                     <Tab icon={<AccountBoxOutlinedIcon />} iconPosition="end" label="Thông tin học sinh" />
                 </Tabs>
-                <Box>
-                    <Typography sx={{ fontWeight: "bold", color: "#b660ec", fontSize: "20px" }}>{studentProfile?.name} - {studentProfile?.studentCode}</Typography>
+                <Box sx={{ maxWidth: "200px" }}>
+                    <Typography sx={{
+                        fontWeight: "bold", color: "#b660ec", fontSize: "20px",
+                        maxWidth: "200px", overflow:"hidden", height:"25px"
+                    }}
+                    >{studentProfile?.name} - {studentProfile?.studentCode}</Typography>
                     {
                         studentProfile?.status === 1 && (
                             <Typography sx={{ color: "blue" }}>Đang học</Typography>

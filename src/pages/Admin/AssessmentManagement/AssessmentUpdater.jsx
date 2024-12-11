@@ -75,7 +75,7 @@ function AssessmentUpdater({ open, setOpen, currentAsssesment, assessments, setA
             >
                 <DialogTitle>Chi tiết đánh giá</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
+                    <DialogContentText sx={{ whiteSpace: "break-spaces", wordBreak: 'break-word' }}>
                         Tiêu chí: {currentAsssesment.question}
                     </DialogContentText>
                     <TableContainer component={Paper} sx={{ mt: 2 }}>

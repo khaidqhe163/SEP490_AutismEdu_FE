@@ -63,7 +63,7 @@ function MyTutor() {
                         onClick={() => setStatus(2)}
                         sx={{ cursor: "pointer" }} />
                 </Box>
-                <Stack direction='row' mt={5} gap={5}>
+                <Stack direction='row' mt={5} gap={5} flexWrap='wrap'>
                     {
                         listTutor && listTutor.length !== 0 && listTutor.map((l) => {
                             return (
@@ -73,9 +73,9 @@ function MyTutor() {
                                     '&:hover': {
                                         transform: "scale(1.05) translateY(-10px)",
                                         boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)"
-                                    },
+                                    }
                                 }} key={l.id}>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: "200px" }}>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: "250px" }}>
                                         <CardContent sx={{ flex: '1 0 auto' }}>
                                             <Typography component="div" variant="h5">
                                                 {l.tutorName}
@@ -86,7 +86,7 @@ function MyTutor() {
                                             >
                                                 <LocalPhoneIcon sx={{ fontSize: "14px" }} /> {l.tutorPhoneNumber}
                                             </Typography>
-                                            <Typography mt={5}>Tên trẻ: {l.childName}</Typography>
+                                            <Typography mt={5}><b fontWeight='bold'>Tên trẻ: </b>{l.childName}</Typography>
                                             <Typography color={status === 1 ? "green" : "red"}>
                                                 ({status === 1 ? "Đang học" : "Kết thúc"})
                                             </Typography>

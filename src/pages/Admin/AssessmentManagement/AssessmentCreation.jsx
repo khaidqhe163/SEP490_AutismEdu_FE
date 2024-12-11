@@ -1,36 +1,44 @@
-import { Box, Button, FormControl, FormHelperText, Grid, IconButton, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from '@mui/material'
-import React, { useRef, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import { Box, Button, FormControl, FormHelperText, Grid, IconButton, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from '@mui/material';
+import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
-import services from '~/plugins/services';
+import React, { useRef, useState } from 'react';
+import ConfirmDialog from '~/components/ConfirmDialog';
 import LoadingComponent from '~/components/LoadingComponent';
+import services from '~/plugins/services';
 function AssessmentCreation() {
     const pointArr = [1, 1.5, 2, 2.5, 3, 3.5, 4]
     const [point, setPoint] = useState(1);
     const [listAss, setListAss] = useState([]);
-    const assessmentName = useRef();
-    const assessmentDetail = useRef();
+    const [assessmentName, setAssessmentName] = useState("");
     const [selectedPoint, setSelectedPoint] = useState([]);
-    const [contentError, setContentErr] = useState(false);
-    const [titleError, setTitleError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [openConfirm, setOpenConfirm] = useState(false);
+    const validateDetail = (values) => {
+        const errors = {};
+        if (!values.assessmentDetail) {
+            errors.assessmentDetail = "Bắt buộc nhập";
+        }
+        else if (values.assessmentDetail.trim().length < 20) {
+            errors.assessmentDetail = "Đánh giá phải trên 20 ký tự!";
+        }
+        if (values.assessmentDetail.trim().length > 250) {
+            errors.assessmentDetail = "Đánh giá phải dưới 250 ký tự!";
+        }
+        return errors
+    }
+    const optionFormik = useFormik({
+        initialValues: {
+            assessmentDetail: ""
+        }, validate: validateDetail,
+        onSubmit: (values) => {
+            handleAddPoint();
+        }
+    })
     const handleAddPoint = () => {
-        if (assessmentDetail.current.value.trim() === "") {
-            setContentErr("Bắt buộc nhập");
-            return;
-        } else if (assessmentDetail.current.value.trim().length < 20) {
-            setContentErr("Đánh giá quá ngắn")
-            return;
-        }
-        const splitString = assessmentDetail.current.value.trim().split(" ");
-        if (splitString.length > 250) {
-            setContentErr("Đánh giá quá dài")
-            return;
-        }
         const newAss = {
             point: point,
-            optionText: assessmentDetail.current.value
+            optionText: optionFormik.values.assessmentDetail.trim()
         }
         const sortedList = [newAss, ...listAss].sort((firstItem, secondItem) => {
             return firstItem.point - secondItem.point
@@ -43,8 +51,7 @@ function AssessmentCreation() {
                 break;
             }
         }
-        setContentErr("");
-        assessmentDetail.current.value = "";
+        optionFormik.resetForm()
     }
 
     const handleDelete = (index) => {
@@ -68,28 +75,31 @@ function AssessmentCreation() {
     }
 
     const handleSubmit = async () => {
-        if (assessmentName.current.value.trim() === "") {
-            setTitleError(true);
+        if (assessmentName.trim() === "") {
             enqueueSnackbar("Bạn chưa nhập tên đánh giá", { variant: "error" })
             return;
-        } else if (listAss.length < 7) {
+        }
+        else if (assessmentName.trim().length > 150) {
+            enqueueSnackbar("Tiêu đề phải dưới 150 ký tự", { variant: "error" })
+            return;
+        }
+        else if (listAss.length < 7) {
             enqueueSnackbar("Bạn chưa nhập đủ đánh giá", { variant: "error" })
             return;
         }
         try {
             setLoading(true);
             await services.AssessmentManagementAPI.createAssessment({
-                question: assessmentName.current.value.trim(),
+                question: assessmentName.trim(),
                 assessmentOptions: listAss
             }, (res) => {
                 setListAss([]);
                 setSelectedPoint([]);
-                assessmentName.current.value = ""
+                setAssessmentName("");
                 enqueueSnackbar("Tạo đánh giá thành công!", { variant: "success" })
             }, (err) => {
                 enqueueSnackbar(err.error[0], { variant: "error" })
             })
-            setTitleError(false);
             setLoading(false);
         } catch (error) {
             console.log(error);
@@ -108,22 +118,18 @@ function AssessmentCreation() {
                         <TextField
                             size='small'
                             sx={{ width: "70%" }}
-                            inputRef={assessmentName}
+                            value={assessmentName}
+                            onInput={(e) => { setAssessmentName(e.target.value.toUpperCase()) }}
                             placeholder='Nhập tên đánh giá vào đây'
                         />
-                        {
-                            titleError && (
-                                <FormHelperText error>
-                                    {titleError}
-                                </FormHelperText>
-                            )
-                        }
+                        <Typography textAlign="right" sx={{ width: "70%" }}>{assessmentName?.length} / 150</Typography>
                     </Grid>
                     <Grid item xs={2}><Typography variant='h6'>Chi tiết đánh giá</Typography></Grid>
                     <Grid item xs={10}></Grid>
                     {
                         selectedPoint.length < 7 && (
                             <>
+
                                 <Grid item xs={2}>
                                     <FormControl sx={{ width: "80%" }}>
                                         <InputLabel id="label-point">Điểm</InputLabel>
@@ -144,25 +150,36 @@ function AssessmentCreation() {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={10}>
-                                    <TextField
-                                        size='small'
-                                        multiline
-                                        rows={4}
-                                        sx={{ width: "70%" }}
-                                        inputRef={assessmentDetail}
-                                        label="Nội dung"
-                                        variant='outlined'
-                                    />
-                                    {
-                                        contentError && (
-                                            <FormHelperText error id="accountId-error">
-                                                {contentError}
-                                            </FormHelperText>
-                                        )
-                                    }
-                                    <Box mt={3}>
-                                        <Button variant='contained' onClick={handleAddPoint}>Thêm</Button>
-                                    </Box>
+                                    <form onSubmit={optionFormik.handleSubmit}>
+                                        <TextField
+                                            size='small'
+                                            multiline
+                                            rows={4}
+                                            sx={{ width: "70%" }}
+                                            label="Nội dung"
+                                            variant='outlined'
+                                            name='assessmentDetail'
+                                            value={optionFormik.values.assessmentDetail}
+                                            onChange={optionFormik.handleChange}
+                                        />
+                                        {
+                                            <Stack direction='row' justifyContent='space-between' sx={{ width: "70%" }}>
+                                                <Box>
+                                                    {
+                                                        optionFormik.errors && (
+                                                            <FormHelperText error>
+                                                                {optionFormik.errors.assessmentDetail}
+                                                            </FormHelperText>
+                                                        )
+                                                    }
+                                                </Box>
+                                                <Typography> {optionFormik.values.assessmentDetail.length} / 250</Typography>
+                                            </Stack>
+                                        }
+                                        <Box mt={3}>
+                                            <Button variant='contained' type='submit'>Thêm</Button>
+                                        </Box>
+                                    </form>
                                 </Grid>
                             </>
                         )
@@ -186,11 +203,16 @@ function AssessmentCreation() {
                             )
                         })
                     }
-                    <Button variant='contained' sx={{ mt: 5, mb: 3 }} onClick={handleSubmit}>Tạo đánh giá</Button>
+                    <Button variant='contained' sx={{ mt: 5, mb: 3 }} onClick={() => setOpenConfirm(true)}>Tạo đánh giá</Button>
                 </Grid>
-            </Box>
+            </Box >
+            <ConfirmDialog openConfirm={openConfirm} setOpenConfirm={setOpenConfirm}
+                title={"Tạo đánh giá"}
+                content={"Kiểm tra thật kĩ tên của đánh giá, vì tên đánh giá không thể cập nhật!"}
+                handleAction={handleSubmit}
+            />
             <LoadingComponent open={loading} />
-        </Paper>
+        </Paper >
     )
 }
 
