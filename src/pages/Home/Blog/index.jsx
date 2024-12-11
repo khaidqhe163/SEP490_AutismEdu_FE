@@ -82,10 +82,17 @@ function Blog() {
                                         />
                                         <Box sx={{ display: 'flex', flexDirection: 'column', height: "40%" }}>
                                             <CardContent sx={{ flex: '1 0 auto' }}>
-                                                <Typography component="div" variant="h4">
+                                                <Typography component="div" variant="h4" sx={{ whiteSpace: "break-spaces", wordBreak: 'break-word' }}>
                                                     {blogs[0] ? blogs[0].title : ""}
                                                 </Typography>
-                                                <Typography component="div">
+                                                <Typography component="div" sx={{
+                                                    whiteSpace: "break-spaces", wordBreak: 'break-word',
+                                                    display: '-webkit-box',
+                                                    WebkitLineClamp: 2,
+                                                    WebkitBoxOrient: 'vertical',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis'
+                                                }}>
                                                     {blogs[0] ? blogs[0].description : ""}
                                                 </Typography>
                                             </CardContent>
@@ -123,7 +130,7 @@ function Blog() {
                                                         />
                                                         <Box sx={{ height: "100%", display: "flex", alignItems: "center" }}>
                                                             <CardContent>
-                                                                <Typography component="div" variant="h5">
+                                                                <Typography component="div" variant="h5" sx={{ whiteSpace: "break-spaces", wordBreak: 'break-word' }}>
                                                                     {b.title}
                                                                 </Typography>
                                                                 <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />}

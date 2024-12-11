@@ -153,7 +153,7 @@ function BlogManagement() {
                                             {index + 1 + (currentPage - 1) * 10}
                                         </TableCell>
                                         <TableCell sx={{ maxWidth: "200px" }}>
-                                            {b.title}
+                                            <Typography sx={{ whiteSpace: "break-spaces", wordBreak: 'break-word' }}>{b.title}</Typography>
                                         </TableCell>
                                         <TableCell align="center">
                                             {b.viewCount}

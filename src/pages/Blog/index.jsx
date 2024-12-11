@@ -10,6 +10,7 @@ import { enqueueSnackbar } from 'notistack';
 import LoadingComponent from '~/components/LoadingComponent';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import emptyBlog from '~/assets/images/icon/emptyblog.png'
+import { format } from 'date-fns';
 function Blog() {
     const nav = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -121,15 +122,19 @@ function Blog() {
                                     alt="Live from space album cover"
                                 />
                                 <CardContent sx={{ flex: '1 0 auto' }}>
-                                    <Typography component="div" variant="h4">
+                                    <Typography component="div" variant="h4" sx={{
+                                        whiteSpace: "break-spaces", wordBreak: 'break-word'
+                                    }}>
                                         {blogs[0].title}
                                     </Typography>
-                                    <Typography component="div">
+                                    <Typography component="div" sx={{
+                                        whiteSpace: "break-spaces", wordBreak: 'break-word'
+                                    }}>
                                         {blogs[0].description}
                                     </Typography>
                                     <Stack direction='row' gap={5}>
                                         <Stack direction='row' mt={2} gap={1}>
-                                            <AccessTimeIcon /> <Typography>{formatDate(blogs[0].publishDate)}</Typography>
+                                            <AccessTimeIcon /> <Typography>{format(blogs[0]?.publishDate, 'dd/MM/yyyy')}</Typography>
                                         </Stack>
                                         <Stack direction='row' mt={2} gap={1}>
                                             <RemoveRedEyeIcon /> <Typography>{blogs[0].viewCount}</Typography>
@@ -149,7 +154,7 @@ function Blog() {
                             if (index > 0) {
                                 return (
                                     <Card key={b.id} sx={{
-                                        display: 'flex', height: "200px",
+                                        display: 'flex',
                                         mt: 5,
                                         transition: "transform 0.3s ease, box-shadow 0.3s ease",
                                         '&:hover': {
@@ -164,12 +169,17 @@ function Blog() {
                                             image={b.urlImageDisplay}
                                             alt="Live from space album cover"
                                         />
-                                        <Box sx={{ height: "100%", display: "flex", alignItems: "center" }}>
-                                            <CardContent>
-                                                <Typography component="div" variant="h5">
+                                        <Box sx={{ width: "60%", height: "100%", display: "flex", alignItems: "center" }}>
+                                            <CardContent sx={{ width: "100%" }}>
+                                                <Typography component="div" variant="h5" sx={{
+                                                    width: "100%",
+                                                    whiteSpace: "break-spaces", wordBreak: 'break-word'
+                                                }}>
                                                     {b.title}
                                                 </Typography>
-                                                <Typography component="div">
+                                                <Typography component="div" sx={{
+                                                    whiteSpace: "break-spaces", wordBreak: 'break-word'
+                                                }}>
                                                     {b.description}
                                                 </Typography>
                                                 <Button sx={{ fontSize: "20px" }} endIcon={<ArrowForwardIcon />} onClick={() => nav(PAGES.ROOT + PAGES.BLOG_LIST + `/${b.id}`)}>Tìm hiểu thêm </Button>
@@ -237,12 +247,13 @@ function Blog() {
                                                             WebkitBoxOrient: 'vertical',
                                                             overflow: 'hidden',
                                                             textOverflow: 'ellipsis',
+                                                            whiteSpace: "break-spaces", wordBreak: 'break-word'
                                                         }}>
                                                             {r.title}
                                                         </Typography>
                                                         <Stack direction='row' gap={5}>
                                                             <Stack direction='row' mt={2} gap={1}>
-                                                                <AccessTimeIcon /> <Typography>{formatDate(r.publishDate)}</Typography>
+                                                                <AccessTimeIcon /> <Typography>{format(r.publishDate, 'dd/MM/yyyy')}</Typography>
                                                             </Stack>
                                                             <Stack direction='row' mt={2} gap={1}>
                                                                 <RemoveRedEyeIcon /> <Typography>{r.viewCount}</Typography>
