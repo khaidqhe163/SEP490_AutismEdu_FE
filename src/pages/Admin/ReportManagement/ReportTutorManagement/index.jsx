@@ -154,7 +154,9 @@ function ReportTutorManagement() {
                                         </TableCell>
                                         <TableCell sx={{ maxWidth: "200px" }}>
                                             <Link to={PAGES.REPORT_TUTOR_MANAGEMENT + "/detail/" + b.id} style={{ textDecoration: 'underline', color: "blue" }}>
-                                                {b.title}
+                                                <Typography sx={{ wordBreak: "break-word" }}>
+                                                    {b.title}
+                                                </Typography>
                                             </Link>
                                         </TableCell>
                                         <TableCell>

@@ -36,7 +36,7 @@ function GoogleLogin({ onLoginSuccess }) {
                 const decodedToken = jwtDecode(res.result.accessToken);
                 setUserId(decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
             }, (err) => {
-                enqueueSnackbar(err.error, { variant: "error" });
+                enqueueSnackbar(err.error[0], { variant: "error" });
             }
             )
         },

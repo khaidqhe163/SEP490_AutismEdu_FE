@@ -34,7 +34,6 @@ export default function CompleteModal({ hasAccount, open }) {
                         hasAccount === "true" && (
                             <>
                                 <Typography>Thông tin hồ sơ học sinh đã được gửi về email của phụ huynh</Typography>
-                                <Typography>Vui lòng chờ phụ huynh duyệt hồ sơ học sinh</Typography>
                             </>
                         )
                     }

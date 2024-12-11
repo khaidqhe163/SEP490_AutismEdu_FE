@@ -29,6 +29,10 @@ function AcceptDialog({ id, status, setTutorInformation, setCurriculums, setCert
                 setLoading(false);
                 enqueueSnackbar("Bạn chưa nhập lý do từ chối đơn đăng ký", { variant: "error" })
                 return;
+            } else if (status === 0 && rejectReason.length > 500) {
+                setLoading(false);
+                enqueueSnackbar("Lý do dưới 500 ký tự", { variant: "error" })
+                return;
             }
             await services.TutorManagementAPI.handleRegistrationForm(id,
                 {
@@ -107,6 +111,7 @@ function AcceptDialog({ id, status, setTutorInformation, setCurriculums, setCert
                                 value={rejectReason}
                                 onChange={(e) => { setRejectReason(e.target.value) }}
                             />
+                            <Typography sx={{ textAlign: "right" }}>{rejectReason.length} / 500</Typography>
                             <Box textAlign="right" mt={2}>
                                 <Button onClick={handleClose}>Huỷ bỏ</Button>
                                 <Button onClick={handleSubmit}>Từ chối</Button>

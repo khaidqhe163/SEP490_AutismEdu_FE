@@ -36,7 +36,6 @@ function Header() {
     const [openNotification, setOpenNotification] = useState(false);
     const { connection, openMessage, setOpenMessage, setCurrentChat, currentChat, conversations, setConversations } = useContext(SignalRContext);
     const [notifications, setNotifications] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
     const notificationRef = useRef(null);
     const notificationIconRef = useRef(null);
     const [unreadNoti, setUnreadNoti] = useState(0);
@@ -47,7 +46,7 @@ function Header() {
     const messageIconRef = useRef(null);
     const [unreadMessage, setUnreadMessage] = useState(true);
     const [newMessage, setNewMessage] = useState(null);
-    const [newNotification, setNewNotification] = useState(null)
+    const [newNotification, setNewNotification] = useState(null);
     useEffect(() => {
         if (location.pathname.includes("/home-page")) {
             setTab("1");
@@ -96,8 +95,12 @@ function Header() {
             }
         }
         if (userInfo) {
-            handleGetNotification();
-            handleGetConversation();
+            if (userInfo.isLockedOut) {
+                handleLogout();
+            } else {
+                handleGetNotification();
+                handleGetConversation();
+            }
         }
     }, [userInfo, location])
 
