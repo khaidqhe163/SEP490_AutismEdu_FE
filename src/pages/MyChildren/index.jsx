@@ -1,6 +1,6 @@
 import FaceIcon from '@mui/icons-material/Face';
 import Face3Icon from '@mui/icons-material/Face3';
-import { Box, Button, Chip, FormHelperText, Grid, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, FormControl, FormHelperText, Grid, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -148,9 +148,13 @@ function MyChildren() {
         <Stack direction='row' justifyContent="center" py={5}>
             <Stack sx={{ width: "80%" }} direction="row" justifyContent="center">
                 <Box sx={{ width: "60%" }}>
-                    <Box sx={{ width: "100%", mb: 5 }}>
-                        <ChildCreation setChildren={setChildren} setCurrentChild={setCurrentChild} currentChild={currentChild} />
-                    </Box>
+                    {
+                        children && children.length < 5 && (
+                            <Box sx={{ width: "100%", mb: 5 }}>
+                                <ChildCreation setChildren={setChildren} setCurrentChild={setCurrentChild} currentChild={currentChild} />
+                            </Box>
+                        )
+                    }
                     {
                         children.length !== 0 ? (
                             <>
@@ -216,19 +220,21 @@ function MyChildren() {
                                                     )
                                                 }
                                             </Box>
-                                            <Typography variant='caption'>Chỉ tạo được trẻ từ 1 đến 15 tuổi</Typography>
+                                            <Typography variant='caption' sx={{ color: "orange" }}>Chỉ tạo được trẻ từ 1 đến 15 tuổi</Typography>
                                         </Grid>
                                         <Grid item xs={2}>Giới tính:</Grid>
                                         <Grid item xs={10}>
-                                            <Select
-                                                name='gender'
-                                                value={formik.values.gender}
-                                                onChange={formik.handleChange}
-                                                sx={{ width: "70%" }}
-                                            >
-                                                <MenuItem value={"True"}>Nam</MenuItem>
-                                                <MenuItem value={"False"}>Nữ</MenuItem>
-                                            </Select>
+                                            <FormControl size='small' fullWidth>
+                                                <Select
+                                                    name='gender'
+                                                    value={formik.values.gender}
+                                                    onChange={formik.handleChange}
+                                                    sx={{ width: "70%" }}
+                                                >
+                                                    <MenuItem value={"True"}>Nam</MenuItem>
+                                                    <MenuItem value={"False"}>Nữ</MenuItem>
+                                                </Select>
+                                            </FormControl>
                                             {
                                                 formik.errors.gender && (
                                                     <FormHelperText error>
