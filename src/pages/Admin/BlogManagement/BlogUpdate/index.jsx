@@ -123,6 +123,10 @@ function BlogUpdate() {
             enqueueSnackbar("Nội dung quá ngắn", { variant: "error" })
             return;
         }
+        else if (contentText.length > 5000) {
+            enqueueSnackbar("Nội dung quá dài", { variant: "error" })
+            return;
+        }
         try {
             setLoading(true);
             const form = new FormData();
