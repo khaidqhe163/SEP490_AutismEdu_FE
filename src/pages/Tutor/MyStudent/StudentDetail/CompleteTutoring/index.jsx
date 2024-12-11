@@ -184,7 +184,7 @@ function CompleteTutoring({ studentProfile, setStudentProfile }) {
 
                                 <Stack direction='row' gap={2} mt={2}>
                                     <DoneIcon sx={{ color: "green" }} />
-                                    <Typography>Đánh giá cuối cùng</Typography>
+                                    <Typography fontWeight="bold">Đánh giá cuối cùng</Typography>
                                 </Stack>
                                 <TextField multiline fullWidth minRows={5} maxRows={10}
                                     name='finalCondition'
