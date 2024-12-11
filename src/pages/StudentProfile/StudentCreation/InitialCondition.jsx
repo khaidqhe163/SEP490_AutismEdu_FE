@@ -1,10 +1,9 @@
-import { Card, CardContent, FormControl, Grid, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { Box, Card, CardContent, FormControl, FormHelperText, Grid, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import services from '~/plugins/services';
 import AssessmentDetail from './AssessmentDetail';
 import AssessmentGuild from './AssessmentGuild';
-import { IntegrationInstructions } from '@mui/icons-material';
-function InitialCondition({ setInitialCondition, initialCondition,
+function InitialCondition({ formik,
     selectedAssessment, setSelectedAssessment }) {
     const [assessment, setAssessment] = useState([]);
     useEffect(() => {
@@ -14,7 +13,7 @@ function InitialCondition({ setInitialCondition, initialCondition,
         try {
             await services.AssessmentManagementAPI.listAssessment((res) => {
                 setAssessment(res.result.questions);
-                const initialAssessment = res.result.questions.map((r, index) => {
+                const initialAssessment = res.result.questions.map((r) => {
                     return {
                         questionId: r.id,
                         optionId: r.assessmentOptions[0].id
@@ -36,9 +35,23 @@ function InitialCondition({ setInitialCondition, initialCondition,
                     sx={{ width: "100%" }}
                     minRows={10}
                     multiline
-                    value={initialCondition}
-                    onChange={(e) => { setInitialCondition(e.target.value) }}
+                    name='initialCondition'
+                    value={formik.values.initialCondition}
+                    onChange={formik.handleChange}
                 />
+                <Stack direction='row' justifyContent="space-between">
+                    <Box>
+                        {
+                            formik.errors.initialCondition && (
+                                <FormHelperText error>
+                                    {formik.errors.initialCondition}
+                                </FormHelperText>
+                            )
+                        }
+                    </Box>
+                    <Typography variant='caption'>{formik.values.initialCondition.length} / 1000</Typography>
+                </Stack>
+
                 <Typography variant='h5' mt={5}>Danh sách đánh giá</Typography>
                 <AssessmentGuild />
                 <Grid container columnSpacing={2} rowSpacing={2} maxHeight="60vh" overflow='auto' mt={2}>

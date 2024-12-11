@@ -1,6 +1,6 @@
-import { Card, CardContent, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Card, CardContent, FormControl, FormHelperText, Grid, MenuItem, Select, TextField, Typography } from '@mui/material';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 function ParentProfile({ parent, hasAccount, formik,
     provinces, setProvinces, districts, setDistricts, communes, setCommunes
 }) {

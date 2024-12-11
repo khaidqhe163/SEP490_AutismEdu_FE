@@ -1,7 +1,7 @@
-import { Box, Button, IconButton, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import React from 'react'
 import CloseIcon from '@mui/icons-material/Close';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import { Box, IconButton, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import React from 'react';
 function AssessmentDetail({ assessment }) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -31,8 +31,8 @@ function AssessmentDetail({ assessment }) {
                                     position: "absolute",
                                     top: 10,
                                     right: 10,
-                                    zIndex: 1, // ensures it's on top of content
-                                    backgroundColor: 'rgba(255, 255, 255, 0.8)', // slight background for better visibility
+                                    zIndex: 1,
+                                    backgroundColor: 'rgba(255, 255, 255, 0.8)'
                                 }}
                             >
                                 <CloseIcon />

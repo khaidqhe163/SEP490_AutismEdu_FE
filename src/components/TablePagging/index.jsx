@@ -1,5 +1,5 @@
-import { Box, Pagination, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import { Box, Pagination } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 function TablePagging({ pagination, setPagination, setCurrentPage }) {
     const [totalPage, setTotalPage] = useState(0);

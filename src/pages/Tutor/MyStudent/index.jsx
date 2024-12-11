@@ -62,8 +62,13 @@ function MyStudent() {
     }
 
     const formatAddress = (d) => {
-        const splitedAdd = d.split("|");
-        return `${splitedAdd[3]} - ${splitedAdd[2]} - ${splitedAdd[1]} - ${splitedAdd[0]}`
+        try {
+            const splitedAdd = d.split("|");
+            return `${splitedAdd[3]} - ${splitedAdd[2]} - ${splitedAdd[1]} - ${splitedAdd[0]}`
+        } catch (error) {
+            return "";
+        }
+
     }
 
     return (

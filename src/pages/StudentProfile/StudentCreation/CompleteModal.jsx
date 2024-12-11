@@ -1,9 +1,8 @@
-import * as React from 'react';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
 import PAGES from '~/utils/pages';
 const style = {
@@ -18,7 +17,7 @@ const style = {
     textAlign: "center"
 };
 
-export default function CompleteModal({ hasAccount, open, setOpen }) {
+export default function CompleteModal({ hasAccount, open }) {
     const nav = useNavigate();
     return (
         <div>

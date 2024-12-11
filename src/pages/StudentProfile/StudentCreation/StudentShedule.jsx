@@ -40,9 +40,9 @@ const MenuProps = {
     PaperProps: {
         style: {
             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        },
-    },
+            width: 250
+        }
+    }
 };
 function StudentShedule({ listSchedule, setListSchedule }) {
     const [dayOfWeek, setDayOfWeek] = useState([]);
@@ -108,10 +108,10 @@ function StudentShedule({ listSchedule, setListSchedule }) {
     };
     const handleChange = (event) => {
         const {
-            target: { value },
+            target: { value }
         } = event;
         setDayOfWeek(
-            typeof value === 'string' ? value.split(',') : value,
+            typeof value === 'string' ? value.split(',') : value
         );
     };
     const handleAddTime = () => {

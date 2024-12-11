@@ -23,7 +23,7 @@ function StudentCreation() {
     const [loading, setLoading] = useState(false);
     const [currentChild, setCurrentChild] = useState(0);
     const [selectedAssessment, setSelectedAssessment] = useState([]);
-    const [initialCondition, setInitialCondition] = useState("");
+    // const [initialCondition, setInitialCondition] = useState("");
     const [listSchedule, setListShedule] = useState([]);
     const [hasAccount, setHasAccount] = useState("true");
     const [provinces, setProvinces] = useState([]);
@@ -86,7 +86,7 @@ function StudentCreation() {
         setParent(null);
         setChildren([]);
         setSelectedRequest("");
-        setInitialCondition('');
+        // setInitialCondition('');
         setAvatar(null)
     };
     const handleGetChildren = async (id) => {
@@ -118,8 +118,8 @@ function StudentCreation() {
             else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.parentName)) {
                 errors.parentName = "Tên không hợp lệ!"
             }
-            else if (values.parentName.length > 100) {
-                errors.parentName = 'Tên dưới 100 ký tự';
+            else if (values.parentName.length > 50) {
+                errors.parentName = 'Tên dưới 50 ký tự';
             }
             if (!values.phoneNumber) {
                 errors.phoneNumber = 'Bắt buộc';
@@ -144,8 +144,8 @@ function StudentCreation() {
                 errors.childName = "Bắt buộc"
             } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔưăêôƠƯÀẢÃÁẠĂẮẰẲẴẶÂẦẤẨẪẬÈẺẼÉẸÊỀẾỂỄỆÌỈĨÍỊÒỎÕÓỌÔỒỐỔỖỘƠỜỚỞỠỢÙỦŨÚỤƯỪỨỬỮỰỲỶỸÝỴàảãáạăắằẳẵặâầấẩẫậèẻẽéẹêềếểễệìỉĩíịòỏõóọôồốổỗộơờớởỡợùủũúụưừứửữựỳỷỹýỵ\s]+$/.test(values.childName)) {
                 errors.childName = "Tên không hợp lệ!"
-            } else if (values.childName.length > 100) {
-                errors.childName = "Phải dưới 100 ký tự"
+            } else if (values.childName.length > 50) {
+                errors.childName = "Phải dưới 50 ký tự"
             }
             if (!values.gender) {
                 errors.gender = "Bắt buộc"
@@ -156,6 +156,12 @@ function StudentCreation() {
             if (!avatar) {
                 errors.avatar = "Bắt buộc"
             }
+        }
+
+        if (!values.initialCondition.trim()) {
+            errors.initialCondition = "Chưa nhập điều kiện ban đầu"
+        } else if (values.initialCondition.length > 1000) {
+            errors.initialCondition = "Chỉ chứa tối đa 1000 ký tự"
         }
         return errors;
     };
@@ -170,7 +176,8 @@ function StudentCreation() {
             phoneNumber: '',
             childName: '',
             dateOfBirth: '',
-            gender: 'True'
+            gender: 'True',
+            initialCondition: ''
         },
         validate,
         onSubmit: async (values) => {
@@ -194,10 +201,10 @@ function StudentCreation() {
             enqueueSnackbar("Chưa chọn yêu cầu!", { variant: "error" });
             return;
         }
-        if (initialCondition.trim() === "") {
-            enqueueSnackbar("Chưa nhập điều kiện ban đầu!", { variant: "error" });
-            return;
-        }
+        // if (initialCondition.trim() === "") {
+        //     enqueueSnackbar("Chưa nhập điều kiện ban đầu!", { variant: "error" });
+        //     return;
+        // }
         if (listSchedule.length === 0) {
             enqueueSnackbar("Chưa nhập lịch học!", { variant: "error" });
             return;
@@ -222,7 +229,7 @@ function StudentCreation() {
             }
             formData.append("ChildId", children[currentChild].id);
         }
-        formData.append("InitialCondition", initialCondition.trim());
+        formData.append("InitialCondition", formik.values.initialCondition.trim());
         selectedAssessment.forEach((s, index) => {
             formData.append(`InitialAssessmentResults[${index}].QuestionId`, s.questionId);
             formData.append(`InitialAssessmentResults[${index}].OptionId`, s.optionId);
@@ -414,7 +421,7 @@ function StudentCreation() {
                     <InitialCondition childrenInfor={children}
                         setSelectedAssessment={setSelectedAssessment}
                         selectedAssessment={selectedAssessment}
-                        initialCondition={initialCondition} setInitialCondition={setInitialCondition}
+                        formik={formik}
                         hasAccount={hasAccount}
                     />
                     <StudentShedule childrenInfor={children} listSchedule={listSchedule} setListSchedule={setListShedule}
