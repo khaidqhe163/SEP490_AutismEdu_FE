@@ -18,6 +18,7 @@ import { enqueueSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { SignalRContext } from '~/Context/SignalRContext';
 import { useContext } from 'react';
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 
 function TutorRequest() {
 
@@ -483,7 +484,10 @@ function TutorRequest() {
                             )}
 
                         </Accordion>
-                    ))) : <Typography variant='subtitle1'>Hiện tại chưa có yêu cầu nào.</Typography>
+                    ))) : <Box sx={{ textAlign: "center" }}>
+                        <img src={emptyBook} style={{ height: "200px" }} />
+                        <Typography>Hiện tại chưa có yêu cầu nào!</Typography>
+                    </Box>
                 }
             </Box>
 

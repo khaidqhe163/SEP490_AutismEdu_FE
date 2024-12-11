@@ -9,7 +9,6 @@ import { tutorInfor } from '~/redux/features/tutorSlice';
 function AvailableTimeManagement() {
 
     const tutorInfo = useSelector(tutorInfor);
-    
     const [timeData, setTimeData] = useState({
         weekday: 1,
         from: '',

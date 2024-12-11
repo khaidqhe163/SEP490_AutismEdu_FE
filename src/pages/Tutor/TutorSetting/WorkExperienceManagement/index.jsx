@@ -36,6 +36,7 @@ import LoadingComponent from '~/components/LoadingComponent';
 import WorkExperienceCreation from './WorkExprerienceModal/WorkExperienceCreation';
 import DeleteConfirmationModal from './WorkExprerienceModal/DeleteConfirmationModal';
 import WorkExperienceDetail from './WorkExprerienceModal/WorkExperienceDetail';
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 import { format } from 'date-fns';
 
 function WorkExperienceManagement() {
@@ -237,7 +238,10 @@ function WorkExperienceManagement() {
             </Stack>
 
             <Box>
-                {workExperienceList.length === 0 ? 'Hiện tại không có khung chương trình.' :
+                {workExperienceList.length === 0 ? <Box sx={{ textAlign: "center" }}>
+                    <img src={emptyBook} style={{ height: "200px" }} />
+                    <Typography>Hiện tại không có kinh nghiệm làm việc nào!</Typography>
+                </Box> :
                     <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
                         <Table>
                             <TableHead>

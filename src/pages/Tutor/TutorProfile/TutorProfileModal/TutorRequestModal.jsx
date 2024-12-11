@@ -48,8 +48,10 @@ function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
     const handleClose = () => setOpen(false);
 
     useEffect(() => {
-        handleGetStudyingList();
-    }, []);
+        if (userInf) {
+            handleGetStudyingList();
+        }
+    }, [userInf]);
 
     const handleGetStudyingList = async () => {
         try {

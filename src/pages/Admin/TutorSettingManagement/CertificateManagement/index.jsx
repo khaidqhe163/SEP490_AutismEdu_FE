@@ -35,6 +35,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ConfirmRejectDialog from './Modal/ConfirmRejectDialog';
 import ConfirmAcceptDialog from './Modal/ConfirmAcceptDialog';
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 
 const CertificateManagement = () => {
     const [currentSelectedId, setCurrentSelectedId] = useState(0);
@@ -246,7 +247,7 @@ const CertificateManagement = () => {
 
                 </Stack>
 
-                {certificateList !== 0 ? <Box>
+                {certificateList.length !== 0 ? <Box>
                     <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
                         <Table>
                             <TableHead>
@@ -331,7 +332,11 @@ const CertificateManagement = () => {
                             color="primary"
                         />
                     </Stack>
-                </Box> : 'Hiện tại không có chứng chỉ nào'}
+                </Box> :
+                    <Box sx={{ textAlign: "center" }}>
+                        <img src={emptyBook} style={{ height: "200px" }} />
+                        <Typography>Hiện tại không có chứng chỉ nào!</Typography>
+                    </Box>}
                 {openDialog && selectedCertificate && <CertificateDetailModal open={openDialog} onClose={() => setOpenDialog(false)} certificate={selectedCertificate} />}
                 {openDialogReject && <ConfirmRejectDialog open={openDialogReject} onClose={() => setOpenDialogReject(false)} onConfirm={(reason) => {
                     handleReject(currentSelectedId, reason);

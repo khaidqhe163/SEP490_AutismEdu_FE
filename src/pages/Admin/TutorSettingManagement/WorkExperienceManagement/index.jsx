@@ -11,6 +11,7 @@ import ConfirmAcceptDialog from './Modal/ConfirmAcceptDialog';
 import ConfirmRejectDialog from './Modal/ConfirmRejectDialog';
 import { enqueueSnackbar } from 'notistack';
 import WorkExperienceDetail from './Modal/WorkExperienceDetail';
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 
 const WorkExperienceManagement = () => {
     const [acceptDialogOpen, setAcceptDialogOpen] = useState(false);
@@ -209,7 +210,10 @@ const WorkExperienceManagement = () => {
                 </Stack>
 
                 {workExperiences.length === 0 ? (
-                    'Hiện chưa có dữ liệu!'
+                    <Box sx={{ textAlign: "center" }}>
+                        <img src={emptyBook} style={{ height: "200px" }} />
+                        <Typography>Hiện tại chưa có dữ liệu!</Typography>
+                    </Box>
                 ) : (
                     <>
                         <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }}>

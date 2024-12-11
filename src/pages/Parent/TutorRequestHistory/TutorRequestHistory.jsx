@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, Typography, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Button, Pagination, FormControl, InputLabel, Select, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Divider, Modal } from '@mui/material';
 import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
-
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 
 const TutorRequestHistory = () => {
 
@@ -238,7 +238,10 @@ const TutorRequestHistory = () => {
               onChange={handlePageChange}
               color="primary"
             />
-          </Stack></> : 'Hiện tại chưa có lịch sử yêu cầu nào được gửi!'}
+          </Stack></> : <Box sx={{ textAlign: "center" }}>
+                            <img src={emptyBook} style={{ height: "200px" }} />
+                            <Typography>Hiện tại chưa có lịch sử yêu cầu nào được gửi!</Typography>
+                        </Box>}
       </Box>
       <Modal
         open={openDialog}

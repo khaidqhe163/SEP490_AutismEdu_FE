@@ -9,7 +9,7 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import CurriculumEditedTable from './EditedTable/CurriculumEditedTable';
 import CreateOrEditModal from './CurriculumModal/CreateOrEditModal';
 import DeleteConfirmationModal from './CurriculumModal/DeleteConfirmationModal';
-
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 import { useSelector } from 'react-redux';
@@ -160,7 +160,10 @@ function CurriculumManagement() {
                             Tạo khung chương trình
                         </Button>
                     </Box>
-                    {curriculumData.length === 0 ? 'Hiện tại không có khung chương trình.' :
+                    {curriculumData.length === 0 ? <Box sx={{ textAlign: "center" }}>
+                            <img src={emptyBook} style={{ height: "200px" }} />
+                            <Typography>Hiện tại không có khung chương trình!</Typography>
+                        </Box> :
                         <TabContext value={valueCurriculum}>
                             <Box sx={{ maxWidth: { xs: 320, sm: 750 } }}>
                                 <Tabs
