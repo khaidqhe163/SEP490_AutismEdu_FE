@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider } from '@mui/material'
 import { useState } from 'react'
 import LoadingComponent from '../LoadingComponent';
 
@@ -8,7 +8,7 @@ function ConfirmDialog({ openConfirm, setOpenConfirm, handleAction, title, conte
         setLoading(true);
         await handleAction();
         setLoading(false);
-    }
+    };
     return (
         <Dialog
             open={openConfirm}
@@ -16,19 +16,20 @@ function ConfirmDialog({ openConfirm, setOpenConfirm, handleAction, title, conte
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title">
+            <DialogTitle id="alert-dialog-title" variant='h5' textAlign={'center'}>
                 {title}
             </DialogTitle>
+            <Divider/>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                     {content}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleSubmit}>Đồng ý</Button>
-                <Button onClick={() => setOpenConfirm(false)} autoFocus>
+                <Button variant='outlined' color='inherit' onClick={() => setOpenConfirm(false)} autoFocus>
                     Huỷ bỏ
                 </Button>
+                <Button onClick={handleSubmit} variant='contained' color='primary'>Đồng ý</Button>
             </DialogActions>
             <LoadingComponent open={loading} />
         </Dialog>

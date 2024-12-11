@@ -7,6 +7,7 @@ import { enqueueSnackbar } from 'notistack';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import SearchIcon from '@mui/icons-material/Search';
 import { useNavigate } from 'react-router-dom';
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 
 function ParentTutorManagement() {
     const nav = useNavigate();
@@ -191,7 +192,10 @@ function ParentTutorManagement() {
                                     color="primary"
                                 />
                             </Stack>
-                        </> : "Hiện tại không có người dùng nào!"
+                        </> : <Box sx={{ textAlign: "center" }}>
+                            <img src={emptyBook} style={{ height: "200px" }} />
+                            <Typography>Hiện tại không có người dùng nào!</Typography>
+                        </Box>
                 }
             </Box>
             <LoadingComponent open={loading} setLoading={setLoading} />

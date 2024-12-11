@@ -11,6 +11,7 @@ import ExerciseCreation from './ExerciseModal/ExerciseCreation';
 import services from '~/plugins/services';
 import { format } from 'date-fns';
 import { enqueueSnackbar } from 'notistack';
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 
 function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
 
@@ -236,7 +237,10 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
                         color="primary"
                     />
                 </Stack>
-            </> : 'Hiện tại chưa có bài tập nào.')}
+            </> : <Box sx={{ textAlign: "center" }}>
+                <img src={emptyBook} style={{ height: "200px" }} />
+                <Typography>Hiện tại chưa có bài tập nào!</Typography>
+            </Box>)}
 
             <LoadingComponent open={loading} setOpen={setLoading} />
 
@@ -246,15 +250,15 @@ function ExerciseList({ selectedExerciseType, setShowExerciseList }) {
                 <DialogContent>
                     <Box
                         width={'100%'}
-                        maxHeight={'400px'} // Đặt chiều cao tối đa
-                        overflowY={'auto'} // Kích hoạt thanh cuộn dọc
-                        overflowX={'hidden'} // Ẩn thanh cuộn ngang
+                        maxHeight={'400px'}
+                        overflowY={'auto'} 
+                        overflowX={'hidden'} 
                         sx={{
-                            padding: 2, // (Tùy chọn) Thêm khoảng cách bên trong
-                            border: '1px solid #ccc', // (Tùy chọn) Viền để phân tách nội dung
-                            borderRadius: '4px', // (Tùy chọn) Bo góc khối nội dung
-                            wordBreak: 'break-word', // Ngắt dòng khi từ quá dài
-                            overflowWrap: 'break-word', // (Dự phòng) Ngắt dòng khi câu quá dài
+                            padding: 2,
+                            border: '1px solid #ccc', 
+                            borderRadius: '4px',
+                            wordBreak: 'break-word',
+                            overflowWrap: 'break-word', 
                         }}
                         dangerouslySetInnerHTML={{ __html: selectedContent }}
                     />

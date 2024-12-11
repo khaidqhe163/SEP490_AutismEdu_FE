@@ -34,6 +34,7 @@ import LoadingComponent from '~/components/LoadingComponent';
 import { format } from 'date-fns';
 import ReportIcon from '@mui/icons-material/Report';
 import ReportModal from '../../TutorProfile/TutorRating/ReportReview';
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 
 function ReviewMe() {
     const [filters, setFilters] = useState({
@@ -146,9 +147,10 @@ function ReviewMe() {
             </Stack>
 
             {reviewList.length === 0 ? (
-                <Typography variant="body1" align="center" sx={{ mt: 3 }}>
-                    Không có đánh giá nào.
-                </Typography>
+                <Box sx={{ textAlign: "center" }}>
+                    <img src={emptyBook} style={{ height: "200px" }} />
+                    <Typography>Không có đánh giá nào!</Typography>
+                </Box>
             ) : (
                 <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
                     <Table>

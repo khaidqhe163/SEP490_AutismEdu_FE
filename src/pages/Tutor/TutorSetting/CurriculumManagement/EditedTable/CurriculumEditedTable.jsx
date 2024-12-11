@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Butto
 import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 
 function CurriculumEditedTable({ setShowTable }) {
     const [selectedContent, setSelectedContent] = useState('');
@@ -160,7 +161,10 @@ function CurriculumEditedTable({ setShowTable }) {
                     </Box>
                 </Stack>
             </Stack>
-            {curriculums.length === 0 ? 'Hiện tại chưa có dữ liệu.' :
+            {curriculums.length === 0 ? <Box sx={{ textAlign: "center" }}>
+                <img src={emptyBook} style={{ height: "200px" }} />
+                <Typography>Hiện tại chưa có dữ liệu!</Typography>
+            </Box> :
                 <>
                     <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: '8px', overflow: 'hidden' }}>
                         <Table sx={{ minWidth: 650 }}>

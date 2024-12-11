@@ -16,13 +16,15 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { enqueueSnackbar } from 'notistack';
 import { format } from 'date-fns';
+import ConfirmDialog from '~/components/ConfirmDialog';
 
 const ParentProfile = () => {
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState(null);
     const nav = useNavigate();
-
+    const [openDialog, setOpenDialog] = useState(false);
+    const [openDialogg, setOpenDialogg] = useState(false);
     useEffect(() => {
         handleGerUserById();
     }, [id]);
@@ -63,6 +65,7 @@ const ParentProfile = () => {
             console.log(error);
 
         } finally {
+            setOpenDialogg(false);
             setLoading(false);
         }
     };
@@ -84,6 +87,7 @@ const ParentProfile = () => {
             console.log(error);
 
         } finally {
+            setOpenDialog(false);
             setLoading(false);
         }
     };
@@ -215,7 +219,7 @@ const ParentProfile = () => {
                         startIcon={<LockIcon />}
                         variant="contained"
                         color="error"
-                        onClick={() => handleLock()}
+                        onClick={() => setOpenDialogg(true)}
                     >
                         Khoá tài khoản
                     </Button>
@@ -224,13 +228,23 @@ const ParentProfile = () => {
                             startIcon={<LockOpenIcon />}
                             variant="contained"
                             color="success"
-                            onClick={() => handleUnlock()}
+                            onClick={() => setOpenDialog(true)}
                         >
                             Mở khoá
                         </Button>}
 
                 </Box>
             </Paper>
+            {openDialog && <ConfirmDialog openConfirm={openDialog} setOpenConfirm={setOpenDialog}
+                title={"Xác nhận"}
+                content={"Bạn có muốn mở khoá người dùng này không?"}
+                handleAction={handleUnlock}
+            />}
+            {openDialogg && <ConfirmDialog openConfirm={openDialogg} setOpenConfirm={setOpenDialogg}
+                title={"Xác nhận"}
+                content={"Bạn có muốn khoá người dùng này không?"}
+                handleAction={handleLock}
+            />}
             <LoadingComponent open={loading} setLoading={setLoading} />
         </Box>
     ) : (

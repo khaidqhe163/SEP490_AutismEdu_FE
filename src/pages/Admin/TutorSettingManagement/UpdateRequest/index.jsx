@@ -11,6 +11,7 @@ import ConfirmAcceptDialog from './Modal/ConfirmAcceptDialog';
 import ConfirmRejectDialog from './Modal/ConfirmRejectDialog';
 import { enqueueSnackbar } from 'notistack';
 import { format } from 'date-fns';
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 
 const UpdateRequest = () => {
     const [acceptDialogOpen, setAcceptDialogOpen] = useState(false);
@@ -28,8 +29,8 @@ const UpdateRequest = () => {
 
     const [pagination, setPagination] = useState({
         pageNumber: 1,
-        pageSize: 10,
-        total: 10,
+        pageSize: 5,
+        total: 5,
     });
 
     const [selectedRequest, setSelectedRequest] = useState(null);
@@ -45,6 +46,7 @@ const UpdateRequest = () => {
             await services.TutorManagementAPI.handleGetTutorUpdateRequest((res) => {
                 if (res?.result) {
                     setRequestList(res.result);
+                    setPagination(res?.pagination);
                 }
             }, (error) => {
                 console.log(error);
@@ -74,6 +76,10 @@ const UpdateRequest = () => {
         setFilters({
             ...filters,
             [key]: event.target.value,
+        });
+        setPagination({
+            ...pagination,
+            pageNumber: 1,
         });
     };
 
@@ -133,7 +139,7 @@ const UpdateRequest = () => {
     };
 
     const totalPages = Math.ceil(pagination.total / pagination.pageSize);
-
+    console.log(totalPages);
 
     return (
         <Box sx={{
@@ -214,7 +220,11 @@ const UpdateRequest = () => {
 
                 </Stack>
 
-                {requestList.length === 0 ? 'Hiện chưa có dữ liệu!' :
+                {requestList.length === 0 ? <Box sx={{ textAlign: "center" }}>
+                    <img src={emptyBook} style={{ height: "200px" }} />
+                    <Typography>Hiện tại chưa có dữ liệu!</Typography>
+                </Box>
+                    :
                     <>
                         <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }} hover>
                             <Table>

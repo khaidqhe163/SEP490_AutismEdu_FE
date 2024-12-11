@@ -31,7 +31,8 @@ import DescriptionModal from './Modal/DescriptionModal';
 import RejectModal from './Modal/RejectModal';
 import ConfirmRejectDialog from './Modal/ConfirmRejectDialog';
 import ConfirmAcceptDialog from './Modal/ConfirmAcceptDialog';
-import { format, formatters } from 'date-fns';
+import { format } from 'date-fns';
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 
 const CurriculumManagement = () => {
   const [loading, setLoading] = useState(false);
@@ -141,7 +142,6 @@ const CurriculumManagement = () => {
   const totalPages = Math.ceil(pagination.total / pagination.pageSize);
 
   const getStatusLabel = (status) => {
-    console.log(status);
 
     switch (status) {
       case 1:
@@ -233,7 +233,10 @@ const CurriculumManagement = () => {
           </Stack>
         </Stack>
 
-        {curriculumList.length === 0 ? 'Hiện chưa có dữ liệu!' :
+        {curriculumList.length === 0 ? <Box sx={{ textAlign: "center" }}>
+          <img src={emptyBook} style={{ height: "200px" }} />
+          <Typography>Hiện chưa có dữ liệu!</Typography>
+        </Box> :
           <>
             <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }} hover>
               <Table>
@@ -263,7 +266,7 @@ const CurriculumManagement = () => {
                           <VisibilityIcon />
                         </IconButton>
                       </TableCell>
-                      <TableCell>{curriculum?.createdDate && format(curriculum.createdDate, 'HH:mm dd-MM-yyyy')}</TableCell>
+                      <TableCell>{curriculum?.createdDate && format(curriculum.createdDate, 'HH:mm dd/MM/yyyy')}</TableCell>
 
                       <TableCell>
                         <Button

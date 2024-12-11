@@ -7,6 +7,7 @@ import services from '~/plugins/services';
 import { format } from 'date-fns';
 import LoadingComponent from '~/components/LoadingComponent';
 import PaymentHistoryDetail from './Modal/PaymentHistoryDetail';
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 
 const PaymentHistory = () => {
     const [loading, setLoading] = useState(false);
@@ -206,7 +207,11 @@ const PaymentHistory = () => {
                         color="primary"
                     />
                 </Stack>
-            </Box> : 'Hiện tại không có giao dịch nào'}
+            </Box> : <Box sx={{ textAlign: "center" }}>
+                            <img src={emptyBook} style={{ height: "200px" }} />
+                            <Typography>Hiện không có lịch sử giao dịch nào!</Typography>
+                        </Box>
+}
             <LoadingComponent open={loading} setOpen={setLoading} />
             {openDialogDetail && selectedPayment && <PaymentHistoryDetail open={openDialogDetail} onClose={() => setOpenDialogDetail(false)} paymentHistory={selectedPayment} />}
         </Box>

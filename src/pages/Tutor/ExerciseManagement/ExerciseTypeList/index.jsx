@@ -4,7 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ExerciseList from './ExerciseList';
 import services from '~/plugins/services';
 import LoadingComponent from '~/components/LoadingComponent';
-
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 
 function ExerciseTypeList() {
     const [loading, setLoading] = useState(false);
@@ -17,6 +17,10 @@ function ExerciseTypeList() {
         pageSize: 10,
         total: 10,
     });
+
+    useEffect(() => {
+        handleGetAllExerciseType();
+    }, []);
 
     useEffect(() => {
         setTimeout(() => {
@@ -53,7 +57,7 @@ function ExerciseTypeList() {
     const handleSearch = (e) => {
         const { value } = e.target;
         setSearch(value);
-        setPagination((prev) => ({ ...prev, pageNumber: 1 }))
+        setPagination((prev) => ({ ...prev, pageNumber: 1 }));
     };
 
 
@@ -152,6 +156,10 @@ function ExerciseTypeList() {
                     color="primary"
                 />
             </Stack>}
+            {exerciseTypes.length === 0 && <Box sx={{ textAlign: "center" }}>
+                <img src={emptyBook} style={{ height: "200px" }} />
+                <Typography>Hiện không loại bài tập nào!</Typography>
+            </Box>}
             <LoadingComponent open={loading} setOpen={setLoading} />
 
         </Stack>

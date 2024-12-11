@@ -14,6 +14,7 @@ import LoadingComponent from '~/components/LoadingComponent';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { tutorInfor } from '~/redux/features/tutorSlice';
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 
 export default function SyllabusManagement() {
     const { tutorProfile } = useSelector(tutorInfor);
@@ -39,7 +40,7 @@ export default function SyllabusManagement() {
             setLoading(true);
             await services.SyllabusManagementAPI.getListSyllabus((res) => {
                 if (res?.result) {
-                    setListSyllabus(res.result);
+                    // setListSyllabus(res.result);
                 }
             }, (error) => {
                 console.log(error);
@@ -106,7 +107,7 @@ export default function SyllabusManagement() {
             <Box>
                 <Button variant='contained' color='primary' onClick={handleOpenCreation}>Tạo giáo trình</Button>
             </Box>
-            {listSyllabus.length !== 0 &&
+            {listSyllabus.length !== 0 ?
                 <TabContext value={valueSyllabus}>
                     <Box sx={{ maxWidth: { xs: 320, sm: 750 } }} mb={2}>
                         <Tabs
@@ -173,7 +174,10 @@ export default function SyllabusManagement() {
                         </TabPanel>
                     ))}
                 </TabContext>
-            }
+                : <Box sx={{ textAlign: "center" }}>
+                    <img src={emptyBook} style={{ height: "200px" }} />
+                    <Typography>Hiện không giáo trình nào!</Typography>
+                </Box>}
             <DeleteConfirmationModal
                 open={openDeleteConfirm}
                 handleClose={() => setOpenDeleteConfirm(false)}

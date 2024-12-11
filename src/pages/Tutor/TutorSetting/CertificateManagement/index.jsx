@@ -31,6 +31,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { useNavigate } from 'react-router-dom';
 import LoadingComponent from '~/components/LoadingComponent';
 import DeleteConfirmationModal from './CertificateModal/DeleteConfirmationModal';
+import emptyBook from '~/assets/images/icon/emptybook.gif'
 import { format } from 'date-fns';
 
 function CertificateManagement() {
@@ -275,75 +276,78 @@ function CertificateManagement() {
                     Thêm chứng chỉ
                 </Button>
             </Stack>
-
-
-
-            <Box>
-                <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Số thứ tự</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Tên chứng chỉ</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Ngày tạo</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Phản hồi</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Hành động</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {certificateList.map((certificate, index) => (
-                                <TableRow key={certificate.id} hover>
-                                    <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 5}</TableCell>
-                                    <TableCell
-                                        sx={{
-                                            maxWidth: 200,
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
-                                        }}
-                                    >
-                                        {certificate?.certificateName}
-                                    </TableCell>
-                                    <TableCell>{certificate?.createdDate && format(new Date(certificate.createdDate), 'HH:mm dd/MM/yyyy')}</TableCell>
-                                    <TableCell>
-                                        <Button
-                                            variant="outlined"
-                                            color={
-                                                certificate.requestStatus === 1 ? 'success' :
-                                                    certificate.requestStatus === 0 ? 'error' :
-                                                        'warning'
-                                            }
-                                            size="small"
-                                            sx={{ borderRadius: 2, textTransform: 'none' }}
-                                        >
-                                            {statusText(certificate?.requestStatus)}
-                                        </Button>
-                                    </TableCell>
-                                    <TableCell>{certificate?.feedback || 'Chưa có phản hồi'}</TableCell>
-                                    <TableCell>
-                                        <IconButton color="primary" aria-label="xem chi tiết" onClick={() => handleViewDetail(certificate.id)}>
-                                            <VisibilityIcon />
-                                        </IconButton>
-                                        {!certificate?.identityCardNumber && certificate?.requestStatus !== 2 && <IconButton color="error" aria-label="xoá" onClick={() => handleClickOpen(certificate.id)}>
-                                            <DeleteIcon />
-                                        </IconButton>}
-
-                                    </TableCell>
+            {certificateList.length === 0 ?
+                <Box sx={{ textAlign: "center" }}>
+                    <img src={emptyBook} style={{ height: "200px" }} />
+                    <Typography>Hiện không có lịch sử giao dịch nào!</Typography>
+                </Box>
+                : <Box>
+                    <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Số thứ tự</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Tên chứng chỉ</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Ngày tạo</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Phản hồi</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Hành động</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
-                    <Pagination
-                        count={totalPages}
-                        page={pagination.pageNumber}
-                        onChange={handlePageChange}
-                        color="primary"
-                    />
-                </Stack>
-            </Box>
+                            </TableHead>
+                            <TableBody>
+                                {certificateList.map((certificate, index) => (
+                                    <TableRow key={certificate.id} hover>
+                                        <TableCell>{index + 1 + (pagination?.pageNumber - 1) * 5}</TableCell>
+                                        <TableCell
+                                            sx={{
+                                                maxWidth: 200,
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                        >
+                                            {certificate?.certificateName}
+                                        </TableCell>
+                                        <TableCell>{certificate?.createdDate && format(new Date(certificate.createdDate), 'HH:mm dd/MM/yyyy')}</TableCell>
+                                        <TableCell>
+                                            <Button
+                                                variant="outlined"
+                                                color={
+                                                    certificate.requestStatus === 1 ? 'success' :
+                                                        certificate.requestStatus === 0 ? 'error' :
+                                                            'warning'
+                                                }
+                                                size="small"
+                                                sx={{ borderRadius: 2, textTransform: 'none' }}
+                                            >
+                                                {statusText(certificate?.requestStatus)}
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell>{certificate?.feedback || 'Chưa có phản hồi'}</TableCell>
+                                        <TableCell>
+                                            <IconButton color="primary" aria-label="xem chi tiết" onClick={() => handleViewDetail(certificate.id)}>
+                                                <VisibilityIcon />
+                                            </IconButton>
+                                            {!certificate?.identityCardNumber && certificate?.requestStatus !== 2 && <IconButton color="error" aria-label="xoá" onClick={() => handleClickOpen(certificate.id)}>
+                                                <DeleteIcon />
+                                            </IconButton>}
+
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
+                        <Pagination
+                            count={totalPages}
+                            page={pagination.pageNumber}
+                            onChange={handlePageChange}
+                            color="primary"
+                        />
+                    </Stack>
+                </Box>}
+
 
             <DeleteConfirmationModal open={open} handleClose={handleClose} id={idDelete} certificateList={certificateList} setCertificateList={setCertificateList} />
 
