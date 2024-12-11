@@ -163,11 +163,17 @@ function StudentCompareReport({ open, setOpen, selectedItem, compareItem }) {
                     value === '2' && (
                         <Stack direction='row' justifyContent="center" gap={3} mt={2}>
                             <Box width="50%" px={5}>
-                                <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem?.achieved}</Typography>
+                                <Typography sx={{
+                                    whiteSpace: "break-spaces", wordBreak: 'break-word',
+                                    overflowWrap: 'break-word'
+                                }}>{selectedItem?.achieved}</Typography>
                             </Box>
                             <Divider orientation='vertical' flexItem />
                             <Box width="50%" px={5}>
-                                <Typography sx={{ whiteSpace: "break-spaces" }}>{compareItem?.achieved}</Typography>
+                                <Typography sx={{
+                                    whiteSpace: "break-spaces", wordBreak: 'break-word',
+                                    overflowWrap: 'break-word'
+                                }}>{compareItem?.achieved}</Typography>
                             </Box>
                         </Stack>
                     )
@@ -176,11 +182,17 @@ function StudentCompareReport({ open, setOpen, selectedItem, compareItem }) {
                     value === '3' && (
                         <Stack direction='row' justifyContent="center" gap={3} mt={2}>
                             <Box width="50%" px={5}>
-                                <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem?.failed}</Typography>
+                                <Typography sx={{
+                                    whiteSpace: "break-spaces", wordBreak: 'break-word',
+                                    overflowWrap: 'break-word'
+                                }}>{selectedItem?.failed}</Typography>
                             </Box>
                             <Divider orientation='vertical' flexItem />
                             <Box width="50%" px={5}>
-                                <Typography sx={{ whiteSpace: "break-spaces" }}>{compareItem?.failed}</Typography>
+                                <Typography sx={{
+                                    whiteSpace: "break-spaces", wordBreak: 'break-word',
+                                    overflowWrap: 'break-word'
+                                }}>{compareItem?.failed}</Typography>
                             </Box>
                         </Stack>
                     )
@@ -189,11 +201,17 @@ function StudentCompareReport({ open, setOpen, selectedItem, compareItem }) {
                     value === '4' && (
                         <Stack direction='row' justifyContent="center" gap={3} mt={2}>
                             <Box width="50%" px={5}>
-                                <Typography sx={{ whiteSpace: "break-spaces" }}>{selectedItem?.noteFromTutor || "Không có ghi chú!"}</Typography>
+                                <Typography sx={{
+                                    whiteSpace: "break-spaces", wordBreak: 'break-word',
+                                    overflowWrap: 'break-word'
+                                }}>{selectedItem?.noteFromTutor || "Không có ghi chú!"}</Typography>
                             </Box>
                             <Divider orientation='vertical' flexItem />
                             <Box width="50%" px={5}>
-                                <Typography sx={{ whiteSpace: "break-spaces" }}>{compareItem?.noteFromTutor || "Không có ghi chú!"}</Typography>
+                                <Typography sx={{
+                                    whiteSpace: "break-spaces", wordBreak: 'break-word',
+                                    overflowWrap: 'break-word'
+                                }}>{compareItem?.noteFromTutor || "Không có ghi chú!"}</Typography>
                             </Box>
                         </Stack>
                     )

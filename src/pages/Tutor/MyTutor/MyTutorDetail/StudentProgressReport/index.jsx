@@ -154,7 +154,9 @@ function StudentProgressReport() {
                                     <Chip icon={<DoneIcon />} label="Đã làm được" color="success" />
                                     <Typography gutterBottom sx={{
                                         color: 'text.secondary', fontSize: 14, mt: 2,
-                                        whiteSpace: "break-spaces"
+                                        whiteSpace: "break-spaces",
+                                        wordBreak: 'break-word',
+                                        overflowWrap: 'break-word'
                                     }}>
                                         {
                                             currentReport?.achieved
@@ -167,7 +169,9 @@ function StudentProgressReport() {
                                     <Chip icon={<CloseIcon />} label="Chưa làm được" color="error" />
                                     <Typography gutterBottom sx={{
                                         color: 'text.secondary', fontSize: 14, mt: 2,
-                                        whiteSpace: "break-spaces"
+                                        whiteSpace: "break-spaces",
+                                        wordBreak: 'break-word',
+                                        overflowWrap: 'break-word'
                                     }}>
                                         {
                                             currentReport?.failed
@@ -180,7 +184,9 @@ function StudentProgressReport() {
                                     <Chip icon={<EditIcon />} label="Ghi chú thêm" color="info" />
                                     <Typography gutterBottom sx={{
                                         color: 'text.secondary', fontSize: 14, mt: 2,
-                                        whiteSpace: "break-spaces"
+                                        whiteSpace: "break-spaces",
+                                        wordBreak: 'break-word',
+                                        overflowWrap: 'break-word'
                                     }}>
                                         {
                                             currentReport?.noteFromTutor
