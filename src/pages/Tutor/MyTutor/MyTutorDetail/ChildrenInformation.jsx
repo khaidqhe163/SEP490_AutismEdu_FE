@@ -76,7 +76,10 @@ function ChildInformation({ studentProfile }) {
                     <Typography variant='h3' sx={{ textAlign: "center", fontWeight: "bold", mt: 2 }}>
                         {status === 1 ? "Tình trạng ban đầu" : "Kết quả cuối cùng"}
                     </Typography>
-                    <Typography mt={2} sx={{ whiteSpace: "break-spaces", textAlign: "center" }}>
+                    <Typography mt={2} sx={{
+                        whiteSpace: "break-spaces", textAlign: "center", wordBreak: 'break-word',
+                        overflowWrap: 'break-word'
+                    }}>
                         {status === 1 ? studentProfile?.initialAssessmentResults.condition : studentProfile?.finalAssessmentResults.condition}
                     </Typography>
                     <Typography variant='h3' mt={5} sx={{ fontWeight: "bold", mb: 2 }}>

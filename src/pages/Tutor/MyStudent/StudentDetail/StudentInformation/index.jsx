@@ -33,8 +33,6 @@ function StudentInformation({ studentProfile, setStudentProfile }) {
         const formattedAddress = `${addressParts[3]} - ${addressParts[2]} - ${addressParts[1]} - ${addressParts[0]}`;
         return formattedAddress;
     }
-
-    console.log(studentProfile);
     return (
         <Box sx={{ px: 5 }}>
             {
@@ -63,13 +61,16 @@ function StudentInformation({ studentProfile, setStudentProfile }) {
                     <Typography variant='h5'>Thời gian học:
                         <Typography>
                             {format(studentProfile.createdDate, "dd/MM/yyyy")} -
-                            {studentProfile.updatedDate ? format(studentProfile.updatedDate, "dd/MM/yyyy"): "Hiện tại"}
+                            {studentProfile.updatedDate ? format(studentProfile.updatedDate, "dd/MM/yyyy") : "Hiện tại"}
                         </Typography>
                     </Typography>
                     <Typography variant='h5' mt={2}>
                         {status === 1 ? "Tình trạng ban đầu" : "Kết quả cuối cùng"}
                     </Typography>
-                    <Typography sx={{ whiteSpace: "break-spaces" }}>
+                    <Typography sx={{
+                        whiteSpace: "break-spaces", wordBreak: 'break-word',
+                        overflowWrap: 'break-word'
+                    }}>
                         {status === 1 ? studentProfile?.initialAssessmentResults.condition : studentProfile?.finalAssessmentResults.condition}
                     </Typography>
                     <Typography variant='h5' mt={2}>

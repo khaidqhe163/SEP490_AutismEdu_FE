@@ -170,7 +170,9 @@ function ProgressReport({ studentProfile }) {
                                     <Chip icon={<DoneIcon />} label="Đã làm được" color="success" />
                                     <Typography gutterBottom sx={{
                                         color: 'text.secondary', fontSize: 14, mt: 2,
-                                        whiteSpace: "break-spaces"
+                                        whiteSpace: "break-spaces",
+                                        wordBreak: 'break-word',
+                                        overflowWrap: 'break-word'
                                     }}>
                                         {
                                             currentReport?.achieved
@@ -183,7 +185,9 @@ function ProgressReport({ studentProfile }) {
                                     <Chip icon={<CloseIcon />} label="Chưa làm được" color="error" />
                                     <Typography gutterBottom sx={{
                                         color: 'text.secondary', fontSize: 14, mt: 2,
-                                        whiteSpace: "break-spaces"
+                                        whiteSpace: "break-spaces",
+                                        wordBreak: 'break-word',
+                                        overflowWrap: 'break-word'
                                     }}>
                                         {
                                             currentReport?.failed
@@ -196,7 +200,9 @@ function ProgressReport({ studentProfile }) {
                                     <Chip icon={<EditIcon />} label="Ghi chú thêm" color="info" />
                                     <Typography gutterBottom sx={{
                                         color: 'text.secondary', fontSize: 14, mt: 2,
-                                        whiteSpace: "break-spaces"
+                                        whiteSpace: "break-spaces",
+                                        wordBreak: 'break-word',
+                                        overflowWrap: 'break-word'
                                     }}>
                                         {
                                             currentReport?.noteFromTutor

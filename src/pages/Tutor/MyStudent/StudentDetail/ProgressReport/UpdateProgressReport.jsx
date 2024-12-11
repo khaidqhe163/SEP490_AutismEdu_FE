@@ -211,7 +211,7 @@ function UpdateProgressReport({ open, setOpen, report, progressReports, setProgr
 
                             <Stack direction='row' gap={2} mt={2}>
                                 <DoneIcon sx={{ color: "green" }} />
-                                <Typography>Đã làm được</Typography>
+                                <Typography fontWeight="bold">Đã làm được</Typography>
                             </Stack>
                             <TextField multiline fullWidth minRows={5} maxRows={10}
                                 name='achieved'
@@ -233,7 +233,7 @@ function UpdateProgressReport({ open, setOpen, report, progressReports, setProgr
                             </Stack>
                             <Stack direction='row' gap={2} mt={2}>
                                 <CloseIcon sx={{ color: "red" }} />
-                                <Typography>Chưa làm được</Typography>
+                                <Typography fontWeight="bold">Chưa làm được</Typography>
                             </Stack>
                             <TextField multiline fullWidth minRows={5} maxRows={10}
                                 name='failed'
@@ -254,7 +254,7 @@ function UpdateProgressReport({ open, setOpen, report, progressReports, setProgr
                             </Stack>
                             <Stack direction='row' gap={2} mt={2}>
                                 <EditNoteIcon sx={{ color: "blue" }} />
-                                <Typography>Ghi chú thêm</Typography>
+                                <Typography fontWeight="bold">Ghi chú thêm</Typography>
                             </Stack>
                             <TextField multiline fullWidth minRows={5} maxRows={10}
                                 name='noteFromTutor'
