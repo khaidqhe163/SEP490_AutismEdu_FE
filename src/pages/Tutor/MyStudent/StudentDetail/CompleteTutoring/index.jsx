@@ -96,6 +96,8 @@ function CompleteTutoring({ studentProfile, setStudentProfile }) {
         const errors = {};
         if (!values.finalCondition) {
             errors.finalCondition = "Bắt buộc";
+        } else if (values.finalCondition.length > 1000) {
+            errors.finalCondition = "Chỉ chứa dưới 1000 ký tự";
         }
         return errors;
     }
@@ -135,11 +137,28 @@ function CompleteTutoring({ studentProfile, setStudentProfile }) {
     }
     return (
         <>
-            <Button variant='contained' color='success' onClick={handleOpen}
-                sx={{ width: "200px", height: "80px", fontSize: "20px" }}
+            <Button
+                variant="contained"
+                color="success"
+                onClick={handleOpen}
+                sx={{
+                    width: "200px",
+                    height: "60px",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    borderRadius: "12px",
+                    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+                    background: "linear-gradient(45deg, #3c4ff4, #b660ec)",
+                    transition: "all 0.3s ease-in-out",
+                    "&:hover": {
+                        background: "linear-gradient(45deg, #b660ec, #3c4ff4)",
+                        transform: "scale(1.05)",
+                    }
+                }}
             >
                 Kết thúc dạy
             </Button>
+
             {
                 open && <Modal
                     open={open}
@@ -173,13 +192,18 @@ function CompleteTutoring({ studentProfile, setStudentProfile }) {
                                     value={formik.values.finalCondition}
                                     sx={{ mt: 1 }}
                                 />
-                                {
-                                    formik.errors.finalCondition && (
-                                        <FormHelperText error>
-                                            {formik.errors.finalCondition}
-                                        </FormHelperText>
-                                    )
-                                }
+                                <Stack direction='row' justifyContent='space-between'>
+                                    <Box>
+                                        {
+                                            formik.errors.finalCondition && (
+                                                <FormHelperText error>
+                                                    {formik.errors.finalCondition}
+                                                </FormHelperText>
+                                            )
+                                        }
+                                    </Box>
+                                    <Typography> {formik.values.finalCondition.length} / 1000</Typography>
+                                </Stack>
                                 <Stack direction='row' gap={2} mt={2}>
                                     <ListAltIcon sx={{ color: "orange" }} />
                                     <Typography>Danh sách đánh giá</Typography>

@@ -149,6 +149,8 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
                 achieved: formik.values.achieved.trim(),
                 failed: formik.values.failed.trim(),
                 noteFromTutor: formik.values.noteFromTutor.trim(),
+                from: formik.values.from,
+                to: formik.values.to,
                 studentProfileId: id,
                 assessmentResults: selectedAssessment
             }, (res) => {
@@ -370,17 +372,26 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
                                             <DoneIcon sx={{ color: "green" }} />
                                             <Typography>Đã làm được</Typography>
                                         </Stack>
-                                        <Typography sx={{ whiteSpace: "break-spaces" }}>{currentReport.achieved}</Typography>
+                                        <Typography sx={{
+                                            whiteSpace: "break-spaces", wordBreak: 'break-word',
+                                            overflowWrap: 'break-word'
+                                        }}>{currentReport.achieved}</Typography>
                                         <Stack direction='row' gap={2} mt={2}>
                                             <CloseIcon sx={{ color: "red" }} />
                                             <Typography>Chưa làm được</Typography>
                                         </Stack>
-                                        <Typography sx={{ whiteSpace: "break-spaces" }}>{currentReport.failed}</Typography>
+                                        <Typography sx={{
+                                            whiteSpace: "break-spaces", wordBreak: 'break-word',
+                                            overflowWrap: 'break-word'
+                                        }}>{currentReport.failed}</Typography>
                                         <Stack direction='row' gap={2} mt={2}>
                                             <EditNoteIcon sx={{ color: "blue" }} />
                                             <Typography>Ghi chú thêm</Typography>
                                         </Stack>
-                                        <Typography sx={{ whiteSpace: "break-spaces" }}>{currentReport.noteFromTutor}</Typography>
+                                        <Typography sx={{
+                                            whiteSpace: "break-spaces", wordBreak: 'break-word',
+                                            overflowWrap: 'break-word'
+                                        }}>{currentReport.noteFromTutor}</Typography>
                                         <Stack direction='row' gap={2} mt={2}>
                                             <ListAltIcon sx={{ color: "orange" }} />
                                             <Typography>Danh sách đánh giá</Typography>
