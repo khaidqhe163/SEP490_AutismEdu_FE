@@ -71,7 +71,7 @@ function TutorRegistration() {
                     </Link>
                     <Typography sx={{ color: 'text.primary' }}>Đăng ký thành gia sư</Typography>
                 </Breadcrumbs>
-                <Paper sx={{ width: "100%", py: "50px", px: "40px", mt: "20px" }} elevation={2}>
+                <Paper sx={{ width: "100%", px: "40px", py: "50px", mt: "20px" }} elevation={2}>
                     <Box width="100%" px="100px">
                         <Stepper activeStep={activeStep}>
                             {steps.map((label, index) => {

@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Modal, Typography, TextField, MenuItem, Select, FormControl, Grid, Divider, DialogActions, Dialog, DialogTitle, DialogContent } from '@mui/material';
-import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
-import { useSelector } from 'react-redux';
-import { userInfor } from '~/redux/features/userSlice';
-import { useNavigate } from 'react-router-dom';
-import services from '~/plugins/services';
+import { Box, Button, Dialog, DialogContent, DialogTitle, Divider, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { format } from 'date-fns';
+import { Form, Formik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
-import { format, max } from 'date-fns';
-import PAGES from '~/utils/pages';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
 import LoadingComponent from '~/components/LoadingComponent';
-import ParentSetupProfile from './ParentSetupProfile';
+import services from '~/plugins/services';
+import { userInfor } from '~/redux/features/userSlice';
 import ChildCreation from './ChildCreation';
+import ParentSetupProfile from './ParentSetupProfile';
 
 function TutorRequestModal({ rejectChildIds, tutorId, calculateAge }) {
     const [loading, setLoading] = useState(false);

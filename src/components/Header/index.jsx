@@ -95,12 +95,8 @@ function Header() {
             }
         }
         if (userInfo) {
-            if (userInfo.isLockedOut) {
-                handleLogout();
-            } else {
-                handleGetNotification();
-                handleGetConversation();
-            }
+            handleGetNotification();
+            handleGetConversation();
         }
     }, [userInfo, location])
 

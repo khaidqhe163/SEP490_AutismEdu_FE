@@ -112,12 +112,8 @@ function TutorHeader({ openMenu, setOpenMenu }) {
             nav(PAGES.TUTOR_LOGIN)
         }
         if (tutorInfo) {
-            if (tutorInfo.isLockedOut) {
-                handleLogout();
-            } else {
-                handleGetNotification();
-                handleGetConversation();
-            }
+            handleGetNotification();
+            handleGetConversation();
         }
     }, [tutorInfo])
 

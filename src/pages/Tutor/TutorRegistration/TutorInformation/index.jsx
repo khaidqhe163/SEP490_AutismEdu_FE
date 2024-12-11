@@ -23,7 +23,6 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
     const cIInput = useRef();
     const validate = values => {
         const errors = {};
-
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!values.email) {
             errors.email = "Bắt buộc"
@@ -87,6 +86,10 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
         },
         validate,
         onSubmit: async (values) => {
+            if (citizenIdentification.length < 2) {
+                enqueueSnackbar("Chứng minh nhân dân phải đủ 2 mặt", { variant: "error" });
+                return;
+            }
             const dataTransfer = new DataTransfer();
             citizenIdentification.forEach(file => {
                 dataTransfer.items.add(file);
@@ -111,9 +114,7 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                 province: selectedProvince || '',
                 district: selectedDistrict || '',
                 commune: selectedCommune || '',
-                homeNumber: values.homeNumber.trim(),
-                // startAge: values.startAge,
-                // endAge: values.endAge
+                homeNumber: values.homeNumber.trim()
             })
             handleNext();
         }
@@ -204,8 +205,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
             <form onSubmit={formik.handleSubmit}>
                 <Typography variant='h3' textAlign="center" mt={3}>Thông tin cá nhân</Typography>
                 <Grid container px="100px" py="50px" columnSpacing={2} rowSpacing={3}>
-                    <Grid item xs={3} textAlign="right">Ảnh chân dung</Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={2} textAlign="right">Ảnh chân dung</Grid>
+                    <Grid item xs={10}>
                         <ModalUploadAvatar setAvatar={setAvatar} />
                         {
                             !avatar && <FormHelperText error>
@@ -219,8 +220,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             }
                         </Box>
                     </Grid>
-                    <Grid item xs={3} textAlign="right">Họ và tên gia sư</Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={2} textAlign="right">Họ và tên gia sư</Grid>
+                    <Grid item xs={10}>
                         <TextField size='small' sx={{ width: "50%" }}
                             value={formik.values.fullName}
                             onChange={formik.handleChange} name='fullName' />
@@ -232,8 +233,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={3} textAlign="right">Email</Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={2} textAlign="right">Email</Grid>
+                    <Grid item xs={10}>
                         <TextField size='small' sx={{ width: "50%" }} onChange={formik.handleChange} name='email'
                             value={formik.values.email}
                         />
@@ -245,8 +246,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={3} textAlign="right">Số điện thoại</Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={2} textAlign="right">Số điện thoại</Grid>
+                    <Grid item xs={10}>
                         <TextField size='small' sx={{ width: "50%" }} onChange={formik.handleChange} name='phoneNumber'
                             value={formik.values.phoneNumber}
                         />
@@ -258,8 +259,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={3} textAlign="right">Ngày sinh</Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={2} textAlign="right">Ngày sinh</Grid>
+                    <Grid item xs={10}>
                         <TextField size='small' sx={{ width: "50%" }} type='date' inputProps={{
                             max: getMaxDate(),
                             min: getMinDate()
@@ -275,8 +276,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={3} textAlign="right">Địa chỉ</Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={2} textAlign="right">Địa chỉ</Grid>
+                    <Grid item xs={10}>
                         <Select
                             value={formik.values.province}
                             name='province'
@@ -386,8 +387,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                 </Grid>
                 <Divider>Căn cước công dân</Divider>
                 <Grid container px="100px" py="50px" columnSpacing={2} rowSpacing={3}>
-                    <Grid item xs={3} textAlign="right">Số căn cước công dân</Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={2} textAlign="right">Số căn cước công dân</Grid>
+                    <Grid item xs={10}>
                         <TextField size='small' sx={{ width: "70%" }} fullWidth value={formik.values.identityCardNumber}
                             name='identityCardNumber'
                             onChange={formik.handleChange} />
@@ -399,8 +400,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={3} textAlign="right">Nơi cấp</Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={2} textAlign="right">Nơi cấp</Grid>
+                    <Grid item xs={10}>
                         <TextField size='small' sx={{ width: "70%" }} fullWidth value={formik.values.issuingInstitution}
                             name='issuingInstitution'
                             onChange={formik.handleChange} />
@@ -412,8 +413,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={3} textAlign="right">Ngày cấp</Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={2} textAlign="right">Ngày cấp</Grid>
+                    <Grid item xs={10}>
                         <TextField size='small' sx={{ width: "70%" }} fullWidth value={formik.values.issuingDate}
                             name='issuingDate'
                             onChange={formik.handleChange}
@@ -431,8 +432,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={3} textAlign="right">Hình ảnh chụp của thẻ CCCD <Typography>(mặt trước và mặt sau)</Typography> </Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={2} textAlign="right">Hình ảnh chụp của thẻ CCCD <Typography>(mặt trước và mặt sau)</Typography> </Grid>
+                    <Grid item xs={10}>
                         <TextField size='small' type='file' sx={{ width: "70%" }}
                             onChange={(e) => {
                                 if (e.target.files.length > 2) {
