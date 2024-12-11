@@ -31,8 +31,6 @@ import RegisterOptions from '~/pages/Auth/Register/RegisterOptions'
 import ResetPassword from '~/pages/Auth/ResetPassword'
 import Blog from '~/pages/Blog'
 import BlogDetail from '~/pages/Blog/BlogDetail'
-import CenterProfile from '~/pages/Center/CenterProfile'
-import SearchCenter from '~/pages/Center/SearchCenter'
 import Home from '~/pages/Home'
 import MyChildren from '~/pages/MyChildren'
 import ChangePassword from '~/pages/Parent/ChangePassword'
@@ -112,14 +110,6 @@ const publicRoutes = [
     {
         path: PAGES.ROOT + PAGES.CONFIRMREGISTER,
         element: ConfirmRegister
-    },
-    {
-        path: PAGES.ROOT + PAGES.LISTCENTER,
-        element: SearchCenter
-    },
-    {
-        path: PAGES.ROOT + PAGES.CENTERPROFILE,
-        element: CenterProfile
     },
     {
         path: PAGES.ROOT + PAGES.LISTTUTOR,

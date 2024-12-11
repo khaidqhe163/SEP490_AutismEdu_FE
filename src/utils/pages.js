@@ -10,7 +10,6 @@ const PAGES = {
   RESETPASSWORD: '/reset-password',
   CONFIRMREGISTER: '/confirm-register',
   LISTCENTER: '/list-center',
-  CENTERPROFILE: '/center/:id',
   LISTTUTOR: '/list-tutor',
   TUTORPROFILE: '/tutor-profile/:id',
   TUTORPROFILEUPDATE: '/tutor-profile-update/:id',
