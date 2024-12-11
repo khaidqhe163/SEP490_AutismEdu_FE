@@ -201,10 +201,6 @@ function StudentCreation() {
             enqueueSnackbar("Chưa chọn yêu cầu!", { variant: "error" });
             return;
         }
-        // if (initialCondition.trim() === "") {
-        //     enqueueSnackbar("Chưa nhập điều kiện ban đầu!", { variant: "error" });
-        //     return;
-        // }
         if (listSchedule.length === 0) {
             enqueueSnackbar("Chưa nhập lịch học!", { variant: "error" });
             return;

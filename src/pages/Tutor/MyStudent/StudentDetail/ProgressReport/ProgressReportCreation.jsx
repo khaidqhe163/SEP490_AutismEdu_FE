@@ -68,7 +68,7 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
             setLoading(true);
             await services.AssessmentManagementAPI.listAssessment((res) => {
                 setAssessment(res.result.questions);
-                const initialAssessment = res.result.questions.map((r, index) => {
+                const initialAssessment = res.result.questions.map((r) => {
                     return {
                         questionId: r.id,
                         optionId: r.assessmentOptions[0].id
@@ -88,11 +88,18 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
         const errors = {};
         if (!values.achieved) {
             errors.achieved = "Bắt buộc";
+        } else if (values.achieved.trim().length > 1000) {
+            errors.achieved = "Chỉ chứa dưới 1000 ký tự"
         }
         if (!values.failed) {
             errors.failed = "Bắt buộc";
+        } else if (values.failed.trim().length > 1000) {
+            errors.failed = "Chỉ chứa dưới 1000 ký tự"
         }
 
+        if (values.noteFromTutor.trim().length > 1000) {
+            errors.noteFromTutor = "Chỉ chứa dưới 1000 ký tự"
+        }
         if (!values.from) {
             errors.from = "Bắt buộc";
         }
@@ -139,7 +146,9 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
         try {
             setLoading(true);
             await services.ProgressReportAPI.createProgressReport({
-                ...formik.values,
+                achieved: formik.values.achieved.trim(),
+                failed: formik.values.failed.trim(),
+                noteFromTutor: formik.values.noteFromTutor.trim(),
                 studentProfileId: id,
                 assessmentResults: selectedAssessment
             }, (res) => {
@@ -203,7 +212,7 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
                         overflow: 'auto'
                     }}>
                         <Stack direction='row' gap={2}>
-                            <form onSubmit={formik.handleSubmit} style={{ width: currentReport ? "60%" : '100%', }}>
+                            <form onSubmit={formik.handleSubmit} style={{ width: currentReport ? "60%" : '100%' }}>
                                 <Typography id="modal-modal-title" variant="h5" component="h2">
                                     Tạo đánh giá mới
                                 </Typography>
@@ -215,7 +224,7 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
                                             value={formik.values.from}
                                             inputProps={{
                                                 min: getFromDate(currentReport?.to),
-                                                max: new Date().toISOString().split('T')[0],
+                                                max: new Date().toISOString().split('T')[0]
                                             }}
                                             disabled
                                         />
@@ -250,7 +259,7 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
 
                                 <Stack direction='row' gap={2} mt={2}>
                                     <DoneIcon sx={{ color: "green" }} />
-                                    <Typography>Đã làm được</Typography>
+                                    <Typography fontWeight="bold">Đã làm được</Typography>
                                 </Stack>
                                 <TextField multiline fullWidth minRows={5} maxRows={10}
                                     name='achieved'
@@ -258,32 +267,42 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
                                     value={formik.values.achieved}
                                     sx={{ mt: 1 }}
                                 />
-                                {
-                                    formik.errors.achieved && (
-                                        <FormHelperText error>
-                                            {formik.errors.achieved}
-                                        </FormHelperText>
-                                    )
-                                }
+                                <Stack direction='row' justifyContent='space-between'>
+                                    <Box>
+                                        {
+                                            formik.errors.achieved && (
+                                                <FormHelperText error>
+                                                    {formik.errors.achieved}
+                                                </FormHelperText>
+                                            )
+                                        }
+                                    </Box>
+                                    <Typography> {formik.values.achieved.length} / 1000</Typography>
+                                </Stack>
                                 <Stack direction='row' gap={2} mt={2}>
                                     <CloseIcon sx={{ color: "red" }} />
-                                    <Typography>Chưa làm được</Typography>
+                                    <Typography fontWeight="bold">Chưa làm được</Typography>
                                 </Stack>
                                 <TextField multiline fullWidth minRows={5} maxRows={10}
                                     name='failed'
                                     onChange={formik.handleChange}
                                     value={formik.values.failed}
                                     sx={{ mt: 1 }} />
-                                {
-                                    formik.errors.failed && (
-                                        <FormHelperText error>
-                                            {formik.errors.failed}
-                                        </FormHelperText>
-                                    )
-                                }
+                                <Stack direction='row' justifyContent='space-between'>
+                                    <Box>
+                                        {
+                                            formik.errors.failed && (
+                                                <FormHelperText error>
+                                                    {formik.errors.failed}
+                                                </FormHelperText>
+                                            )
+                                        }
+                                    </Box>
+                                    <Typography> {formik.values.failed.length} / 1000</Typography>
+                                </Stack>
                                 <Stack direction='row' gap={2} mt={2}>
                                     <EditNoteIcon sx={{ color: "blue" }} />
-                                    <Typography>Ghi chú thêm</Typography>
+                                    <Typography fontWeight="bold">Ghi chú thêm</Typography>
                                 </Stack>
                                 <TextField multiline fullWidth minRows={5} maxRows={10}
                                     name='noteFromTutor'
@@ -291,13 +310,18 @@ function ProgressReportCreation({ studentProfile, currentReport, setCurrentRepor
                                     value={formik.values.noteFromTutor}
                                     sx={{ mt: 1 }}
                                 />
-                                {
-                                    formik.errors.noteFromTutor && (
-                                        <FormHelperText error>
-                                            {formik.errors.noteFromTutor}
-                                        </FormHelperText>
-                                    )
-                                }
+                                <Stack direction='row' justifyContent='space-between'>
+                                    <Box>
+                                        {
+                                            formik.errors.noteFromTutor && (
+                                                <FormHelperText error>
+                                                    {formik.errors.noteFromTutor}
+                                                </FormHelperText>
+                                            )
+                                        }
+                                    </Box>
+                                    <Typography> {formik.values.noteFromTutor.length} / 1000</Typography>
+                                </Stack>
                                 <Stack direction='row' gap={2} mt={2}>
                                     <ListAltIcon sx={{ color: "orange" }} />
                                     <Typography>Danh sách đánh giá</Typography>
