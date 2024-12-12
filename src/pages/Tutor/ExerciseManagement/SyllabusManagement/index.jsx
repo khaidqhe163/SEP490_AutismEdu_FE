@@ -66,8 +66,6 @@ export default function SyllabusManagement() {
     };
 
     const handleAssign = (syllabus) => {
-        console.log(syllabus);
-        
         setSelectedAssign(syllabus);
         setOpenAssign(true);
     }
