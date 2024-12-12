@@ -644,7 +644,7 @@ function Header() {
                                                             sx={{
                                                                 maxHeight: "110px"
                                                             }}>
-                                                            <Box flexGrow={2} sx={{ overflow: "hidden", whiteSpace: "normal", wordBreak: "break-word" }}>
+                                                            <Box flexGrow={2} sx={{ whiteSpace: "normal", wordBreak: "break-word" }}>
                                                                 <InputEmoji
                                                                     value={text}
                                                                     onChange={setText}

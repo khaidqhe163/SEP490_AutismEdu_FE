@@ -23,6 +23,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { jwtDecode } from 'jwt-decode';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import Settings from '@mui/icons-material/Settings';
+
 dayjs.locale('vi');
 function TutorHeader({ openMenu, setOpenMenu }) {
     dayjs.extend(relativeTime);
@@ -560,7 +561,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                                         sx={{
                                                             maxHeight: "110px"
                                                         }}>
-                                                        <Box flexGrow={2} sx={{ overflow: "hidden", whiteSpace: "normal", wordBreak: "break-word" }}>
+                                                        <Box flexGrow={2} sx={{ whiteSpace: "normal", wordBreak: "break-word" }}>
                                                             <InputEmoji
                                                                 value={text}
                                                                 onChange={setText}
