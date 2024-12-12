@@ -617,7 +617,7 @@ function Header() {
                                                                                     borderRadius: "15px",
                                                                                     maxWidth: "70%"
                                                                                 }}>
-                                                                                    <Typography>{m.content}</Typography>
+                                                                                    <Typography sx={{ whiteSpace: "normal", wordBreak: "break-word" }}>{m.content}</Typography>
                                                                                 </Box>
                                                                             </Stack>
                                                                         )
@@ -631,7 +631,7 @@ function Header() {
                                                                                     maxWidth: "70%",
                                                                                     flexShrink: 0
                                                                                 }}>
-                                                                                    <Typography>{m.content}</Typography>
+                                                                                    <Typography sx={{ whiteSpace: "normal", wordBreak: "break-word" }}>{m.content}</Typography>
                                                                                 </Box>
                                                                             </Stack>
                                                                         )
