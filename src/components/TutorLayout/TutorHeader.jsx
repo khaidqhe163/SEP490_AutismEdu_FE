@@ -519,7 +519,6 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                                         flexGrow: 2,
                                                         overflow: "auto"
                                                     }} ref={setChatBox}>
-                                                        <Button onClick={() => handleGetMessage(2, messages.length)}>Xem thêm</Button>
                                                         {
                                                             messages && messages.length !== 0 && messages.map((m) => {
                                                                 if (m.sender?.id === tutorInfo?.id) {
@@ -561,7 +560,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                                         sx={{
                                                             maxHeight: "110px"
                                                         }}>
-                                                        <Box flexGrow={2}>
+                                                        <Box flexGrow={2} sx={{ overflow: "hidden", whiteSpace: "normal", wordBreak: "break-word" }}>
                                                             <InputEmoji
                                                                 value={text}
                                                                 onChange={setText}
@@ -571,7 +570,7 @@ function TutorHeader({ openMenu, setOpenMenu }) {
                                                                         sendMessages();
                                                                     }
                                                                 }}
-                                                                placeholder="Type a message"
+                                                                placeholder="Nhập tin nhắn vào đây"
                                                             />
                                                         </Box>
                                                         <IconButton onClick={() => sendMessages()} sx={{

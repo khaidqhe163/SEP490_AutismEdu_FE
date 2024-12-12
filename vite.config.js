@@ -10,7 +10,7 @@ export default defineConfig({
         jsxImportSource: '@emotion/react',
         babel: {
           plugins: ['@emotion/babel-plugin'],
-        },
+        }
       }
     ),
     svgr({
