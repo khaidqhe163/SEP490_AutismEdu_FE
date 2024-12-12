@@ -23,10 +23,12 @@ function ChildInformation({ studentProfile }) {
         return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
     }
     const getPointColor = (point) => {
-        if (point <= 1) return "#ff4d4d";
-        if (point <= 2.5) return "#ffa500";
-        if (point <= 4) return "#ffec3d";
-        return "#73d13d";
+        if (point < 1.5) return "#ff6666";
+        if (point < 2) return "#ffa500";
+        if (point < 2.5) return "#ffd700";
+        if (point < 3.5) return "#9acd32";
+        if (point < 4) return "#32cd32";
+        return "#1e90ff";
     };
 
     return (
