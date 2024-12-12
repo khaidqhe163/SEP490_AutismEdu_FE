@@ -251,7 +251,7 @@ function ParentSetupProfile({ handleClose, loading, setLoading, setModalOpen, op
                                     })
                                 }
                             </Select>
-                            <Box>
+                            <Box mt={2}>
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
