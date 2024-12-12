@@ -126,7 +126,6 @@ function ScheduleSetting({ studentProfile }) {
                         <Typography variant='h6'>Lưu ý</Typography>
                     </Stack>
                     <ul>
-                        <li>Nếu muốn thay đổi khung giờ, hãy xoá khung giờ muốn thay đổi rồi thêm khung giờ mới</li>
                         <li>Lịch học chỉ được cập nhật ở các tuần tiếp theo</li>
                     </ul>
                 </Box>
