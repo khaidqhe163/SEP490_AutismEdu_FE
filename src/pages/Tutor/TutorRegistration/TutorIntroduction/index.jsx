@@ -135,9 +135,7 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                     endPrice: tutorIntroduction.priceEnd ? tutorIntroduction.priceEnd : ""
                 });
             }
-            console.log(tutorIntroduction.description);
             if (tutorIntroduction.description) {
-                console.log("zoday");
                 const quill = new Quill(document.createElement("div"));
                 quill.clipboard.dangerouslyPasteHTML(tutorIntroduction.description);
                 const plainText = quill.getText();
@@ -372,7 +370,18 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                     <Button
                         color="inherit"
                         disabled={activeStep === 0}
-                        onClick={handleBack}
+                        onClick={() => {
+                            handleBack();
+                            setTutorIntroduction({
+                                description: formik.values.description,
+                                priceFrom: formik.values.fromPrice,
+                                priceEnd: formik.values.endPrice,
+                                startAge: formik.values.startAge,
+                                endAge: formik.values.endAge,
+                                sessionHours: formik.values.sessionHours,
+                                curriculum: curriculum
+                            })
+                        }}
                         sx={{ mr: 1 }}
                     >
                         Quay lại
