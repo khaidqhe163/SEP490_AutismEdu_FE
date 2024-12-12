@@ -251,35 +251,36 @@ function ParentSetupProfile({ handleClose, loading, setLoading, setModalOpen, op
                                     })
                                 }
                             </Select>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={formik.values.commune}
-                                name='commune'
-                                onChange={formik.handleChange}
-                                renderValue={(selected) => {
-                                    if (!selected || selected === "") {
-                                        return <em>Xã / Phường</em>;
+                            <Box>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={formik.values.commune}
+                                    name='commune'
+                                    onChange={formik.handleChange}
+                                    renderValue={(selected) => {
+                                        if (!selected || selected === "") {
+                                            return <em>Xã / Phường</em>;
+                                        }
+                                        const selectedCommune = communes.find(p => p.idCommune === selected);
+                                        return selectedCommune ? selectedCommune.name : <em>Xã / Phường</em>;
+                                    }}
+                                    displayEmpty={true}
+                                    disabled={communes.length === 0}
+                                    size='small'
+                                >
+                                    <MenuItem disabled value="">
+                                        <em>Xã / Phường</em>
+                                    </MenuItem>
+                                    {
+                                        communes.length !== 0 && communes?.map((commune) => {
+                                            return (
+                                                <MenuItem value={commune?.idCommune} key={commune?.idCommune}>{commune.name}</MenuItem>
+                                            )
+                                        })
                                     }
-                                    const selectedCommune = communes.find(p => p.idCommune === selected);
-                                    return selectedCommune ? selectedCommune.name : <em>Xã / Phường</em>;
-                                }}
-                                displayEmpty={true}
-                                disabled={communes.length === 0}
-                                size='small'
-                                sx={{ ml: "20px" }}
-                            >
-                                <MenuItem disabled value="">
-                                    <em>Xã / Phường</em>
-                                </MenuItem>
-                                {
-                                    communes.length !== 0 && communes?.map((commune) => {
-                                        return (
-                                            <MenuItem value={commune?.idCommune} key={commune?.idCommune}>{commune.name}</MenuItem>
-                                        )
-                                    })
-                                }
-                            </Select>
+                                </Select>
+                            </Box>
                             <Box mt="20px">
                                 <TextField label="Số nhà, Thôn" size='small' name='homeNumber' onChange={formik.handleChange}
                                     value={formik.values.homeNumber}

@@ -1,6 +1,6 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Box, Button, Divider, FormHelperText, Grid, IconButton, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, FormControl, FormHelperText, Grid, IconButton, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
@@ -205,8 +205,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
             <form onSubmit={formik.handleSubmit}>
                 <Typography variant='h3' textAlign="center" mt={3}>Thông tin cá nhân</Typography>
                 <Grid container px="100px" py="50px" columnSpacing={2} rowSpacing={3}>
-                    <Grid item xs={2} textAlign="right">Ảnh chân dung</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Ảnh chân dung</Grid>
+                    <Grid item xs={9}>
                         <ModalUploadAvatar setAvatar={setAvatar} />
                         {
                             !avatar && <FormHelperText error>
@@ -220,8 +220,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             }
                         </Box>
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Họ và tên gia sư</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Họ và tên gia sư</Grid>
+                    <Grid item xs={9}>
                         <TextField size='small' sx={{ width: "50%" }}
                             value={formik.values.fullName}
                             onChange={formik.handleChange} name='fullName' />
@@ -233,8 +233,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Email</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Email</Grid>
+                    <Grid item xs={9}>
                         <TextField size='small' sx={{ width: "50%" }} onChange={formik.handleChange} name='email'
                             value={formik.values.email}
                         />
@@ -246,8 +246,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Số điện thoại</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Số điện thoại</Grid>
+                    <Grid item xs={9}>
                         <TextField size='small' sx={{ width: "50%" }} onChange={formik.handleChange} name='phoneNumber'
                             value={formik.values.phoneNumber}
                         />
@@ -259,8 +259,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Ngày sinh</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Ngày sinh</Grid>
+                    <Grid item xs={9}>
                         <TextField size='small' sx={{ width: "50%" }} type='date' inputProps={{
                             max: getMaxDate(),
                             min: getMinDate()
@@ -276,8 +276,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Địa chỉ</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Địa chỉ</Grid>
+                    <Grid item xs={9}>
                         <Select
                             value={formik.values.province}
                             name='province'
@@ -342,35 +342,36 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                                 })
                             }
                         </Select>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={formik.values.commune}
-                            name='commune'
-                            onChange={formik.handleChange}
-                            renderValue={(selected) => {
-                                if (!selected || selected === "") {
-                                    return <em>Xã / Phường</em>;
+                        <Box mt={2}>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={formik.values.commune}
+                                name='commune'
+                                onChange={formik.handleChange}
+                                renderValue={(selected) => {
+                                    if (!selected || selected === "") {
+                                        return <em>Xã / Phường</em>;
+                                    }
+                                    const selectedCommune = communes.find(p => p.idCommune === selected);
+                                    return selectedCommune ? selectedCommune.name : <em>Xã / Phường</em>;
+                                }}
+                                displayEmpty={true}
+                                disabled={communes.length === 0}
+                                size='small'
+                            >
+                                <MenuItem disabled value="">
+                                    <em>Xã / Phường</em>
+                                </MenuItem>
+                                {
+                                    communes.length !== 0 && communes?.map((commune) => {
+                                        return (
+                                            <MenuItem value={commune?.idCommune} key={commune?.idCommune}>{commune.name}</MenuItem>
+                                        )
+                                    })
                                 }
-                                const selectedCommune = communes.find(p => p.idCommune === selected);
-                                return selectedCommune ? selectedCommune.name : <em>Xã / Phường</em>;
-                            }}
-                            displayEmpty={true}
-                            disabled={communes.length === 0}
-                            size='small'
-                            sx={{ ml: "20px" }}
-                        >
-                            <MenuItem disabled value="">
-                                <em>Xã / Phường</em>
-                            </MenuItem>
-                            {
-                                communes.length !== 0 && communes?.map((commune) => {
-                                    return (
-                                        <MenuItem value={commune?.idCommune} key={commune?.idCommune}>{commune.name}</MenuItem>
-                                    )
-                                })
-                            }
-                        </Select>
+                            </Select>
+                        </Box>
                         <Box mt="20px">
                             <TextField label="Số nhà, Thôn" size='small' name='homeNumber' onChange={formik.handleChange}
                                 value={formik.values.homeNumber}
@@ -387,8 +388,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                 </Grid>
                 <Divider>Căn cước công dân</Divider>
                 <Grid container px="100px" py="50px" columnSpacing={2} rowSpacing={3}>
-                    <Grid item xs={2} textAlign="right">Số căn cước công dân</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Số căn cước công dân</Grid>
+                    <Grid item xs={9}>
                         <TextField size='small' sx={{ width: "70%" }} fullWidth value={formik.values.identityCardNumber}
                             name='identityCardNumber'
                             onChange={formik.handleChange} />
@@ -400,8 +401,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Nơi cấp</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Nơi cấp</Grid>
+                    <Grid item xs={9}>
                         <TextField size='small' sx={{ width: "70%" }} fullWidth value={formik.values.issuingInstitution}
                             name='issuingInstitution'
                             onChange={formik.handleChange} />
@@ -413,8 +414,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Ngày cấp</Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Ngày cấp</Grid>
+                    <Grid item xs={9}>
                         <TextField size='small' sx={{ width: "70%" }} fullWidth value={formik.values.issuingDate}
                             name='issuingDate'
                             onChange={formik.handleChange}
@@ -432,8 +433,8 @@ function TutorInformation({ activeStep, handleBack, handleNext, steps, tutorInfo
                             )
                         }
                     </Grid>
-                    <Grid item xs={2} textAlign="right">Hình ảnh chụp của thẻ CCCD <Typography>(mặt trước và mặt sau)</Typography> </Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={3} textAlign="right">Hình ảnh chụp của thẻ CCCD <Typography>(mặt trước và mặt sau)</Typography> </Grid>
+                    <Grid item xs={9}>
                         <TextField size='small' type='file' sx={{ width: "70%" }}
                             onChange={(e) => {
                                 if (e.target.files.length > 2) {

@@ -8,6 +8,7 @@ import Career from './Career';
 import CareerDetail from './Career/CareerDetail';
 import CertificateAddition from './Certificate/CertificateAddition';
 import CertificateDetail from './Certificate/CertificateDetail';
+import Cookies from 'js-cookie';
 function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, career, setCareer,
     setCertificate, tutorInformation, tutorIntroduction,
     IdVerification }) {
@@ -79,13 +80,14 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 }, (err) => {
                     enqueueSnackbar(err.error[0], { variant: "error" })
                 })
+                Cookies.remove("draftData");
                 setLoading(false);
                 axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
             } else {
                 enqueueSnackbar("Bạn chưa có bằng cấp hoặc kinh nghiệm làm việc", { variant: "error" })
             }
         } catch (error) {
-            enqueueSnackbar("Lỗi hệ thống, đăng ký thất bại!", {variant:"error"})
+            enqueueSnackbar("Lỗi hệ thống, đăng ký thất bại!", { variant: "error" })
             setLoading(false)
         }
     }
@@ -117,7 +119,7 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                         </i>
                     </Typography>
                     <List
-                        sx={{ maxWidth: 450, bgcolor: 'background.paper', mt:3 }}
+                        sx={{ maxWidth: 450, bgcolor: 'background.paper', mt: 3 }}
                         component="nav"
                         aria-labelledby="nested-list-subheader"
                         subheader={
