@@ -135,9 +135,11 @@ function TutorIntroduction({ activeStep, handleBack, handleNext, steps, tutorInt
                     endPrice: tutorIntroduction.priceEnd ? tutorIntroduction.priceEnd : ""
                 });
             }
+            console.log(tutorIntroduction.description);
             if (tutorIntroduction.description) {
+                console.log("zoday");
                 const quill = new Quill(document.createElement("div"));
-                quill.root.innerHTML = tutorIntroduction.description;
+                quill.clipboard.dangerouslyPasteHTML(tutorIntroduction.description);
                 const plainText = quill.getText();
                 setContentLength(plainText.trim());
             }
