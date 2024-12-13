@@ -10,6 +10,7 @@ import ButtonComponent from '~/Components/ButtonComponent';
 import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 import FormSearch from './FormSearch/FormSearch';
+import { enqueueSnackbar } from 'notistack';
 
 function SearchTutor() {
 
@@ -31,7 +32,6 @@ function SearchTutor() {
     const [tutors, setTutors] = useState([]);
 
     const [pagination, setPagination] = useState(null);
-
 
     const [selected, setSelected] = useState('grid');
     const [showFilters, setShowFilters] = useState(false);
@@ -63,6 +63,7 @@ function SearchTutor() {
                     setPagination(res.pagination);
                 }
             }, (error) => {
+                enqueueSnackbar(error.error[0], { variant: "error" })
                 console.log(error);
             }, tutorData);
 

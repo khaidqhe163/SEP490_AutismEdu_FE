@@ -4,7 +4,6 @@ import StarIcon from '@mui/icons-material/Star';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-dayjs.locale('vi');
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -75,8 +74,10 @@ function TutorRating({ tutorId, userInfo }) {
 
     useEffect(() => {
         handleGetDataReviewStats();
-        handleGetStudyingList();
-    }, [tutorId]);
+        if (userInfo) {
+            handleGetStudyingList();
+        }
+    }, [tutorId, userInfo]);
 
     useEffect(() => {
         if (selectedReview) {
