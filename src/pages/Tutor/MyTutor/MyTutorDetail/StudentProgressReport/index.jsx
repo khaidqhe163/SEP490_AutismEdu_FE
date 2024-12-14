@@ -7,16 +7,15 @@ import EditIcon from '@mui/icons-material/Edit';
 import FindReplaceIcon from '@mui/icons-material/FindReplace';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, Button, Card, CardContent, Chip, Divider, FormControl, IconButton, InputLabel, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
+import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import AssessmentGuild from '~/components/AssessmentGuild';
+import emptyFolder from '~/assets/images/icon/emptyreport.gif';
 import TablePagging from '~/components/TablePagging';
 import ProgressReportDetail from '~/pages/Tutor/MyStudent/StudentDetail/ProgressReport/ProgressReportDetail';
 import services from '~/plugins/services';
-import StudentCompareReport from './StudentCompareReport';
-import emptyFolder from '~/assets/images/icon/emptyreport.gif'
-import { format } from 'date-fns';
 import PAGES from '~/utils/pages';
+import StudentCompareReport from './StudentCompareReport';
 const ASC = 1;
 const DESC = 2;
 const NOT_CHANGE = 3;
@@ -151,7 +150,7 @@ function StudentProgressReport() {
                         </Typography>
                         <Stack direction="row" gap={2} flexWrap="wrap" justifyContent="space-between">
                             <Card sx={{
-                                minWidth: "32%",
+                                width: "32%",
                                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
                                 '&:hover': {
@@ -177,7 +176,7 @@ function StudentProgressReport() {
                                 </CardContent>
                             </Card>
                             <Card sx={{
-                                minWidth: "32%",
+                                width: "32%",
                                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
                                 '&:hover': {
@@ -203,7 +202,7 @@ function StudentProgressReport() {
                                 </CardContent>
                             </Card>
                             <Card sx={{
-                                minWidth: "32%",
+                                width: "32%",
                                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
                                 '&:hover': {

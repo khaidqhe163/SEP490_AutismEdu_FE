@@ -174,7 +174,7 @@ function ProgressReport({ studentProfile }) {
                         </Typography>
                         <Stack direction="row" gap={2} flexWrap="wrap" justifyContent="space-between">
                             <Card sx={{
-                                minWidth: "32%",
+                                width: "32%",
                                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
                                 '&:hover': {
@@ -200,7 +200,7 @@ function ProgressReport({ studentProfile }) {
                                 </CardContent>
                             </Card>
                             <Card sx={{
-                                minWidth: "32%",
+                                width: "32%",
                                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
                                 '&:hover': {
@@ -226,7 +226,7 @@ function ProgressReport({ studentProfile }) {
                                 </CardContent>
                             </Card>
                             <Card sx={{
-                                minWidth: "32%",
+                                width: "32%",
                                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
                                 '&:hover': {

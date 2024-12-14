@@ -5,7 +5,7 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Divider, IconButton, Pagination, Stack, Typography
+    Divider, FormControl, IconButton, MenuItem, Pagination, Select, Stack, Typography
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -24,9 +24,16 @@ function StudentExcercise({ studentProfile }) {
     const [selectedExcercise, setSelectedExcercise] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [total, setTotal] = useState(1);
+    const [passingStatus, setPassingStatus] = useState("ALL");
     useEffect(() => {
         handleGetSchedules();
-    }, [currentPage])
+    }, [currentPage]);
+
+    useEffect(() => {
+        if (currentPage === 1) {
+            handleGetSchedules();
+        } else setCurrentPage(1);
+    }, [passingStatus])
     const handleGetSchedules = async () => {
         try {
             await services.ScheduleAPI.getAssignSchedule((res) => {
@@ -37,7 +44,7 @@ function StudentExcercise({ studentProfile }) {
             }, {
                 pageNumber: currentPage,
                 studentProfileId: studentProfile.id,
-                status: "ALL"
+                status: passingStatus
             })
         } catch (error) {
             console.log(error);
@@ -60,6 +67,14 @@ function StudentExcercise({ studentProfile }) {
     return (
         <Box sx={{ px: 5, py: 3 }}>
             <Typography variant='h4'>Lịch sử học tập của trẻ</Typography>
+            <FormControl sx={{ mt: 3, width: "200px" }}>
+                <Select value={passingStatus} onChange={(e) => setPassingStatus(e.target.value)}>
+                    <MenuItem value="ALL">Tất cả</MenuItem>
+                    <MenuItem value="NOT_YET">Chưa có đánh giá</MenuItem>
+                    <MenuItem value="PASSED">Đã đạt</MenuItem>
+                    <MenuItem value="NOT_PASSED">Chưa đạt</MenuItem>
+                </Select>
+            </FormControl>
             {
                 (!schedules || schedules.length === 0) ? (
                     <Stack width="100%" alignItems="center" justifyContent="center" mt="100px">
