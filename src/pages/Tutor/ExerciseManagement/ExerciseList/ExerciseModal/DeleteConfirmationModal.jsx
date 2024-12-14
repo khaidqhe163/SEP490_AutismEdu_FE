@@ -1,11 +1,7 @@
 import { Box, Button, Modal, Typography, Divider } from '@mui/material';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import PAGES from '~/utils/pages';
 
-function DoTestConfirmation({ open, handleClose, selectedTest }) {
-
-    const nav = useNavigate();
+function DeleteConfirmationModal({ open, handleClose, handleDelete }) {
     const style = {
         position: 'absolute',
         top: '50%',
@@ -22,19 +18,19 @@ function DoTestConfirmation({ open, handleClose, selectedTest }) {
         <Modal open={open} onClose={handleClose}>
             <Box sx={style}>
                 <Typography textAlign={'center'} variant="h5" mb={2}>
-                    Xác nhận làm
+                    Xác nhận xoá
                 </Typography>
                 <Divider />
-                <Typography mt={2} mb={4} variant='body1'>
-                    Bạn có muốn làm bài kiểm tra <b>{selectedTest?.testName}</b> này không?
+                <Typography mt={2} mb={4}>
+                    Bạn có chắc chắn muốn xoá bài tập này không?
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
                     <Button variant="outlined" onClick={handleClose}>Huỷ</Button>
-                    <Button variant="contained" color="primary" onClick={() => { nav(PAGES.ROOT + PAGES.DO_TEST, { state: { selectedTest } }) }}>Đồng ý</Button>
+                    <Button variant="contained" color="primary" onClick={handleDelete}>Xoá</Button>
                 </Box>
             </Box>
         </Modal>
     );
 }
 
-export default DoTestConfirmation;
+export default DeleteConfirmationModal;
