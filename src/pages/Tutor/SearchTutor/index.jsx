@@ -155,9 +155,9 @@ function SearchTutor() {
                                                     </Box>
                                                 </Box>
                                                 <Typography mt={4} variant='h5' color={'green'}>
-                                                    {t?.priceFrom !== t?.priceEnd
-                                                        ? `${formatter.format(t?.priceFrom ?? 0)} - ${formatter.format(t?.priceEnd ?? 0)}`
-                                                        : `${formatter.format(t?.priceFrom ?? 0)}`}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography>
+                                                {t?.priceFrom !== t?.priceEnd
+                                                    ? `${formatter.format(t?.priceFrom ?? 0)} - ${formatter.format(t?.priceEnd ?? 0)}`
+                                                    : `${formatter.format(t?.priceFrom ?? 0)}`}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography>
 
                                                 {/* <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t?.priceFrom ?? 0) + ' - ' + (t?.priceFrom !== t?.priceEnd) && (formatter.format(t?.priceEnd ?? 0))}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography> */}
                                             </CardContent>
@@ -186,7 +186,7 @@ function SearchTutor() {
                                                     <Box sx={{ display: "flex", gap: "15px" }}>
                                                         <Box sx={{ display: "flex", alignItems: "center", gap: "10px", mt: 2, '&:hover': { color: "blue" } }}>
                                                             <LocalPhoneOutlinedIcon />
-                                                            <a href={`tel:${t.phoneNumber}`}><Typography sx={{ '&:hover': { color: "blue" } }}>{t.phoneNumber}</Typography></a>
+                                                            <a href={`tel:${t.phoneNumber}`}><Typography sx={{ '&:hover': { color: "blue" } }}>{t?.phoneNumber}</Typography></a>
                                                         </Box>
                                                         <Box sx={{ display: "flex", alignItems: "center", gap: "10px", mt: 2, '&:hover': { color: "blue" } }}>
                                                             <EmailOutlinedIcon />
