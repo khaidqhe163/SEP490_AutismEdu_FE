@@ -154,7 +154,12 @@ function SearchTutor() {
                                                         <a href={`mailto:${t.email}`}><Typography sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '280px', '&:hover': { color: "blue" } }}>{t.email}</Typography></a>
                                                     </Box>
                                                 </Box>
-                                                <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t.priceFrom)} - {formatter.format(t.priceEnd)}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography>
+                                                <Typography mt={4} variant='h5' color={'green'}>
+                                                    {t?.priceFrom !== t?.priceEnd
+                                                        ? `${formatter.format(t?.priceFrom ?? 0)} - ${formatter.format(t?.priceEnd ?? 0)}`
+                                                        : `${formatter.format(t?.priceFrom ?? 0)}`}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography>
+
+                                                {/* <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t?.priceFrom ?? 0) + ' - ' + (t?.priceFrom !== t?.priceEnd) && (formatter.format(t?.priceEnd ?? 0))}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography> */}
                                             </CardContent>
                                             <CardActions>
                                                 <Button sx={{ fontSize: "20px" }} onClick={() => handleClickToProfile(t.userId)}>Tìm hiểu thêm <ArrowForwardIcon /></Button>
@@ -188,7 +193,9 @@ function SearchTutor() {
                                                             <a href={`mailto:${t.email}`}><Typography sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '300px', '&:hover': { color: "blue" } }}>{t.email}</Typography></a>
                                                         </Box>
                                                     </Box>
-                                                    <Typography mt={4} variant='h5' color={'green'}>{formatter.format(t?.priceFrom)} - {formatter.format(t.priceEnd)}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography>
+                                                    <Typography mt={4} variant='h5' color={'green'}>{t?.priceFrom !== t?.priceEnd
+                                                        ? `${formatter.format(t?.priceFrom ?? 0)} - ${formatter.format(t?.priceEnd ?? 0)}`
+                                                        : `${formatter.format(t?.priceFrom ?? 0)}`}<Typography component="span" variant='subtitle1' color={'gray'}> / buổi <small>({t?.sessionHours} tiếng)</small></Typography></Typography>
                                                 </CardContent>
                                                 <CardActions>
                                                     <Button sx={{ fontSize: "20px" }} onClick={() => handleClickToProfile(t.userId)}>Tìm hiểu thêm <ArrowForwardIcon /></Button>
