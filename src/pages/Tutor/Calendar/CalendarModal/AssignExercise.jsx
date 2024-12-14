@@ -4,6 +4,7 @@ import LoadingComponent from '~/components/LoadingComponent';
 import services from '~/plugins/services';
 import { enqueueSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from 'date-fns';
 
 function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFilterSchedule, selectedKey }) {
     const [syllabusId, setSyllabusId] = useState('');
@@ -290,7 +291,7 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
                                 <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Ngày học:</Typography>
                             </Grid>
                             <Grid item xs={7}>
-                                <Typography variant='subtitle1'>{new Date(schedule.scheduleDate).toLocaleDateString()}</Typography>
+                                <Typography variant='subtitle1'>{schedule?.scheduleDate ? formatDate(new Date(schedule.scheduleDate), "dd/MM/yyyy") : 'Chưa có'}</Typography>
                             </Grid>
                             <Grid item xs={5}>
                                 <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Khung thời gian:</Typography>

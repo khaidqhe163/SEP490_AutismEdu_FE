@@ -35,11 +35,17 @@ function ExerciseList() {
         pageSize: 10,
         total: 10,
     });
-
-
+    
     useEffect(() => {
         handleGetAllExercise();
+    }, []);
+
+    useEffect(() => {
+        setTimeout(() => {
+            handleGetAllExercise();
+        }, 500);
     }, [dataFilter, pagination.pageNumber]);
+
 
     const handleGetAllExercise = async () => {
         try {
@@ -47,7 +53,7 @@ function ExerciseList() {
             await services.ExerciseManagementAPI.getAllExercise((res) => {
                 if (res?.result) {
                     setExercises(res.result);
-                    // setPagination(res.pagination);
+                    setPagination(res.pagination);
                 }
             }, (error) => {
                 console.log(error);
