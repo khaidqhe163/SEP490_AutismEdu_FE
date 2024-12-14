@@ -77,10 +77,10 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
                 await services.TutorManagementAPI.registerAsTutor(submitForm, (res) => {
                     handleNext();
+                    localStorage.removeItem("draftData")
                 }, (err) => {
                     enqueueSnackbar(err.error[0], { variant: "error" })
                 })
-                Cookies.remove("draftData");
                 setLoading(false);
                 axios.setHeaders({ "Content-Type": "application/json", "Accept": "application/json, text/plain, */*" });
             } else {
