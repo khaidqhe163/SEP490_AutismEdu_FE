@@ -8,7 +8,6 @@ import Career from './Career';
 import CareerDetail from './Career/CareerDetail';
 import CertificateAddition from './Certificate/CertificateAddition';
 import CertificateDetail from './Certificate/CertificateDetail';
-import Cookies from 'js-cookie';
 function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, career, setCareer,
     setCertificate, tutorInformation, tutorIntroduction,
     IdVerification }) {
@@ -76,8 +75,8 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                 });
                 axios.setHeaders({ "Content-Type": "multipart/form-data", "Accept": "application/json, text/plain, multipart/form-data, */*" });
                 await services.TutorManagementAPI.registerAsTutor(submitForm, (res) => {
-                    handleNext();
                     localStorage.removeItem("draftData")
+                    handleNext();
                 }, (err) => {
                     enqueueSnackbar(err.error[0], { variant: "error" })
                 })
@@ -215,10 +214,10 @@ function WorkInfo({ activeStep, handleBack, handleNext, steps, certificate, care
                     <Typography>Bạn có muốn nộp đơn này không?</Typography>
                 </DialogTitle>
                 <DialogActions>
-                    <Button onClick={handleSubmit}>Nộp</Button>
-                    <Button onClick={() => { setOpenConfirm(false) }} autoFocus>
+                    <Button onClick={() => { setOpenConfirm(false) }} autoFocus variant='outlined'>
                         Huỷ bỏ
                     </Button>
+                    <Button onClick={handleSubmit} variant='contained'>Nộp</Button>
                 </DialogActions>
             </Dialog>
             <LoadingComponent open={loading} setOpen={setLoading} />

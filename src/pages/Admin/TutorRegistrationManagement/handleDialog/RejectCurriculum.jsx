@@ -74,8 +74,8 @@ function RejectCurriculum({ curriculumId, curriculums, setCurriculums }) {
                     />
                     <Typography textAlign="right">{rejectReason.length} / 500</Typography>
                     <Box textAlign="right" mt={2}>
-                        <Button onClick={handleClose}>Huỷ bỏ</Button>
-                        <Button onClick={handleSubmit}>Từ chối</Button>
+                        <Button onClick={handleClose} variant='outlined'>Huỷ bỏ</Button>
+                        <Button onClick={handleSubmit} variant='contained' sx={{ ml: 2 }}>Từ chối</Button>
                     </Box>
                     <LoadingComponent open={loading} setLoading={setLoading} />
                 </Box>
