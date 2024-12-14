@@ -73,19 +73,20 @@ function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCl
             try {
                 setLoading(true);
                 const dataUpdate = {
+                    id: selectedExercise?.id,
                     exerciseName: values?.exerciseName?.trim(),
                     description: values.description,
-                    exerciseTypeId: selectedExerciseType.id,
-                    originalId: selectedExercise?.original ? selectedExercise.original?.id : selectedExercise?.id
+                    exerciseTypeId: selectedExerciseType.id
                 };
-                await services.ExerciseManagementAPI.createExercise(dataUpdate, (res) => {
+                await services.ExerciseManagementAPI.updateExercise(selectedExercise?.id, dataUpdate, (res) => {
                     if (res?.result) {
                         const indexExercise = exercises.findIndex((e) => e.id === selectedExercise.id);
-                        exercises.splice(indexExercise, 1, res.result);
+                        exercises.splice(indexExercise, 1, {...res.result});
                         enqueueSnackbar("Chỉnh sửa bài tập thành công!", { variant: 'success' });
                         handleCloseEditDialog();
                     }
                 }, (error) => {
+                    enqueueSnackbar(error.error[0], { variant: 'error' });
                     console.log(error);
                 });
             } catch (error) {
