@@ -79,7 +79,7 @@ function ExerciseUpdateModal({ exercises, setExercises, openEditDialog, handleCl
                 await services.ExerciseManagementAPI.updateExercise(selectedExercise?.id, dataUpdate, (res) => {
                     if (res?.result) {
                         const indexExercise = exercises.findIndex((e) => e.id === selectedExercise.id);
-                        exercises.splice(indexExercise, 1, { ...res.result, exerciseType: { ...selectedExercise?.exerciseType } });
+                        exercises.splice(indexExercise, 1, { ...res.result });
                         enqueueSnackbar("Chỉnh sửa bài tập thành công!", { variant: 'success' });
                         handleCloseEditDialog();
                     }
