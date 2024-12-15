@@ -387,7 +387,7 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
                             {listSyllabus.length === 0 && (<Grid item xs={12} display={'flex'} direction={'column'} gap={1}>
                                 <Typography variant='caption' color={'red'}>Hiện tại bạn chưa tạo giáo trình nào. Bạn có muốn tạo không?</Typography>
                                 <Box>
-                                    <Button variant='contained' color='primary' size='small' onClick={() => nav('/autismtutor/exercise', { state: { syllabus: '2' } })}>Có</Button>
+                                    <Button variant='contained' color='primary' size='small' onClick={() => nav('/autismtutor/exercise', { state: { syllabus: '3' } })}>Có</Button>
                                 </Box>
                             </Grid>)}
                         </Grid>
