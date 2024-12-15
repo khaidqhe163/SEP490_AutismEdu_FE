@@ -119,7 +119,32 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
                 }
             }
         }
+        if (listSyllabus?.length === 0 && schedule?.syllabusId && schedule?.exerciseType && schedule?.exercise) {
+            const newSyllabus = {
+                id: schedule.syllabusId,
+                ageFrom: schedule.ageFrom,
+                ageEnd: schedule.ageEnd,
+                exerciseTypes: [
+                    {
+                        id: schedule.exerciseType.id,
+                        exerciseTypeName: schedule.exerciseType.exerciseTypeName,
+                        exercises: [
+                            {
+                                id: schedule.exercise.id,
+                                exerciseName: schedule.exercise.exerciseName,
+                                description: schedule.exercise.description,
+                                createdDate: schedule.exercise.createdDate,
+                                updatedDate: schedule.exercise.updatedDate,
+                            },
+                        ],
+                    },
+                ],
+            };
+            setListSyllabus([...listSyllabus, newSyllabus]);
+        }
     }, [listSyllabus, schedule]);
+
+    console.log(schedule);
 
 
     useEffect(() => {
