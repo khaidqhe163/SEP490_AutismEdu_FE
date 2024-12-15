@@ -258,7 +258,10 @@ function StudentExcercise({ studentProfile }) {
                             padding: '8px',
                             backgroundColor: '#f9f9f9',
                             borderRadius: '8px',
-                            boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.1)'
+                            boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.1)',
+                            "& p": {
+                                whiteSpace: "break-spaces", wordBreak: 'break-word'
+                            }
                         }}
                         dangerouslySetInnerHTML={{ __html: selectedExcercise.exercise.description }}
                     />
