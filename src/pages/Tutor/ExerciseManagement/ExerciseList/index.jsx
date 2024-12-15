@@ -35,7 +35,7 @@ function ExerciseList() {
         pageSize: 10,
         total: 10,
     });
-    
+
     useEffect(() => {
         handleGetAllExercise();
     }, []);
@@ -113,14 +113,12 @@ function ExerciseList() {
         try {
             setLoading(true);
             await services.ExerciseManagementAPI.deleteExercise(currentDeleteIndex, {}, (res) => {
-                if (res?.result) {
-                    const newExercise = exercises.filter((e) => e.id !== currentDeleteIndex);
-                    setExercises(newExercise);
-                    enqueueSnackbar("Xoá bài tập thành công thành công", { variant: 'success' });
-                }
+                const newExercise = exercises.filter((e) => e.id !== currentDeleteIndex);
+                setExercises(newExercise);
+                enqueueSnackbar("Xoá bài tập thành công thành công", { variant: 'success' });
             }, (error) => {
                 console.log(error);
-            })
+            });
         } catch (error) {
             console.log(error);
         } finally {
