@@ -40,23 +40,6 @@ const WorkExperienceDetail = ({ open, onClose, workExperience }) => {
             <DialogContent>
                 <Box sx={{ width: '80%', mx: 'auto' }}>
                     <Grid container spacing={2}>
-                        <Grid item xs={4}>
-                            <Typography sx={{ fontWeight: 'bold', textAlign: 'right' }}>Email:</Typography>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <Typography>
-                                {workExperience?.submitter?.email || 'Không có'}
-                            </Typography>
-                        </Grid>
-
-                        <Grid item xs={4}>
-                            <Typography sx={{ fontWeight: 'bold', textAlign: 'right' }}>Họ và tên:</Typography>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <Typography>
-                                {workExperience?.submitter?.fullName || 'Không có'}
-                            </Typography>
-                        </Grid>
 
                         <Grid item xs={4}>
                             <Typography sx={{ fontWeight: 'bold', textAlign: 'right' }}>Tên cty/doanh nghiệp:</Typography>
