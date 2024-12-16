@@ -131,6 +131,10 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
                         helperText={formik.touched.startDate && formik.errors.startDate}
                         margin="normal"
                         InputLabelProps={{ shrink: true }}
+                        inputProps={{
+                            min: getMinDate(),
+                            max: new Date().toISOString().slice(0, 7)
+                        }}
                     />
                     <TextField
                         fullWidth
@@ -145,13 +149,17 @@ const WorkExperienceCreation = ({ open, onClose, workExperienceList, setWorkExpe
                         margin="normal"
                         InputLabelProps={{ shrink: true }}
                         disabled={formik.values.startDate === ""}
+                        inputProps={{
+                            min: formik.values.startDate,
+                            max: getMaxDate()
+                        }}
                     />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="inherit" variant='outlined'>
                         Hủy
                     </Button>
-                    <Button onClick={formik.handleSubmit} color="primary" variant="contained">
+                    <Button type='submit' color="primary" variant="contained">
                         Lưu
                     </Button>
                 </DialogActions>
