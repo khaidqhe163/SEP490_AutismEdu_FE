@@ -22,8 +22,6 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
     const [selectedContent, setSelectedContent] = useState('');
     const [isEmpty, setIsEmpty] = useState(false);
     const nav = useNavigate();
-    console.log(schedule);
-    console.log(listSyllabus);
 
     useEffect(() => {
         if (listSyllabus?.length !== 0 && schedule?.syllabusId && schedule?.exerciseType && schedule?.exercise) {
@@ -195,11 +193,6 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
         }
     }, [exerciseType, initialized, listExerciseType]);
 
-    // console.log({
-    //     syllabusId,
-    //     exerciseType,
-    //     exercise
-    // });
 
     function formatTime(timeString) {
         const [hours, minutes] = timeString.split(":");
