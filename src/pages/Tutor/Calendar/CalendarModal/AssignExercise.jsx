@@ -20,8 +20,10 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
     const [isValidate, setValidate] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedContent, setSelectedContent] = useState('');
+    const [isEmpty, setIsEmpty] = useState(false);
     const nav = useNavigate();
-    // console.log(schedule);
+    console.log(schedule);
+    console.log(listSyllabus);
 
     useEffect(() => {
         if (listSyllabus?.length !== 0 && schedule?.syllabusId && schedule?.exerciseType && schedule?.exercise) {
@@ -144,9 +146,6 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
         }
     }, [listSyllabus, schedule]);
 
-    console.log(schedule);
-
-
     useEffect(() => {
         handleGetAllSyllabus();
     }, []);
@@ -174,6 +173,14 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
             }
         }
     }, [syllabusId, initialized, listSyllabus]);
+
+    useEffect(() => {
+        if (syllabusId && listExerciseType?.length === 0) {
+            setIsEmpty(true);
+        } else {
+            setIsEmpty(false);
+        }
+    }, [syllabusId, listExerciseType]);
 
     useEffect(() => {
         if (exerciseType) {
@@ -390,6 +397,11 @@ function AssignExercise({ isOpen, setModalOpen, schedule, filterSchedule, setFil
                                     <Button variant='contained' color='primary' size='small' onClick={() => nav('/autismtutor/exercise', { state: { syllabus: '3' } })}>Có</Button>
                                 </Box>
                             </Grid>)}
+                            {isEmpty && (
+                                <Grid item xs={12}>
+                                    <Typography variant='caption' color={'#ed6c02'}>Hiện tại khoảng độ tuổi này trong giáo trình đang chưa được gán bài tập nào!</Typography>
+                                </Grid>
+                            )}
                         </Grid>
                     </Stack>
 
