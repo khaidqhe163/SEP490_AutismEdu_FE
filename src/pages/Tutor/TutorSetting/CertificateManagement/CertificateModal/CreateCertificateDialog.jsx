@@ -42,8 +42,8 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
             setLoading(true);
             const formData = new FormData();
 
-            formData.append('CertificateName', certificateData.CertificateName);
-            formData.append('IssuingInstitution', certificateData.IssuingInstitution);
+            formData.append('CertificateName', certificateData.CertificateName.trim());
+            formData.append('IssuingInstitution', certificateData.IssuingInstitution.trim());
             formData.append('IdentityCardNumber', certificateData.IdentityCardNumber);
             formData.append('IssuingDate', certificateData.IssuingDate);
             formData.append('ExpirationDate', certificateData.ExpirationDate);
@@ -120,11 +120,11 @@ export default function CreateCertificateDialog({ open, onClose, certificateData
         const { name, value } = event.target;
         const text = ['CertificateName', 'IssuingInstitution'];
 
-        const updatedValue = text.includes(name) ? value.trim() : value;
+        const updatedValue = value;
 
         setCertificateData({
             ...certificateData,
-            [name]: updatedValue,
+            [name]: updatedValue
         });
 
         formik.setFieldValue(name, updatedValue);
